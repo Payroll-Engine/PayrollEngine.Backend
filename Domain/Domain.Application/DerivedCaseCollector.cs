@@ -1,0 +1,224 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Domain.Scripting.Controller;
+
+namespace PayrollEngine.Domain.Application;
+
+public class DerivedCaseCollector : DerivedCaseTool
+{
+    /// <summary>
+    /// Constructor for global cases
+    /// </summary>
+    public DerivedCaseCollector(
+        IGlobalCaseValueRepository globalCaseValueRepository,
+        DerivedCaseToolSettings settings) :
+        base(globalCaseValueRepository, settings)
+    {
+    }
+
+    /// <summary>
+    /// Constructor for national cases
+    /// </summary>
+    public DerivedCaseCollector(
+        IGlobalCaseValueRepository globalCaseValueRepository,
+        INationalCaseValueRepository nationalCaseValueRepository,
+        DerivedCaseToolSettings settings) :
+        base(globalCaseValueRepository, nationalCaseValueRepository, settings)
+    {
+    }
+
+    /// <summary>
+    /// Constructor for company cases
+    /// </summary>
+    public DerivedCaseCollector(
+        IGlobalCaseValueRepository globalCaseValueRepository,
+        INationalCaseValueRepository nationalCaseValueRepository,
+        ICompanyCaseValueRepository companyCaseValueRepository,
+        DerivedCaseToolSettings settings) :
+        base(globalCaseValueRepository, nationalCaseValueRepository, companyCaseValueRepository,
+            settings)
+    {
+    }
+
+    /// <summary>
+    /// Constructor for employee cases
+    /// </summary>
+    public DerivedCaseCollector(Employee employee,
+        IGlobalCaseValueRepository globalCaseValueRepository,
+        INationalCaseValueRepository nationalCaseValueRepository,
+        ICompanyCaseValueRepository companyCaseValueRepository,
+        IEmployeeCaseValueRepository employeeCaseValueRepository,
+        DerivedCaseToolSettings settings) :
+        base(employee, globalCaseValueRepository, nationalCaseValueRepository, companyCaseValueRepository,
+            employeeCaseValueRepository, settings)
+    {
+    }
+
+    public virtual async Task<bool> GlobalCaseAvailableAsync(string caseName, Language language) =>
+        await CaseAvailableAsync(CaseType.Global, caseName, language);
+
+    public virtual async Task<bool> NationalCaseAvailableAsync(string caseName, Language language) =>
+        await CaseAvailableAsync(CaseType.National, caseName, language);
+
+    public virtual async Task<bool> CompanyCaseAvailableAsync(string caseName, Language language) =>
+        await CaseAvailableAsync(CaseType.Company, caseName, language);
+
+    public virtual async Task<bool> EmployeeCaseAvailableAsync(string caseName, Language language) =>
+        await CaseAvailableAsync(CaseType.Employee, caseName, language);
+
+    public virtual async Task<IEnumerable<CaseSet>> GetAvailableGlobalCasesAsync(Language language,
+        IEnumerable<string> caseNames = null) =>
+        await GetAvailableCasesAsync(CaseType.Global, language, caseNames);
+
+    public virtual async Task<IEnumerable<CaseSet>> GetAvailableNationalCasesAsync(Language language,
+        IEnumerable<string> caseNames = null) =>
+        await GetAvailableCasesAsync(CaseType.National, language, caseNames);
+
+    public virtual async Task<IEnumerable<CaseSet>> GetAvailableCompanyCasesAsync(Language language,
+        IEnumerable<string> caseNames = null) =>
+        await GetAvailableCasesAsync(CaseType.Company, language, caseNames);
+
+    public virtual async Task<IEnumerable<CaseSet>> GetAvailableEmployeeCasesAsync(Language language,
+        IEnumerable<string> caseNames = null) =>
+        await GetAvailableCasesAsync(CaseType.Employee, language, caseNames);
+
+    /// <summary>
+    /// Get case period values by date period and the case field names
+    /// </summary>
+    /// <param name="period">The date period</param>
+    /// <param name="caseFieldNames">The case field names</param>
+    /// <returns>The case values for all case fields</returns>
+    public virtual async Task<IEnumerable<CaseFieldValue>> GetCasePeriodValuesAsync(
+        DatePeriod period, IEnumerable<string> caseFieldNames) =>
+        await CaseValueProvider.GetCasePeriodValuesAsync(period, caseFieldNames);
+
+    /// <summary>
+    /// Test if case is available
+    /// </summary>
+    /// <param name="caseType">Type of the case</param>
+    /// <param name="caseName">Name of the case</param>
+    /// <param name="language">The language</param>
+    /// <returns>True if the case is available</returns>
+    protected virtual async Task<bool> CaseAvailableAsync(CaseType caseType, string caseName, Language language)
+    {
+        if (string.IsNullOrWhiteSpace(caseName))
+        {
+            throw new ArgumentException(nameof(caseName));
+        }
+
+        // case (derived)
+        var cases = (await PayrollRepository.GetDerivedCasesAsync(
+            new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = Payroll.Id,
+                RegulationDate = RegulationDate,
+                EvaluationDate = EvaluationDate
+            },
+            caseType: caseType,
+            caseNames: new[] { caseName },
+            clusterSet: ClusterSet,
+            overrideType: OverrideType.Active)).ToList();
+        var available = await CaseAvailable(cases, language);
+        Log.Trace(available ? $"Case {caseName} available" : $"Case {caseName} not available");
+        return available;
+    }
+
+    /// <summary>
+    /// Get available cases
+    /// </summary>
+    /// <param name="caseType">Type of the case</param>
+    /// <param name="caseNames">The case names (default: all)</param>
+    /// <param name="language">The language</param>
+    /// <returns>List of available cases</returns>
+    protected virtual async Task<IEnumerable<CaseSet>> GetAvailableCasesAsync(CaseType caseType, Language language,
+        IEnumerable<string> caseNames = null)
+    {
+        var availableCases = new List<CaseSet>();
+
+        // case (derived)
+        var allCases = (await PayrollRepository.GetDerivedCasesAsync(
+            new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = Payroll.Id,
+                RegulationDate = RegulationDate,
+                EvaluationDate = EvaluationDate
+            },
+            caseType: caseType,
+            caseNames: caseNames,
+            clusterSet: ClusterSet,
+            overrideType: OverrideType.Active)).ToList();
+        if (allCases.Any())
+        {
+            // collect cases by case name
+            var groupedCases = allCases.GroupBy(x => x.Name, y => y);
+            foreach (var groupedCase in groupedCases)
+            {
+                var cases = groupedCase.ToList();
+
+                // case available
+                var available = await CaseAvailable(cases, language);
+                if (available)
+                {
+                    var caseSet = DerivedCaseFactory.BuildCase(cases, null, language);
+                    availableCases.Add(caseSet);
+                    Log.Trace($"Case {groupedCase.Key} available");
+                }
+                else
+                {
+                    Log.Trace($"Case {groupedCase.Key} not available");
+                }
+            }
+        }
+
+        return availableCases;
+    }
+
+    private async Task<bool> CaseAvailable(IEnumerable<Case> cases, Language language)
+    {
+        var lookupProvider = await NewRegulationLookupProviderAsync();
+
+        // case available expression
+        var caseList = (cases as Case[] ?? cases.ToArray()).ToList();
+        if (!caseList.Any())
+        {
+            return false;
+        }
+
+        var availableScripts = caseList.GetDerivedExpressionObjects(x => x.AvailableScript);
+        if (availableScripts.Any())
+        {
+            // remove cases without available expression
+            caseList = caseList.Where(x => !string.IsNullOrWhiteSpace(x.AvailableScript)).ToList();
+
+            // case set
+            var caseSet = await GetDerivedCaseSetAsync(caseList, null, null, language, false);
+
+            // case available function call
+            foreach (var _ in availableScripts)
+            {
+                var available = new CaseScriptController().CaseAvailable(new()
+                {
+                    FunctionHost = FunctionHost,
+                    Tenant = Tenant,
+                    User = User,
+                    Payroll = Payroll,
+                    CaseValueProvider = CaseValueProvider,
+                    RegulationLookupProvider = lookupProvider,
+                    WebhookDispatchService = WebhookDispatchService,
+                    Case = caseSet
+                });
+                if (available.HasValue)
+                {
+                    return available.Value;
+                }
+            }
+        }
+        return true;
+    }
+}

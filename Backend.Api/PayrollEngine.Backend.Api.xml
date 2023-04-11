@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PayrollEngine.Backend.Api</name>
+    </assembly>
+    <members>
+        <member name="T:PayrollEngine.Backend.Api.Program">
+            <summary>
+            Start program for the provider api
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Api.Program.Main(System.String[])">
+            <summary>
+            The program entry point
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Api.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            Create the web host builder
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Api.ProviderStartupExtensions">
+            <summary>
+            Startup extension
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Api.ProviderStartupExtensions.AddLocalApiServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the local API services
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Backend.Api.Startup">
+            <summary>
+            Api startup setup
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Api startup constructor
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="P:PayrollEngine.Backend.Api.Startup.Configuration">
+            <summary>
+            The application configuration
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Service configuration
+            This method gets called by the runtime. Use this method to add services to the container. 
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Api.Startup.GetDatabaseContext">
+            <summary>Creates the database context</summary>
+            <returns>The database context</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
+            <summary>
+            Application configuration
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+        </member>
+    </members>
+</doc>

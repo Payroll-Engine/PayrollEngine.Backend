@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Persistence.SqlServer</AssemblyName>
+		<RootNamespace>PayrollEngine.Persistence.SqlServer</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Persistence\PayrollEngine.Persistence.csproj" />
+	</ItemGroup>
+
+</Project>

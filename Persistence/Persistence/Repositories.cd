@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="PayrollEngine.Persistence.Sql.SqlRepository" Collapsed="true">
+    <Position X="8" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAEJAAAAAAgAAAAAAAAAAAAgAUAEAAA=</HashCode>
+      <FileName>SqlRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Orientation="Right" Position="0.19" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.DomainSqlRepository&lt;T&gt;" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAIAIAAAAIQACMAAAAAAABkAAAAABQAAAAAgQAgAAA=</HashCode>
+      <FileName>DomainSqlRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.ChildDomainSqlRepository&lt;T&gt;" Collapsed="true">
+    <Position X="8.75" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAQAAgBAAhwAAAIAAAAABAIAwACAEQIIAAEIA=</HashCode>
+      <FileName>ChildDomainSqlRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.RootDomainSqlRepository&lt;T&gt;" Collapsed="true">
+    <Position X="1.75" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAIAAAAABAAAgAAAAQIIAAAIA=</HashCode>
+      <FileName>RootDomainSqlRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.TrackChildDomainSqlRepository&lt;TDomain, TAudit&gt;" Collapsed="true">
+    <Position X="14.75" Y="3.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAQAQABBAAAAAAAAAAAAAAAAAASAAAAAAAAAA=</HashCode>
+      <FileName>TrackChildDomainSqlRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CaseFieldAuditRepository" Collapsed="true">
+    <Position X="2.25" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CaseFieldAuditRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CaseRelationAuditRepository" Collapsed="true">
+    <Position X="2.25" Y="10" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CaseRelationAuditRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CaseRepository" Collapsed="true">
+    <Position X="16.75" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CaseRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CollectorAuditRepository" Collapsed="true">
+    <Position X="2.25" Y="7" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CollectorAuditRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.LookupRepository" Collapsed="true">
+    <Position X="13.5" Y="7" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LookupRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.PayrollRepository" Collapsed="true">
+    <Position X="10.5" Y="10" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAIACIAAAAAIAAAAIABICgAQIAAAEAAAAAEAAgAAA=</HashCode>
+      <FileName>PayrollRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.UserRepository" Collapsed="true">
+    <Position X="10.5" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAgAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>UserRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.WageTypeAuditRepository" Collapsed="true">
+    <Position X="6.5" Y="7" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>WageTypeAuditRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.WageTypeResultRepository" Collapsed="true">
+    <Position X="6.5" Y="8" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>WageTypeResultRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.TenantRepository" Collapsed="true">
+    <Position X="1.75" Y="4.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAgAIA=</HashCode>
+      <FileName>TenantRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.AuditChildDomainSqlRepository&lt;T&gt;" Collapsed="true">
+    <Position X="5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AuditChildDomainSqlRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.EmployeeRepository" Collapsed="true">
+    <Position X="10.5" Y="7.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQCAABAEAgAIAAAAgAABQAAAACAAAAAAgAAA=</HashCode>
+      <FileName>EmployeeRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CaseFieldRepository" Collapsed="true">
+    <Position X="16.75" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAEAAAAAAAAgAAAAAAAAAAAAAAAwAAA=</HashCode>
+      <FileName>CaseFieldRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CaseRelationRepository" Collapsed="true">
+    <Position X="16.75" Y="7.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CaseRelationRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CaseValueRepository" Collapsed="true">
+    <Position X="16.75" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAIBBEAAAAAAAAIBAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>CaseValueRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CollectorRepository" Collapsed="true">
+    <Position X="13.5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAgAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CollectorRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.ScriptRepository" Collapsed="true">
+    <Position X="13.5" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAEEAAAAAABgAAAAAAAAAAEAAAAgAAA=</HashCode>
+      <FileName>ScriptRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.WageTypeRepository" Collapsed="true">
+    <Position X="20.25" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAgAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>WageTypeRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.CaseAuditRepository" Collapsed="true">
+    <Position X="6.5" Y="9" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CaseAuditRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.ScriptAuditRepository" Collapsed="true">
+    <Position X="6.5" Y="10" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>ScriptAuditRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PayrollEngine.Persistence.Sql.ScriptTrackChildDomainSqlRepository&lt;TDomain, TAudit&gt;" Collapsed="true">
+    <Position X="20" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAACAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAoAAAAA=</HashCode>
+      <FileName>ScriptTrackChildDomainSqlRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

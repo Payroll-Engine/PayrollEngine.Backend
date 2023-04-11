@@ -1,0 +1,3999 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PayrollEngine.Api.Model</name>
+    </assembly>
+    <members>
+        <member name="T:PayrollEngine.Api.Model.ActionInfo">
+            <summary>
+            Action info
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.Name">
+            <summary>
+            The action name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.FunctionType">
+            <summary>The extension function type</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.Namespace">
+            <summary>The action namespace</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.Description">
+            <summary>The action description</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.Categories">
+            <summary>The action categories</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.Source">
+            <summary>Action source </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.Parameters">
+            <summary>The action parameters</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionInfo.Issues">
+            <summary>The action issues</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ActionIssueInfo">
+            <summary>
+            Action issue info
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionIssueInfo.Name">
+            <summary>
+            The action name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionIssueInfo.Message">
+            <summary>The action issue message</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionIssueInfo.ParameterCount">
+            <summary>The action issue description</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ActionParameterInfo">
+            <summary>
+            Action parameter info
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionParameterInfo.Name">
+            <summary>The action parameter name</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionParameterInfo.Description">
+            <summary>The action parameter description</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionParameterInfo.ValueTypes">
+            <summary>The action parameter types</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionParameterInfo.ValueSources">
+            <summary>The action parameter source types</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ActionParameterInfo.ValueReferences">
+            <summary>The action parameter reference types</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ApiObjectBase">
+            <summary>
+            The base API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ApiObjectBase.Id">
+            <summary>
+            The unique object id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ApiObjectBase.Status">
+            <summary>
+            The status of the object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ApiObjectBase.Created">
+            <summary>
+            The date which the API object was created (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ApiObjectBase.Updated">
+            <summary>
+            The date which the API object was last updated (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ApiObjectBase.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Case">
+            <summary>
+            The regulation case API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.CaseType">
+            <summary>
+            The type of he case (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.Name">
+            <summary>
+            The case name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.NameLocalizations">
+            <summary>
+            The localized case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.NameSynonyms">
+            <summary>
+            Synonyms for the case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.Description">
+            <summary>
+            The case description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.DescriptionLocalizations">
+            <summary>
+            The localized case descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.DefaultReason">
+            <summary>
+            The default case change reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.DefaultReasonLocalizations">
+            <summary>
+            The localized default case change reasons
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.BaseCase">
+            <summary>
+            The base case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.BaseCaseFields">
+            <summary>
+            The base case fields
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.CancellationType">
+            <summary>
+            The cancellation type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.AvailableExpression">
+            <summary>
+            The expression used to build a case
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.BuildExpression">
+            <summary>
+            The expression used to build a case
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.ValidateExpression">
+            <summary>
+            The case validate expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.Lookups">
+            <summary>
+            The case lookups
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.Slots">
+            <summary>
+            The case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.AvailableActions">
+            <summary>
+            The case available actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.BuildActions">
+            <summary>
+            The case build actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.ValidateActions">
+            <summary>
+            The case validate actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Case.Clusters">
+            <summary>
+            The case clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Case.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseAudit">
+            <summary>
+            The regulation case audit API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.CaseId">
+            <summary>
+            The case id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.CaseType">
+            <summary>
+            The type of he case (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.Name">
+            <summary>
+            The case name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.NameLocalizations">
+            <summary>
+            The localized case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.Description">
+            <summary>
+            The case description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.DescriptionLocalizations">
+            <summary>
+            The localized case descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.CancellationType">
+            <summary>
+            The cancellation type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.BaseCase">
+            <summary>
+            The base case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.BaseCaseFields">
+            <summary>
+            The base case fields
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.AvailableExpression">
+            <summary>
+            The expression used to build a case
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.BuildExpression">
+            <summary>
+            The expression used to build a case
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.ValidateExpression">
+            <summary>
+            The case validate expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.Lookups">
+            <summary>
+            The lookups
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.Slots">
+            <summary>
+            The case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.BuildActions">
+            <summary>
+            The case build actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.ValidateActions">
+            <summary>
+            The case validate actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseAudit.Clusters">
+            <summary>
+            The case clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseChange">
+            <summary>
+            Case change with multiple case values of one case type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.UserId">
+            <summary>
+            The change user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.EmployeeId">
+            <summary>
+            The employee id, mandatory for employee case changes (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.DivisionId">
+            <summary>
+            The division id (immutable)
+            If present, this values overrides all case value divisions  <see cref="P:PayrollEngine.Api.Model.CaseValue.DivisionId"/>
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.CancellationType">
+            <summary>
+            The cancellation type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.CancellationId">
+            <summary>
+            The cancellation case id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.CancellationDate">
+            <summary>
+            The cancellation date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.Reason">
+            <summary>
+            The change reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.ValidationCaseName">
+            <summary>
+            The validation case name, triggers the case validation (optional)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.Forecast">
+            <summary>
+            The forecast name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.Values">
+            <summary>
+            The case values
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseChangeCaseValue">
+            <summary>A case value from a case change used in national, company and employee case</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.CaseChangeId">
+            <summary>
+            The case change id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.CaseChangeCreated">
+            <summary>
+            The case change creation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.UserId">
+            <summary>
+            The change user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.UserIdentifier">
+            <summary>
+            The user unique identifier
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.Reason">
+            <summary>
+            The change reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.ValidationCaseName">
+            <summary>
+            The validation case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.CancellationType">
+            <summary>
+            The cancellation type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.CancellationId">
+            <summary>
+            The canceled case change id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeCaseValue.Documents">
+            <summary>
+            The document count
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseChangeSetup">
+            <summary>
+            Case change setup
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.UserId">
+            <summary>
+            The change user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.EmployeeId">
+            <summary>
+            The employee id, mandatory for employee case changes (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.DivisionId">
+            <summary>
+            The division id (immutable)
+            If present, this values overrides all case value divisions  <see cref="P:PayrollEngine.Api.Model.CaseValue.DivisionId"/>
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.CancellationId">
+            <summary>
+            The case to cancel, root case name specifies the target case
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.Forecast">
+            <summary>
+            The forecast name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.Created">
+            <summary>
+            Case change created date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.Reason">
+            <summary>
+            The change reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.Case">
+            <summary>
+            The setup root case
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChangeSetup.Issues">
+            <summary>
+            The case validation issues
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseDocument">
+            <summary>
+            The case document API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseDocument.Name">
+            <summary>
+            The document name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseDocument.Content">
+            <summary>
+            The document content
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseDocument.ContentType">
+            <summary>
+            The document content type
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseDocument.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseField">
+            <summary>
+            The regulation case field API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Name">
+            <summary>
+            The case field name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.NameLocalizations">
+            <summary>
+            The localized case field names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Description">
+            <summary>
+            The case field description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.DescriptionLocalizations">
+            <summary>
+            The localized case field descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.ValueType">
+            <summary>
+            The value type of the case field
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.ValueScope">
+            <summary>
+            The value scope
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.TimeType">
+            <summary>
+            The date period type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.TimeUnit">
+            <summary>
+            The date unit type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.CancellationMode">
+            <summary>
+            The cancellation mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.ValueCreationMode">
+            <summary>
+            The case value creation mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Optional">
+            <summary>
+            Optional case field
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Order">
+            <summary>
+            The case field order
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.StartDateType">
+            <summary>
+            The start date type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.EndDateType">
+            <summary>
+            The end date type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.EndMandatory">
+            <summary>
+            The end date mandatory state
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.DefaultStart">
+            <summary>
+            The default start value of the case field (date or expression)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.DefaultEnd">
+            <summary>
+            The default end value of the case field (date or expression)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.DefaultValue">
+            <summary>
+            The default value of the case field (JSON format)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Tags">
+            <summary>
+            The case field tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.LookupSettings">
+            <summary>
+            The lookup settings
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Clusters">
+            <summary>
+            The case field clusters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.BuildActions">
+            <summary>
+            The case field build actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.ValidateActions">
+            <summary>
+            The case field validate actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.ValueAttributes">
+            <summary>
+            Custom value attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseField.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseFieldAudit">
+            <summary>
+            The regulation case field audit API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.CaseFieldId">
+            <summary>
+            The case field id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Name">
+            <summary>
+            The case field name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.NameLocalizations">
+            <summary>
+            The localized case field names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Description">
+            <summary>
+            The case field description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.DescriptionLocalizations">
+            <summary>
+            The localized case field descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.ValueType">
+            <summary>
+            The value type of the case field
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.ValueScope">
+            <summary>
+            The value scope
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.TimeType">
+            <summary>
+            The case field time type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.TimeUnit">
+            <summary>
+            The date unit type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.CancellationMode">
+            <summary>
+            The cancellation mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Optional">
+            <summary>
+            Optional case field
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Order">
+            <summary>
+            The case field order
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.StartDateType">
+            <summary>
+            The start date type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.EndDateType">
+            <summary>
+            The end date type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.EndMandatory">
+            <summary>
+            The end date mandatory state
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.DefaultStart">
+            <summary>
+            The default start value of the case field (date or expression)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.DefaultEnd">
+            <summary>
+            The default end value of the case field (date or expression)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.DefaultValue">
+            <summary>
+            The default value of the case field (JSON format)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Tags">
+            <summary>
+            The case field tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.LookupSettings">
+            <summary>
+            The lookup settings
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Clusters">
+            <summary>
+            The case field clusters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.BuildActions">
+            <summary>
+            The case field build actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.ValidateActions">
+            <summary>
+            The case field validate actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.ValueAttributes">
+            <summary>
+            Custom value attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseFieldAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseFieldReference">
+            <summary>
+            Case field reference
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldReference.Name">
+            <summary>
+            The case field name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldReference.Order">
+            <summary>
+            The case field order
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseFieldSet">
+            <summary>
+            The case field including the slot and values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldSet.DisplayName">
+            <summary>
+            The case field display name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldSet.CaseSlot">
+            <summary>
+            The case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldSet.CaseSlotLocalizations">
+            <summary>
+            The localized case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldSet.Value">
+            <summary>
+            The case value (JSON format)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldSet.Start">
+            <summary>
+            The starting date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldSet.End">
+            <summary>
+            The ending date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldSet.CancellationDate">
+            <summary>
+            Cancellation date
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseFieldSet.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseFieldValue">
+            <summary>
+            Case field value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.CaseFieldName">
+            <summary>
+            The case field name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.CaseFieldNameLocalizations">
+            <summary>
+            The localized case field names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.Created">
+            <summary>
+            The created date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.Start">
+            <summary>
+            The period start date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.End">
+            <summary>
+            The period end date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.ValueType">
+            <summary>
+            The case value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.Value">
+            <summary>
+            The case period value as JSON
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.CancellationDate">
+            <summary>
+            Cancellation date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.Tags">
+            <summary>
+            The case value tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldValue.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseRelation">
+            <summary>
+            The regulation case relation API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.SourceCaseName">
+            <summary>
+            The relation source case name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.SourceCaseNameLocalizations">
+            <summary>
+            The localized source case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.SourceCaseSlot">
+            <summary>
+            The relation source case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.SourceCaseSlotLocalizations">
+            <summary>
+            The localized source case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.TargetCaseName">
+            <summary>
+            The relation target case name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.TargetCaseNameLocalizations">
+            <summary>
+            The localized target case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.TargetCaseSlot">
+            <summary>
+            The relation target case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.TargetCaseSlotLocalizations">
+            <summary>
+            The localized target case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.BuildExpression">
+            <summary>
+            The expression used to build the case relation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.ValidateExpression">
+            <summary>
+            The expression which evaluates if the case relation is valid
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.Order">
+            <summary>
+            The case relation order
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.BuildActions">
+            <summary>
+            The case relation build actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.ValidateActions">
+            <summary>
+            The case relation validate actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelation.Clusters">
+            <summary>
+            The case relation clusters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseRelationAudit">
+            <summary>
+            The API object of the regulation case relation audit (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.CaseRelationId">
+            <summary>
+            The case relation id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.SourceCaseName">
+            <summary>
+            The relation source case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.SourceCaseNameLocalizations">
+            <summary>
+            The localized source case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.SourceCaseSlot">
+            <summary>
+            The relation source case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.SourceCaseSlotLocalizations">
+            <summary>
+            The localized source case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.TargetCaseName">
+            <summary>
+            The relation target case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.TargetCaseNameLocalizations">
+            <summary>
+            The localized target case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.TargetCaseSlot">
+            <summary>
+            The relation target case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.TargetCaseSlotLocalizations">
+            <summary>
+            The localized target case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.BuildExpression">
+            <summary>
+            The expression used to build the case relation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.ValidateExpression">
+            <summary>
+            The expression which evaluates if the case relation is valid
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.Order">
+            <summary>
+            The case relation order
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.BuildActions">
+            <summary>
+            The case relation build actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.ValidateActions">
+            <summary>
+            The case relation validate actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationAudit.Clusters">
+            <summary>
+            The case relation clusters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseRelationReference">
+            <summary>
+            Case relation reference
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationReference.SourceCaseName">
+            <summary>
+            The relation source case name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationReference.SourceCaseSlot">
+            <summary>
+            The relation source case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationReference.TargetCaseName">
+            <summary>
+            The relation target case name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseRelationReference.TargetCaseSlot">
+            <summary>
+            The relation target case slot
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseSet">
+            <summary>
+            The payroll case object, including case fields and related cases
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.DisplayName">
+            <summary>
+            The case display name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.CaseSlot">
+            <summary>
+            The case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.CaseSlotLocalizations">
+            <summary>
+            The localized case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.CancellationDate">
+            <summary>
+            Cancellation date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.Fields">
+            <summary>
+            Derived case fields
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.RelatedCases">
+            <summary>
+            Related cases
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseSet.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseSetup">
+            <summary>
+            Case setup
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSetup.CaseName">
+            <summary>
+            The case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSetup.CaseSlot">
+            <summary>
+            The case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSetup.Values">
+            <summary>
+            The case value setups
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSetup.RelatedCases">
+            <summary>
+            The related cases
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseSlot">
+            <summary>
+            Case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSlot.Name">
+            <summary>
+            The case slot name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSlot.NameLocalizations">
+            <summary>
+            The localized case slot names
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseValidationIssue">
+            <summary>
+            Represents an issue from the case validation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.IssueType">
+            <summary>
+            The validation issue type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.Number">
+            <summary>
+            The issue number (negative issue type)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.CaseName">
+            <summary>
+            Gets the name of the case
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.CaseNameLocalizations">
+            <summary>
+            The localized case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.CaseSlot">
+            <summary>
+            The case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.CaseSlotLocalizations">
+            <summary>
+            The localized case slot names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.CaseFieldName">
+            <summary>
+            Gets the name of the case field
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.CaseFieldNameLocalizations">
+            <summary>
+            The localized case field names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.SourceCaseName">
+            <summary>
+            The relation source case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.SourceCaseNameLocalizations">
+            <summary>
+            The localized source case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.SourceCaseSlot">
+            <summary>
+            The relation source case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.SourceCaseSlotLocalizations">
+            <summary>
+            The localized source case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.TargetCaseName">
+            <summary>
+            The relation target case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.TargetCaseNameLocalizations">
+            <summary>
+            The localized target case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.TargetCaseSlot">
+            <summary>
+            The relation target case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.TargetCaseSlotLocalizations">
+            <summary>
+            The localized target case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValidationIssue.Message">
+            <summary>
+            Gets the validation message
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseValidationIssue.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseValue">
+            <summary>
+            The payroll case value API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.DivisionId">
+            <summary>
+            The division id (immutable)
+            Mandatory for case values with local value scope <see cref="P:PayrollEngine.Api.Model.CaseField.ValueScope"/>
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.EmployeeId">
+            <summary>
+            The employee id, mandatory for employee case changes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CaseName">
+            <summary>
+            The associated case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CaseNameLocalizations">
+            <summary>
+            The localized case names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CaseFieldName">
+            <summary>
+            The associated case field name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CaseFieldNameLocalizations">
+            <summary>
+            The localized case field names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CaseSlot">
+            <summary>
+            The case slot
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CaseSlotLocalizations">
+            <summary>
+            The localized case slots
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.ValueType">
+            <summary>
+            The type of the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.Value">
+            <summary>
+            The case value (JSON format)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.NumericValue">
+            <summary>
+            The case numeric value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CaseRelation">
+            <summary>
+            The case relation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.CancellationDate">
+            <summary>
+            Cancellation date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.Start">
+            <summary>
+            The starting date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.End">
+            <summary>
+            The ending date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.Forecast">
+            <summary>
+            The forecast name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.Tags">
+            <summary>
+            The case value tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CaseValue.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CaseValueSetup">
+            <summary>
+            The payroll case value setup API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValueSetup.Documents">
+            <summary>
+            Case documents
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ClusterSet">
+            <summary>
+            Cluster set
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ClusterSet.Name">
+            <summary>
+            The filter name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ClusterSet.IncludeClusters">
+            <summary>
+            The included clusters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ClusterSet.ExcludeClusters">
+            <summary>
+            The excluded clusters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Collector">
+            <summary>
+            The regulation collector API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.CollectType">
+            <summary>
+            The collection type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.Name">
+            <summary>
+            The collector name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.NameLocalizations">
+            <summary>
+            The localized collector names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.ValueType">
+            <summary>
+            The value type, default is value type money
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.CollectorGroups">
+            <summary>
+            Associated collector groups
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.Threshold">
+            <summary>
+            The threshold value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.MinResult">
+            <summary>
+            The minimum allowed value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.MaxResult">
+            <summary>
+            The maximum allowed value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.StartExpression">
+            <summary>
+            Expression used while the collector is started
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.ApplyExpression">
+            <summary>
+            Expression used while applying a value to the collector
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.EndExpression">
+            <summary>
+            Expression used while the collector is ended
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.Clusters">
+            <summary>
+            The collector clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Collector.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CollectorAudit">
+            <summary>
+            The regulation collector audit API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectorId">
+            <summary>
+            The collector id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectType">
+            <summary>
+            The collection type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.Name">
+            <summary>
+            The collector name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.NameLocalizations">
+            <summary>
+            The localized collector names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.ValueType">
+            <summary>
+            The value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectorGroups">
+            <summary>
+            Associated collector groups
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.StartExpression">
+            <summary>
+            Expression used while the collector is started
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.ApplyExpression">
+            <summary>
+            Expression used while applying a value to the collector
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.EndExpression">
+            <summary>
+            Expression used while the collector is ended
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.Threshold">
+            <summary>
+            The threshold value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.MinResult">
+            <summary>
+            The minimum allowed value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.MaxResult">
+            <summary>
+            The maximum allowed value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.Clusters">
+            <summary>
+            The collector clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CollectorAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CollectorCustomResult">
+            <summary>
+            The collector custom result API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.CollectorResultId">
+            <summary>
+            The wage type result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.CollectorName">
+            <summary>
+            The collector name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.CollectorNameLocalizations">
+            <summary>
+            The localized collector names (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.Source">
+            <summary>
+            The value source (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.ValueType">
+            <summary>
+            The value type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.Value">
+            <summary>
+            The collector result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.Start">
+            <summary>
+            The period starting date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.End">
+            <summary>
+            The period ending date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.Tags">
+            <summary>
+            The result tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.Attributes">
+            <summary>
+            The result attributes (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CollectorCustomResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CollectorResult">
+            <summary>
+            The collector result API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.PayrollResultId">
+            <summary>
+            The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectorId">
+            <summary>
+            The collector id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectorName">
+            <summary>
+            The collector name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectorNameLocalizations">
+            <summary>
+            The localized collector names (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectType">
+            <summary>
+            The collection type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.ValueType">
+            <summary>
+            The value type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.Value">
+            <summary>
+            The collector result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.Start">
+            <summary>
+            The starting date for the value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.End">
+            <summary>
+            The ending date for the value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.Tags">
+            <summary>
+            The result tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.Attributes">
+            <summary>
+            The result attributes (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.CollectorResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.CollectorResultSet">
+            <summary>
+            The collector result set API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResultSet.CustomResults">
+            <summary>
+            The collector custom results (immutable)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ConsolidatedPayrollResult">
+            <summary>
+            A consolidated payroll result
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ConsolidatedPayrollResult.WageTypeResults">
+            <summary>
+            The wage type results
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ConsolidatedPayrollResult.CollectorResults">
+            <summary>
+            The collector results
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ConsolidatedPayrollResult.PayrunResults">
+            <summary>
+            The payrun results
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ConsolidatedPayrollResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Division">
+            <summary>
+            The division API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Division.Name">
+            <summary>
+            The division name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Division.NameLocalizations">
+            <summary>
+            The localized division names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Division.Culture">
+            <summary>
+            The culture including the calendar, fallback of employee culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Division.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Division.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Employee">
+            <summary>
+            The employee API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.Identifier">
+            <summary>
+            The employee identifier
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.FirstName">
+            <summary>
+            The first name of the employee
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.LastName">
+            <summary>
+            The last name of the employee
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.Language">
+            <summary>
+            The employees language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.Divisions">
+            <summary>
+            Employee division names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.Culture">
+            <summary>
+            The culture including the calendar, fallback is the division culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Employee.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LocalizationAttribute">
+            <summary>Localization attribute</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LocalizationAttribute.Source">
+            <summary>Property name of the translation source</summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LocalizationAttribute.#ctor(System.String)">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Api.Model.LocalizationAttribute"/> class</summary>
+            <param name="source">The source property name</param>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Log">
+            <summary>
+            The log API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Log.Level">
+            <summary>
+            The log level (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Log.Message">
+            <summary>
+            The log message name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Log.User">
+            <summary>
+            The log user (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Log.Error">
+            <summary>
+            The log error (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Log.Comment">
+            <summary>
+            The log comment (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Log.Owner">
+            <summary>
+            The log owner (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Log.OwnerType">
+            <summary>
+            The log owner type (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Log.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Lookup">
+            <summary>
+            The regulation lookup API object identified by his unique name.
+            The lookup contains one or more columns and the ValueColumn indicates
+            the column with the resulting value. ValueType specifies the type of the resulting value.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.Name">
+            <summary>
+            The unique lookup name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.NameLocalizations">
+            <summary>
+            The localized lookup names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.Description">
+            <summary>
+            The lookup description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.DescriptionLocalizations">
+            <summary>
+            The localized lookup descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.RangeSize">
+            <summary>
+            The lookup range size
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Lookup.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupAudit">
+            <summary>
+            The regulation lookup audit API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.LookupId">
+            <summary>
+            The lookup id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.Name">
+            <summary>
+            The case field name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.NameLocalizations">
+            <summary>
+            The localized lookup names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.Description">
+            <summary>
+            The lookup description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.DescriptionLocalizations">
+            <summary>
+            The localized lookup descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.RangeSize">
+            <summary>
+            The lookup range size
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupData">
+            <summary>
+            Localized lookup for UI cases like list/grid selections
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupData.Name">
+            <summary>
+            The lookup name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupData.Language">
+            <summary>
+            The language of the values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupData.Values">
+            <summary>
+            The lookup values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupData.RangeSize">
+            <summary>
+            The lookup range size
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupData.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupSet">
+            <summary>
+            Lookup including the lookup value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupSet.Values">
+            <summary>
+            The lookup values
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupSettings">
+            <summary>
+            The lookup settings
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupSettings.LookupName">
+            <summary>
+            The lookup name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupSettings.ValueFieldName">
+            <summary>
+            The lookup value field name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupSettings.TextFieldName">
+            <summary>
+            The lookup text/display field name
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupSettings.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupValue">
+            <summary>
+            Represents a lookup value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValue.Key">
+            <summary>
+            The lookup key, unique within a lookup
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValue.Value">
+            <summary>
+            The lookup value as JSON
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValue.ValueLocalizations">
+            <summary>
+            The localized lookup values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValue.RangeValue">
+            <summary>
+            The lookup range value, unique within a lookup
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupValue.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupValueAudit">
+            <summary>
+            The lookup value audit API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueAudit.LookupValueId">
+            <summary>
+            The lookup value id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueAudit.Key">
+            <summary>
+            The lookup key
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueAudit.Value">
+            <summary>
+            The lookup value as JSON
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueAudit.ValueLocalizations">
+            <summary>
+            The localized lookup values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueAudit.RangeValue">
+            <summary>
+            The lookup range value
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupValueAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupValueData">
+            <summary>
+            Lookup value date in a specific language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueData.Key">
+            <summary>
+            The lookup key
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueData.Value">
+            <summary>
+            The lookup value as JSON
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValueData.RangeValue">
+            <summary>
+            The lookup range value
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupValueData.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Payroll">
+            <summary>
+            The payroll API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.Name">
+            <summary>
+            The payroll name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.NameLocalizations">
+            <summary>
+            The localized payroll names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.Description">
+            <summary>
+            The payroll description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.DescriptionLocalizations">
+            <summary>
+            The localized payroll descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.DivisionId">
+            <summary>
+            The division id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.CalendarCalculationMode">
+            <summary>
+            The calendar calculation mode (default: tenant value)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.Country">
+            <summary>
+            The ISO 3166-1 country code, 0 for undefined
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCase">
+            <summary>
+            The case cluster set (undefined: all)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCaseField">
+            <summary>
+            The case field cluster set (undefined: all)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCollector">
+            <summary>
+            The collector cluster set (undefined: all)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCollectorRetro">
+            <summary>
+            The collector cluster set for retro payrun jobs (undefined: all)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetWageType">
+            <summary>
+            The wage type cluster set (undefined: all)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetWageTypeRetro">
+            <summary>
+            The wage type cluster set for retro payrun jobs (undefined: all)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCaseValue">
+            <summary>
+            The case value cluster set (undefined: none, *: all)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetWageTypePeriod">
+            <summary>
+            The wage type period result cluster set (undefined: none)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSets">
+            <summary>
+            Cluster sets
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payroll.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Payroll.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrollLayer">
+            <summary>
+            The payroll layer API object.
+            Payroll layer evaluated order in payrolls:
+            1. From th highest level to the lowest level
+            2. Within a level: from th highest priority to the lowest priority
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollLayer.Level">
+            <summary>
+            The layer level, used as primary sorting key (descending)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollLayer.Priority">
+            <summary>
+            The layer priority, used as secondary sorting key (descending)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollLayer.RegulationName">
+            <summary>
+            The regulation name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollLayer.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.PayrollLayer.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrollResult">
+            <summary>
+            The payroll result info API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.PayrollId">
+            <summary>
+            The payroll id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.PayrunId">
+            <summary>
+            The payrun id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.PayrunJobId">
+            <summary>
+            The payrun job id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.EmployeeId">
+            <summary>
+            The employee id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.DivisionId">
+            <summary>
+            The division id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.CycleName">
+            <summary>
+            The cycle name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.CycleStart">
+            <summary>
+            The cycle start date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.CycleEnd">
+            <summary>
+            The cycle end date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.PeriodName">
+            <summary>
+            The period name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.PeriodStart">
+            <summary>
+            The period start date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResult.PeriodEnd">
+            <summary>
+            The period end date (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.PayrollResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrollResultSet">
+            <summary>
+            The payroll result set API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultSet.WageTypeResults">
+            <summary>
+            The wage type results
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultSet.CollectorResults">
+            <summary>
+            The collector results
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultSet.PayrunResults">
+            <summary>
+            The payrun results
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.PayrollResultSet.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrollResultValue">
+            <summary>
+            Payroll result value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PayrollResultId">
+            <summary>
+            The payroll result id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.Created">
+            <summary>
+            The result creation date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultKind">
+            <summary>
+            The result kind: wage type or collector
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultId">
+            <summary>
+            The result id (e.g. the collector id)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultParentId">
+            <summary>
+            The result parent id (e.g. wage typo on custom wage type)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultNumber">
+            <summary>
+            The result number (e.g. wage type number)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.KindName">
+            <summary>
+            The kind name, wage type number or collect type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultStart">
+            <summary>
+            The result start date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultEnd">
+            <summary>
+            The result end date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultType">
+            <summary>
+            The result type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultTags">
+            <summary>
+            The result tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultValue">
+            <summary>
+            The result value (JSON)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultNumericValue">
+            <summary>
+            The result numeric value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.Attributes">
+            <summary>
+            The result attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.JobId">
+            <summary>
+            The payrun job id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.JobName">
+            <summary>
+            The payrun job name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.JobReason">
+            <summary>
+            The payrun job reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.JobStatus">
+            <summary>
+            The payrun job status
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.Forecast">
+            <summary>
+            The forecast name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.CycleName">
+            <summary>
+            The cycle name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PeriodName">
+            <summary>
+            The period name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PeriodStart">
+            <summary>
+            The period start date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PeriodEnd">
+            <summary>
+            The period end date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PayrunId">
+            <summary>
+            The payrun id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PayrunName">
+            <summary>
+            The payrun name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PayrollId">
+            <summary>
+            The payroll id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.PayrollName">
+            <summary>
+            The payroll name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.DivisionId">
+            <summary>
+            The division id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.DivisionName">
+            <summary>
+            The division name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.Culture">
+            <summary>
+            The division culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.UserId">
+            <summary>
+            The user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.UserIdentifier">
+            <summary>
+            The user identifier
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.EmployeeId">
+            <summary>
+            The employee id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.EmployeeIdentifier">
+            <summary>
+            The employee identifier
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Payrun">
+            <summary>
+            The payrun API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.PayrollId">
+            <summary>
+            The payroll id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.Name">
+            <summary>
+            The payrun name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.DefaultReason">
+            <summary>
+            The default payrun reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.DefaultReasonLocalizations">
+            <summary>
+            The localized default payrun reasons
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.StartExpression">
+            <summary>
+            The payrun start expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.EmployeeAvailableExpression">
+            <summary>
+            The employee available expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.EmployeeStartExpression">
+            <summary>
+            The expression evaluates the employee start
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.EmployeeEndExpression">
+            <summary>
+            The expression evaluates the employee end
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.WageTypeAvailableExpression">
+            <summary>
+            The wage type available expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.EndExpression">
+            <summary>
+            The payrun end expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.RetroTimeType">
+            <summary>
+            The payrun retro time type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.Calendar">
+            <summary>
+            The calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Payrun.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrunJob">
+            <summary>
+            The payrun job API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Name">
+            <summary>
+            The payrun job name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Owner">
+            <summary>
+            The job owner (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.PayrunId">
+            <summary>
+            The payrun id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.PayrollId">
+            <summary>
+            The payroll id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.DivisionId">
+            <summary>
+            The division id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.UserId">
+            <summary>
+            The user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.ParentJobId">
+            <summary>
+            The parent payrun job id, e.g. the parent retro pay run job (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.RetroPayMode">
+            <summary>
+            The payrun retro pay mode (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.JobStatus">
+            <summary>
+            The payrun job status (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.JobResult">
+            <summary>
+            The payrun job result
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Tags">
+            <summary>
+            The job tags (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Forecast">
+            <summary>
+            The forecast name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Culture">
+            <summary>
+            The culture including the calendar (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.CycleName">
+            <summary>
+            The cycle name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.CycleStart">
+            <summary>
+            The cycle start date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.CycleEnd">
+            <summary>
+            The cycle end date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.PeriodName">
+            <summary>
+            The period name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.PeriodStart">
+            <summary>
+            The period start date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.PeriodEnd">
+            <summary>
+            The period end date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.EvaluationDate">
+            <summary>
+            The evaluation date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Reason">
+            <summary>
+            The execution reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.TotalEmployeeCount">
+            <summary>
+            Total employee count (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.ProcessedEmployeeCount">
+            <summary>
+            Processed employee count (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.JobStart">
+            <summary>
+            The job start date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.JobEnd">
+            <summary>
+            The job end date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Message">
+            <summary>
+            The job message (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.ErrorMessage">
+            <summary>
+            The job error message (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Employees">
+            <summary>
+            The payrun employees
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrunJobEmployee">
+            <summary>
+            The payrun job employee API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobEmployee.EmployeeId">
+            <summary>
+            The employee id (immutable)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrunJobInvocation">
+            <summary>
+            The payrun job invocation API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrunId">
+            <summary>
+            The payrun id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrollId">
+            <summary>
+            The payroll id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.UserId">
+            <summary>
+            The user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrunJobId">
+            <summary>
+            The payrun job id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.ParentJobId">
+            <summary>
+            The parent payrun job id, e.g. the parent retro pay run job (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Name">
+            <summary>
+            The job name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Owner">
+            <summary>
+            The job owner (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.RetroJobs">
+            <summary>
+            The retro payrun jobs, requires the ParentJobId (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Tags">
+            <summary>
+            The job tags (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Forecast">
+            <summary>
+            The forecast name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.ExecutionMode">
+            <summary>
+            The payrun job execution mode (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.RetroPayMode">
+            <summary>
+            The payrun retro pay mode (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.JobResult">
+            <summary>
+            The payrun job result
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PeriodStart">
+            <summary>
+            The period start date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.EvaluationDate">
+            <summary>
+            The evaluation date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Reason">
+            <summary>
+            The execution reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.LogLevel">
+            <summary>
+            The function log level, default is information
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.EmployeeIdentifiers">
+            <summary>
+            The payrun employee identifiers
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Attributes">
+            <summary>
+            Payrun job attributes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrunParameter">
+            <summary>
+            The payrun parameter API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.Name">
+            <summary>
+            The payrun parameter name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.NameLocalizations">
+            <summary>
+            The localized wage type names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.Description">
+            <summary>
+            The payrun parameter description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.DescriptionLocalizations">
+            <summary>
+            The localized payrun parameter descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.Mandatory">
+            <summary>
+            The parameter mandatory state
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.Value">
+            <summary>
+            The parameter value (JSON)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.ValueType">
+            <summary>
+            The parameter value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunParameter.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.PayrunParameter.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrunResult">
+            <summary>
+            The payrun result API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.PayrollResultId">
+            <summary>
+            The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Source">
+            <summary>
+            The result source (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Name">
+            <summary>
+            The result name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.NameLocalizations">
+            <summary>
+            The localized result names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Slot">
+            <summary>
+            The result slot (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.ValueType">
+            <summary>
+            The value type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Value">
+            <summary>
+            The result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.NumericValue">
+            <summary>
+            The numeric result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Start">
+            <summary>
+            The period starting date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.End">
+            <summary>
+            The period ending date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Tags">
+            <summary>
+            The result tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Attributes">
+            <summary>
+            The result attributes (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.PayrunResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Regulation">
+            <summary>
+            The payroll regulation API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.Name">
+            <summary>
+            The regulation name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.NameLocalizations">
+            <summary>
+            The localized regulation names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.Version">
+            <summary>
+            The regulation version, unique per regulation name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.SharedRegulation">
+            <summary>
+            Shared regulation (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.ValidFrom">
+            <summary>
+            The date the regulation to be in force, anytime if undefined
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.Owner">
+            <summary>
+            The regulation owner
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.Description">
+            <summary>
+            The regulation description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.DescriptionLocalizations">
+            <summary>
+            The localized regulation descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.BaseRegulations">
+            <summary>
+            Required base regulations
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Regulation.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.RegulationPermission">
+            <summary>
+            The regulation permission API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.RegulationPermission.TenantId">
+            <summary>The tenant id</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.RegulationPermission.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.RegulationPermission.PermissionTenantId">
+            <summary>The permission tenant id</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.RegulationPermission.PermissionDivisionId">
+            <summary>The permission division id</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.RegulationPermission.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.RegulationPermission.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Report">
+            <summary>
+            The report API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.Name">
+            <summary>
+            The payroll result report name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.NameLocalizations">
+            <summary>
+            The localized payroll result report names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.Description">
+            <summary>
+            The payroll result report description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.DescriptionLocalizations">
+            <summary>
+            The localized payroll result report descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.Category">
+            <summary>
+            The report category
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.AttributeMode">
+            <summary>
+            The report attribute mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.Queries">
+            <summary>
+            The report queries, key is the query name and value the api operation name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.Relations">
+            <summary>
+            The report data relations, based on the queries
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.BuildExpression">
+            <summary>
+            The report build expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.StartExpression">
+            <summary>
+            The report start expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.EndExpression">
+            <summary>
+            The report end expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.Clusters">
+            <summary>
+            The wage type clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Report.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportAudit">
+            <summary>
+            The report audit API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.ReportId">
+            <summary>
+            The report id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.Name">
+            <summary>
+            The payroll result report name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.NameLocalizations">
+            <summary>
+            The localized payroll result report names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.Description">
+            <summary>
+            The payroll result report description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.DescriptionLocalizations">
+            <summary>
+            The localized payroll result report descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.Category">
+            <summary>
+            The report category
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.AttributeMode">
+            <summary>
+            The report attribute mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.Queries">
+            <summary>
+            The report queries, key is the query name and value the api operation name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.Relations">
+            <summary>
+            The report data relations, based on the queries
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.BuildExpression">
+            <summary>
+            The report build expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.StartExpression">
+            <summary>
+            The report start expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.EndExpression">
+            <summary>
+            The report end expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.Clusters">
+            <summary>
+            The wage type clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ReportAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportLog">
+            <summary>
+            A payroll report log
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportLog.ReportName">
+            <summary>
+            The report name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportLog.ReportDate">
+            <summary>
+            The report date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportLog.Key">
+            <summary>
+            The report log key (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportLog.User">
+            <summary>
+            The report user (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportLog.Message">
+            <summary>
+            The report message (immutable)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportParameter">
+            <summary>
+            The report parameter API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.Name">
+            <summary>
+            The report parameter name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.NameLocalizations">
+            <summary>
+            The localized wage type names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.Description">
+            <summary>
+            The report parameter description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.DescriptionLocalizations">
+            <summary>
+            The localized report parameter descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.Mandatory">
+            <summary>
+            The parameter mandatory state
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.Value">
+            <summary>
+            The parameter value (JSON)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.ValueType">
+            <summary>
+            The parameter value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.ParameterType">
+            <summary>
+            The parameter value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ReportParameter.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportParameterAudit">
+            <summary>
+            The report parameter audit API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.ReportParameterId">
+            <summary>
+            The report parameter id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Name">
+            <summary>
+            The report parameter name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.NameLocalizations">
+            <summary>
+            The localized wage type names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Description">
+            <summary>
+            The report parameter description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.DescriptionLocalizations">
+            <summary>
+            The localized report parameter descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Mandatory">
+            <summary>
+            The parameter mandatory state
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Value">
+            <summary>
+            The parameter value (JSON)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.ValueType">
+            <summary>
+            The parameter value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.ParameterType">
+            <summary>
+            The parameter value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ReportParameterAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportRequest">
+            <summary>
+            The report request API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportRequest.Language">
+            <summary>
+            The report language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportRequest.UserId">
+            <summary>
+            The report user
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportRequest.Parameters">
+            <summary>
+            The report parameters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportResponse">
+            <summary>
+            The report response API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.Parameters">
+            <summary>
+            The report parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.Queries">
+            <summary>
+            The report queries, key is the query name and value the api operation name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.Relations">
+            <summary>
+            The report data relations, based on the queries
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.ReportName">
+            <summary>
+            The report name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.Language">
+            <summary>
+            The report language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.User">
+            <summary>
+            The report user identifier
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.Result">
+            <summary>
+            The report result data, a serialized data set
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportSet">
+            <summary>
+            The report set API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportSet.RegulationId">
+            <summary>
+            The regulation id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportSet.Parameters">
+            <summary>
+            The report parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportSet.Templates">
+            <summary>
+            The report templates
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportTemplate">
+            <summary>
+            The report template API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Language">
+            <summary>
+            The report language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Content">
+            <summary>
+            The report content (client owned)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.ContentType">
+            <summary>
+            The report content type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Schema">
+            <summary>
+            The report schema (client owned)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Resource">
+            <summary>
+            The report external resource
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ReportTemplate.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ReportTemplateAudit">
+            <summary>
+            The report template audit API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.ReportTemplateId">
+            <summary>
+            The report parameter id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Language">
+            <summary>
+            The report language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Content">
+            <summary>
+            The report content
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.ContentType">
+            <summary>
+            The report content type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Schema">
+            <summary>
+            The report schema
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Resource">
+            <summary>
+            The report external resource
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ReportTemplateAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.RetroPayrunJob">
+            <summary>
+            The retro payrun job API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.RetroPayrunJob.ScheduleDate">
+            <summary>
+            The schedule date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.RetroPayrunJob.ResultTags">
+            <summary>
+            The result tags
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.RetroPayrunJob.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Script">
+            <summary>
+            The regulation script API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Script.Name">
+            <summary>
+            The script name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Script.FunctionTypes">
+            <summary>
+            The scripting function types as bitmask
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Script.Value">
+            <summary>
+            The script script
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Script.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.ScriptAudit">
+            <summary>
+            The regulation script audit API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ScriptAudit.ScriptId">
+            <summary>
+            The script id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ScriptAudit.Name">
+            <summary>
+            The script name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ScriptAudit.FunctionTypes">
+            <summary>
+            The scripting function types as bitmask
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ScriptAudit.Value">
+            <summary>
+            The script script
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.ScriptAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Task">
+            <summary>
+            The task API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.Name">
+            <summary>
+            The task name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.NameLocalizations">
+            <summary>
+            The localized task names (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.Category">
+            <summary>
+            The task category
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.Instruction">
+            <summary>
+            The task instruction
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.ScheduledUserId">
+            <summary>
+            The scheduled user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.Scheduled">
+            <summary>
+            The task schedule date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.CompletedUserId">
+            <summary>
+            The completed user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.Completed">
+            <summary>
+            The task completed date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Task.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Task.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Tenant">
+            <summary>
+            The tenant API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Tenant.Identifier">
+            <summary>
+            The unique identifier of the tenant (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Tenant.Culture">
+            <summary>
+            The culture including the calendar
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Tenant.Calendar">
+            <summary>
+            The default/fallback calendar
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Tenant.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Tenant.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.User">
+            <summary>
+            The payroll user API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.Identifier">
+            <summary>
+            The user unique identifier
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.Password">
+            <summary>
+            The user password
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.FirstName">
+            <summary>
+            The first name of the user
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.LastName">
+            <summary>
+            The last name of the user
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.Culture">
+            <summary>
+            The users culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.Language">
+            <summary>
+            The users language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.User.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.WageType">
+            <summary>
+            The regulation wage type API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.WageTypeNumber">
+            <summary>
+            The wage type number (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.Name">
+            <summary>
+            The wage type name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.NameLocalizations">
+            <summary>
+            The localized wage type names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.Description">
+            <summary>
+            The wage type description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.DescriptionLocalizations">
+            <summary>
+            The localized wage type descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.ValueType">
+            <summary>
+            The value type, default is value type money
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.CalendarCalculationMode">
+            <summary>
+            The calendar calculation mode (default: tenant value)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.Collectors">
+            <summary>
+            Associated collectors
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.CollectorGroups">
+            <summary>
+            Associated collector groups
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.ValueExpression">
+            <summary>
+            Expression: calculates of the wage type value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.ResultExpression">
+            <summary>
+            Expression: calculates of the wage type result attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.Clusters">
+            <summary>
+            The wage type clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.WageType.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.WageTypeAudit">
+            <summary>
+            The regulation wage type audit API object (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.WageTypeId">
+            <summary>
+            The wage type id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.WageTypeNumber">
+            <summary>
+            The wage type number
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Name">
+            <summary>
+            The wage type name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.NameLocalizations">
+            <summary>
+            The localized wage type names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Description">
+            <summary>
+            The wage type description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.DescriptionLocalizations">
+            <summary>
+            The localized wage type descriptions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.CalendarCalculationMode">
+            <summary>
+            The calendar calculation mode (default: tenant value)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Collectors">
+            <summary>
+            Associated collectors
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.CollectorGroups">
+            <summary>
+            Associated collector groups
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.ValueExpression">
+            <summary>
+            Expression: calculates of the wage type value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.ResultExpression">
+            <summary>
+            Expression: calculates of the wage type result attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Clusters">
+            <summary>
+            The wage type clusters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.WageTypeAudit.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.WageTypeCustomResult">
+            <summary>
+            The wage type custom result API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.WageTypeResultId">
+            <summary>
+            The wage type result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.WageTypeNumber">
+            <summary>
+            The wage type number (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.WageTypeName">
+            <summary>
+            The wage type name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.WageTypeNameLocalizations">
+            <summary>
+            The localized wage type names (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.Source">
+            <summary>
+            The value source (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.ValueType">
+            <summary>
+            The value type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.Value">
+            <summary>
+            The wage type custom result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.Start">
+            <summary>
+            The period starting date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.End">
+            <summary>
+            The period ending date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.Tags">
+            <summary>
+            The result tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.Attributes">
+            <summary>
+            The result attributes (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.WageTypeCustomResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.WageTypeResult">
+            <summary>
+            The wage type result API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.PayrollResultId">
+            <summary>
+            The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.WageTypeId">
+            <summary>
+            The wage type id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.WageTypeNumber">
+            <summary>
+            The wage type number (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.WageTypeName">
+            <summary>
+            The wage type name (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.WageTypeNameLocalizations">
+            <summary>
+            The localized wage type names (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.ValueType">
+            <summary>
+            The value type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.Value">
+            <summary>
+            The wage type result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.Start">
+            <summary>
+            The starting date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.End">
+            <summary>
+            The ending date for the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.Tags">
+            <summary>
+            The result tags
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.Attributes">
+            <summary>
+            The result attributes (immutable)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.WageTypeResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.WageTypeResultSet">
+            <summary>
+            The wage type result set API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResultSet.CustomResults">
+            <summary>
+            The wage type custom results (immutable)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.Webhook">
+            <summary>
+            The Webhook API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Webhook.Name">
+            <summary>
+            The payroll name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Webhook.ReceiverAddress">
+            <summary>
+            The webhook receiver address
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Webhook.Action">
+            <summary>
+            The web hook trigger action
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Webhook.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Webhook.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.WebhookMessage">
+            <summary>
+            The Webhook message API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.ActionName">
+            <summary>
+            The webhook action name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.ReceiverAddress">
+            <summary>
+            The webhook receiver address
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.RequestDate">
+            <summary>
+            The request date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.RequestMessage">
+            <summary>
+            The request message
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.RequestOperation">
+            <summary>
+            The request operation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.ResponseDate">
+            <summary>
+            The response date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.ResponseStatus">
+            <summary>
+            The response HTTP status code
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookMessage.ResponseMessage">
+            <summary>
+            The response message
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.WebhookMessage.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.WebhookRuntimeMessage">
+            <summary>
+            The Webhook runtime message API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookRuntimeMessage.Tenant">
+            <summary>
+            The tenant identifier
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WebhookRuntimeMessage.User">
+            <summary>
+            The user identifier
+            </summary>
+        </member>
+    </members>
+</doc>

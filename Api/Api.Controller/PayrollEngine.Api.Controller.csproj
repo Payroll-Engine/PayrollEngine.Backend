@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>PayrollEngine.Api.Controller</AssemblyName>
+    <RootNamespace>PayrollEngine.Api.Controller</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Api.Map\PayrollEngine.Api.Map.csproj" />
+  </ItemGroup>
+
+</Project>

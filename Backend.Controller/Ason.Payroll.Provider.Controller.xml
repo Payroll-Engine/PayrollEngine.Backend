@@ -1,0 +1,413 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PayrollEngine.Provider.Controller</name>
+    </assembly>
+    <members>
+        <member name="T:PayrollEngine.Provider.Controller.CaseAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CaseAuditController.#ctor(PayrollEngine.Application.Service.ICaseService,PayrollEngine.Application.Service.ICaseAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CaseController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CaseController.#ctor(PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ICaseService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CaseFieldAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CaseFieldAuditController.#ctor(PayrollEngine.Application.Service.ICaseFieldService,PayrollEngine.Application.Service.ICaseFieldAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CaseFieldController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CaseFieldController.#ctor(PayrollEngine.Application.Service.ICaseService,PayrollEngine.Application.Service.ICaseFieldService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CaseRelationAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CaseRelationAuditController.#ctor(PayrollEngine.Application.Service.ICaseRelationService,PayrollEngine.Application.Service.ICaseRelationAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CaseRelationController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CaseRelationController.#ctor(PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ICaseService,PayrollEngine.Application.Service.ICaseRelationService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CollectorAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CollectorAuditController.#ctor(PayrollEngine.Application.Service.ICollectorService,PayrollEngine.Application.Service.ICollectorAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CollectorController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CollectorController.#ctor(PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ICollectorService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CompanyCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CompanyCaseChangeController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.ICompanyCaseChangeService,PayrollEngine.Application.Service.ICaseFieldService,PayrollEngine.Application.Service.IDivisionService,PayrollEngine.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CompanyCaseChangeController.DeleteCompanyCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a company case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CompanyCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CompanyCaseDocumentController.#ctor(PayrollEngine.Application.Service.ICompanyCaseValueService,PayrollEngine.Application.Service.ICompanyCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.CompanyCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.CompanyCaseValueController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.ICompanyCaseValueService,PayrollEngine.Application.Service.IPayrollService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.DivisionController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.DivisionController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IDivisionService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.EmployeeCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.EmployeeCaseChangeController.#ctor(PayrollEngine.Application.Service.IEmployeeService,PayrollEngine.Application.Service.IEmployeeCaseChangeService,PayrollEngine.Application.Service.ICaseFieldService,PayrollEngine.Application.Service.IDivisionService,PayrollEngine.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.EmployeeCaseChangeController.DeleteEmployeeCaseChangeAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.EmployeeCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.EmployeeCaseDocumentController.#ctor(PayrollEngine.Application.Service.IEmployeeCaseValueService,PayrollEngine.Application.Service.IEmployeeCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.EmployeeCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.EmployeeCaseValueController.#ctor(PayrollEngine.Application.Service.IEmployeeService,PayrollEngine.Application.Service.IEmployeeCaseValueService,PayrollEngine.Application.Service.IPayrollService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.EmployeeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.EmployeeController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IEmployeeService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.GlobalCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.GlobalCaseChangeController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IGlobalCaseChangeService,PayrollEngine.Application.Service.ICaseFieldService,PayrollEngine.Application.Service.IDivisionService,PayrollEngine.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.GlobalCaseChangeController.DeleteGlobalCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a global case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.GlobalCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.GlobalCaseDocumentController.#ctor(PayrollEngine.Application.Service.IGlobalCaseValueService,PayrollEngine.Application.Service.IGlobalCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.GlobalCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.GlobalCaseValueController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IPayrollService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ICaseService,PayrollEngine.Application.Service.IGlobalCaseValueService,PayrollEngine.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.LogController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.LogController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.ILogService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.LookupAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.LookupAuditController.#ctor(PayrollEngine.Application.Service.ILookupService,PayrollEngine.Application.Service.ILookupAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.LookupController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.LookupController.#ctor(PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ILookupService,PayrollEngine.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.LookupValueAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.LookupValueAuditController.#ctor(PayrollEngine.Application.Service.ILookupValueService,PayrollEngine.Application.Service.ILookupValueAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.LookupValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.LookupValueController.#ctor(PayrollEngine.Application.Service.ILookupService,PayrollEngine.Application.Service.ILookupValueService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.NationalCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.NationalCaseChangeController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.INationalCaseChangeService,PayrollEngine.Application.Service.ICaseFieldService,PayrollEngine.Application.Service.IDivisionService,PayrollEngine.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.NationalCaseChangeController.DeleteNationalCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a national case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.NationalCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.NationalCaseDocumentController.#ctor(PayrollEngine.Application.Service.INationalCaseValueService,PayrollEngine.Application.Service.INationalCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.NationalCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.NationalCaseValueController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IPayrollService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ICaseService,PayrollEngine.Application.Service.INationalCaseValueService,PayrollEngine.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.PayrollConsolidatedResultController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.PayrollConsolidatedResultController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IPayrollConsolidatedResultService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.PayrollController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.PayrollController.#ctor(PayrollEngine.Application.Service.IPayrollContextService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.PayrollLayerController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.PayrollLayerController.#ctor(PayrollEngine.Application.Service.IPayrollService,PayrollEngine.Application.Service.IPayrollLayerService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.PayrollResultController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.PayrollResultController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IPayrollResultService,PayrollEngine.Application.Service.IPayrollService,PayrollEngine.Application.Service.IPayrunService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.PayrunController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.PayrunController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IPayrunService,PayrollEngine.Application.Service.IPayrollService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.PayrunJobController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.PayrunJobController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IPayrunJobService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.PayrunParameterController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.PayrunParameterController.#ctor(PayrollEngine.Application.Service.IPayrunService,PayrollEngine.Application.Service.IPayrunParameterService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.RegulationController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.RegulationController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.ILookupSetService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.ICaseService,PayrollEngine.Application.Service.ICaseFieldService,PayrollEngine.Application.Service.ICaseRelationService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ReportAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ReportAuditController.#ctor(PayrollEngine.Application.Service.IReportService,PayrollEngine.Application.Service.IReportAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ReportController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ReportController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.IReportService,PayrollEngine.Application.Service.IReportSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ReportLogController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ReportLogController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IReportLogService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ReportParameterAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ReportParameterAuditController.#ctor(PayrollEngine.Application.Service.IReportParameterService,PayrollEngine.Application.Service.IReportParameterAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ReportParameterController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ReportParameterController.#ctor(PayrollEngine.Application.Service.IReportService,PayrollEngine.Application.Service.IReportParameterService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ReportTemplateAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ReportTemplateAuditController.#ctor(PayrollEngine.Application.Service.IReportTemplateService,PayrollEngine.Application.Service.IReportTemplateAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ReportTemplateController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ReportTemplateController.#ctor(PayrollEngine.Application.Service.IReportService,PayrollEngine.Application.Service.IReportTemplateService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ScriptAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ScriptAuditController.#ctor(PayrollEngine.Application.Service.IScriptService,PayrollEngine.Application.Service.IScriptAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.ScriptController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.ScriptController.#ctor(PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.IScriptService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.SharedRegulationController">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Provider.Controller.SharedRegulationController.RegulationService">
+            <summary>
+            The regulation service
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Provider.Controller.SharedRegulationController.DivisionService">
+            <summary>
+            The division service
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.SharedRegulationController.#ctor(PayrollEngine.Application.Service.IRegulationPermissionService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.IDivisionService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.SharedRegulationController.QueryRegulationPermissionsAsync(PayrollEngine.Query)">
+            <summary>
+            Query regulation permissions
+            </summary>
+            <param name="query">Query parameters</param>
+            <returns>The regulation permissions matching the query</returns>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.SharedRegulationController.CreateRegulationPermissionAsync(PayrollEngine.Api.Model.RegulationPermission)">
+            <summary>
+            Add a new regulation permission
+            </summary>
+            <param name="permission">The regulation permission to add</param>
+            <returns>The newly created regulation permission</returns>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.SharedRegulationController.DeleteRegulationPermissionAsync(System.Int32)">
+            <summary>
+            Delete a regulation permission
+            </summary>
+            <param name="permissionId">The regulation permission id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.TaskController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.TaskController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.ITaskService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.TenantController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.TenantController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.IRegulationPermissionService,PayrollEngine.Application.Service.IReportService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.TenantController.QueryTenantsAsync(PayrollEngine.Query)">
+            <summary>
+            Query tenants
+            </summary>
+            <param name="query">Query parameters</param>
+            <returns>The tenants matching the query</returns>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.TenantController.CreateTenantAsync(PayrollEngine.Api.Model.Tenant)">
+            <summary>
+            Add a new tenant
+            </summary>
+            <param name="tenant">The tenant to add</param>
+            <returns>The newly created tenant</returns>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.TenantController.UpdateTenantAsync(System.Int32,PayrollEngine.Api.Model.Tenant)">
+            <summary>
+            Update a tenant
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="tenant">The tenant with updated values</param>
+            <returns>The modified tenant</returns>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.TenantController.DeleteTenantAsync(System.Int32)">
+            <summary>
+            Delete a tenant including all tenant data
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.UserController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.UserController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.WageTypeAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.WageTypeAuditController.#ctor(PayrollEngine.Application.Service.IWageTypeService,PayrollEngine.Application.Service.IWageTypeAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.WageTypeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.WageTypeController.#ctor(PayrollEngine.Application.Service.IRegulationService,PayrollEngine.Application.Service.IWageTypeService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.WebhookController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.WebhookController.#ctor(PayrollEngine.Application.Service.ITenantService,PayrollEngine.Application.Service.IWebhookService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Provider.Controller.WebhookMessageController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Provider.Controller.WebhookMessageController.#ctor(PayrollEngine.Application.Service.IWebhookService,PayrollEngine.Application.Service.IWebhookMessageService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

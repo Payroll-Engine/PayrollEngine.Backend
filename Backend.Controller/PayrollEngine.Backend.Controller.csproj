@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>PayrollEngine.Backend.Controller</AssemblyName>
+    <RootNamespace>PayrollEngine.Backend.Controller</RootNamespace>
+  </PropertyGroup>
+
+  <!-- help file generation -->
+  <PropertyGroup>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Api\Api.Controller\PayrollEngine.Api.Controller.csproj" />
+  </ItemGroup>
+
+</Project>

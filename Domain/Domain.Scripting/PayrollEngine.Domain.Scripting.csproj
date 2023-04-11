@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Domain.Scripting</AssemblyName>
+		<RootNamespace>PayrollEngine.Domain.Scripting</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.Compilers" Version="4.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Domain.Model\PayrollEngine.Domain.Model.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="PayrollEngine.Client.Scripting" Version="0.5.0-pre-230411" />
+	</ItemGroup>
+
+</Project>

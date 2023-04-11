@@ -1,0 +1,17 @@
+﻿using System.Threading.Tasks;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Model.Repository;
+
+namespace PayrollEngine.Domain.Application.Service;
+
+public interface ILookupSetService : IChildApplicationService<ILookupSetRepository, LookupSet>
+{
+    /// <summary>
+    /// Get a lookup set, including the lookup values
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
+    /// <param name="lookupId">The lookup id</param>
+    /// <returns>The lookup set</returns>
+    Task<LookupSet> GetSetAsync(int tenantId, int regulationId, int lookupId);
+}

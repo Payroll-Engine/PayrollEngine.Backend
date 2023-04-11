@@ -1,0 +1,2994 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PayrollEngine.Backend.Controller</name>
+    </assembly>
+    <members>
+        <member name="T:PayrollEngine.Backend.Controller.AdminController">
+            <summary>
+            The administration controller
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.AdminController.#ctor(PayrollEngine.Api.Core.IControllerRuntime,Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.AdminController.StopApplication">
+            <summary>
+            Requests termination of the API application
+            </summary>
+            <remarks>
+            In IIS the application will be restarted with the next API request
+            source https://edi.wang/post/2019/3/7/restart-an-aspnet-core-application-programmatically
+            </remarks>
+            <returns>Ok</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.AdminController.ClearApplicationCache">
+            <summary>
+            Clears the application cache
+            </summary>
+            <returns>Ok</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.AdminController.GetApiReportMethods">
+            <summary>
+            Get the API report query method names (see TenantController.ExecuteReportQueryAsync)
+            </summary>
+            <returns>List of web method names</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CaseAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.QueryCaseAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation case audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseId">The case id </param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.GetCaseAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation case audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseId">The case id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CaseController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseController.QueryCasesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query all regulation cases
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation cases</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseController.GetCaseAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation case
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="caseId">The case id</param>
+            <returns>The regulation case</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseController.CreateCaseAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Case)">
+            <summary>
+            Add a new regulation case
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="case">The case to add</param>
+            <returns>The newly created regulation case</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseController.UpdateCaseAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Case)">
+            <summary>
+            Update a regulation case
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="case">The case with updated values</param>
+            <returns>The modified regulation case</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseController.RebuildCaseAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Rebuild regulation case
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="caseId">The case id</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseController.DeleteCaseAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation case
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="caseId">The case id</param>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CaseFieldAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.ICaseFieldAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.QueryCaseFieldAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation case field audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="fieldId">The case field id</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.GetCaseFieldAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation case field audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="fieldId">The case field id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CaseFieldController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.#ctor(PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.QueryCaseFieldsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation case fields
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseId">The case id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation case fields</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.GetCaseFieldAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation case field
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseId">The case id</param>
+            <param name="caseFieldId">The case field id</param>
+            <returns>The regulation case</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.CreateCaseFieldAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.CaseField)">
+            <summary>
+            Add a new regulation case field
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseId">The case id</param>
+            <param name="caseField">The case field to add</param>
+            <returns>The newly created regulation case field</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.UpdateCaseFieldAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.CaseField)">
+            <summary>
+            Update a regulation case field
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseId">The case id</param>
+            <param name="caseField">The case field with updated values</param>
+            <returns>The modified regulation case field</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.DeleteCaseFieldAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation case field
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseId">The case id</param>
+            <param name="caseFieldId">The case field id</param>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CaseRelationAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICaseRelationService,PayrollEngine.Domain.Application.Service.ICaseRelationAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.QueryCaseRelationAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation case relation audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="relationId">The case relation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.GetCaseRelationAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation case relation audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="relationId">The relation id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CaseRelationController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseRelationService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationController.QueryCaseRelationsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation case relations
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation case fields</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationController.GetCaseRelationAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation case relation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="relationId">The case id</param>
+            <returns>The regulation case</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationController.CreateCaseRelationAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.CaseRelation)">
+            <summary>
+            Add a new regulation case relation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="caseRelation">The case relation to add</param>
+            <returns>The newly created regulation case relation</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationController.UpdateCaseRelationAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.CaseRelation)">
+            <summary>
+            Update a regulation case relation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="caseRelation">The case relation with updated values</param>
+            <returns>The modified regulation case relation</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationController.RebuildCaseRelationAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Rebuild regulation case relation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="relationId">The id of the case relation</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationController.DeleteCaseRelationAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation case relation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="relationId">The id of the case relation</param>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CollectorAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICollectorService,PayrollEngine.Domain.Application.Service.ICollectorAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.QueryCollectorAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation collector audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="collectorId">The id of the collector</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.GetCollectorAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation collector audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="collectorId">The collector id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CollectorController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICollectorService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorController.QueryCollectorsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Get regulation collectors
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation collectors</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorController.GetCollectorAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation collector
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="collectorId">The collector id</param>
+            <returns>The regulation collector</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorController.CreateCollectorAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Collector)">
+            <summary>
+            Add a new regulation collector
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="collector">The collector to add</param>
+            <returns>The newly created regulation collector</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorController.UpdateCollectorAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Collector)">
+            <summary>
+            Update a regulation collector
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="collector">The collector with updated values</param>
+            <returns>The modified regulation collector</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorController.RebuildCollectorAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Rebuild regulation collector
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="collectorId">The id of the collector</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CollectorController.DeleteCollectorAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation collector
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="collectorId">The id of the collector</param>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CompanyCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICompanyCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.QueryCompanyCaseChangesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query company case changes
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case value changes array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.GetCompanyCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a company case change
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseChangeId">The case value change id</param>
+            <returns>The case value change</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.QueryCompanyCaseChangesValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query company case changes values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case change values array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.DeleteCompanyCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a company case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CompanyCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseDocumentController.#ctor(PayrollEngine.Domain.Application.Service.ICompanyCaseValueService,PayrollEngine.Domain.Application.Service.ICompanyCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseDocumentController.QueryCompanyCaseDocumentsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query company case documents
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="query">Query parameters</param>
+            <returns>The company case documents</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseDocumentController.GetCompanyCaseDocument(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a company case document
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="documentId">The document id</param>
+            <returns>The company case document</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.CompanyCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICompanyCaseValueService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseValueController.QueryCompanyCaseValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseValueQuery)">
+            <summary>
+            Query company case values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseValueController.GetCompanyCaseValueSlotsAsync(System.Int32,System.String)">
+            <summary>
+            Get company case value slots
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case value slots</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseValueController.GetCompanyCaseValue(System.Int32,System.Int32)">
+            <summary>
+            Get a company case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The company case value id</param>
+            <returns>The case value</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.DivisionController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.QueryDivisionsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query divisions
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant divisions</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.GetDivisionAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a division
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="divisionId">The id of the division</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.CreateDivisionAsync(System.Int32,PayrollEngine.Api.Model.Division)">
+            <summary>
+            Add a new division
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="division">The division to add</param>
+            <returns>The newly created division</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.UpdateDivisionAsync(System.Int32,PayrollEngine.Api.Model.Division)">
+            <summary>
+            Update a division
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="division">The division with updated values</param>
+            <returns>The modified division</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.DeleteDivisionAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a division
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="divisionId">The id of the division</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.GetDivisionAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a division attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="divisionId">The id of the division</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.SetDivisionAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a division attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="divisionId">The id of the division</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.DivisionController.DeleteDivisionAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a division attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="divisionId">The id of the division</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.EmployeeCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.IEmployeeService,PayrollEngine.Domain.Application.Service.IEmployeeCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.QueryEmployeeCaseChangesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query employee case changes
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case changes array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.GetEmployeeCaseChangeAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get an employee case change
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="caseChangeId">The case value change id</param>
+            <returns>The case value change</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.QueryEmployeeCaseChangesValuesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query employee case changes values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case change values array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.DeleteEmployeeCaseChangeAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.EmployeeCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseDocumentController.#ctor(PayrollEngine.Domain.Application.Service.IEmployeeCaseValueService,PayrollEngine.Domain.Application.Service.IEmployeeCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseDocumentController.QueryEmployeeCaseDocumentsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query employee case documents
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="query">Query parameters</param>
+            <returns>The employee case documents</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseDocumentController.GetEmployeeCaseDocumentAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get an employee case document
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="documentId">The document id</param>
+            <returns>The employee case document</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.EmployeeCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.IEmployeeService,PayrollEngine.Domain.Application.Service.IEmployeeCaseValueService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseValueController.QueryEmployeeCaseValuesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.CaseValueQuery)">
+            <summary>
+            Query employee case values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="query">Query parameters</param>
+            <returns>The employee case values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseValueController.GetEmployeeCaseValueSlotsAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get employee case value slots
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case value slots</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseValueController.GetEmployeeCaseValueAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get an employee case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="caseValueId">The employee case value id</param>
+            <returns>The case value</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.EmployeeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IEmployeeService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.QueryEmployeesAsync(System.Int32,PayrollEngine.Domain.Model.DivisionQuery)">
+            <summary>
+            Query employees
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>An ActionResult with a employee array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.GetEmployeeAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a employee
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The id of the employee</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.CreateEmployeeAsync(System.Int32,PayrollEngine.Api.Model.Employee)">
+            <summary>
+            Add a new employee
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employee">The employee to add</param>
+            <returns>The newly created employee</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.UpdateEmployeeAsync(System.Int32,PayrollEngine.Api.Model.Employee)">
+            <summary>
+            Update a employee
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employee">The employee with updated values</param>
+            <returns>The modified employee</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.DeleteEmployeeAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a employee
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The id of the employee</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.GetEmployeeAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get an employee attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The id of the employee</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.SetEmployeeAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set an employee attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The id of the employee</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.DeleteEmployeeAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete an employee attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The id of the employee</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.GlobalCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IGlobalCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.QueryGlobalCaseChangesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query global case changes
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case value changes array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.GetGlobalCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a global case change
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseChangeId">The case value change id</param>
+            <returns>The case value change</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.QueryGlobalCaseChangesValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query global case changes values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case change values array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.DeleteGlobalCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a global case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.GlobalCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseDocumentController.#ctor(PayrollEngine.Domain.Application.Service.IGlobalCaseValueService,PayrollEngine.Domain.Application.Service.IGlobalCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseDocumentController.QueryGlobalCaseDocumentsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query global case documents
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="query">Query parameters</param>
+            <returns>The global case documents</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseDocumentController.GetGlobalCaseDocumentAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a global case document
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="documentId">The document id</param>
+            <returns>The global case document</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.GlobalCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.GlobalCaseValueController.PayrollService">
+            <summary>
+            Gets the tenant service
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.GlobalCaseValueController.CaseService">
+            <summary>
+            Gets the case service
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.IGlobalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.QueryGlobalCaseValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseValueQuery)">
+            <summary>
+            Query global case values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The global case values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.GetGlobalCaseValueSlotsAsync(System.Int32,System.String)">
+            <summary>
+            Get global case value slots
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case value slots</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.GetGlobalCaseValueAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a global case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The global case value id</param>
+            <returns>The case value</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.LogController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LogController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ILogService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LogController.QueryLogsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query logs
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant logs</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LogController.GetLogAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a log
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="logId">The id of the log</param>
+            <returns>The tenant log</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LogController.CreateLogAsync(System.Int32,PayrollEngine.Api.Model.Log)">
+            <summary>
+            Add a new log
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="log">The log to add</param>
+            <returns>The newly created log</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LogController.DeleteLogAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a log
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="logId">The id of the log</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.LookupAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.#ctor(PayrollEngine.Domain.Application.Service.ILookupService,PayrollEngine.Domain.Application.Service.ILookupAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.QueryLookupAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation lookup audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupId">The lookup id</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.GetLookupAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation lookup audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupId">The lookup id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.LookupController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ILookupService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.QueryLookupsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation lookups
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation lookups</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.GetLookupAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation lookup
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupId">The id of the lookup</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.CreateLookupAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Lookup)">
+            <summary>
+            Add a new regulation lookup
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookup">The lookup to add</param>
+            <returns>The newly created lookup</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.UpdateLookupAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Lookup)">
+            <summary>
+            Update a regulation lookup
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookup">The lookup with updated values</param>
+            <returns>The modified lookup</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.DeleteLookupAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation lookup
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupId">The id of the lookup</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.QueryLookupSetsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation lookup sets
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation lookups</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.GetLookupSetAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation lookup set
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupId">The id of the lookup</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.CreateLookupSetsAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.LookupSet[])">
+            <summary>
+            Add lookup set including the lookup values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupSets">The lookups to add</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupController.DeleteLookupSetAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete lookup set including the lookup values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupId">The id of the lookup</param>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.LookupValueAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.#ctor(PayrollEngine.Domain.Application.Service.ILookupValueService,PayrollEngine.Domain.Application.Service.ILookupValueAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.QueryLookupValueAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation lookup value audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupValueId">The lookup value id</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.GetLookupValueAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation lookup audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupValueId">The lookup value id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.LookupValueController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.#ctor(PayrollEngine.Domain.Application.Service.ILookupService,PayrollEngine.Domain.Application.Service.ILookupValueService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.QueryLookupValuesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation lookup values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupId">The lookup id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation lookup values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.GetLookupValuesDataAsync(System.Int32,System.Int32,System.Int32,System.Nullable{PayrollEngine.Language})">
+            <summary>
+            Get lookup values data
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupId">The lookup id</param>
+            <param name="language">The language</param>
+            <returns>The lookup value data</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.GetLookupValueAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation lookup value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupId">The lookup id</param>
+            <param name="lookupValueId">The id of the lookup value</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.CreateLookupValueAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.LookupValue)">
+            <summary>
+            Add a new regulation lookup value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupId">The id of the lookup</param>
+            <param name="lookup">The lookup value to add</param>
+            <returns>The newly created lookup value</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.UpdateLookupValueAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.LookupValue)">
+            <summary>
+            Update a regulation lookup value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupId">The id of the lookup</param>
+            <param name="lookup">The lookup value with updated values</param>
+            <returns>The modified lookup value</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.DeleteLookupValueAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation lookup value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="lookupId">The id of the lookup</param>
+            <param name="lookupValueId">The id of the lookup value</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.NationalCaseChangeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.INationalCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.QueryNationalCaseChangesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query national case changes
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case value changes array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.GetNationalCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a national case change
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseChangeId">The case value change id</param>
+            <returns>The case value change</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.QueryNationalCaseChangesValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
+            <summary>
+            Query national case changes values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The case change values array</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.DeleteNationalCaseChangeAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a national case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.NationalCaseDocumentController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseDocumentController.#ctor(PayrollEngine.Domain.Application.Service.INationalCaseValueService,PayrollEngine.Domain.Application.Service.INationalCaseDocumentService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseDocumentController.QueryNationalCaseDocumentsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query national case documents
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="query">Query parameters</param>
+            <returns>The national case documents</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseDocumentController.GetNationalCaseDocumentAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a national case document
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The case value id</param>
+            <param name="documentId">The document id</param>
+            <returns>The national case document</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.NationalCaseValueController">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.NationalCaseValueController.PayrollService">
+            <summary>
+            Gets the tenant service
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.NationalCaseValueController.CaseService">
+            <summary>
+            Gets the case service
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.INationalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.QueryNationalCaseValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseValueQuery)">
+            <summary>
+            Query national case values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The national case values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.GetNationalCaseValueSlotsAsync(System.Int32,System.String)">
+            <summary>
+            Get national case value slots
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case value slots</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.GetNationalCaseValueAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a national case value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseValueId">The national case value id</param>
+            <returns>The case value</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.PayrollConsolidatedResultController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollConsolidatedResultController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollConsolidatedResultService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollConsolidatedResultController.GetConsolidatedPayrollResultAsync(System.Int32,System.Int32,System.DateTime,System.DateTime,System.Nullable{System.Int32},System.String,System.Nullable{PayrollEngine.PayrunJobStatus},System.String[])">
+            <summary>
+            Query consolidated payroll results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="periodStart">Period start date</param>
+            <param name="periodEnd">Period end date</param>
+            <param name="divisionId">The division id</param>
+            <param name="forecast">The forecast name</param>
+            <param name="jobStatus">The payrun job status</param>
+            <param name="tags">The result tags</param>
+            <returns>The period collector results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollConsolidatedResultController.GetConsolidatedCollectorResultsAsync(System.Int32,System.Int32,System.DateTime[],System.Nullable{System.Int32},System.String[],System.String,System.Nullable{PayrollEngine.PayrunJobStatus},System.String[],System.Nullable{System.DateTime})">
+            <summary>
+            Get consolidated collector results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="periodStarts">Period start dates</param>
+            <param name="divisionId">The division id</param>
+            <param name="collectorNames">The collector names</param>
+            <param name="forecast">The forecast name</param>
+            <param name="jobStatus">The payrun job status</param>
+            <param name="tags">The result tags</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>The period collector results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollConsolidatedResultController.GetConsolidatedWageTypeResultsAsync(System.Int32,System.Int32,System.DateTime[],System.Nullable{System.Int32},System.Decimal[],System.String,System.String[],System.Nullable{System.DateTime},System.Nullable{PayrollEngine.PayrunJobStatus})">
+            <summary>
+            Query consolidated wage type results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="periodStarts">Period start dates</param>
+            <param name="divisionId">The division id</param>
+            <param name="wageTypeNumbers">The wage type numbers</param>
+            <param name="forecast">The forecast name</param>
+            <param name="jobStatus">The payrun job status</param>
+            <param name="tags">The result tags</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>The period wage type results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollConsolidatedResultController.GetConsolidatedPayrunResultsAsync(System.Int32,System.Int32,System.DateTime[],System.Nullable{System.Int32},System.String[],System.String,System.String[],System.Nullable{System.DateTime},System.Nullable{PayrollEngine.PayrunJobStatus})">
+            <summary>
+            Query consolidated payrun results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="periodStarts">Period start dates</param>
+            <param name="divisionId">The division id</param>
+            <param name="resultNames">The result names</param>
+            <param name="forecast">The forecast name</param>
+            <param name="jobStatus">The payrun job status</param>
+            <param name="tags">The result tags</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>The period payrun results</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.PayrollController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.#ctor(PayrollEngine.Domain.Application.Service.IPayrollContextService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.QueryPayrollsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payrolls
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant payrolls</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a payroll
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.CreatePayrollAsync(System.Int32,PayrollEngine.Api.Model.Payroll)">
+            <summary>
+            Add a new payroll
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payroll">The payroll to add</param>
+            <returns>The newly created payroll</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.UpdatePayrollAsync(System.Int32,PayrollEngine.Api.Model.Payroll)">
+            <summary>
+            Update a payroll
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payroll">The payroll with updated values</param>
+            <returns>The modified payroll</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.DeletePayrollAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a payroll
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollRegulationsAsync(System.Int32,System.Int32,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll regulations
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">Creation date filter (default: UTC now)</param>
+            <returns>The payroll regulations, including the shared regulations</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCaseSetsAsync(System.Int32,System.Int32,PayrollEngine.Api.Core.PayrollCaseQuery)">
+            <summary>
+            Get active and available case sets
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="query">The payroll case query</param>
+            <returns>All payroll cases</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.BuildPayrollCaseSetAsync(System.Int32,System.Int32,System.String,PayrollEngine.Api.Core.CaseBuildQuery,PayrollEngine.Api.Model.CaseChangeSetup)">
+            <summary>
+            Build case with fields and related cases
+            </summary>
+            <remarks>
+            Request body contains array of case values (optional)
+            </remarks>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseName">The case name</param>
+            <param name="query">The case build query</param>
+            <param name="caseChangeSetup">The case change setup (optional)</param>
+            <returns>The created case set</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.QueryPayrollCaseChangeValuesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.PayrollCaseChangeQuery)">
+            <summary>
+            Query payroll case change values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="query">Query parameters</param>
+            <returns>All payroll case change values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCaseValuesAsync(System.Int32,System.Int32,System.DateTime,System.DateTime,System.String[],System.Nullable{System.Int32},System.String)">
+            <summary>
+            Get case values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseFieldNames">The case field names (default: all)</param>
+            <param name="startDate">The time period start date</param>
+            <param name="endDate">The time period end date</param>
+            <param name="employeeId">The employee id, mandatory for employee case</param>
+            <param name="caseSlot">The case slot</param>
+            <returns>The payroll case values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollTimeCaseValuesAsync(System.Int32,System.Int32,PayrollEngine.CaseType,System.Nullable{System.Int32},System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll case values from a specific time moment
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id, mandatory for employee case</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseType">The case type</param>
+            <param name="caseFieldNames">The case field names (default: all)</param>
+            <param name="valueDate">The moment of the value (default: UTC now)</param>
+            <param name="regulationDate">The regulation date (default: valueDate)</param>
+            <param name="evaluationDate">The evaluation date (default: valueDate)</param>
+            <returns>The payroll case value of the case field</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCaseFieldValuesAsync(System.Int32,System.Int32,System.Int32,System.String[],System.DateTime,System.DateTime,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get available case period values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="userId">The user id</param>
+            <param name="caseFieldNames">The case field names</param>
+            <param name="startDate">The time period start date</param>
+            <param name="endDate">The time period end date</param>
+            <param name="employeeId">The employee id, mandatory for employee case</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">Creation date filter (default: UTC now)</param>
+            <returns>Case period values, split by changed values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.AddPayrollCaseAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.CaseChangeSetup)">
+            <summary>
+            Add case change
+            </summary>
+            <remarks>
+            Request body contains the case change
+            </remarks>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseChangeSetup">The case change setup</param>
+            <returns>The case change setup with the created case values <see cref="T:PayrollEngine.CaseValueCreationMode"/>, including issues</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCasesAsync(System.Int32,System.Int32,System.Nullable{PayrollEngine.CaseType},System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll cases
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseType">The case type (default: all)</param>
+            <param name="caseNames">The case names (default: all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="clusterSetName">The cluster set name</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll cases</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCaseFieldsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll case fields, sorted by order
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseFieldNames">The case field names (default: all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="clusterSetName">The cluster set name</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll case fields</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCaseRelationsAsync(System.Int32,System.Int32,System.String,System.String,System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll case relations, sorted by order
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="sourceCaseName">The relation source case name (default: all)</param>
+            <param name="targetCaseName">The relation target case name (default: all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="clusterSetName">The cluster set name</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll case relations</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollWageTypesAsync(System.Int32,System.Int32,System.Decimal[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll wage types
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="wageTypeNumbers">The wage type numbers (default: all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="clusterSetName">The cluster set name</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll wage types</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCollectorsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll collectors
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="collectorNames">The collector names filter (Default is all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="clusterSetName">The cluster set name</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll collectors</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll lookups
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="lookupNames">The lookup names filter (default is all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll lookups</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupValuesAsync(System.Int32,System.Int32,System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{PayrollEngine.Language})">
+            <summary>
+            Get payroll lookup values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="lookupNames">The lookup names</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <param name="language">The content language</param>
+            <returns>The lookup values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupValueDataAsync(System.Int32,System.Int32,System.String,System.String,System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{PayrollEngine.Language})">
+            <summary>
+            Get payroll lookup value data
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="lookupName">The lookup name</param>
+            <param name="lookupKey">The lookup key, optionally with range value</param>
+            <param name="rangeValue">The lookup range value</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <param name="language">The language</param>
+            <returns>The lookup value data</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll reports
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="reportNames">The report names filter (Default is all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="clusterSetName">The cluster set name</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll reports</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportTemplateAsync(System.Int32,System.Int32,System.String[],PayrollEngine.Language,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll report template
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="reportNames">The report names</param>
+            <param name="language">The report language</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll report template</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollScriptsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll scripts
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="scriptNames">The script names filter (Default is all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll scripts</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollScriptActionsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},PayrollEngine.FunctionType,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll script actions
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="scriptNames">The script names filter (Default is all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="functionType">The function type (default: all)</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll scripts</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a payroll attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.SetPayrollAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a payroll attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.DeletePayrollAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a payroll attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.PayrollLayerController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.#ctor(PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IPayrollLayerService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.QueryPayrollLayersAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll layers
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll layers</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.GetPayrollLayerAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a payroll layer
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="layerId">The payroll layer id</param>
+            <returns>The payroll layer</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.CreatePayrollLayerAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.PayrollLayer)">
+            <summary>
+            Add a new payroll layer
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="layer">The payroll layer to add</param>
+            <returns>The newly created payroll layer</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.UpdatePayrollLayerAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.PayrollLayer)">
+            <summary>
+            Update a payroll layer
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="layer">The payroll layer with updated values</param>
+            <returns>The modified payroll layer</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.DeletePayrollLayerAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a payroll layer
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="layerId">The id of the payroll layer</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.GetPayrollLayerAttributeAsync(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a payroll layer attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="layerId">The id of the payroll layer</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.SetPayrollLayerAttributeAsync(System.Int32,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a payroll layer attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="layerId">The id of the payroll layer</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollLayerController.DeletePayrollLayerAttributeAsync(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a payroll layer attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="layerId">The id of the payroll layer</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.PayrollResultController">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.PayrollResultController.PayrollService">
+            <summary>
+            The payroll service
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.PayrollResultController.PayrunService">
+            <summary>
+            The payrun service
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollResultService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IPayrunService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryPayrollResultsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.GetPayrollResultAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a payroll result
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollResultId">The payroll result id</param>
+            <returns>The payroll layer</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryCollectorResultsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll collector results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollResultId">The payroll result id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll collector results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryCollectorCustomResultsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll collector custom results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollResultId">The payroll result id</param>
+            <param name="collectorResultId">The collector result id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll collector custom results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryWageTypeResultsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll wage type results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollResultId">The payroll result id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll wage type results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryWageTypeCustomResultsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll wage type custom results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollResultId">The payroll result id</param>
+            <param name="wageTypeResultId">The wage type result id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll wage type custom results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryPayrunResultsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll payrun results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollResultId">The payroll result id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll payrun results</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryPayrollResultValuesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll result values
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll result values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryPayrollResultSetsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payroll result sets
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payroll results sets</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.GetPayrollResultSetAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a payroll result set
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollResultId">The payroll result id</param>
+            <returns>A payroll results set</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.PayrunController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrunService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunController.QueryPayrunsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payruns
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant payruns</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunController.GetPayrunAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a payrun
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The id of the payrun</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunController.CreatePayrunAsync(System.Int32,PayrollEngine.Api.Model.Payrun)">
+            <summary>
+            Add a new payrun
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrun">The payrun to add</param>
+            <returns>The newly created payrun</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunController.UpdatePayrunAsync(System.Int32,PayrollEngine.Api.Model.Payrun)">
+            <summary>
+            Update a payrun
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrun">The payrun with updated values</param>
+            <returns>The modified payrun</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunController.RebuildPayrunAsync(System.Int32,System.Int32)">
+            <summary>
+            Rebuild payrun
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The id of the payrun</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunController.DeletePayrunAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a payrun
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The id of the payrun</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.PayrunJobController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrunJobService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.QueryPayrunJobsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payrun jobs
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant payrun jobs</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.QueryEmployeePayrunJobsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Get employee payrun jobs
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="query">Query parameters</param>
+            <returns>The employee payrun jobs</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.GetPayrunJobAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a payrun job
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunJobId">The id of the payrun job</param>
+            <returns>The payrun job</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.StartPayrunAsync(System.Int32,PayrollEngine.Api.Model.PayrunJobInvocation)">
+            <summary>
+            Start a payrun job, if the payroll has no previous draft payrun
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="jobInvocation">The payrun job invocation</param>
+            <returns>The newly created payrun job</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.GetPayrunJobStatusAsync(System.Int32,System.Int32)">
+            <summary>
+            Get status of a payrun job
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunJobId">The payrun job id</param>
+            <returns>The payrun job status</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.ChangePayrunJobStatusAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.PayrunJobStatus,System.Boolean)">
+            <summary>
+            Change the status of a payrun job
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The user id</param>
+            <param name="payrunJobId">The payrun job id</param>
+            <param name="jobStatus">The new payrun job status</param>
+            <param name="patchMode">Use the patch mode</param>
+            <returns>The updated payrun job</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.DeletePayrunJobAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a payrun jobs including all payroll results
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunJobId">The id of the payrun jobs</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.GetPayrunJobAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a payrun job attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunJobId">The id of the payrun job</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.SetPayrunJobAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a payrun job attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunJobId">The id of the payrun job</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.DeletePayrunJobAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a payrun job attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunJobId">The id of the payrun job</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.PayrunParameterController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunParameterController.#ctor(PayrollEngine.Domain.Application.Service.IPayrunService,PayrollEngine.Domain.Application.Service.IPayrunParameterService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunParameterController.QueryPayrunParametersAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query payrun parameters
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The payrun id</param>
+            <param name="query">Query parameters</param>
+            <returns>The payrun parameters</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunParameterController.GetPayrunParameterAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a payrun parameter
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The payrun id</param>
+            <param name="parameterId">The id of the parameter</param>
+            <returns>The payrun parameter</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunParameterController.CreatePayrunParameterAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.PayrunParameter)">
+            <summary>
+            Add a new payrun parameter
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The payrun id</param>
+            <param name="parameter">The payrun parameter to add</param>
+            <returns>The newly created payrun parameter</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunParameterController.UpdatePayrunAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.PayrunParameter)">
+            <summary>
+            Update a payrun parameter
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The payrun id</param>
+            <param name="parameter">The payrun parameter to modify</param>
+            <returns>The modified parameter</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunParameterController.DeletePayrunAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a payrun
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrunId">The payrun id</param>
+            <param name="parameterId">The id of the payrun parameter</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.RegulationController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.ICaseRelationService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.QueryRegulationsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulations
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant regulations</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.GetRegulationAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a regulation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.GetCaseOfCaseFieldAsync(System.Int32,System.String)">
+            <summary>
+            Get case name by case field
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case name</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.CreateRegulationAsync(System.Int32,PayrollEngine.Api.Model.Regulation)">
+            <summary>
+            Add a new regulation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulation">The regulation to add</param>
+            <returns>The newly created regulation regulation</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.UpdateRegulationAsync(System.Int32,PayrollEngine.Api.Model.Regulation)">
+            <summary>
+            Update a regulation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulation">The regulation id</param>
+            <returns>The modified regulation regulation</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.DeleteRegulationAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.GetRegulationAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a regulation attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The id of the regulation</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.SetRegulationAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a regulation attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The id of the regulation</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.DeleteRegulationAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a regulation attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The id of the regulation</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ReportAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.#ctor(PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Application.Service.IReportAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.QueryReportAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation report audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.GetReportAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation report audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ReportController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Application.Service.IReportSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.QueryReportsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query reports
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation reports</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.GetReportAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="reportId">The id of the report</param>
+            <returns>The regulation report</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.ExecuteReportAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.ReportRequest)">
+            <summary>
+            Execute a report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="request">The report execute request</param>
+            <returns>The report response including the report data</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.CreateReportAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Report)">
+            <summary>
+            Add a new report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="report">The report to add</param>
+            <returns>The newly created report</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.UpdateReportAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Report)">
+            <summary>
+            Update a report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="report">The report with updated values</param>
+            <returns>The modified report</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.DeleteReportAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="reportId">The id of the report</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.GetReportSetAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.ReportRequest)">
+            <summary>
+            Get a report set
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="reportRequest">The report execute request</param>
+            <returns>The regulation report set</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.CreateReportSetAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportSet)">
+            <summary>
+            Add a new report set
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="report">The report set to add</param>
+            <returns>The newly created report set</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.RebuildReportAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Rebuild regulation report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="reportId">The id of the report</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.DeleteReportSetAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a report set
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.GetReportAttributeAsync(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a report attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.SetReportAttributeAsync(System.Int32,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a report attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportController.DeleteReportAttributeAsync(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a report attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ReportLogController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IReportLogService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.QueryReportLogsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query report logs
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="query">Query logs</param>
+            <returns>The report logs</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.GetReportLogAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a report log
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="logId">The id of the log</param>
+            <returns>The report log</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.CreateReportLogAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportLog)">
+            <summary>
+            Add a new report log
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="log">The report log to add</param>
+            <returns>The newly created report log</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.DeleteReportLogAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a report log
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="logId">The id of the report log</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ReportParameterAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.#ctor(PayrollEngine.Domain.Application.Service.IReportParameterService,PayrollEngine.Domain.Application.Service.IReportParameterAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.QueryReportParameterAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation report parameter audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportParameterId">The id of the report parameter</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.GetReportParameterAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation report parameter audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportParameterId">The report parameter id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ReportParameterController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.#ctor(PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Application.Service.IReportParameterService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.QueryReportParametersAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query report parameters
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="query">Query parameters</param>
+            <returns>The report parameters</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.GetReportParameterAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a report parameter
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="parameterId">The id of the parameter</param>
+            <returns>The report parameter</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.CreateReportParameterAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportParameter)">
+            <summary>
+            Add a new report parameter
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="parameter">The report parameter to add</param>
+            <returns>The newly created report parameter</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.UpdateReportParameterAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportParameter)">
+            <summary>
+            Update a report parameter
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="parameter">The report parameter to modify</param>
+            <returns>The modified parameter</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.DeleteReportParameterAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="parameterId">The id of the report parameter</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ReportTemplateAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.#ctor(PayrollEngine.Domain.Application.Service.IReportTemplateService,PayrollEngine.Domain.Application.Service.IReportTemplateAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.QueryReportTemplateAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation report template audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportTemplateId">The id of the report template</param>
+            <param name="query">Query templates</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.GetReportTemplateAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation report template audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportTemplateId">The report template id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ReportTemplateController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.#ctor(PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Application.Service.IReportTemplateService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.QueryReportTemplatesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.ReportTemplateQuery)">
+            <summary>
+            Query report templates
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="query">Query templates</param>
+            <returns>The report templates</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.GetReportTemplateAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a report template
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="templateId">The id of the template</param>
+            <returns>The report template</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.CreateReportTemplateAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportTemplate)">
+            <summary>
+            Add a new report template
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="template">The report template to add</param>
+            <returns>The newly created report template</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.UpdateReportTemplateAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportTemplate)">
+            <summary>
+            Update a report template
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="template">The report template to modify</param>
+            <returns>The modified template</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.DeleteReportTemplateAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a report
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="reportId">The report id</param>
+            <param name="templateId">The id of the report template</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ScriptAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.#ctor(PayrollEngine.Domain.Application.Service.IScriptService,PayrollEngine.Domain.Application.Service.IScriptAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.QueryScriptAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation script audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="scriptId">The script id</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.GetScriptAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation script audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="scriptId">The script id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.ScriptController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IScriptService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptController.QueryScriptsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation scripts
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation scripts</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptController.GetScriptAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation script
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="scriptId">The script id</param>
+            <returns>The regulation script</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptController.CreateScriptAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Script)">
+            <summary>
+            Add a new regulation script
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="script">The script to add</param>
+            <returns>The newly created regulation script</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptController.UpdateScriptAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Script)">
+            <summary>
+            Update a regulation script
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="script">The script with updated values</param>
+            <returns>The modified regulation script</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.ScriptController.DeleteScriptAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation script
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="scriptId">The script id</param>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.SharedRegulationController">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.SharedRegulationController.RegulationService">
+            <summary>
+            The regulation service
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.SharedRegulationController.DivisionService">
+            <summary>
+            The division service
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationPermissionService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.GetRegulationPermissionAsync(System.Int32)">
+            <summary>
+            Get a regulation permission
+            </summary>
+            <param name="permissionId">The regulation permission id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.GetRegulationPermissionAttributeAsync(System.Int32,System.String)">
+            <summary>
+            Get a regulation permission attribute
+            </summary>
+            <param name="permissionId">The regulation permission id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.SetRegulationPermissionAttributeAsync(System.Int32,System.String,System.String)">
+            <summary>
+            Set a regulation permission attribute
+            </summary>
+            <param name="permissionId">The regulation permission id</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.DeleteRegulationPermissionAttributeAsync(System.Int32,System.String)">
+            <summary>
+            Delete a regulation permission attribute
+            </summary>
+            <param name="permissionId">The regulation permission id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.QueryRegulationPermissionsAsync(PayrollEngine.Query)">
+            <summary>
+            Query regulation permissions
+            </summary>
+            <param name="query">Query parameters</param>
+            <returns>The regulation permissions matching the query</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.CreateRegulationPermissionAsync(PayrollEngine.Api.Model.RegulationPermission)">
+            <summary>
+            Add a new regulation permission
+            </summary>
+            <param name="permission">The regulation permission to add</param>
+            <returns>The newly created regulation permission</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.DeleteRegulationPermissionAsync(System.Int32)">
+            <summary>
+            Delete a regulation permission
+            </summary>
+            <param name="permissionId">The regulation permission id</param>
+            <returns></returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.TaskController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ITaskService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.QueryTasksAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query tasks
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant tasks</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.GetTaskAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a task
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="taskId">The id of the task</param>
+            <returns>The tenant task</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.CreateTaskAsync(System.Int32,PayrollEngine.Api.Model.Task)">
+            <summary>
+            Add a new task
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="task">The task to add</param>
+            <returns>The newly created task</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.UpdateTaskAsync(System.Int32,PayrollEngine.Api.Model.Task)">
+            <summary>
+            Update a task
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="task">The task with updated values</param>
+            <returns>The modified task</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.DeleteTaskAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a task
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="taskId">The id of the task</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.GetTaskAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a task attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="taskId">The id of the task</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.SetTaskAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a task attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="taskId">The id of the task</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.DeleteTaskAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a task attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="taskId">The id of the task</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.TenantController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IRegulationPermissionService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.QueryTenantsAsync(PayrollEngine.Query)">
+            <summary>
+            Query tenants
+            </summary>
+            <param name="query">Query parameters</param>
+            <returns>The tenants matching the query</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.CreateTenantAsync(PayrollEngine.Api.Model.Tenant)">
+            <summary>
+            Add a new tenant
+            </summary>
+            <param name="tenant">The tenant to add</param>
+            <returns>The newly created tenant</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.UpdateTenantAsync(System.Int32,PayrollEngine.Api.Model.Tenant)">
+            <summary>
+            Update a tenant
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="tenant">The tenant with updated values</param>
+            <returns>The modified tenant</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.DeleteTenantAsync(System.Int32)">
+            <summary>
+            Delete a tenant including all tenant data
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetTenantAsync(System.Int32)">
+            <summary>
+            Get a tenant
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetSharedRegulationsAsync(System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Get tenant shared regulations
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="divisionId">The division id</param>
+            <returns>The tenant shared regulations</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetSystemScriptActionsAsync(System.Int32,PayrollEngine.FunctionType)">
+            <summary>
+            Get the system script actions
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="functionType">The function type</param>
+            <returns>List of system actions</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.ExecuteReportQueryAsync(System.Int32,System.String,System.Nullable{PayrollEngine.Language},System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Execute a report query
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="methodName">The query method</param>
+            <param name="language">The data language</param>
+            <param name="parameters">The query parameters</param>
+            <returns>The resulting data table</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetCalendarPeriodAsync(System.Int32,PayrollEngine.CalendarCalculationMode,System.Nullable{System.DateTime},PayrollEngine.CalendarConfiguration,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get tenant calendar period
+            </summary>
+            <remarks>
+            Request body contains the calendar configuration (optional)
+            </remarks>
+            <param name="tenantId">The tenant id</param>
+            <param name="calculationMode">The calendar calculation mode</param>
+            <param name="periodMoment">The moment within the payrun period (default: now)</param>
+            <param name="calendar">The calendar configuration (default: tenant calendar)</param>
+            <param name="culture">The culture to use (default: tenant culture)</param>
+            <param name="offset">The offset:<br />
+            less than zero: past<br />
+            zero: current (default)<br />
+            greater than zero: future<br /></param>
+            <returns>The calendar period</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetCalendarCycleAsync(System.Int32,PayrollEngine.CalendarCalculationMode,System.Nullable{System.DateTime},PayrollEngine.CalendarConfiguration,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get tenant calendar cycle
+            </summary>
+            <remarks>
+            Request body contains the calendar configuration (optional)
+            </remarks>
+            <param name="tenantId">The tenant id</param>
+            <param name="calculationMode">The calendar calculation mode</param>
+            <param name="cycleMoment">The moment within the payrun cycle (default: now)</param>
+            <param name="calendar">The calendar configuration (default: tenant calendar)</param>
+            <param name="culture">The culture to use (default: tenant culture)</param>
+            <param name="offset">The offset:<br />
+            less than zero: past<br />
+            zero: current (default)<br />
+            greater than zero: future<br /></param>
+            <returns>The calendar cycle</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.CalculateCalendarValueAsync(System.Int32,PayrollEngine.CalendarCalculationMode,System.Decimal,System.Nullable{System.DateTime},System.Nullable{System.DateTime},PayrollEngine.CalendarConfiguration,System.String)">
+            <summary>
+            Calculate calendar value
+            </summary>
+            <remarks>
+            Request body contains the calendar configuration (optional)
+            </remarks>
+            <param name="tenantId">The tenant id</param>
+            <param name="calculationMode">The calendar calculation mode</param>
+            <param name="value">The value to calculate</param>
+            <param name="evaluationDate">The evaluation period date (default: all)</param>
+            <param name="evaluationPeriodDate">The date within the evaluation period (default: evaluation date)</param>
+            <param name="calendar">The calendar configuration (default: tenant calendar)</param>
+            <param name="culture">The culture to use (default: tenant culture)</param>
+            <returns>The calendar value</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetTenantAttributeAsync(System.Int32,System.String)">
+            <summary>
+            Get a tenant attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.SetTenantAttributeAsync(System.Int32,System.String,System.String)">
+            <summary>
+            Set a tenant attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.DeleteTenantAttributeAsync(System.Int32,System.String)">
+            <summary>
+            Delete a tenant attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.UserController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.QueryUsersAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query users
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant users</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.GetUserAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a user
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The id of the user</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.CreateUserAsync(System.Int32,PayrollEngine.Api.Model.User)">
+            <summary>
+            Add a new user
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="user">The user to add</param>
+            <returns>The newly created user</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.UpdateUserAsync(System.Int32,PayrollEngine.Api.Model.User)">
+            <summary>
+            Update a user
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="user">The user with updated values</param>
+            <returns>The modified user</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.DeleteUserAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a user
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The id of the user</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.TestUserPasswordAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Test the user password
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The id of the user</param>
+            <param name="password">The password to test</param>
+            <returns>True for a valid password</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.UpdateUserPasswordAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Update the user password
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The id of the user</param>
+            <param name="password">The new user password, use null to reset the password</param>
+            <returns>The updated user</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.GetUserAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a user attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The id of the user</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.SetUserAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a user attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The id of the user</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.UserController.DeleteUserAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a user attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The id of the user</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.WageTypeAuditController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.#ctor(PayrollEngine.Domain.Application.Service.IWageTypeService,PayrollEngine.Domain.Application.Service.IWageTypeAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.QueryWageTypeAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation wage type audits
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="wageTypeId">The id of the wage type</param>
+            <param name="query">Query parameters</param>
+            <returns>The audit objects</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.GetWageTypeAuditAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation wage type audit
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="wageTypeId">The wage type id</param>
+            <param name="auditId">The audit object id</param>
+            <returns>The audit object</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.WageTypeController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IWageTypeService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeController.QueryWageTypesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query regulation wage types
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="query">Query parameters</param>
+            <returns>The regulation wage types</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeController.GetWageTypeAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a regulation wageType
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="wageTypeId">The wage type id</param>
+            <returns>The regulation wageType</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeController.CreateWageTypeAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.WageType)">
+            <summary>
+            Add a new regulation wage type
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="wageType">The wage type to add</param>
+            <returns>The newly created regulation wage type</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeController.UpdateWageTypeAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.WageType)">
+            <summary>
+            Update a regulation wage type
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="wageType">The wage type with updated values</param>
+            <returns>The modified regulation wage type</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeController.RebuildWageTypeAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Rebuild regulation wage type
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="wageTypeId">The id of the wage type</param>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeController.DeleteWageTypeAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a regulation wage type
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="wageTypeId">The id of the wage type</param>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.WebhookController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IWebhookService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.QueryWebhooksAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query webhooks
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant webhooks</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.GetWebhookAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a webhook
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The id of the webhook</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.CreateWebhookAsync(System.Int32,PayrollEngine.Api.Model.Webhook)">
+            <summary>
+            Add a new webhook
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhook">The webhook to add</param>
+            <returns>The newly created webhook</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.UpdateWebhookAsync(System.Int32,PayrollEngine.Api.Model.Webhook)">
+            <summary>
+            Update a webhook
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhook">The webhook with updated values</param>
+            <returns>The modified webhook</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.DeleteWebhookAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a webhook
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The id of the webhook</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.GetWebhookAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get a webhook attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The id of the webhook</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.SetWebhookAttributeAsync(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Set a webhook attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The id of the webhook</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookController.DeleteWebhookAttributeAsync(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete a webhook attribute
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The id of the webhook</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
+        <member name="T:PayrollEngine.Backend.Controller.WebhookMessageController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookMessageController.#ctor(PayrollEngine.Domain.Application.Service.IWebhookService,PayrollEngine.Domain.Application.Service.IWebhookMessageService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookMessageController.QueryWebhookMessagesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query webhook messages
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The web hook id</param>
+            <param name="query">Query parameters</param>
+            <returns>The webhook messages</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookMessageController.GetWebhookMessageAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get a webhook message
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The webhook id</param>
+            <param name="webhookMessageId">The id of the webhook message</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookMessageController.CreateWebhookMessageAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.WebhookMessage)">
+            <summary>
+            Add a new webhook messages
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The id of the web hook</param>
+            <param name="webhookMessage">The webhook messages to add</param>
+            <returns>The newly created webhook messages</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookMessageController.UpdateWebhookMessageAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.WebhookMessage)">
+            <summary>
+            Update a webhook messages
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The webhook id</param>
+            <param name="webhookMessage">The webhook messages with updated values</param>
+            <returns>The modified webhook messages</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.WebhookMessageController.DeleteWebhookMessageAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete a webhook messages
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="webhookId">The webhook id</param>
+            <param name="webhookMessageId">The id of the webhook messages</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

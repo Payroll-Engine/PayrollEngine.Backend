@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace PayrollEngine.Domain.Model;
+
+/// <summary>
+/// A payroll report parameter
+/// </summary>
+public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDomainAttributeObject, IEquatable<ReportParameter>
+{
+    /// <summary>
+    /// The report parameter name (immutable)
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    /// The localized wage type names
+    /// </summary>
+    public Dictionary<string, string> NameLocalizations { get; set; }
+
+    /// <summary>
+    /// The report parameter description
+    /// </summary>
+    public string Description { get; set; }
+
+    /// <summary>
+    /// The localized report parameter descriptions
+    /// </summary>
+    public Dictionary<string, string> DescriptionLocalizations { get; set; }
+
+    /// <summary>
+    /// The parameter mandatory state
+    /// </summary>
+    public bool Mandatory { get; set; }
+
+    /// <summary>
+    /// The parameter value (JSON)
+    /// </summary>
+    public string Value { get; set; }
+
+    /// <summary>
+    /// The parameter value type
+    /// </summary>
+    public ValueType ValueType { get; set; }
+
+    /// <summary>
+    /// The parameter value type
+    /// </summary>
+    public ReportParameterType ParameterType { get; set; }
+
+    /// <summary>
+    /// Custom attributes
+    /// </summary>
+    public Dictionary<string, object> Attributes { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReportParameter"/> class
+    /// </summary>
+    public ReportParameter()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReportParameter"/> class
+    /// </summary>
+    /// <param name="copySource">The copy source.</param>
+    public ReportParameter(ReportParameter copySource)
+    {
+        CopyTool.CopyProperties(copySource, this);
+    }
+
+    /// <summary>Compare two objects</summary>
+    /// <param name="compare">The object to compare with this</param>
+    /// <returns>True for objects with the same data</returns>
+    public bool Equals(ReportParameter compare) =>
+        CompareTool.EqualProperties(this, compare);
+
+    /// <inheritdoc/>
+    public override ReportParameterAudit ToAuditObject()
+    {
+        if (!this.HasId())
+        {
+            return null;
+        }
+        return new()
+        {
+            ReportParameterId = Id,
+            Name = Name,
+            NameLocalizations = NameLocalizations,
+            Description = Description,
+            DescriptionLocalizations = DescriptionLocalizations,
+            Mandatory = Mandatory,
+            Value = Value,
+            ValueType = ValueType,
+            ParameterType = ParameterType,
+            Attributes = Attributes,
+        };
+    }
+
+    /// <inheritdoc/>
+    public override void FromAuditObject(ReportParameterAudit audit)
+    {
+        base.FromAuditObject(audit);
+
+        Id = audit.ReportParameterId;
+        Name = audit.Name;
+        NameLocalizations = audit.NameLocalizations.Copy();
+        Description = audit.Description;
+        DescriptionLocalizations = audit.DescriptionLocalizations.Copy();
+        Mandatory = audit.Mandatory;
+        Value = audit.Value;
+        ValueType = audit.ValueType;
+        ParameterType = audit.ParameterType;
+        Attributes = audit.Attributes.Copy();
+    }
+
+    /// <inheritdoc/>
+    public override string ToString() =>
+        $"{Name} {base.ToString()}";
+}

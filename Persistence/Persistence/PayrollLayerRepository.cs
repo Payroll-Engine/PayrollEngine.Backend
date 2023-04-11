@@ -1,0 +1,44 @@
+﻿using System;
+using System.Threading.Tasks;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Serialization;
+
+namespace PayrollEngine.Persistence;
+
+public class PayrollLayerRepository : ChildDomainRepository<PayrollLayer>, IPayrollLayerRepository
+{
+
+    public PayrollLayerRepository(IDbContext context) :
+        base(DbSchema.Tables.PayrollLayer, DbSchema.PayrollLayerColumn.PayrollId, context)
+    {
+    }
+
+    protected override void GetObjectData(PayrollLayer payrollLayer, DbParameterCollection parameters)
+    {
+        parameters.Add(nameof(payrollLayer.Level), payrollLayer.Level);
+        parameters.Add(nameof(payrollLayer.Priority), payrollLayer.Priority);
+        parameters.Add(nameof(payrollLayer.RegulationName), payrollLayer.RegulationName);
+        parameters.Add(nameof(payrollLayer.Attributes), JsonSerializer.SerializeNamedDictionary(payrollLayer.Attributes));
+        base.GetObjectData(payrollLayer, parameters);
+    }
+
+    public virtual async Task<bool> ExistsAsync(int payrollId, int level, int priority)
+    {
+        if (payrollId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(payrollId));
+        }
+
+        // query
+        var query = DbQueryFactory.NewCountQuery(TableName)
+            .Where(DbSchema.PayrollLayerColumn.PayrollId, payrollId)
+            .Where(DbSchema.PayrollLayerColumn.Level, level)
+            .Where(DbSchema.PayrollLayerColumn.Priority, priority);
+        var compileQuery = CompileQuery(query);
+
+        // SELECT execution
+        var count = await ExecuteScalarAsync<int>(compileQuery);
+        return count == 1;
+    }
+}
