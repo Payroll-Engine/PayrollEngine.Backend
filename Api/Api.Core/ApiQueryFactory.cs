@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
@@ -21,36 +22,40 @@ public static class ApiQueryFactory
     {
         var queries = new Dictionary<string, QueryMethodInfo>();
 
-        // query methods
-        var assembly = Assembly.GetEntryAssembly();
-        if (assembly == null)
+        var allAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+            .Where(x => x.FullName != null &&
+                        !x.FullName.StartsWith("System") &&
+                        !x.FullName.StartsWith("Microsoft") &&
+                        !x.FullName.StartsWith("Serilog") &&
+                        !x.FullName.StartsWith("NLog") &&
+                        !x.FullName.StartsWith("Swashbuckle"))
+            .ToList();
+        foreach (var assembly in allAssemblies)
         {
-            throw new QueryException("Missing startup assembly");
-        }
-
-        // extract all query methods
-        var queryTypes = assembly.GetTypes();
-        foreach (var queryType in queryTypes)
-        {
-            var queryMethods = queryType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-                .Where(m => m.GetCustomAttributes(typeof(HttpGetAttribute), true).Any());
-            foreach (var queryMethod in queryMethods)
+            // extract all query methods
+            var queryTypes = assembly.GetTypes();
+            foreach (var queryType in queryTypes)
             {
-                // attribute ApiOperationId is mandatory
-                var operationId = queryMethod.GetCustomAttributes(typeof(ApiOperationIdAttribute), false)
-                    .FirstOrDefault() as ApiOperationIdAttribute;
-                if (string.IsNullOrWhiteSpace(operationId?.OperationId))
+                var queryMethods = queryType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+                    .Where(m => m.GetCustomAttributes(typeof(HttpGetAttribute), true).Any()).ToList();
+                foreach (var queryMethod in queryMethods)
                 {
-                    continue;
-                }
+                    // attribute ApiOperationId is mandatory
+                    var operationId = queryMethod.GetCustomAttributes(typeof(ApiOperationIdAttribute), false)
+                        .FirstOrDefault() as ApiOperationIdAttribute;
+                    if (string.IsNullOrWhiteSpace(operationId?.OperationId))
+                    {
+                        continue;
+                    }
 
-                // query ignore
-                if (queryMethod.GetCustomAttributes(typeof(QueryIgnoreAttribute), false).Any())
-                {
-                    continue;
-                }
+                    // query ignore
+                    if (queryMethod.GetCustomAttributes(typeof(QueryIgnoreAttribute), false).Any())
+                    {
+                        continue;
+                    }
 
-                queries.Add(operationId.OperationId, new(queryType, queryMethod));
+                    queries.Add(operationId.OperationId, new(queryType, queryMethod));
+                }
             }
         }
 
