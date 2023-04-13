@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Backend.Api</AssemblyName>
 		<RootNamespace>PayrollEngine.Backend.Api</RootNamespace>
-		<UserSecretsId>PayrollEngine.Backend.Api</UserSecretsId>
+		<UserSecretsId>Backend</UserSecretsId>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<Authors>Jani Giannoudis</Authors>
@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Serilog" Version="0.5.0-pre-230412-2" />
+		<PackageReference Include="PayrollEngine.Serilog" Version="0.5.0-pre-230413" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.2.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
