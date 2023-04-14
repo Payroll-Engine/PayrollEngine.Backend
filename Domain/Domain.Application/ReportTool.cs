@@ -96,15 +96,15 @@ public abstract class ReportTool : FunctionToolBase
             // report parameter variables
             foreach (var reportParameter in report.Parameters)
             {
-                reportParameter.Value = SetupParameterVariables(reportParameter.Value, request.Parameters, report.Parameters);
+                reportParameter.Value = SetupParameterVariables(request.UserId, reportParameter.Value, request.Parameters, report.Parameters);
             }
             // apply request parameters
             if (request.Parameters != null)
             {
                 foreach (var requestParameter in request.Parameters)
                 {
-                    request.Parameters[requestParameter.Key] = SetupParameterVariables(requestParameter.Value,
-                        request.Parameters, report.Parameters);
+                    request.Parameters[requestParameter.Key] = SetupParameterVariables(request.UserId,
+                        requestParameter.Value, request.Parameters, report.Parameters);
                 }
             }
         }
@@ -142,11 +142,7 @@ public abstract class ReportTool : FunctionToolBase
                 var attributesTableName = $"{dataTable.TableName}Attributes";
                 var attributesTable = Data.DataTableAttributeExtensions.GetAttributeTable(dataTable, attributesTableName,
                                                                     relationSourceColumn, relationTargetColumn);
-                if (attributesTable.Rows.Count > 0)
-                {
-                    // collect attributes
-                    attributeTables.Add(dataTable, attributesTable);
-                }
+                attributeTables.Add(dataTable, attributesTable);
             }
         }
 
@@ -325,7 +321,7 @@ public abstract class ReportTool : FunctionToolBase
         return webhookId.HasValue ? webhookId.Value.ToString() : parameter;
     }
 
-    private string SetupParameterVariables(string parameterValue, IDictionary<string, string> requestParameters, IList<ReportParameter> reportParameters)
+    private string SetupParameterVariables(int userId, string parameterValue, IDictionary<string, string> requestParameters, IList<ReportParameter> reportParameters)
     {
         // pattern check
         if (string.IsNullOrEmpty(parameterValue) || !parameterValue.Contains(VariableStartMarker) ||
@@ -351,7 +347,7 @@ public abstract class ReportTool : FunctionToolBase
                 // request parameter
                 if (requestParameters != null && requestParameters.TryGetValue(variableTypeName, out var parameter))
                 {
-                    variableValue = parameter;
+                    variableValue = ParseParameter(userId, parameter, (ReportParameterType)parameterType).Result;
                 }
 
                 if (string.IsNullOrWhiteSpace(variableValue) && reportParameters != null)
