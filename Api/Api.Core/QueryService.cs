@@ -383,6 +383,6 @@ public class QueryService : IQueryService
     /// Loads queries on demand
     /// </summary>
     private Dictionary<string, QueryMethodInfo> Queries =>
-        queryMethods ??= ApiQueryFactory.FromEntryAssembly();
+        queryMethods ??= ApiQueryFactory.GetQueryMethods();
 
 }
