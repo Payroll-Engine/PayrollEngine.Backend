@@ -32,6 +32,14 @@ public static class ApiQueryFactory
             .ToList();
         foreach (var assembly in allAssemblies)
         {
+            // ignore non-query assemblies
+            var queryAssembly = assembly.GetCustomAttributes(typeof(QueryAssemblyAttribute), false)
+                .FirstOrDefault() as QueryAssemblyAttribute;
+            if (queryAssembly == null)
+            {
+                continue;
+            }
+
             // extract all query methods
             var queryTypes = assembly.GetTypes();
             foreach (var queryType in queryTypes)

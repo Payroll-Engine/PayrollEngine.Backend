@@ -1,17 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>PayrollEngine.Backend.Controller</AssemblyName>
-    <RootNamespace>PayrollEngine.Backend.Controller</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Backend.Controller</AssemblyName>
+		<RootNamespace>PayrollEngine.Backend.Controller</RootNamespace>
+	</PropertyGroup>
 
-  <!-- help file generation -->
-  <PropertyGroup>
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<!-- help file generation -->
+	<PropertyGroup>
+		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Api\Api.Controller\PayrollEngine.Api.Controller.csproj" />
-  </ItemGroup>
+	<!-- assembler attribute for the query endpoint -->
+	<ItemGroup>
+		<AssemblyAttribute Include="PayrollEngine.Api.Core.QueryAssemblyAttribute"></AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Api\Api.Controller\PayrollEngine.Api.Controller.csproj" />
+	</ItemGroup>
 
 </Project>
