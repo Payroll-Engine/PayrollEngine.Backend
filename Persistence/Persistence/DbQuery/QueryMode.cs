@@ -4,7 +4,7 @@ namespace PayrollEngine.Persistence.DbQuery;
 /// <summary>
 /// Database query mode
 /// </summary>
-public enum DbQueryMode
+public enum QueryMode
 {
     /// <summary>
     /// Query items

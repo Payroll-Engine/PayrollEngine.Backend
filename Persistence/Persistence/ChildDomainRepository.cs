@@ -53,7 +53,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     public virtual async Task<long> QueryCountAsync(int parentId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, ParentFieldName, parentId, query, DbQueryMode.ItemCount);
+        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, ParentFieldName, parentId, query, QueryMode.ItemCount);
         SetupDbQuery(dbQuery, query);
 
         // query compilation

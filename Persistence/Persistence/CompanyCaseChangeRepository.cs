@@ -46,7 +46,7 @@ public class CompanyCaseChangeRepository : CaseChangeRepository<CaseChange>, ICo
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.CompanyCaseChangeValuePivot, query, DbQueryMode.ItemCount);
+            DbSchema.Tables.CompanyCaseChangeValuePivot, query, QueryMode.ItemCount);
 
         // tenant
         dbQuery.Item1.Where(DbSchema.CompanyCaseValueColumn.TenantId, tenantId);

@@ -46,7 +46,7 @@ public class NationalCaseChangeRepository : CaseChangeRepository<CaseChange>, IN
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.NationalCaseChangeValuePivot, query, DbQueryMode.ItemCount);
+            DbSchema.Tables.NationalCaseChangeValuePivot, query, QueryMode.ItemCount);
 
         // tenant
         dbQuery.Item1.Where(DbSchema.NationalCaseValueColumn.TenantId, tenantId);

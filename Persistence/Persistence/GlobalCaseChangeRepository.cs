@@ -47,7 +47,7 @@ public class GlobalCaseChangeRepository : CaseChangeRepository<CaseChange>, IGlo
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.GlobalCaseChangeValuePivot, query, DbQueryMode.ItemCount);
+            DbSchema.Tables.GlobalCaseChangeValuePivot, query, QueryMode.ItemCount);
 
         // tenant
         dbQuery.Item1.Where(DbSchema.GlobalCaseValueColumn.TenantId, tenantId);

@@ -27,7 +27,7 @@ public static class DbQueryFactory
     }
 
     private static SqlKata.Query BuildQuery(QueryBuilderBase queryBuilder, string tableName, Query query = null,
-        DbQueryMode queryMode = DbQueryMode.Item)
+        QueryMode queryMode = QueryMode.Item)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {
@@ -99,7 +99,7 @@ public static class DbQueryFactory
     /// <param name="queryMode">The query mode</param>
     /// <returns>The query</returns>
     public static SqlKata.Query NewQuery<T>(IDbContext dbContext, string tableName, Query query = null,
-        DbQueryMode queryMode = DbQueryMode.Item)
+        QueryMode queryMode = QueryMode.Item)
     {
         if (typeof(T).GetInterface(nameof(IDomainAttributeObject)) != null)
         {
@@ -152,7 +152,7 @@ public static class DbQueryFactory
             }
 
             // count query
-            if (queryMode == DbQueryMode.ItemCount)
+            if (queryMode == QueryMode.ItemCount)
             {
                 var countQuery = new SqlKata.Query();
 
@@ -206,7 +206,7 @@ public static class DbQueryFactory
     /// <param name="queryMode">The query mode</param>
     /// <returns>The query</returns>
     public static SqlKata.Query NewQuery<T>(IDbContext dbContext, string tableName, string parentColumn, int parentId,
-        Query query = null, DbQueryMode queryMode = DbQueryMode.Item)
+        Query query = null, QueryMode queryMode = QueryMode.Item)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {
@@ -242,7 +242,7 @@ public static class DbQueryFactory
     /// <param name="queryMode">The query mode</param>
     /// <returns>The query and the requested dynamic columns</returns>
     public static Tuple<SqlKata.Query, List<string>> NewTypeQuery<T>(string tableName, Query query = null,
-        DbQueryMode queryMode = DbQueryMode.Item)
+        QueryMode queryMode = QueryMode.Item)
     {
         var queryBuilder = new DynamicTypeQueryBuilder<T>(DbSchema.Prefixes.AttributePrefixes);
         var dbQuery = BuildQuery(queryBuilder, tableName, query, queryMode);
@@ -259,7 +259,7 @@ public static class DbQueryFactory
     /// <param name="queryMode">The query mode</param>
     /// <returns>The query</returns>
     public static Tuple<SqlKata.Query, List<string>> NewTypeQuery<T>(string tableName, string parentColumn, int parentId,
-        Query query = null, DbQueryMode queryMode = DbQueryMode.Item)
+        Query query = null, QueryMode queryMode = QueryMode.Item)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {

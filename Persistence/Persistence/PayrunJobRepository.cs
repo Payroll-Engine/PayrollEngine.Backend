@@ -91,7 +91,7 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
     public virtual async Task<long> QueryEmployeePayrunJobsCountAsync(int tenantId, int employeeId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<PayrunJob>(Context, TableName, query, DbQueryMode.ItemCount);
+        var dbQuery = DbQueryFactory.NewQuery<PayrunJob>(Context, TableName, query, QueryMode.ItemCount);
 
         // join payrun job to job employee
         dbQuery

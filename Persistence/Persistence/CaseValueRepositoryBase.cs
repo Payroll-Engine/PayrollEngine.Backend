@@ -83,7 +83,7 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
     {
         // db query to support case value attributes
         var dbQuery = DbQueryFactory.NewTypeQuery<TDomain>(CaseValueTableName, ParentFieldName,
-            parentId, query, queryMode: DbQueryMode.ItemCount);
+            parentId, query, queryMode: QueryMode.ItemCount);
         SetupDbQuery(dbQuery.Item1, query);
 
         // query compilation

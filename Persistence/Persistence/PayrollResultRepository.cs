@@ -59,7 +59,7 @@ public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPa
 
         // db query
         var dbQuery = DbQueryFactory.NewTypeQuery<PayrollResultValue>(
-            DbSchema.Tables.PayrollResultPivot, query, DbQueryMode.ItemCount);
+            DbSchema.Tables.PayrollResultPivot, query, QueryMode.ItemCount);
 
         // employee
         dbQuery.Item1.Where(DbSchema.PayrollResultColumn.TenantId, tenantId);

@@ -24,7 +24,7 @@ internal abstract class QueryBuilderBase
     /// <param name="query">The domain object query</param>
     /// <param name="queryMode">The query mode</param>
     /// <returns>The SQL query</returns>
-    internal SqlKata.Query BuildQuery(string tableName, Query query = null, DbQueryMode queryMode = DbQueryMode.Item)
+    internal SqlKata.Query BuildQuery(string tableName, Query query = null, QueryMode queryMode = QueryMode.Item)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {
@@ -59,7 +59,7 @@ internal abstract class QueryBuilderBase
             }
 
             // ignore paging in count mode
-            if (queryMode == DbQueryMode.Item)
+            if (queryMode == QueryMode.Item)
             {
                 // top
                 if (query.Top.HasValue)
@@ -86,7 +86,7 @@ internal abstract class QueryBuilderBase
     /// <param name="queryOptions">The dictionary storing query option key-value pairs</param>
     /// <param name="queryMode">The query mode</param>
     /// <returns>Tuple with sql string and arguments dictionary</returns>
-    private SqlKata.Query BuildQuery(string tableName, IDictionary<string, string> queryOptions, DbQueryMode queryMode = DbQueryMode.Item)
+    private SqlKata.Query BuildQuery(string tableName, IDictionary<string, string> queryOptions, QueryMode queryMode = QueryMode.Item)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {
@@ -137,7 +137,7 @@ internal abstract class QueryBuilderBase
         long? top = null;
         long? skip = null;
         // ignore paging in count mode
-        if (queryMode == DbQueryMode.Item)
+        if (queryMode == QueryMode.Item)
         {
             // parse top
             try
@@ -186,7 +186,7 @@ internal abstract class QueryBuilderBase
         var query = new SqlKata.Query(tableName);
 
         // count
-        if (queryMode == DbQueryMode.ItemCount)
+        if (queryMode == QueryMode.ItemCount)
         {
             query = query.AsCount();
         }
@@ -218,7 +218,7 @@ internal abstract class QueryBuilderBase
             query = filterClause.Expression.Accept(new FilterClauseBuilder(query, QueryContext));
         }
 
-        if (queryMode == DbQueryMode.Item)
+        if (queryMode == QueryMode.Item)
         {
             // order by
             if (orderByClause != null)

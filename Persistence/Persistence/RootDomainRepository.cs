@@ -40,7 +40,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
     public virtual async Task<long> QueryCountAsync(Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, query, DbQueryMode.ItemCount);
+        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, query, QueryMode.ItemCount);
 
         // query compilation
         var compileQuery = CompileQuery(dbQuery);

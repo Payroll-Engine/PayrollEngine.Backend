@@ -59,7 +59,7 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.EmployeeCaseChangeValuePivot, query, DbQueryMode.ItemCount);
+            DbSchema.Tables.EmployeeCaseChangeValuePivot, query, QueryMode.ItemCount);
 
         // employee
         dbQuery.Item1.Where(DbSchema.EmployeeCaseValueColumn.EmployeeId, employeeId);
