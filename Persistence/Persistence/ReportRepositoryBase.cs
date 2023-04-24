@@ -10,9 +10,9 @@ public abstract class ReportRepositoryBase<T> : ScriptTrackChildDomainRepository
     where T : Report, new()
 {
     protected ReportRepositoryBase(IReportScriptController<T> scriptController, IScriptRepository scriptRepository,
-        IReportAuditRepository auditRepository, IDbContext context) :
+        IReportAuditRepository auditRepository) :
         base(DbSchema.Tables.Report, DbSchema.ReportColumn.RegulationId, scriptController,
-            scriptRepository, auditRepository, context)
+            scriptRepository, auditRepository)
     {
     }
 

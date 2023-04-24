@@ -28,29 +28,32 @@ public sealed class CaseFieldProvider
     /// <summary>
     /// Get case type of a case field
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="caseFieldName">The case field name</param>
     /// <returns>The case type</returns>
-    public async Task<CaseType?> GetCaseTypeAsync(string caseFieldName) =>
-        await CaseFieldRepository.GetCaseTypeAsync(caseFieldName);
+    public async Task<CaseType?> GetCaseTypeAsync(IDbContext context, string caseFieldName) =>
+        await CaseFieldRepository.GetCaseTypeAsync(context, caseFieldName);
 
     /// <summary>
     /// Get id of the parent case
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="caseFieldId">The case field object id</param>
     /// <returns>The id of the parent case</returns>
-    public async Task<int?> GetParentCaseIdAsync(int caseFieldId) =>
-        await CaseFieldRepository.GetParentCaseIdAsync(caseFieldId);
+    public async Task<int?> GetParentCaseIdAsync(IDbContext context, int caseFieldId) =>
+        await CaseFieldRepository.GetParentCaseIdAsync(context, caseFieldId);
 
     /// <summary>
     /// Determine the case field
     /// If no case filed has a value expression, it returns the nm ost derived case field
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="caseFieldName">The case field name</param>
     /// <returns>The case value at a given time, null if no value is available</returns>
-    public async Task<CaseField> GetCaseFieldAsync(string caseFieldName)
+    public async Task<CaseField> GetCaseFieldAsync(IDbContext context, string caseFieldName)
     {
         // derived case fields (ignore case fields created after the evaluation date)
-        var derivedCaseFields = (await CaseFieldRepository.GetDerivedCaseFieldsAsync(caseFieldName)).ToList();
+        var derivedCaseFields = (await CaseFieldRepository.GetDerivedCaseFieldsAsync(context, caseFieldName)).ToList();
         if (derivedCaseFields.Count == 0)
         {
             Log.Debug($"Missing case field with name {caseFieldName}");
@@ -63,12 +66,13 @@ public sealed class CaseFieldProvider
     /// Determine the case field containing a value expression.
     /// If no case filed has a value expression, it returns the nm ost derived case field
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="caseFieldName">The case field name</param>
     /// <returns>The case value at a given time, null if no value is available</returns>
-    public async Task<CaseField> GetValueCaseFieldAsync(string caseFieldName)
+    public async Task<CaseField> GetValueCaseFieldAsync(IDbContext context, string caseFieldName)
     {
         // derived case fields (ignore case fields created after the evaluation date)
-        var derivedCaseFields = (await CaseFieldRepository.GetDerivedCaseFieldsAsync(caseFieldName)).ToList();
+        var derivedCaseFields = (await CaseFieldRepository.GetDerivedCaseFieldsAsync(context, caseFieldName)).ToList();
         if (derivedCaseFields.Count == 0)
         {
             Log.Debug($"Missing case field with name {caseFieldName}");

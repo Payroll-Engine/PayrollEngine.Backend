@@ -10,9 +10,10 @@ public interface IPayrollLayerRepository : IChildDomainRepository<PayrollLayer>
     /// <summary>
     /// Determine if a payroll layer with the same level and priority exists
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="level">The layer level</param>
     /// <param name="priority">The layer priority</param>
     /// <returns>True if the lookup row with any of the key exists</returns>
-    Task<bool> ExistsAsync(int payrollId, int level, int priority);
+    Task<bool> ExistsAsync(IDbContext context, int payrollId, int level, int priority);
 }

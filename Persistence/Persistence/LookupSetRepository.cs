@@ -14,22 +14,22 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
     public ILookupValueRepository ValueRepository { get; }
 
     public LookupSetRepository(ILookupValueRepository valueRepository,
-        ILookupAuditRepository auditRepository, IDbContext context) :
-        base(auditRepository, context)
+        ILookupAuditRepository auditRepository) :
+        base(auditRepository)
     {
         ValueRepository = valueRepository ?? throw new ArgumentNullException(nameof(valueRepository));
     }
 
-    protected override async Task OnRetrieved(int regulationId, LookupSet lookupSet)
+    protected override async Task OnRetrieved(IDbContext context, int regulationId, LookupSet lookupSet)
     {
         // lookup values
         if (lookupSet != null)
         {
-            lookupSet.Values = (await ValueRepository.QueryAsync(lookupSet.Id)).ToList();
+            lookupSet.Values = (await ValueRepository.QueryAsync(context, lookupSet.Id)).ToList();
         }
     }
 
-    public virtual async Task<LookupSet> GetSetAsync(int tenantId, int regulationId, int lookupId)
+    public virtual async Task<LookupSet> GetSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId)
     {
         if (tenantId <= 0)
         {
@@ -45,17 +45,17 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         }
 
         // lookup
-        var lookupSet = await GetAsync(regulationId, lookupId);
+        var lookupSet = await GetAsync(context, regulationId, lookupId);
         if (lookupSet != null)
         {
             // lookup values
-            lookupSet.Values = (await ValueRepository.QueryAsync(lookupId)).ToList();
+            lookupSet.Values = (await ValueRepository.QueryAsync(context, lookupId)).ToList();
         }
 
         return lookupSet;
     }
 
-    public override async Task<IEnumerable<LookupSet>> CreateAsync(int regulationId, IEnumerable<LookupSet> items)
+    public override async Task<IEnumerable<LookupSet>> CreateAsync(IDbContext context, int regulationId, IEnumerable<LookupSet> items)
     {
         if (items == null)
         {
@@ -66,40 +66,41 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         using var txScope = TransactionFactory.NewTransactionScope();
 
         // create lookups
-        var createdLookups = (await base.CreateAsync(regulationId, items)).ToList();
+        var createdLookups = (await base.CreateAsync(context, regulationId, items)).ToList();
 
         // create lookup values for each created lookup
         foreach (var createdLookup in createdLookups)
         {
             // performance optimization: insert case values with bulk mode
-            await ValueRepository.CreateBulkAsync(createdLookup.Id, createdLookup.Values);
+            await ValueRepository.CreateBulkAsync(context, createdLookup.Id, createdLookup.Values);
         }
 
         txScope.Complete();
         return createdLookups;
     }
 
-    public override async Task<bool> DeleteAsync(int regulationId, int lookupId)
+    public override async Task<bool> DeleteAsync(IDbContext context, int regulationId, int lookupId)
     {
         using var txScope = TransactionFactory.NewTransactionScope();
 
         // lookup values
-        await ValueRepository.DeleteAll(lookupId);
+        await ValueRepository.DeleteAll(context, lookupId);
 
         // lookup
-        var deleted = await base.DeleteAsync(regulationId, lookupId);
+        var deleted = await base.DeleteAsync(context, regulationId, lookupId);
 
         txScope.Complete();
 
         return deleted;
     }
 
-    public virtual async Task<LookupData> GetLookupDataAsync(int tenantId, int regulationId, int lookupId, Language? language = null)
+    public virtual async Task<LookupData> GetLookupDataAsync(IDbContext context,
+        int tenantId, int regulationId, int lookupId, Language? language = null)
     {
         var lookupData = new LookupData();
 
         // lookup set
-        var lookupSet = await GetSetAsync(tenantId, regulationId, lookupId);
+        var lookupSet = await GetSetAsync(context, tenantId, regulationId, lookupId);
         if (lookupSet == null)
         {
             return lookupData;
@@ -130,7 +131,8 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         return lookupData;
     }
 
-    public async Task<LookupValueData> GetLookupValueDataAsync(int tenantId, int lookupId, string lookupKey, Language? language = null)
+    public async Task<LookupValueData> GetLookupValueDataAsync(IDbContext context,
+        int tenantId, int lookupId, string lookupKey, Language? language = null)
     {
         if (lookupId <= 0)
         {
@@ -142,7 +144,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         }
 
         // select lookup value lookup-id and key-hash-code
-        var lookupValue = await SelectSingleAsync<LookupValue>(DbSchema.Tables.LookupValue,
+        var lookupValue = await SelectSingleAsync<LookupValue>(context, DbSchema.Tables.LookupValue,
             new()
             {
                 { DbSchema.LookupValueColumn.LookupId, lookupId },
@@ -168,8 +170,8 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         };
     }
 
-    public virtual async Task<LookupValueData> GetRangeLookupValueDataAsync(int tenantId, int lookupId,
-        decimal rangeValue, string lookupKey = null, Language? language = null)
+    public virtual async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
+        int tenantId, int lookupId, decimal rangeValue, string lookupKey = null, Language? language = null)
     {
         if (lookupId <= 0)
         {
@@ -186,7 +188,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         }
 
         // retrieve all derived lookups (stored procedure)
-        var lookupValue = (await QueryAsync<LookupValue>(DbSchema.Procedures.GetLookupRangeValue,
+        var lookupValue = (await QueryAsync<LookupValue>(context, DbSchema.Procedures.GetLookupRangeValue,
             parameters, commandType: CommandType.StoredProcedure)).FirstOrDefault();
         if (lookupValue == null)
         {

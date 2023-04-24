@@ -5,8 +5,8 @@ namespace PayrollEngine.Persistence;
 
 public abstract class CaseDocumentRepository : ChildDomainRepository<CaseDocument>, ICaseDocumentRepository
 {
-    protected CaseDocumentRepository(string tableName, string parentFieldName, IDbContext context) :
-        base(tableName, parentFieldName, context)
+    protected CaseDocumentRepository(string tableName, string parentFieldName) :
+        base(tableName, parentFieldName)
     {
     }
 

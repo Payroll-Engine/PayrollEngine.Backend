@@ -49,10 +49,10 @@ public class WebhookDispatchService : IWebhookDispatchService
     }
 
     /// <inheritdoc />
-    public virtual async Task<string> InvokeAsync(int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
+    public virtual async Task<string> InvokeAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
     {
         // tenant
-        var tenant = await TenantRepository.GetAsync(tenantId);
+        var tenant = await TenantRepository.GetAsync(context, tenantId);
         if (tenant == null)
         {
             throw new PayrollException($"Unknown tenant with id {tenantId}");
@@ -62,11 +62,11 @@ public class WebhookDispatchService : IWebhookDispatchService
         User user = null;
         if (userId.HasValue)
         {
-            user = await UserRepository.GetAsync(tenantId, userId.Value);
+            user = await UserRepository.GetAsync(context, tenantId, userId.Value);
         }
 
         // single and active webhook matching the action
-        var webhooks = await QueryWebhooks(tenantId, dispatchMessage.Action);
+        var webhooks = await QueryWebhooks(context, tenantId, dispatchMessage.Action);
         if (webhooks.Count != 1)
         {
             Log.Warning($"missing single web hook for action {dispatchMessage.Action}");
@@ -74,11 +74,11 @@ public class WebhookDispatchService : IWebhookDispatchService
         }
 
         var webhook = webhooks.First();
-        return await DispatchWebhook(tenant.Identifier, user?.Identifier, webhook, dispatchMessage);
+        return await DispatchWebhook(context, tenant.Identifier, user?.Identifier, webhook, dispatchMessage);
     }
 
     /// <inheritdoc />
-    public virtual async Task SendMessageAsync(int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
+    public virtual async Task SendMessageAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
     {
         if (tenantId <= 0)
         {
@@ -90,14 +90,14 @@ public class WebhookDispatchService : IWebhookDispatchService
         }
 
         // tenant
-        var tenant = await TenantRepository.GetAsync(tenantId);
+        var tenant = await TenantRepository.GetAsync(context, tenantId);
         if (tenant == null)
         {
             throw new PayrollException($"Unknown tenant with id {tenantId}");
         }
 
         // webhooks
-        var webhooks = await QueryWebhooks(tenantId, dispatchMessage.Action);
+        var webhooks = await QueryWebhooks(context, tenantId, dispatchMessage.Action);
         if (!webhooks.Any())
         {
             // no matching webhook
@@ -108,17 +108,18 @@ public class WebhookDispatchService : IWebhookDispatchService
         User user = null;
         if (userId.HasValue)
         {
-            user = await UserRepository.GetAsync(tenantId, userId.Value);
+            user = await UserRepository.GetAsync(context, tenantId, userId.Value);
         }
 
         // send message to any webhook
         foreach (var webhook in webhooks)
         {
-            await DispatchWebhook(tenant.Identifier, user?.Identifier, webhook, dispatchMessage);
+            await DispatchWebhook(context, tenant.Identifier, user?.Identifier, webhook, dispatchMessage);
         }
     }
 
-    private async Task<string> DispatchWebhook(string tenant, string user, Webhook webhook, WebhookDispatchMessage dispatchMessage)
+    private async Task<string> DispatchWebhook(IDbContext context, string tenant, string user,
+        Webhook webhook, WebhookDispatchMessage dispatchMessage)
     {
         if (dispatchMessage == null)
         {
@@ -143,7 +144,7 @@ public class WebhookDispatchService : IWebhookDispatchService
         if (dispatchMessage.TrackMessage)
         {
             // create webhook message
-            await MessageRepository.CreateAsync(webhook.Id, webhookMessage);
+            await MessageRepository.CreateAsync(context, webhook.Id, webhookMessage);
         }
 
         // post
@@ -174,7 +175,7 @@ public class WebhookDispatchService : IWebhookDispatchService
         if (dispatchMessage.TrackMessage)
         {
             // update webhook message
-            await MessageRepository.UpdateAsync(webhook.Id, webhookMessage);
+            await MessageRepository.UpdateAsync(context, webhook.Id, webhookMessage);
         }
 
         Log.Debug($"completed web hook {webhook.Name} with response status {webhookMessage.ResponseStatus}");
@@ -182,8 +183,8 @@ public class WebhookDispatchService : IWebhookDispatchService
         return webhookMessage.ResponseMessage;
     }
 
-    private async Task<List<Webhook>> QueryWebhooks(int tenantId, WebhookAction action) =>
-        (await WebhookRepository.QueryAsync(tenantId, new()
+    private async Task<List<Webhook>> QueryWebhooks(IDbContext context, int tenantId, WebhookAction action) =>
+        (await WebhookRepository.QueryAsync(context, tenantId, new()
         {
             Status = ObjectStatus.Active,
             Filter = $"{nameof(Webhook.Action)} eq '{action}'"

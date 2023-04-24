@@ -7,6 +7,7 @@ namespace PayrollEngine.Api.Core;
 
 public interface IControllerRuntime
 {
+    IDbContext DbContext { get; }
     IConfiguration Configuration { get; }
     LinkGenerator LinkGenerator { get; }
     IApiDescriptionGroupCollectionProvider ApiExplorer { get; }

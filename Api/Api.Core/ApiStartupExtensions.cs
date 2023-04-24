@@ -18,7 +18,7 @@ namespace PayrollEngine.Api.Core;
 public static class ApiStartupExtensions
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services,
-        IConfiguration configuration, ApiSpecification specification, IDbContext context)
+        IConfiguration configuration, ApiSpecification specification)
     {
         if (services == null)
         {
@@ -60,13 +60,10 @@ public static class ApiStartupExtensions
         }
 
         // API services
-        ApiFactory.SetupApiServices(services, configuration, context);
+        ApiFactory.SetupApiServices(services, configuration);
 
         // controllers
         services.AddControllers();
-
-        // dapper
-        services.AddDapper();
 
         // swagger
         services.AddSwaggerGen(setupAction =>
@@ -160,7 +157,7 @@ public static class ApiStartupExtensions
         }
 
         // dapper
-        appBuilder.UseDapper();
+        DapperTypes.AddTypeHandlers();
     }
 
     private static void InitializeScriptCompiler()

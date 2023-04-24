@@ -4,10 +4,8 @@ namespace PayrollEngine.Persistence;
 
 public class GlobalCaseValueSetupRepository : CaseValueSetupRepository, IGlobalCaseValueSetupRepository
 {
-    public GlobalCaseValueSetupRepository(ICaseFieldRepository caseFieldRepository,
-        IGlobalCaseDocumentRepository caseDocumentRepository, IDbContext context) :
-        base(DbSchema.Tables.GlobalCaseValue, DbSchema.GlobalCaseValueColumn.TenantId,
-            caseFieldRepository, caseDocumentRepository, context)
+    public GlobalCaseValueSetupRepository(ICaseFieldRepository caseFieldRepository, IGlobalCaseDocumentRepository caseDocumentRepository) : 
+        base(DbSchema.Tables.GlobalCaseValue, DbSchema.GlobalCaseValueColumn.TenantId, caseFieldRepository, caseDocumentRepository)
     {
     }
     protected override string CaseValueTableName => DbSchema.Tables.GlobalCaseValuePivot;

@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class WageTypeResultRepository : ChildDomainRepository<WageTypeResult>, IWageTypeResultRepository
 {
-    public WageTypeResultRepository(IDbContext context) :
-        base(DbSchema.Tables.WageTypeResult, DbSchema.WageTypeResultColumn.PayrollResultId, context)
+    public WageTypeResultRepository() :
+        base(DbSchema.Tables.WageTypeResult, DbSchema.WageTypeResultColumn.PayrollResultId)
     {
     }
 

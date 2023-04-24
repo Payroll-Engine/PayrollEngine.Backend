@@ -7,5 +7,5 @@ namespace PayrollEngine.Domain.Application.Service;
 
 public interface ILookupService : IChildApplicationService<ILookupRepository, Lookup>
 {
-    Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> lookupNames);
+    Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> lookupNames);
 }

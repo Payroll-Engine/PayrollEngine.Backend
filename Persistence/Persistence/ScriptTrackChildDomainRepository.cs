@@ -20,27 +20,27 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit> : TrackC
 
     protected ScriptTrackChildDomainRepository(string tableName, string parentFieldName,
         IScriptController<TDomain> scriptController, IScriptRepository scriptRepository,
-        IAuditChildDomainRepository<TAudit> auditRepository, IDbContext context) :
-        base(tableName, parentFieldName, auditRepository, context)
+        IAuditChildDomainRepository<TAudit> auditRepository) :
+        base(tableName, parentFieldName, auditRepository)
     {
         ScriptController = scriptController ?? throw new ArgumentNullException(nameof(scriptController));
         ScriptRepository = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
     }
 
-    public override async Task<TDomain> CreateAsync(int parentId, TDomain item)
+    public override async Task<TDomain> CreateAsync(IDbContext context, int parentId, TDomain item)
     {
-        await SetupBinaryAsync(parentId, item);
-        return await base.CreateAsync(parentId, item);
+        await SetupBinaryAsync(context, parentId, item);
+        return await base.CreateAsync(context, parentId, item);
     }
 
-    public override async Task<TDomain> UpdateAsync(int parentId, TDomain item)
+    public override async Task<TDomain> UpdateAsync(IDbContext context, int parentId, TDomain item)
     {
-        await SetupBinaryAsync(parentId, item);
-        return await base.UpdateAsync(parentId, item);
+        await SetupBinaryAsync(context, parentId, item);
+        return await base.UpdateAsync(context, parentId, item);
     }
 
     // duplicated in Payrun!
-    public virtual async Task RebuildAsync(int parentId, int itemId)
+    public virtual async Task RebuildAsync(IDbContext context, int parentId, int itemId)
     {
         if (parentId == default)
         {
@@ -55,7 +55,7 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit> : TrackC
         using var txScope = TransactionFactory.NewTransactionScope();
 
         // read item
-        var item = await GetAsync(parentId, itemId);
+        var item = await GetAsync(context, parentId, itemId);
         if (item == null)
         {
             throw new PayrollException($"Unknown script object {typeof(TDomain)} with id {itemId}");
@@ -67,17 +67,17 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit> : TrackC
         }
 
         // rebuild script binary
-        await SetupBinaryAsync(parentId, item);
+        await SetupBinaryAsync(context, parentId, item);
 
         // update item
-        await UpdateAsync(parentId, item);
+        await UpdateAsync(context, parentId, item);
 
         // commit transaction
         txScope.Complete();
     }
 
     // duplicated in ScriptChildDomainSqlRepository!
-    protected virtual async Task SetupBinaryAsync(int parentId, TDomain item)
+    protected virtual async Task SetupBinaryAsync(IDbContext context, int parentId, TDomain item)
     {
         if (!(item is IScriptObject scriptObject))
         {
@@ -97,7 +97,7 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit> : TrackC
         IEnumerable<Script> scripts = null;
         if (functionScripts.Any() && scriptObject.HasObjectScripts)
         {
-            scripts = await ScriptRepository.GetFunctionScriptsAsync(parentId, functionScripts.Keys.ToList());
+            scripts = await ScriptRepository.GetFunctionScriptsAsync(context, parentId, functionScripts.Keys.ToList());
         }
 
         // embedded scripts (optional)
@@ -114,8 +114,8 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit> : TrackC
         }
 
 #if DEBUG
-            // performance optimization: added script source only in debug mode
-            scriptObject.Script = result.Script;
+        // performance optimization: added script source only in debug mode
+        scriptObject.Script = result.Script;
 #endif
 
         // set the current version

@@ -19,8 +19,9 @@ public interface ILookupRepository<T> : ITrackChildDomainRepository<T, LookupAud
     /// <summary>
     /// Determine if any of the lookup names are existing
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupNames">The lookup names</param>
     /// <returns>True if any lookup with this name exists</returns>
-    Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> lookupNames);
+    Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> lookupNames);
 }

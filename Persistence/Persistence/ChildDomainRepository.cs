@@ -13,10 +13,18 @@ namespace PayrollEngine.Persistence;
 public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDomainRepository<T>
     where T : IDomainObject
 {
+    /// <summary>
+    /// The parent field name
+    /// </summary>
     public string ParentFieldName { get; }
 
-    protected ChildDomainRepository(string tableName, string parentFieldName, IDbContext context) :
-        base(tableName, context)
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="tableName">The table name</param>
+    /// <param name="parentFieldName">The parent field name</param>
+    protected ChildDomainRepository(string tableName, string parentFieldName) :
+        base(tableName)
     {
         if (string.IsNullOrWhiteSpace(parentFieldName))
         {
@@ -28,43 +36,68 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
     #region Query/Get
 
+    /// <summary>
+    /// Setup the database query
+    /// </summary>
+    /// <param name="dbQuery">The database query</param>
+    /// <param name="query">The payroll query</param>
     protected virtual void SetupDbQuery(SqlKata.Query dbQuery, Query query)
     {
     }
 
-    public virtual async Task<IEnumerable<T>> QueryAsync(int parentId, Query query = null)
+    /// <summary>
+    /// Query items
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="query">The payroll query</param>
+    /// <returns>The items matching the query criteria</returns>
+    public virtual async Task<IEnumerable<T>> QueryAsync(IDbContext context, int parentId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, ParentFieldName, parentId, query);
+        var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, ParentFieldName, parentId, query);
         SetupDbQuery(dbQuery, query);
 
         // query compilation
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var items = (await QueryAsync<T>(compileQuery)).ToList();
+        var items = (await QueryAsync<T>(context, compileQuery)).ToList();
 
         // notification
-        await OnRetrieved(parentId, items);
+        await OnRetrieved(context, parentId, items);
 
         return items;
     }
 
-    public virtual async Task<long> QueryCountAsync(int parentId, Query query = null)
+    /// <summary>
+    /// Query items count
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="query">The payroll query</param>
+    /// <returns>The count of items, matching the query criteria</returns>
+    public virtual async Task<long> QueryCountAsync(IDbContext context, int parentId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, ParentFieldName, parentId, query, QueryMode.ItemCount);
+        var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, ParentFieldName, parentId, query, QueryMode.ItemCount);
         SetupDbQuery(dbQuery, query);
 
         // query compilation
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var count = await QuerySingleAsync<long>(compileQuery);
+        var count = await QuerySingleAsync<long>(context, compileQuery);
         return count;
     }
 
-    public virtual async Task<int?> GetParentIdAsync(int itemId)
+    /// <summary>
+    /// Get the parent record id
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="itemId">The item id</param>
+    /// <returns>The parent item id</returns>
+    public virtual async Task<int?> GetParentIdAsync(IDbContext context, int itemId)
     {
         if (itemId <= 0)
         {
@@ -76,11 +109,18 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         var compileQuery = CompileQuery(query);
 
         // SELECT execution
-        var result = await QueryAsync<int>(compileQuery);
+        var result = await QueryAsync<int>(context, compileQuery);
         return result.FirstOrDefault();
     }
 
-    public virtual async Task<T> GetAsync(int parentId, int itemId)
+    /// <summary>
+    /// Get item
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="itemId">The item id</param>
+    /// <returns>The item</returns>
+    public virtual async Task<T> GetAsync(IDbContext context, int parentId, int itemId)
     {
         if (parentId <= 0)
         {
@@ -90,7 +130,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         {
             throw new ArgumentOutOfRangeException(nameof(itemId));
         }
-        var item = (await SelectAsync<T>(TableName, new()
+        var item = (await SelectAsync<T>(context, TableName, new()
         {
             { ParentFieldName, parentId },
             { DbSchema.ObjectColumn.Id, itemId }
@@ -99,22 +139,34 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         // notification
         if (item != null)
         {
-            await OnRetrieved(parentId, item);
+            await OnRetrieved(context, parentId, item);
         }
 
         return item;
     }
 
-    protected virtual Task OnRetrieved(int parentId, T item) =>
+    /// <summary>
+    /// Item retrieved handler
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The retrieved item</param>
+    protected virtual Task OnRetrieved(IDbContext context, int parentId, T item) =>
         Task.FromResult<object>(null);
 
-    protected virtual async Task OnRetrieved(int parentId, IEnumerable<T> items)
+    /// <summary>
+    /// Items retrieved handler
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="items">The retrieved items</param>
+    protected virtual async Task OnRetrieved(IDbContext context, int parentId, IEnumerable<T> items)
     {
         if (items != null)
         {
             foreach (var item in items)
             {
-                await OnRetrieved(parentId, item);
+                await OnRetrieved(context, parentId, item);
             }
         }
     }
@@ -123,21 +175,35 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
     #region Create
 
-    public virtual async Task<T> CreateAsync(int parentId, T obj)
+    /// <summary>
+    /// Create item
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to create</param>
+    /// <returns>Created item</returns>
+    public virtual async Task<T> CreateAsync(IDbContext context, int parentId, T item)
     {
-        if (obj == null)
+        if (item == null)
         {
-            throw new ArgumentNullException(nameof(obj));
+            throw new ArgumentNullException(nameof(item));
         }
 
         // create transaction
         using var txScope = TransactionFactory.NewTransactionScope();
-        var inserted = await InsertObject(parentId, obj);
+        var inserted = await InsertObject(context, parentId, item);
         txScope.Complete();
-        return inserted ? obj : default;
+        return inserted ? item : default;
     }
 
-    public virtual async Task<IEnumerable<T>> CreateAsync(int parentId, IEnumerable<T> items)
+    /// <summary>
+    /// Create items
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="items">The items to create</param>
+    /// <returns>Created items</returns>
+    public virtual async Task<IEnumerable<T>> CreateAsync(IDbContext context, int parentId, IEnumerable<T> items)
     {
         if (items == null)
         {
@@ -149,7 +215,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         using var txScope = TransactionFactory.NewTransactionScope();
         foreach (var obj in items)
         {
-            if (await InsertObject(parentId, obj))
+            if (await InsertObject(context, parentId, obj))
             {
                 createdObjects.Add(obj);
             }
@@ -159,7 +225,13 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         return createdObjects;
     }
 
-    public virtual async Task CreateBulkAsync(int parentId, IEnumerable<T> items)
+    /// <summary>
+    /// Create items within a bulk operation
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="items">The items to create</param>
+    public virtual async Task CreateBulkAsync(IDbContext context, int parentId, IEnumerable<T> items)
     {
         var objectList = items.ToList();
         if (!objectList.Any())
@@ -175,35 +247,42 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
             var parameters = new DbParameterCollection();
             GetCreateData(parentId, result, parameters);
             dataObjects.Add(parameters);
-            query ??= DbQueryFactory.NewBulkInsertQuery(TableName, parameters.ParameterNames);
+            query ??= DbQueryFactory.NewBulkInsertQuery(TableName, parameters.GetNames());
         }
-        await ExecuteAsync(query, dataObjects);
+        await ExecuteAsync(context, query, dataObjects);
     }
 
-    private async Task<bool> InsertObject(int parentId, T item)
+    /// <summary>
+    /// Insert new item
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to create</param>
+    /// <returns>True for inserted item</returns>
+    private async Task<bool> InsertObject(IDbContext context, int parentId, T item)
     {
         // create and update date
         item.InitCreatedDate(Date.Now);
 
-        if (await OnCreatingAsync(parentId, item))
+        if (await OnCreatingAsync(context, parentId, item))
         {
             var parameters = new DbParameterCollection();
             GetCreateData(parentId, item, parameters);
 
             // build query statement
             var queryBuilder = new StringBuilder();
-            queryBuilder.AppendDbInsert(TableName, parameters.ParameterNames.ToList());
+            queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
             queryBuilder.AppendIdentitySelect();
             var query = queryBuilder.ToString();
 
             // db insert
             try
             {
-                item.Id = (int)await ExecuteScalarAsync(query, parameters);
+                item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
             }
             catch (Exception exception)
             {
-                var transformException = Context.TransformException(exception);
+                var transformException = context.TransformException(exception);
                 if (transformException != null)
                 {
                     throw transformException;
@@ -211,18 +290,24 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
                 throw;
             }
 
-            await OnCreatedAsync(parentId, item);
+            await OnCreatedAsync(context, parentId, item);
             return true;
         }
 
         return false;
     }
 
+    /// <summary>
+    /// Get item create data
+    /// </summary>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to create</param>
+    /// <param name="parameters">The database parameters</param>
     protected virtual void GetCreateData(int parentId, T item, DbParameterCollection parameters)
     {
         GetObjectData(item, parameters);
         GetObjectCreateData(item, parameters);
-        if (!parameters.ParameterNames.Any())
+        if (!parameters.HasAny)
         {
             throw new PayrollException($"Missing object data for object {item}");
         }
@@ -234,14 +319,36 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         parameters.Add(ParentFieldName, parentId);
     }
 
-    protected virtual Task<bool> OnCreatingAsync(int parentId, T item) => Task.FromResult(true);
-    protected virtual Task OnCreatedAsync(int parentId, T item) => Task.FromResult(0);
+    /// <summary>
+    /// Item creating request
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to create</param>
+    /// <returns>True for a valid item</returns>
+    protected virtual Task<bool> OnCreatingAsync(IDbContext context, int parentId, T item) => 
+        Task.FromResult(true);
+
+    /// <summary>
+    /// Item created handler
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to create</param>
+    protected virtual Task OnCreatedAsync(IDbContext context, int parentId, T item) => Task.FromResult(0);
 
     #endregion
 
     #region Update
 
-    public virtual async Task<T> UpdateAsync(int parentId, T item)
+    /// <summary>
+    /// Update existing item
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to update</param>
+    /// <returns>The updated item</returns>
+    public virtual async Task<T> UpdateAsync(IDbContext context, int parentId, T item)
     {
         if (item == null)
         {
@@ -250,51 +357,71 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         // update date
         item.Updated = Date.Now;
-        if (await OnUpdatingAsync(parentId, item))
+        if (await OnUpdatingAsync(context, parentId, item))
         {
             var parameters = new DbParameterCollection();
             GetUpdateData(item, parameters);
 
             // build update statement
             var queryBuilder = new StringBuilder();
-            queryBuilder.AppendDbUpdate(TableName, parameters.ParameterNames.ToList(), item.Id);
+            queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), item.Id);
             var query = queryBuilder.ToString();
 
             // transaction
             using var txScope = TransactionFactory.NewTransactionScope();
             // db update
-            await ExecuteAsync(query, parameters);
+            await ExecuteAsync(context, query, parameters);
             // children
-            await OnUpdatedAsync(parentId, item);
+            await OnUpdatedAsync(context, parentId, item);
             txScope.Complete();
         }
         return item;
     }
 
-    protected virtual Task<bool> OnUpdatingAsync(int parentId, T item) =>
+    /// <summary>
+    /// Item updating request
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to update</param>
+    /// <returns>True for a valid item</returns>
+    protected virtual Task<bool> OnUpdatingAsync(IDbContext context, int parentId, T item) =>
         Task.FromResult(true);
 
-    protected virtual Task OnUpdatedAsync(int parentId, T item) =>
+    /// <summary>
+    /// Item updated handler
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="item">The item to update</param>
+    protected virtual Task OnUpdatedAsync(IDbContext context, int parentId, T item) =>
         Task.FromResult<object>(null);
 
-    protected virtual void GetUpdateData(T obj, DbParameterCollection parameters)
+    /// <summary>
+    /// Get item updated data
+    /// </summary>
+    /// <param name="item">The item to update</param>
+    /// <param name="parameters">The database parameters</param>
+    protected virtual void GetUpdateData(T item, DbParameterCollection parameters)
     {
-        GetObjectData(obj, parameters);
-        GetObjectUpdateData(obj, parameters);
-        if (!parameters.ParameterNames.Any())
-        {
-            //   throw new PayrollException($"Missing object data for object {obj}");
-        }
-
-        parameters.Add(DbSchema.ObjectColumn.Status, obj.Status);
-        parameters.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(obj));
+        GetObjectData(item, parameters);
+        GetObjectUpdateData(item, parameters);
+        parameters.Add(DbSchema.ObjectColumn.Status, item.Status);
+        parameters.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(item));
     }
 
     #endregion
 
     #region Delete
 
-    public virtual async Task<bool> DeleteAsync(int parentId, int itemId)
+    /// <summary>
+    /// Delete existing item
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="itemId">The item id</param>
+    /// <returns>The updated item</returns>
+    public virtual async Task<bool> DeleteAsync(IDbContext context, int parentId, int itemId)
     {
         if (parentId <= 0)
         {
@@ -307,24 +434,37 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         var deleted = false;
         using var txScope = TransactionFactory.NewTransactionScope();
-        if (await OnDeletingAsync(parentId, itemId))
+        if (await OnDeletingAsync(context, parentId, itemId))
         {
             // item
             var query = DbQueryFactory.NewDeleteQuery(TableName, itemId);
             var compileQuery = CompileQuery(query);
 
             // DELETE execution
-            deleted = (await ExecuteAsync(compileQuery)) > 0;
-            await OnDeletedAsync(parentId, itemId);
+            deleted = (await ExecuteAsync(context, compileQuery)) > 0;
+            await OnDeletedAsync(context, parentId, itemId);
         }
         txScope.Complete();
         return deleted;
     }
 
-    protected virtual Task<bool> OnDeletingAsync(int parentId, int itemId) =>
+    /// <summary>
+    /// Item deleting request
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="itemId">The item id</param>
+    /// <returns>True for a valid item</returns>
+    protected virtual Task<bool> OnDeletingAsync(IDbContext context, int parentId, int itemId) =>
         Task.FromResult(true);
 
-    protected virtual Task OnDeletedAsync(int parentId, int id) =>
+    /// <summary>
+    /// Item deleted handler
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="itemId">The item id</param>
+    protected virtual Task OnDeletedAsync(IDbContext context, int parentId, int itemId) =>
         Task.FromResult<object>(null);
 
     #endregion

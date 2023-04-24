@@ -10,16 +10,16 @@ namespace PayrollEngine.Persistence;
 
 public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPayrollResultRepository
 {
-    public PayrollResultRepository(IDbContext context) :
-        base(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId, context)
+    public PayrollResultRepository() :
+        base(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId)
     {
     }
 
     #region Result Values
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(int tenantId,
-        int employeeId, Query query = null)
+    public virtual async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context,
+        int tenantId, int employeeId, Query query = null)
     {
         if (tenantId <= 0)
         {
@@ -37,7 +37,7 @@ public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPa
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // SELECT execution
-        IEnumerable<PayrollResultValue> items = (await QueryCaseValuesAsync<PayrollResultValue>(
+        IEnumerable<PayrollResultValue> items = (await QueryCaseValuesAsync<PayrollResultValue>(context,
             new()
             {
                 ParentId = tenantId,
@@ -50,7 +50,7 @@ public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPa
     }
 
     /// <inheritdoc />
-    public virtual async Task<long> QueryResultValueCountAsync(int tenantId, int employeeId, Query query = null)
+    public virtual async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null)
     {
         if (tenantId <= 0)
         {
@@ -68,7 +68,7 @@ public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPa
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // SELECT execution
-        var count = await QueryCaseValueCountAsync(
+        var count = await QueryCaseValueCountAsync(context,
             new()
             {
                 ParentId = tenantId,
@@ -85,28 +85,28 @@ public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPa
     #region Wage Type results
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<WageTypeResult>> GetWageTypeResultsAsync(WageTypeResultQuery query,
-        int? payrunJobId = null, int? parentPayrunJobId = null) =>
-        await new WageTypeResultCommand(Connection).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
+    public virtual async Task<IEnumerable<WageTypeResult>> GetWageTypeResultsAsync(IDbContext context,
+        WageTypeResultQuery query, int? payrunJobId = null, int? parentPayrunJobId = null) =>
+        await new WageTypeResultCommand(context).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<WageTypeCustomResult>> GetWageTypeCustomResultsAsync(WageTypeResultQuery query,
-        int? payrunJobId = null, int? parentPayrunJobId = null) =>
-        await new WageTypeCustomResultCommand(Connection).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
+    public virtual async Task<IEnumerable<WageTypeCustomResult>> GetWageTypeCustomResultsAsync(IDbContext context,
+        WageTypeResultQuery query, int? payrunJobId = null, int? parentPayrunJobId = null) =>
+        await new WageTypeCustomResultCommand(context).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
 
     #endregion
 
     #region Collector results
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<CollectorResult>> GetCollectorResultsAsync(CollectorResultQuery query,
-        int? payrunJobId = null, int? parentPayrunJobId = null) =>
-        await new CollectorResultCommand(Connection).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
+    public virtual async Task<IEnumerable<CollectorResult>> GetCollectorResultsAsync(IDbContext context,
+        CollectorResultQuery query, int? payrunJobId = null, int? parentPayrunJobId = null) =>
+        await new CollectorResultCommand(context).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<CollectorCustomResult>> GetCollectorCustomResultsAsync(CollectorResultQuery query,
-        int? payrunJobId = null, int? parentPayrunJobId = null) =>
-        await new CollectorCustomResultCommand(Connection).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
+    public virtual async Task<IEnumerable<CollectorCustomResult>> GetCollectorCustomResultsAsync(IDbContext context,
+    CollectorResultQuery query, int? payrunJobId = null, int? parentPayrunJobId = null) =>
+        await new CollectorCustomResultCommand(context).GetResultsAsync(query, payrunJobId, parentPayrunJobId);
 
     #endregion
 

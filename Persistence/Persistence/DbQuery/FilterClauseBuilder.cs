@@ -127,6 +127,10 @@ internal sealed class FilterClauseBuilder : QueryNodeVisitor<SqlKata.Query>
         {
             return query.WhereContains(column, value, true);
         }
+        if (string.Equals(functionName, QuerySpecification.NotContainsFunction))
+        {
+            return query.WhereNotContains(column, value, true);
+        }
         if (string.Equals(functionName, QuerySpecification.EndsWithFunction))
         {
             return query.WhereEnds(column, value, true);

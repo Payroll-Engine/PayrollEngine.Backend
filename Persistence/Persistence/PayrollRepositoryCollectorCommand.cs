@@ -3,25 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryCommandBase
 {
-    /// <summary>Derived collector</summary>
-    private sealed class DerivedCollector : Collector
-    {
-        /// <summary>The layer level</summary>
-        internal int Level { get; private set; }
-
-        /// <summary>The layer priority</summary>
-        internal int Priority { get; private set; }
-    }
-
-    internal PayrollRepositoryCollectorCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryCollectorCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -84,7 +73,7 @@ internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryComma
         }
 
         // retrieve all derived collectors (stored procedure)
-        var collectors = (await Connection.QueryAsync<DerivedCollector>(DbSchema.Procedures.GetDerivedCollectors,
+        var collectors = (await DbContext.QueryAsync<DerivedCollector>(DbSchema.Procedures.GetDerivedCollectors,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedCollectors(collectors, overrideType);

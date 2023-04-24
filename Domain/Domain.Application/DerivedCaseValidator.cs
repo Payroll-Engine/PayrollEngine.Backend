@@ -117,7 +117,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
 
         // case (derived)
-        var cases = (await PayrollRepository.GetDerivedCasesAsync(
+        var cases = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -300,7 +300,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         await CaseValidateAsync(cases, caseSet, issues);
 
         // case relations (active only)
-        var relations = (await PayrollRepository.GetDerivedCaseRelationsAsync(
+        var relations = (await PayrollRepository.GetDerivedCaseRelationsAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -331,7 +331,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             }
 
             // target case (derived)
-            var targetCase = (await PayrollRepository.GetDerivedCasesAsync(
+            var targetCase = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = Tenant.Id,
@@ -402,6 +402,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             var issues = new List<CaseValidationIssue>();
             var valid = new CaseScriptController().CaseValidate(validateScripts, new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,
@@ -449,6 +450,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             var issues = new List<CaseValidationIssue>();
             var valid = new CaseRelationScriptController().CaseRelationValidate(validateScripts, new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,

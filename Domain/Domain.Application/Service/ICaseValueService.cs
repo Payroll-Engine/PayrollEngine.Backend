@@ -29,8 +29,9 @@ public interface ICaseValueService<out TRepo, TDomain> : IChildApplicationServic
     /// <summary>
     /// Get all case slots from a specific case field
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="parentId">The case value parent id</param>
     /// <param name="caseFieldName">The case field name</param>
     /// <returns>The case values</returns>
-    Task<IEnumerable<string>> GetCaseValueSlotsAsync(int parentId, string caseFieldName);
+    Task<IEnumerable<string>> GetCaseValueSlotsAsync(IDbContext context, int parentId, string caseFieldName);
 }

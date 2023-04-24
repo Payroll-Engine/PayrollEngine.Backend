@@ -5,14 +5,13 @@ using PayrollEngine.Domain.Scripting;
 using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Application.Service;
-using PayrollEngine.Persistence;
 
 namespace PayrollEngine.Api.Core;
 
 internal static class ApiServiceFactory
 {
     // services setup
-    internal static void SetupApiServices(IServiceCollection services, IDbContext _)
+    internal static void SetupApiServices(IServiceCollection services)
     {
         // system services
         services.AddScoped(NewRegulationPermissionService);
@@ -397,6 +396,7 @@ internal static class ApiServiceFactory
                 serviceProvider.GetRequiredService<IQueryService>(),
                 new()
                 {
+                    DbContext = serviceProvider.GetRequiredService<IDbContext>(),
                     UserRepository = serviceProvider.GetRequiredService<IUserRepository>(),
                     TaskRepository = serviceProvider.GetRequiredService<ITaskRepository>(),
                     LogRepository = serviceProvider.GetRequiredService<ILogRepository>(),

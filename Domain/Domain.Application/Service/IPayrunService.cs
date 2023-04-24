@@ -6,5 +6,5 @@ namespace PayrollEngine.Domain.Application.Service;
 
 public interface IPayrunService : IChildApplicationService<IPayrunRepository, Payrun>
 {
-    Task RebuildAsync(int parentId, int itemId);
+    Task RebuildAsync(IDbContext context, int parentId, int itemId);
 }

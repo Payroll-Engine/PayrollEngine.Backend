@@ -80,7 +80,7 @@ public class UserController : Api.Controller.UserController
             return tenantResult;
         }
         // unique user by identifier
-        if (await Service.ExistsAnyAsync(tenantId, user.Identifier))
+        if (await Service.ExistsAnyAsync(Runtime.DbContext, tenantId, user.Identifier))
         {
             return BadRequest($"User with identifier {user.Identifier} already exists");
         }
@@ -158,7 +158,7 @@ public class UserController : Api.Controller.UserController
         }
 
         // user
-        var user = await Service.GetAsync(tenantId, userId);
+        var user = await Service.GetAsync(Runtime.DbContext, tenantId, userId);
         if (user == null)
         {
             return ObjectNotFoundRequest(userId);
@@ -200,7 +200,7 @@ public class UserController : Api.Controller.UserController
         // update password
         try
         {
-            await Service.UpdatePasswordAsync(tenantId, userId, password);
+            await Service.UpdatePasswordAsync(Runtime.DbContext, tenantId, userId, password);
         }
         catch (Exception exception)
         {

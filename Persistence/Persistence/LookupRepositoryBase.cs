@@ -9,8 +9,8 @@ namespace PayrollEngine.Persistence;
 public abstract class LookupRepositoryBase<T> : TrackChildDomainRepository<T, LookupAudit>
     where T : Lookup, new()
 {
-    protected LookupRepositoryBase(ILookupAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.Lookup, DbSchema.LookupColumn.RegulationId, auditRepository, context)
+    protected LookupRepositoryBase(ILookupAuditRepository auditRepository) :
+        base(DbSchema.Tables.Lookup, DbSchema.LookupColumn.RegulationId, auditRepository)
     {
     }
 
@@ -30,6 +30,6 @@ public abstract class LookupRepositoryBase<T> : TrackChildDomainRepository<T, Lo
         base.GetObjectData(lookup, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> lookupNames) =>
-        await ExistsAnyAsync(DbSchema.LookupColumn.RegulationId, regulationId, DbSchema.LookupColumn.Name, lookupNames);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> lookupNames) =>
+        await ExistsAnyAsync(context, DbSchema.LookupColumn.RegulationId, regulationId, DbSchema.LookupColumn.Name, lookupNames);
 }

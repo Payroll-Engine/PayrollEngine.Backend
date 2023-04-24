@@ -13,6 +13,6 @@ public class CollectorService : ScriptTrackChildApplicationService<ICollectorRep
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> collectorNames) =>
-        await Repository.ExistsAnyAsync(regulationId, collectorNames);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> collectorNames) =>
+        await Repository.ExistsAnyAsync(context, regulationId, collectorNames);
 }

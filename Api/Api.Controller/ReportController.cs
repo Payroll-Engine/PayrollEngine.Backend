@@ -5,8 +5,8 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -18,7 +18,7 @@ namespace PayrollEngine.Api.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Report)]
 public abstract class ReportController : ScriptTrackChildObjectController<IRegulationService, IReportService,
     IRegulationRepository, IReportRepository,
-    DomainObject.Tenant, DomainObject.Report, DomainObject.ReportAudit, ApiObject.Report>
+    Tenant, Report, ReportAudit, ApiObject.Report>
 {
     private readonly ReportSetMap reportSetMap = new();
     private readonly ReportRequestMap reportRequestMap = new();
@@ -35,20 +35,20 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
         ReportSetService = reportSetService ?? throw new ArgumentNullException(nameof(reportSetService));
     }
 
-    public virtual async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(int tenantId, int regulationId,
-        int reportId, ApiObject.ReportRequest reportRequest)
+    public virtual async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
+        int tenantId, int regulationId, int reportId, ApiObject.ReportRequest reportRequest)
     {
         try
         {
             // tenant
-            var tenant = await TenantService.GetAsync(tenantId);
+            var tenant = await TenantService.GetAsync(Runtime.DbContext, tenantId);
             if (tenant == null)
             {
                 return BadRequest($"Unknown tenant with id {tenantId}");
             }
 
             // report
-            var report = await ReportSetService.GetAsync(regulationId, reportId);
+            var report = await ReportSetService.GetAsync(Runtime.DbContext, regulationId, reportId);
             if (report == null)
             {
                 return BadRequest($"Unknown report with id {reportId}");
@@ -71,20 +71,20 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
         }
     }
 
-    public virtual async Task<ActionResult<ApiObject.ReportResponse>> ExecuteReportAsync(int tenantId, int regulationId, int reportId,
-        ApiObject.ReportRequest request)
+    public virtual async Task<ActionResult<ApiObject.ReportResponse>> ExecuteReportAsync(
+        int tenantId, int regulationId, int reportId, ApiObject.ReportRequest request)
     {
         try
         {
             // tenant
-            var tenant = await TenantService.GetAsync(tenantId);
+            var tenant = await TenantService.GetAsync(Runtime.DbContext, tenantId);
             if (tenant == null)
             {
                 return BadRequest($"Unknown tenant with id {tenantId}");
             }
 
             // report
-            var report = await ReportSetService.GetAsync(regulationId, reportId);
+            var report = await ReportSetService.GetAsync(Runtime.DbContext, regulationId, reportId);
             if (report == null)
             {
                 return BadRequest($"Unknown report with id {reportId}");
@@ -106,16 +106,17 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.ReportSet>> CreateReportSetAsync(int regulationId, ApiObject.ReportSet report)
+    protected virtual async Task<ActionResult<ApiObject.ReportSet>> CreateReportSetAsync(
+        int regulationId, ApiObject.ReportSet report)
     {
         var domainReport = reportSetMap.ToDomain(report);
-        var result = await ReportSetService.CreateAsync(regulationId, domainReport);
+        var result = await ReportSetService.CreateAsync(Runtime.DbContext, regulationId, domainReport);
         return reportSetMap.ToApi(result);
     }
 
     protected virtual async Task<IActionResult> DeleteReportSetAsync(int regulationId, int reportId)
     {
-        await ReportSetService.DeleteAsync(regulationId, reportId);
+        await ReportSetService.DeleteAsync(Runtime.DbContext, regulationId, reportId);
         return Ok();
     }
 

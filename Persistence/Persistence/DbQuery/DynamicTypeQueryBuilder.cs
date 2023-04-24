@@ -24,8 +24,10 @@ internal sealed class DynamicTypeQueryBuilder<T> : TypeQueryBuilder<T>
         ContainerNames = containerNames?.Distinct().ToList();
     }
 
+    /// <inheritdoc />
     protected override IQueryContext QueryContext => this;
 
+    /// <inheritdoc />
     protected override Type GetColumnType(string name)
     {
         // type column
@@ -40,6 +42,8 @@ internal sealed class DynamicTypeQueryBuilder<T> : TypeQueryBuilder<T>
         return null;
     }
 
+    /// <inheritdoc />
+    /// <remarks>Do not call the base class method</remarks>
     protected override string ValidateColumn(string name)
     {
         // type column

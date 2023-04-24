@@ -40,7 +40,7 @@ public class ReportProcessor : ReportTool
         }
 
         // user
-        var user = await GetUserAsync(reportRequest.UserId);
+        var user = await GetUserAsync(Settings.DbContext, reportRequest.UserId);
 
         // setup report, validate request
         await SetupReport(report, reportRequest);
@@ -185,6 +185,7 @@ public class ReportProcessor : ReportTool
     {
         return new()
         {
+            DbContext = Settings.DbContext,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = user,

@@ -143,7 +143,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         return caseField != null ? (int)caseField.ValueType : null;
     }
 
@@ -154,7 +154,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         return caseField?.Attributes?.GetValue<object>(attributeName);
     }
 
@@ -165,7 +165,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         return caseField?.ValueAttributes?.GetValue<object>(attributeName);
     }
 
@@ -213,13 +213,13 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
             throw new ArgumentException(nameof(caseFieldName));
         }
 
-        var caseField = await CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(caseFieldName);
+        var caseField = await CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName);
         if (caseField == null)
         {
             return null;
         }
 
-        var caseType = await CaseValueProvider.CaseFieldProvider.GetCaseTypeAsync(caseFieldName);
+        var caseType = await CaseValueProvider.CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
         if (!caseType.HasValue)
         {
             return null;
@@ -332,7 +332,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
         }
 
         var result = Task.Run(() =>
-                RegulationLookupProvider.GetLookupValueDataAsync(lookupName, lookupKey, language)).Result?.Value;
+                RegulationLookupProvider.GetLookupValueDataAsync(Settings.DbContext, lookupName, lookupKey, language)).Result?.Value;
         return result;
     }
 
@@ -355,7 +355,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
             language = (Language)languageCode.Value;
         }
 
-        return Task.Run(() => RegulationLookupProvider.GetRangeLookupValueDataAsync(lookupName, rangeValue, lookupKey, language)).
+        return Task.Run(() => RegulationLookupProvider.GetRangeLookupValueDataAsync(Settings.DbContext, lookupName, rangeValue, lookupKey, language)).
             Result?.Value;
     }
 

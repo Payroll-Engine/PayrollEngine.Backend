@@ -12,6 +12,6 @@ public class LookupSetService : ChildApplicationService<ILookupSetRepository, Lo
     {
     }
 
-    public async Task<LookupSet> GetSetAsync(int tenantId, int regulationId, int lookupId) =>
-        await Repository.GetSetAsync(tenantId, regulationId, lookupId);
+    public async Task<LookupSet> GetSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId) =>
+        await Repository.GetSetAsync(context, tenantId, regulationId, lookupId);
 }

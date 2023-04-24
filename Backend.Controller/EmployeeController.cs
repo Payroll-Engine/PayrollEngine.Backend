@@ -80,7 +80,7 @@ public class EmployeeController : Api.Controller.EmployeeController
             return tenantResult;
         }
         // unique employee by identifier
-        if (await Service.ExistsAnyAsync(tenantId, employee.Identifier))
+        if (await Service.ExistsAnyAsync(Runtime.DbContext, tenantId, employee.Identifier))
         {
             return BadRequest($"Employee with identifier {employee.Identifier} already exists");
         }

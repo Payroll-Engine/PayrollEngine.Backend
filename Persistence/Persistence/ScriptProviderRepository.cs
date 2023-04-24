@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -19,12 +18,7 @@ public class ScriptProviderRepository : RepositoryBase, IScriptProvider
         { typeof(Payrun), $"{nameof(Payrun)}"}
     };
 
-    public ScriptProviderRepository(IDbContext context) :
-        base(context)
-    {
-    }
-
-    public async Task<byte[]> GetBinaryAsync(IScriptObject scriptObject)
+    public async Task<byte[]> GetBinaryAsync(IDbContext context, IScriptObject scriptObject)
     {
         // table name
         string tableName = null;
@@ -48,7 +42,7 @@ public class ScriptProviderRepository : RepositoryBase, IScriptProvider
             .Where(nameof(IScriptObject.ScriptHash), scriptObject.ScriptHash);
         var compileQuery = CompileQuery(query);
 
-        var binary = await Connection.QueryFirstAsync<byte[]>(compileQuery);
+        var binary = await context.QueryFirstAsync<byte[]>(compileQuery);
         return binary;
     }
 }

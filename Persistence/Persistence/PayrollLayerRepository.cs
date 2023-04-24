@@ -9,8 +9,8 @@ namespace PayrollEngine.Persistence;
 public class PayrollLayerRepository : ChildDomainRepository<PayrollLayer>, IPayrollLayerRepository
 {
 
-    public PayrollLayerRepository(IDbContext context) :
-        base(DbSchema.Tables.PayrollLayer, DbSchema.PayrollLayerColumn.PayrollId, context)
+    public PayrollLayerRepository() :
+        base(DbSchema.Tables.PayrollLayer, DbSchema.PayrollLayerColumn.PayrollId)
     {
     }
 
@@ -23,7 +23,7 @@ public class PayrollLayerRepository : ChildDomainRepository<PayrollLayer>, IPayr
         base.GetObjectData(payrollLayer, parameters);
     }
 
-    public virtual async Task<bool> ExistsAsync(int payrollId, int level, int priority)
+    public virtual async Task<bool> ExistsAsync(IDbContext context, int payrollId, int level, int priority)
     {
         if (payrollId <= 0)
         {
@@ -38,7 +38,7 @@ public class PayrollLayerRepository : ChildDomainRepository<PayrollLayer>, IPayr
         var compileQuery = CompileQuery(query);
 
         // SELECT execution
-        var count = await ExecuteScalarAsync<int>(compileQuery);
+        var count = await ExecuteScalarAsync<int>(context, compileQuery);
         return count == 1;
     }
 }

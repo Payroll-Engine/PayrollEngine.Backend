@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class CaseFieldAuditRepository : AuditChildDomainRepository<CaseFieldAudit>, ICaseFieldAuditRepository
 {
-    public CaseFieldAuditRepository(IDbContext context) :
-        base(DbSchema.Tables.CaseFieldAudit, DbSchema.CaseFieldAuditColumn.CaseFieldId, context)
+    public CaseFieldAuditRepository() : 
+        base(DbSchema.Tables.CaseFieldAudit, DbSchema.CaseFieldAuditColumn.CaseFieldId)
     {
     }
 

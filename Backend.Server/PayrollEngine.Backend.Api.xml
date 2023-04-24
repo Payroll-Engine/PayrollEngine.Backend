@@ -54,10 +54,6 @@
             This method gets called by the runtime. Use this method to add services to the container. 
             </summary>
         </member>
-        <member name="M:PayrollEngine.Backend.Api.Startup.GetDatabaseContext">
-            <summary>Creates the database context</summary>
-            <returns>The database context</returns>
-        </member>
         <member name="M:PayrollEngine.Backend.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
             <summary>
             Application configuration

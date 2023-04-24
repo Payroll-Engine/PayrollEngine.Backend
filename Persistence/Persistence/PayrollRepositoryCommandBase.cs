@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using PayrollEngine.Domain.Model;
 
@@ -8,11 +7,11 @@ namespace PayrollEngine.Persistence;
 
 internal abstract class PayrollRepositoryCommandBase
 {
-    internal IDbConnection Connection { get; }
+    internal IDbContext DbContext { get; }
 
-    protected PayrollRepositoryCommandBase(IDbConnection connection)
+    protected PayrollRepositoryCommandBase(IDbContext dbContext)
     {
-        Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+        DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     protected static void ApplyOverrideFilter<TKey, TValue>(IEnumerable<IGrouping<TKey, TValue>> derivedItemsByKey,

@@ -14,9 +14,10 @@ public interface ITrackChildDomainRepository<TDomain, TAudit> : IChildDomainRepo
     /// <summary>
     /// Get current audit object from the tracked item
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="trackObjectId">The tracking object id</param>
     /// <returns>The audit object</returns>
-    Task<TAudit> GetCurrentAuditAsync(int trackObjectId);
+    Task<TAudit> GetCurrentAuditAsync(IDbContext context, int trackObjectId);
 
     /// <summary>
     /// Create object from audit object

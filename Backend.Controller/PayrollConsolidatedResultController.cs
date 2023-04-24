@@ -48,7 +48,7 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
             return tenantResult;
         }
 
-        var results = await Service.GetPayrollResultAsync(
+        var results = await Service.GetPayrollResultAsync(Runtime.DbContext,
             new()
             {
                 TenantId = tenantId,
@@ -97,7 +97,7 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
             return BadRequest("Missing consolidated period start dates");
         }
 
-        var results = await Service.GetCollectorResultsAsync(
+        var results = await Service.GetCollectorResultsAsync(Runtime.DbContext,
             new()
             {
                 TenantId = tenantId,
@@ -148,7 +148,7 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
             return BadRequest("Missing consolidated period start dates");
         }
 
-        var results = await Service.GetWageTypeResultsAsync(
+        var results = await Service.GetWageTypeResultsAsync(Runtime.DbContext,
             new()
             {
                 TenantId = tenantId,
@@ -199,7 +199,7 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
             return BadRequest("Missing consolidated period start dates");
         }
 
-        var results = await Service.GetPayrunResultsAsync(
+        var results = await Service.GetPayrunResultsAsync(Runtime.DbContext,
             new()
             {
                 TenantId = tenantId,

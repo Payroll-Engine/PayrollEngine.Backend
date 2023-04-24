@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -19,7 +20,7 @@ namespace PayrollEngine.Api.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Regulation)]
 public abstract class RegulationController : RepositoryChildObjectController<ITenantService, IRegulationService,
     ITenantRepository, IRegulationRepository,
-    DomainObject.Tenant, DomainObject.Regulation, ApiObject.Regulation>
+    Tenant, Regulation, ApiObject.Regulation>
 {
     protected ILookupSetService LookupSetService { get; }
     protected ICaseService CaseService { get; }
@@ -48,21 +49,21 @@ public abstract class RegulationController : RepositoryChildObjectController<ITe
             }
 
             // case field
-            var caseFields = await CaseFieldService.GetRegulationCaseFieldsAsync(tenantId, new[] { caseFieldName });
+            var caseFields = await CaseFieldService.GetRegulationCaseFieldsAsync(Runtime.DbContext, tenantId, new[] { caseFieldName });
             var caseId = caseFields.FirstOrDefault()?.Id;
             if (!caseId.HasValue)
             {
                 return BadRequest($"Unknown case field {caseFieldName}");
             }
 
-            var regulationId = await CaseService.GetParentIdAsync(caseId.Value);
+            var regulationId = await CaseService.GetParentIdAsync(Runtime.DbContext, caseId.Value);
             if (!regulationId.HasValue)
             {
                 return BadRequest($"Unknown case for case field {caseFieldName}");
             }
 
             // case
-            var @case = await CaseService.GetAsync(regulationId.Value, caseId.Value);
+            var @case = await CaseService.GetAsync(Runtime.DbContext, regulationId.Value, caseId.Value);
             return @case.Name;
         }
         catch (Exception exception)

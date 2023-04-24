@@ -74,13 +74,13 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
     }
 
     /// <inheritdoc />
-    public async Task<CaseType?> GetCaseTypeAsync(string caseFieldName)
+    public async Task<CaseType?> GetCaseTypeAsync(IDbContext context, string caseFieldName)
     {
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
-        await EnsureCaseFieldsAsync();
+        await EnsureCaseFieldsAsync(context);
 
         // case field
         var key = new CaseFieldKey(PayrollId, caseFieldName);
@@ -94,13 +94,13 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
     }
 
     /// <inheritdoc />
-    public async Task<int?> GetParentCaseIdAsync(int caseFieldId) =>
-        await PayrollRepository.GetParentCaseIdAsync(caseFieldId);
+    public async Task<int?> GetParentCaseIdAsync(IDbContext context, int caseFieldId) =>
+        await PayrollRepository.GetParentCaseIdAsync(context, caseFieldId);
 
     /// <inheritdoc />
-    public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(CaseType caseType)
+    public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(IDbContext context, CaseType caseType)
     {
-        await EnsureCaseFieldsAsync();
+        await EnsureCaseFieldsAsync(context);
         var caseFields = new List<ChildCaseField>();
         foreach (var value in derivedCaseFields.Values)
         {
@@ -115,14 +115,14 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(string caseFieldName)
+    public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(IDbContext context, string caseFieldName)
     {
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
 
-        await EnsureCaseFieldsAsync();
+        await EnsureCaseFieldsAsync(context);
 
         // case field key
         var key = new CaseFieldKey(PayrollId, caseFieldName);
@@ -133,7 +133,7 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
         return derivedCaseFields[key];
     }
 
-    private async System.Threading.Tasks.Task EnsureCaseFieldsAsync()
+    private async System.Threading.Tasks.Task EnsureCaseFieldsAsync(IDbContext context)
     {
         if (derivedCaseFields != null)
         {
@@ -148,7 +148,7 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
         derivedCaseFields = new Dictionary<CaseFieldKey, List<ChildCaseField>>();
 
         // load derived case fields
-        var caseFields = (await PayrollRepository.GetDerivedCaseFieldsAsync(
+        var caseFields = (await PayrollRepository.GetDerivedCaseFieldsAsync(context,
             new()
             {
                 TenantId = TenantId,

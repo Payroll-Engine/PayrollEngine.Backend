@@ -13,9 +13,8 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
     public IEmployeeRepository EmployeeRepository { get; }
 
     public EmployeeCaseChangeRepository(IEmployeeRepository employeeRepository,
-        CaseChangeRepositorySettings settings, IDbContext context) :
-        base(DbSchema.Tables.EmployeeCaseChange, DbSchema.EmployeeCaseChangeColumn.EmployeeId,
-            settings, context)
+        CaseChangeRepositorySettings settings) :
+        base(DbSchema.Tables.EmployeeCaseChange, DbSchema.EmployeeCaseChangeColumn.EmployeeId, settings)
     {
         EmployeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
     }
@@ -26,7 +25,8 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
         base.GetObjectCreateData(caseChange, parameters);
     }
 
-    protected override async Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(int tenantId, int employeeId, Query query = null)
+    protected override async Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(IDbContext context,
+        int tenantId, int employeeId, Query query = null)
     {
         // db query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
@@ -43,7 +43,7 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // SELECT execution
-        IEnumerable<CaseChangeCaseValue> items = (await QueryCaseValuesAsync<CaseChangeCaseValue>(
+        IEnumerable<CaseChangeCaseValue> items = (await QueryCaseValuesAsync<CaseChangeCaseValue>(context,
             new()
             {
                 ParentId = employeeId,
@@ -55,7 +55,7 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
         return items;
     }
 
-    protected override async Task<long> QueryCaseChangesValuesCountAsync(int tenantId, int employeeId, Query query = null)
+    protected override async Task<long> QueryCaseChangesValuesCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null)
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
@@ -72,7 +72,7 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // SELECT execution
-        var count = await QueryCaseValueCountAsync(
+        var count = await QueryCaseValueCountAsync(context,
             new()
             {
                 ParentId = employeeId,

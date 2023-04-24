@@ -32,7 +32,7 @@ public abstract class PayrunController : RepositoryChildObjectController<ITenant
     protected override async Task<ActionResult<ApiObject.Payrun>> CreateAsync(int regulationId, ApiObject.Payrun payrun)
     {
         // payroll
-        if (payrun.PayrollId <= 0 || !await PayrollService.ExistsAsync(payrun.PayrollId))
+        if (payrun.PayrollId <= 0 || !await PayrollService.ExistsAsync(Runtime.DbContext, payrun.PayrollId))
         {
             return BadRequest($"Unknown payroll with id {payrun.PayrollId}");
         }
@@ -49,12 +49,12 @@ public abstract class PayrunController : RepositoryChildObjectController<ITenant
         }
 
         // test item
-        if (!await ChildService.ExistsAsync(payrunId))
+        if (!await ChildService.ExistsAsync(Runtime.DbContext, payrunId))
         {
             return BadRequest($"Unknown payrun with id {payrunId}");
         }
 
-        await Service.RebuildAsync(tenantId, payrunId);
+        await Service.RebuildAsync(Runtime.DbContext, tenantId, payrunId);
         return Ok();
     }
 

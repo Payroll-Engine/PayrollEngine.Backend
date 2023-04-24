@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal abstract class PayrollRepositoryCaseFieldCommandBase : PayrollRepositoryCommandBase
 {
 
-    protected PayrollRepositoryCaseFieldCommandBase(IDbConnection connection) :
-        base(connection)
+    protected PayrollRepositoryCaseFieldCommandBase(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 

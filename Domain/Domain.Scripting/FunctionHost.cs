@@ -27,7 +27,7 @@ public class FunctionHost : IFunctionHost
     public FunctionHost(FunctionHostSettings settings)
     {
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
-        assemblyCache = new(settings.AssemblyCacheTimeout, settings.ScriptProvider);
+        assemblyCache = new(settings.DbContext, settings.AssemblyCacheTimeout, settings.ScriptProvider);
     }
 
     /// <inheritdoc/>
@@ -48,7 +48,7 @@ public class FunctionHost : IFunctionHost
         {
             throw new ArgumentNullException(nameof(task));
         }
-        _ = TaskRepository.CreateAsync(tenantId, task).Result;
+        _ = TaskRepository.CreateAsync(Settings.DbContext, tenantId, task).Result;
     }
 
     /// <inheritdoc/>
@@ -64,7 +64,7 @@ public class FunctionHost : IFunctionHost
         {
             return;
         }
-        _ = LogRepository.CreateAsync(tenantId, log).Result;
+        _ = LogRepository.CreateAsync(Settings.DbContext, tenantId, log).Result;
     }
 
     /// <inheritdoc />

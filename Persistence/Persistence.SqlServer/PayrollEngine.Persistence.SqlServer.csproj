@@ -6,6 +6,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="DapperTools.cs" />
+	  <Compile Remove="JsonObjectTypeHandler.cs" />
+	  <Compile Remove="ListTypeHandler.cs" />
+	  <Compile Remove="NamedDictionaryTypeHandler.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="DapperTools.cs" />
+	  <None Include="JsonObjectTypeHandler.cs" />
+	  <None Include="ListTypeHandler.cs" />
+	  <None Include="NamedDictionaryTypeHandler.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 	</ItemGroup>
 

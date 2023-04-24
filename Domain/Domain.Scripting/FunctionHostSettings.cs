@@ -9,6 +9,7 @@ namespace PayrollEngine.Domain.Scripting;
 /// </summary>
 public class FunctionHostSettings
 {
+    public IDbContext DbContext { get; set; }
     public ITaskRepository TaskRepository { get; set; }
     public ILogRepository LogRepository { get; set; }
     /// <summary>Function log timeout</summary>

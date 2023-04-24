@@ -10,11 +10,8 @@ namespace PayrollEngine.Persistence;
 
 public class WageTypeRepository : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>, IWageTypeRepository
 {
-    public WageTypeRepository(IWageTypeScriptController scriptController, IScriptRepository scriptRepository,
-        IWageTypeAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.WageType, DbSchema.WageTypeColumn.RegulationId,
-            scriptController, scriptRepository,
-            auditRepository, context)
+    public WageTypeRepository(IWageTypeScriptController scriptController, IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository) :
+        base(DbSchema.Tables.WageType, DbSchema.WageTypeColumn.RegulationId, scriptController, scriptRepository, auditRepository)
     {
     }
 
@@ -46,6 +43,6 @@ public class WageTypeRepository : ScriptTrackChildDomainRepository<WageType, Wag
         base.GetObjectData(wageType, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<decimal> wageTypeNumbers) =>
-        await ExistsAnyAsync(DbSchema.WageTypeColumn.RegulationId, regulationId, DbSchema.WageTypeColumn.WageTypeNumber, wageTypeNumbers);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<decimal> wageTypeNumbers) =>
+        await ExistsAnyAsync(context, DbSchema.WageTypeColumn.RegulationId, regulationId, DbSchema.WageTypeColumn.WageTypeNumber, wageTypeNumbers);
 }

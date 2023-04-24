@@ -8,13 +8,13 @@ namespace PayrollEngine.Persistence;
 
 public class TenantRepository : RootDomainRepository<Tenant>, ITenantRepository
 {
-    public TenantRepository(IDbContext context) :
-        base(DbSchema.Tables.Tenant, context)
+    public TenantRepository() :
+        base(DbSchema.Tables.Tenant)
     {
     }
 
-    public virtual async Task<bool> ExistsAsync(string identifier) =>
-        await ExistsAsync(DbSchema.TenantColumn.Identifier, identifier);
+    public virtual async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
+        await ExistsAsync(context, DbSchema.TenantColumn.Identifier, identifier);
 
     protected override void GetObjectCreateData(Tenant tenant, DbParameterCollection parameters)
     {
@@ -30,9 +30,11 @@ public class TenantRepository : RootDomainRepository<Tenant>, ITenantRepository
         base.GetObjectData(tenant, parameters);
     }
 
-    public override async Task<bool> DeleteAsync(int tenantId)
+    /// <inheritdoc />
+    /// <remarks>Do not call the base class method</remarks>
+    public override async Task<bool> DeleteAsync(IDbContext context, int tenantId)
     {
-        if (!await ExistsAsync(tenantId))
+        if (!await ExistsAsync(context, tenantId))
         {
             throw new PayrollException($"Unknown tenant with id {tenantId}");
         }
@@ -42,7 +44,7 @@ public class TenantRepository : RootDomainRepository<Tenant>, ITenantRepository
 
         // delete tenant (stored procedure)
         // TODO: stored procedure result
-        await QueryAsync<Tenant>(DbSchema.Procedures.DeleteTenant,
+        await QueryAsync<Tenant>(context, DbSchema.Procedures.DeleteTenant,
             parameters, commandType: CommandType.StoredProcedure);
 
         return true;

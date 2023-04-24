@@ -285,7 +285,7 @@ public sealed class CaseValueProvider
         }
 
         // case
-        var caseType = await CaseFieldProvider.GetCaseTypeAsync(caseFieldName);
+        var caseType = await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
         if (!caseType.HasValue)
         {
             throw new PayrollException($"Unknown case field {caseFieldName}");
@@ -308,7 +308,7 @@ public sealed class CaseValueProvider
         {
             throw new ArgumentException("Value date must be UTC", nameof(valueDate));
         }
-        var caseFields = (await CaseFieldProvider.CaseFieldRepository.GetDerivedCaseFieldsAsync(caseType)).ToList();
+        var caseFields = (await CaseFieldProvider.CaseFieldRepository.GetDerivedCaseFieldsAsync(Settings.DbContext, caseType)).ToList();
         if (!caseFields.Any())
         {
             return new();
@@ -341,13 +341,13 @@ public sealed class CaseValueProvider
         foreach (var caseFieldName in allCaseFieldNames)
         {
             // case field check
-            var caseField = await CaseFieldProvider.GetCaseFieldAsync(caseFieldName);
+            var caseField = await CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName);
             if (caseField == null)
             {
                 // unknown case field
                 continue;
             }
-            var caseFieldType = await CaseFieldProvider.GetCaseTypeAsync(caseFieldName);
+            var caseFieldType = await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
             if (!caseFieldType.HasValue || caseFieldType.Value != caseType)
             {
                 // invalid case type
@@ -415,14 +415,14 @@ public sealed class CaseValueProvider
         }
 
         // case field
-        var caseField = await CaseFieldProvider.GetCaseFieldAsync(caseFieldName);
+        var caseField = await CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName);
         if (caseField == null)
         {
             return null;
         }
 
         // case value repository
-        var caseType = await CaseFieldProvider.GetCaseTypeAsync(caseFieldName);
+        var caseType = await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
         if (!caseType.HasValue)
         {
             return null;
@@ -536,13 +536,13 @@ public sealed class CaseValueProvider
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
-        caseType ??= await CaseFieldProvider.GetCaseTypeAsync(caseFieldName);
+        caseType ??= await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
 
         // ReSharper disable once PossibleInvalidOperationException
         var caseValueRepository = GetCaseValueRepository(caseType.Value);
 
         // case field
-        var caseField = await CaseFieldProvider.GetValueCaseFieldAsync(caseFieldName);
+        var caseField = await CaseFieldProvider.GetValueCaseFieldAsync(Settings.DbContext, caseFieldName);
         if (caseField == null)
         {
             throw new PayrollException($"Unknown case field {caseFieldName}");
@@ -725,7 +725,7 @@ public sealed class CaseValueProvider
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
-        var caseType = await CaseFieldProvider.GetCaseTypeAsync(caseFieldName);
+        var caseType = await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
         if (!caseType.HasValue)
         {
             throw new PayrollException($"Unknown case field {caseFieldName}");
@@ -739,7 +739,7 @@ public sealed class CaseValueProvider
 
         // case field
         var values = new List<CaseFieldValue>();
-        var caseField = await CaseFieldProvider.GetValueCaseFieldAsync(caseFieldName);
+        var caseField = await CaseFieldProvider.GetValueCaseFieldAsync(Settings.DbContext, caseFieldName);
         if (caseField == null)
         {
             throw new PayrollException($"Unknown case field {caseFieldName}");

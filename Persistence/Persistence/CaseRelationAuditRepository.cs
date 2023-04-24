@@ -7,8 +7,8 @@ namespace PayrollEngine.Persistence;
 
 public class CaseRelationAuditRepository : AuditChildDomainRepository<CaseRelationAudit>, ICaseRelationAuditRepository
 {
-    public CaseRelationAuditRepository(IDbContext context) :
-        base(DbSchema.Tables.CaseRelationAudit, DbSchema.CaseRelationAudit.CaseRelationId, context)
+    public CaseRelationAuditRepository() :
+        base(DbSchema.Tables.CaseRelationAudit, DbSchema.CaseRelationAudit.CaseRelationId)
     {
     }
 

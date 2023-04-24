@@ -6,6 +6,7 @@ namespace PayrollEngine.Domain.Scripting;
 
 public class CaseValueProviderSettings
 {
+    public IDbContext DbContext { get; set; }
     public IFunctionHost FunctionHost { get; set; }
     public Tenant Tenant { get; set; }
     public ICaseRepository CaseRepository { get; set; }

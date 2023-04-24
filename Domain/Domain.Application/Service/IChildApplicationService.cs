@@ -10,13 +10,13 @@ public interface IChildApplicationService<out TRepo, TDomain> : IRepositoryAppli
     where TRepo : class, IChildDomainRepository<TDomain>
     where TDomain : IDomainObject, new()
 {
-    Task<IEnumerable<TDomain>> QueryAsync(int parentId, Query query = null);
-    Task<long> QueryCountAsync(int parentId, Query query = null);
-    Task<int?> GetParentIdAsync(int itemId);
-    Task<TDomain> GetAsync(int parentId, int itemId);
-    Task<TDomain> CreateAsync(int parentId, TDomain item);
-    Task<IEnumerable<TDomain>> CreateAsync(int parentId, IEnumerable<TDomain> items);
-    Task CreateBulkAsync(int parentId, IEnumerable<TDomain> items);
-    Task<TDomain> UpdateAsync(int parentId, TDomain item);
-    Task<bool> DeleteAsync(int parentId, int itemId);
+    Task<IEnumerable<TDomain>> QueryAsync(IDbContext context, int parentId, Query query = null);
+    Task<long> QueryCountAsync(IDbContext context, int parentId, Query query = null);
+    Task<int?> GetParentIdAsync(IDbContext context, int itemId);
+    Task<TDomain> GetAsync(IDbContext context, int parentId, int itemId);
+    Task<TDomain> CreateAsync(IDbContext context, int parentId, TDomain item);
+    Task<IEnumerable<TDomain>> CreateAsync(IDbContext context, int parentId, IEnumerable<TDomain> items);
+    Task CreateBulkAsync(IDbContext context, int parentId, IEnumerable<TDomain> items);
+    Task<TDomain> UpdateAsync(IDbContext context, int parentId, TDomain item);
+    Task<bool> DeleteAsync(IDbContext context, int parentId, int itemId);
 }

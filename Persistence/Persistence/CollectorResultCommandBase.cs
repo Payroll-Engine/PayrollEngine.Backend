@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
 using System.Text.Json;
 using PayrollEngine.Domain.Model;
@@ -8,8 +7,8 @@ namespace PayrollEngine.Persistence;
 
 internal abstract class CollectorResultCommandBase : ResultCommandBase
 {
-    protected CollectorResultCommandBase(IDbConnection connection) :
-        base(connection)
+    protected CollectorResultCommandBase(IDbContext context) :
+        base(context)
     {
     }
 

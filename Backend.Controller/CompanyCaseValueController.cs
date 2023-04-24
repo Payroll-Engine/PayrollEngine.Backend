@@ -59,7 +59,7 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
         {
             return tenantResult;
         }
-        if (!await ParentService.ExistsAsync(tenantId))
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
         {
             return BadRequest($"Unknown tenant with id {tenantId}");
         }

@@ -11,18 +11,17 @@ public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFie
 {
     public ICaseRepository CaseRepository { get; }
 
-    public CaseFieldRepository(ICaseRepository caseRepository,
-        ICaseFieldAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.CaseField, DbSchema.CaseFieldColumn.CaseId, auditRepository, context)
+    public CaseFieldRepository(ICaseRepository caseRepository, ICaseFieldAuditRepository auditRepository) :
+        base(DbSchema.Tables.CaseField, DbSchema.CaseFieldColumn.CaseId, auditRepository)
     {
         CaseRepository = caseRepository ?? throw new ArgumentNullException(nameof(caseRepository));
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int caseId, IEnumerable<string> caseFieldNames) =>
-        await ExistsAnyAsync(DbSchema.CaseFieldColumn.CaseId, caseId, DbSchema.CaseFieldColumn.Name, caseFieldNames);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
+        await ExistsAnyAsync(context, DbSchema.CaseFieldColumn.CaseId, caseId, DbSchema.CaseFieldColumn.Name, caseFieldNames);
 
-    public virtual async Task<IEnumerable<CaseField>> GetRegulationCaseFieldsAsync(int tenantId, IEnumerable<string> caseFieldNames,
-        int? regulationId = null)
+    public virtual async Task<IEnumerable<CaseField>> GetRegulationCaseFieldsAsync(IDbContext context, int tenantId,
+        IEnumerable<string> caseFieldNames, int? regulationId = null)
     {
         if (tenantId <= 0)
         {
@@ -50,7 +49,7 @@ public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFie
         }
 
         var compileQuery = CompileQuery(query);
-        var cases = await QueryAsync<CaseField>(compileQuery);
+        var cases = await QueryAsync<CaseField>(context, compileQuery);
         return cases;
     }
 
@@ -89,7 +88,7 @@ public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFie
         parameters.Add(nameof(caseField.ValidateActions), JsonSerializer.SerializeList(caseField.ValidateActions));
         parameters.Add(nameof(caseField.Attributes), JsonSerializer.SerializeNamedDictionary(caseField.Attributes));
         parameters.Add(nameof(caseField.ValueAttributes), JsonSerializer.SerializeNamedDictionary(caseField.ValueAttributes));
-      
+
         // base fields
         base.GetObjectData(caseField, parameters);
     }

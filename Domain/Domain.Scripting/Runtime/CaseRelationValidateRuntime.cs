@@ -70,7 +70,7 @@ public class CaseRelationValidateRuntime : CaseRelationRuntime, ICaseRelationVal
         {
             throw new ArgumentException(nameof(message));
         }
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         if (caseField == null)
         {
             throw new ScriptException($"Unknown case field {caseFieldName}");

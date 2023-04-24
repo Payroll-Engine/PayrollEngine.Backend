@@ -51,11 +51,12 @@ public sealed class RegulationLookupProvider
     /// <summary>
     /// Get a derived lookup value
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="lookupName">The name of the lookup</param>
     /// <param name="lookupKey">The lookup value key</param>
     /// <param name="language">The value language</param>
     /// <returns>The lookup value</returns>
-    public async Task<LookupValueData> GetLookupValueDataAsync(string lookupName, string lookupKey,
+    public async Task<LookupValueData> GetLookupValueDataAsync(IDbContext context, string lookupName, string lookupKey,
         Language? language = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))
@@ -81,21 +82,21 @@ public sealed class RegulationLookupProvider
         foreach (var lookup in DerivedLookups[lookupName])
         {
             // lookup regulation
-            var regulationId = await LookupSetRepository.GetParentIdAsync(lookup.Id);
+            var regulationId = await LookupSetRepository.GetParentIdAsync(context, lookup.Id);
             if (!regulationId.HasValue)
             {
                 throw new ArgumentException($"Invalid lookup with name {lookupName}");
             }
 
             // lookup tenant
-            var tenantId = await RegulationRepository.GetParentIdAsync(regulationId.Value);
+            var tenantId = await RegulationRepository.GetParentIdAsync(context, regulationId.Value);
             if (!tenantId.HasValue)
             {
                 throw new ArgumentException($"Invalid lookup with name {lookupName}");
             }
 
             // lookup value
-            var value = await LookupSetRepository.GetLookupValueDataAsync(tenantId.Value, lookup.Id, lookupKey, language);
+            var value = await LookupSetRepository.GetLookupValueDataAsync(context, tenantId.Value, lookup.Id, lookupKey, language);
             if (value != null)
             {
                 return value;
@@ -108,13 +109,14 @@ public sealed class RegulationLookupProvider
     /// <summary>
     /// Get a derived range lookup value
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="lookupName">The name of the lookup</param>
     /// <param name="rangeValue">The range value</param>
     /// <param name="lookupKey">The lookup key</param>
     /// <param name="language">The value language</param>
     /// <returns>The lookup value</returns>
-    public async Task<LookupValueData> GetRangeLookupValueDataAsync(string lookupName, decimal rangeValue,
-        string lookupKey = null, Language? language = null)
+    public async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context, 
+        string lookupName, decimal rangeValue, string lookupKey = null, Language? language = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))
         {
@@ -135,21 +137,21 @@ public sealed class RegulationLookupProvider
         foreach (var lookup in DerivedLookups[lookupName])
         {
             // lookup regulation
-            var regulationId = await LookupSetRepository.GetParentIdAsync(lookup.Id);
+            var regulationId = await LookupSetRepository.GetParentIdAsync(context, lookup.Id);
             if (!regulationId.HasValue)
             {
                 throw new ArgumentException($"Invalid lookup with name {lookupName}");
             }
 
             // lookup tenant
-            var tenantId = await RegulationRepository.GetParentIdAsync(regulationId.Value);
+            var tenantId = await RegulationRepository.GetParentIdAsync(context, regulationId.Value);
             if (!tenantId.HasValue)
             {
                 throw new ArgumentException($"Invalid lookup with name {lookupName}");
             }
 
             // lookup value
-            var value = await LookupSetRepository.GetRangeLookupValueDataAsync(tenantId.Value, lookup.Id, rangeValue, lookupKey, language);
+            var value = await LookupSetRepository.GetRangeLookupValueDataAsync(context, tenantId.Value, lookup.Id, rangeValue, lookupKey, language);
             if (value != null)
             {
                 return value;

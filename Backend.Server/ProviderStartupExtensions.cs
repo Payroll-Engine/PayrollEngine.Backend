@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Api.Core;
-using PayrollEngine.Domain.Model;
 using PayrollEngine.Backend.Controller;
 using PayrollEngine.Domain.Application.Service;
+using PayrollEngine.Domain.Model;
 
-namespace PayrollEngine.Backend.Api;
+namespace PayrollEngine.Backend.Server;
 
 /// <summary>
 /// Startup extension

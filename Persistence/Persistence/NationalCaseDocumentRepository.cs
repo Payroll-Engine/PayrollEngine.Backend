@@ -4,8 +4,8 @@ namespace PayrollEngine.Persistence;
 
 public class NationalCaseDocumentRepository : CaseDocumentRepository, INationalCaseDocumentRepository
 {
-    public NationalCaseDocumentRepository(IDbContext context) :
-        base(DbSchema.Tables.NationalCaseDocument, DbSchema.NationalCaseDocumentColumn.CaseValueId, context)
+    public NationalCaseDocumentRepository() : 
+        base(DbSchema.Tables.NationalCaseDocument, DbSchema.NationalCaseDocumentColumn.CaseValueId)
     {
     }
 }

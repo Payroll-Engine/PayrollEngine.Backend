@@ -12,8 +12,7 @@ public abstract class TableRepository : RepositoryBase, IRepository
     /// </summary>
     public string TypeName => TableName;
 
-    protected TableRepository(string tableName, IDbContext context) :
-        base(context)
+    protected TableRepository(string tableName)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {

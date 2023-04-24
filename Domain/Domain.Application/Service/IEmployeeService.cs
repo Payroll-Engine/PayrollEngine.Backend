@@ -9,8 +9,9 @@ public interface IEmployeeService : IChildApplicationService<IEmployeeRepository
     /// <summary>
     /// Determine if the employee existing by the identifier
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="identifier">The user identifier</param>
     /// <returns>True if the employee with this identifier exists</returns>
-    Task<bool> ExistsAnyAsync(int tenantId, string identifier);
+    Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier);
 }

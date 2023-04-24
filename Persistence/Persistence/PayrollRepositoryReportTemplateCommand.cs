@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryReportTemplateCommand : PayrollRepositoryCommandBase
 {
-    internal PayrollRepositoryReportTemplateCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryReportTemplateCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -61,7 +60,7 @@ internal sealed class PayrollRepositoryReportTemplateCommand : PayrollRepository
         parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.Language, (int)language);
 
         // retrieve all derived report templates (stored procedure)
-        var reportTemplates = (await Connection.QueryAsync<ReportTemplate>(DbSchema.Procedures.GetDerivedReportTemplates,
+        var reportTemplates = (await DbContext.QueryAsync<ReportTemplate>(DbSchema.Procedures.GetDerivedReportTemplates,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
         return reportTemplates.FirstOrDefault();
     }

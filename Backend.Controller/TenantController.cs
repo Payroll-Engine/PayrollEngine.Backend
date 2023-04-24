@@ -46,7 +46,7 @@ public class TenantController : Api.Controller.TenantController
     public async Task<ActionResult<ApiObject.Tenant>> CreateTenantAsync(ApiObject.Tenant tenant)
     {
         // unique tenant by identifier
-        if (await Service.ExistsAsync(tenant.Identifier))
+        if (await Service.ExistsAsync(Runtime.DbContext, tenant.Identifier))
         {
             return BadRequest($"Tenant with identifier {tenant.Identifier} already exists");
         }

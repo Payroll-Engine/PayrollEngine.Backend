@@ -13,9 +13,9 @@ public class CaseFieldService : ChildApplicationService<ICaseFieldRepository, Ca
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int caseId, IEnumerable<string> caseFieldNames) =>
-        await Repository.ExistsAnyAsync(caseId, caseFieldNames);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
+        await Repository.ExistsAnyAsync(context, caseId, caseFieldNames);
 
-    public virtual async Task<IEnumerable<CaseField>> GetRegulationCaseFieldsAsync(int tenantId, IEnumerable<string> caseFieldNames) =>
-        await Repository.GetRegulationCaseFieldsAsync(tenantId, caseFieldNames);
+    public virtual async Task<IEnumerable<CaseField>> GetRegulationCaseFieldsAsync(IDbContext context, int tenantId, IEnumerable<string> caseFieldNames) =>
+        await Repository.GetRegulationCaseFieldsAsync(context, tenantId, caseFieldNames);
 }

@@ -13,6 +13,6 @@ public class WageTypeService : ScriptTrackChildApplicationService<IWageTypeRepos
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<decimal> wageTypeNumbers) =>
-        await Repository.ExistsAnyAsync(regulationId, wageTypeNumbers);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<decimal> wageTypeNumbers) =>
+        await Repository.ExistsAnyAsync(context, regulationId, wageTypeNumbers);
 }

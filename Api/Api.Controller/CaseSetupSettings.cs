@@ -6,6 +6,7 @@ namespace PayrollEngine.Api.Controller;
 
 internal sealed class CaseSetupSettings
 {
+    internal IDbContext DbContext { get; init; }
     internal Tenant Tenant { get; init; }
     internal Payroll Payroll { get; init; }
     internal User User { get; init; }

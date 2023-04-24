@@ -10,13 +10,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace PayrollEngine.Domain.Scripting;
 
 /// <summary>Parse c# source code for actions</summary>
-public class ActionParser
+public static class ActionParser
 {
     /// <summary>Parse source for actions</summary>
     /// <param name="code">The source code </param>
     /// <param name="functionType">THe function types</param>
     /// <returns>List of action information</returns>
-    public List<ActionInfo> Parse(string code, FunctionType functionType = FunctionType.All)
+    public static List<ActionInfo> Parse(string code, FunctionType functionType = FunctionType.All)
     {
         if (string.IsNullOrWhiteSpace(code))
         {
@@ -58,7 +58,7 @@ public class ActionParser
         return actionInfos;
     }
 
-    private List<ActionInfo> ParseActions(ClassDeclarationSyntax classSyntax, string namespaceName, FunctionType functionTypes)
+    private static List<ActionInfo> ParseActions(ClassDeclarationSyntax classSyntax, string namespaceName, FunctionType functionTypes)
     {
         var actions = new List<ActionInfo>();
 

@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Persistence.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Backend.Controller", "Backend.Controller\PayrollEngine.Backend.Controller.csproj", "{82542ED4-8D32-4611-B66B-D25A6295E9AD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Backend.Api", "Backend.Api\PayrollEngine.Backend.Api.csproj", "{430DDB0A-4963-4E4D-B57E-0D7C82E0FB82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Backend.Server", "Backend.Server\PayrollEngine.Backend.Server.csproj", "{430DDB0A-4963-4E4D-B57E-0D7C82E0FB82}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Persistence", "Persistence\Persistence\PayrollEngine.Persistence.csproj", "{E568C91A-A8D2-4E56-BACA-4D9432000B80}"
 EndProject

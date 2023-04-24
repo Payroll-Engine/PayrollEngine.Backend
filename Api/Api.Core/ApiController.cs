@@ -12,7 +12,7 @@ namespace PayrollEngine.Api.Core;
 [Produces(ContentType.Json)]
 public abstract class ApiController : ControllerBase
 {
-    protected IControllerRuntime Runtime { get; }
+    public IControllerRuntime Runtime { get; }
     public IConfiguration Configuration => Runtime.Configuration;
     protected LinkGenerator LinkGenerator => Runtime.LinkGenerator;
     protected IApiDescriptionGroupCollectionProvider ApiExplorer => Runtime.ApiExplorer;

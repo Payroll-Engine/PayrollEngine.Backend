@@ -1,8 +1,6 @@
 ﻿//#define COLLECTED_RESULTS
-
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using PayrollEngine.Domain.Model;
 
@@ -10,11 +8,11 @@ namespace PayrollEngine.Persistence;
 
 internal abstract class ResultCommandBase
 {
-    internal IDbConnection Connection { get; }
+    internal IDbContext DbContext { get; }
 
-    protected ResultCommandBase(IDbConnection connection)
+    protected ResultCommandBase(IDbContext dbContext)
     {
-        Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+        DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     /// <summary>Apply the tag filter</summary>

@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 public abstract class CaseValueRepository : CaseValueRepositoryBase<CaseValue>
 {
     protected CaseValueRepository(string tableName, string parentFieldName,
-        ICaseFieldRepository caseFieldRepository, IDbContext context) :
-        base(tableName, parentFieldName, caseFieldRepository, context)
+        ICaseFieldRepository caseFieldRepository) :
+        base(tableName, parentFieldName, caseFieldRepository)
     {
     }
 }

@@ -172,14 +172,14 @@ public abstract class ReportTool : FunctionToolBase
         }
     }
 
-    protected async Task<User> GetUserAsync(int userId)
+    protected async Task<User> GetUserAsync(IDbContext context, int userId)
     {
         // user
         if (userId <= 0)
         {
             throw new QueryException("Missing report user id");
         }
-        var user = await UserRepository.GetAsync(Tenant.Id, userId);
+        var user = await UserRepository.GetAsync(context, Tenant.Id, userId);
         if (user == null)
         {
             throw new QueryException($"Unknown user with id {userId}");
@@ -237,7 +237,7 @@ public abstract class ReportTool : FunctionToolBase
         if (!employeeId.HasValue)
         {
             var filter = $"{nameof(Employee.Identifier)} eq '{parameter}'";
-            var employee = (await EmployeeRepository.QueryAsync(Tenant.Id, new() { Filter = filter })).FirstOrDefault();
+            var employee = (await EmployeeRepository.QueryAsync(Settings.DbContext, Tenant.Id, new() { Filter = filter })).FirstOrDefault();
             if (employee != null)
             {
                 employeeId = employee.Id;
@@ -252,7 +252,7 @@ public abstract class ReportTool : FunctionToolBase
         if (!regulationId.HasValue)
         {
             var filter = $"{nameof(Regulation.Name)} eq '{parameter}'";
-            var regulation = (await RegulationRepository.QueryAsync(Tenant.Id, new() { Filter = filter })).FirstOrDefault();
+            var regulation = (await RegulationRepository.QueryAsync(Settings.DbContext, Tenant.Id, new() { Filter = filter })).FirstOrDefault();
             if (regulation != null)
             {
                 regulationId = regulation.Id;
@@ -267,7 +267,7 @@ public abstract class ReportTool : FunctionToolBase
         if (!payrollId.HasValue)
         {
             var filter = $"{nameof(Payroll.Name)} eq '{parameter}'";
-            var payroll = (await PayrollRepository.QueryAsync(Tenant.Id, new() { Filter = filter })).FirstOrDefault();
+            var payroll = (await PayrollRepository.QueryAsync(Settings.DbContext, Tenant.Id, new() { Filter = filter })).FirstOrDefault();
             if (payroll != null)
             {
                 payrollId = payroll.Id;
@@ -282,7 +282,7 @@ public abstract class ReportTool : FunctionToolBase
         if (!payrunId.HasValue)
         {
             var filter = $"{nameof(Payrun.Name)} eq '{parameter}'";
-            var payrun = (await PayrunRepository.QueryAsync(Tenant.Id, new() { Filter = filter })).FirstOrDefault();
+            var payrun = (await PayrunRepository.QueryAsync(Settings.DbContext, Tenant.Id, new() { Filter = filter })).FirstOrDefault();
             if (payrun != null)
             {
                 payrunId = payrun.Id;
@@ -297,7 +297,7 @@ public abstract class ReportTool : FunctionToolBase
         if (!reportId.HasValue)
         {
             var filter = $"{nameof(Report.Name)} eq '{parameter}'";
-            var report = (await ReportRepository.QueryAsync(Tenant.Id, new() { Filter = filter })).FirstOrDefault();
+            var report = (await ReportRepository.QueryAsync(Settings.DbContext, Tenant.Id, new() { Filter = filter })).FirstOrDefault();
             if (report != null)
             {
                 reportId = report.Id;
@@ -312,7 +312,7 @@ public abstract class ReportTool : FunctionToolBase
         if (!webhookId.HasValue)
         {
             var filter = $"{nameof(Webhook.Name)} eq '{parameter}'";
-            var webhook = (await WebhookRepository.QueryAsync(Tenant.Id, new() { Filter = filter })).FirstOrDefault();
+            var webhook = (await WebhookRepository.QueryAsync(Settings.DbContext, Tenant.Id, new() { Filter = filter })).FirstOrDefault();
             if (webhook != null)
             {
                 webhookId = webhook.Id;
@@ -321,7 +321,8 @@ public abstract class ReportTool : FunctionToolBase
         return webhookId.HasValue ? webhookId.Value.ToString() : parameter;
     }
 
-    private string SetupParameterVariables(int userId, string parameterValue, IDictionary<string, string> requestParameters, IList<ReportParameter> reportParameters)
+    private string SetupParameterVariables(int userId, string parameterValue,
+        IDictionary<string, string> requestParameters, IList<ReportParameter> reportParameters)
     {
         // pattern check
         if (string.IsNullOrEmpty(parameterValue) || !parameterValue.Contains(VariableStartMarker) ||

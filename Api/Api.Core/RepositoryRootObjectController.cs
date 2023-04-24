@@ -69,7 +69,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     protected virtual async Task<ActionResult<TApi[]>> QueryAsync(Query query = null)
     {
         var apiObjects = new List<TApi>();
-        var items = (await Service.QueryAsync(query)).ToList();
+        var items = (await Service.QueryAsync(Runtime.DbContext, query)).ToList();
         foreach (var item in items)
         {
             apiObjects.Add(MapDomainToApi(item));
@@ -84,7 +84,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     /// <returns>Count of requested Api objects</returns>
     protected virtual async Task<ActionResult<long>> QueryCountAsync(Query query = null)
     {
-        return await Service.QueryCountAsync(query);
+        return await Service.QueryCountAsync(Runtime.DbContext, query);
     }
 
     protected virtual async Task<ActionResult<TApi>> GetAsync(int id)
@@ -98,7 +98,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
             }
 
             // get object
-            var domainObject = await Service.GetAsync(id);
+            var domainObject = await Service.GetAsync(Runtime.DbContext, id);
             if (domainObject == null)
             {
                 return ObjectNotFoundRequest(id);
@@ -140,7 +140,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
         }
 
         // create object
-        domainObject = await Service.CreateAsync(domainObject);
+        domainObject = await Service.CreateAsync(Runtime.DbContext, domainObject);
         if (domainObject.Id <= 0)
         {
             return CreateObjectFailedRequest();
@@ -165,7 +165,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
             }
 
             // check for existing object
-            if (!await Service.ExistsAsync(apiObject.Id))
+            if (!await Service.ExistsAsync(Runtime.DbContext, apiObject.Id))
             {
                 return ObjectNotFoundRequest(apiObject.Id);
             }
@@ -184,7 +184,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
             }
 
             // update object
-            domainObject = await Service.UpdateAsync(domainObject);
+            domainObject = await Service.UpdateAsync(Runtime.DbContext, domainObject);
             return MapDomainToApi(domainObject);
         }
         catch (Exception exception)
@@ -204,12 +204,12 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
             }
 
             // check for existing object
-            if (!await ExistsAsync(itemId))
+            if (!await ExistsAsync(Runtime.DbContext, itemId))
             {
                 return ObjectNotFoundRequest(itemId);
             }
 
-            await Service.DeleteAsync(itemId);
+            await Service.DeleteAsync(Runtime.DbContext, itemId);
             return Ok();
         }
         catch (Exception exception)

@@ -11,14 +11,12 @@ namespace PayrollEngine.Persistence;
 
 public class CaseRepository : ScriptTrackChildDomainRepository<Case, CaseAudit>, ICaseRepository
 {
-    public CaseRepository(ICaseScriptController scriptController, IScriptRepository scriptRepository,
-        ICaseAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId,
-            scriptController, scriptRepository, auditRepository, context)
+    public CaseRepository(ICaseScriptController scriptController, IScriptRepository scriptRepository, ICaseAuditRepository auditRepository) :
+        base(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId, scriptController, scriptRepository, auditRepository)
     {
     }
 
-    public virtual async Task<IEnumerable<Case>> QueryAsync(int tenantId, string caseName, int? regulationId = null)
+    public virtual async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
     {
         if (tenantId <= 0)
         {
@@ -43,13 +41,13 @@ public class CaseRepository : ScriptTrackChildDomainRepository<Case, CaseAudit>,
         }
 
         var compileQuery = CompileQuery(query);
-        var cases = await QueryAsync<Case>(compileQuery);
+        var cases = await QueryAsync<Case>(context, compileQuery);
         return cases;
     }
 
     // TODO: add tenant and regulation check
-    public virtual async Task<bool> ExistsAsync(int tenantId, int regulationId, string caseName)
-        => await ExistsAsync(DbSchema.CaseColumn.Name, caseName);
+    public virtual async Task<bool> ExistsAsync(IDbContext context, int tenantId, int regulationId, string caseName)
+        => await ExistsAsync(context, DbSchema.CaseColumn.Name, caseName);
 
     protected override void GetObjectCreateData(Case @case, DbParameterCollection parameters)
     {
@@ -86,7 +84,7 @@ public class CaseRepository : ScriptTrackChildDomainRepository<Case, CaseAudit>,
         parameters.Add(nameof(@case.ValidateActions), JsonSerializer.SerializeList(@case.ValidateActions));
         parameters.Add(nameof(@case.Attributes), JsonSerializer.SerializeNamedDictionary(@case.Attributes));
         parameters.Add(nameof(@case.Clusters), JsonSerializer.SerializeList(@case.Clusters));
-      
+
         // base fields
         base.GetObjectData(@case, parameters);
     }

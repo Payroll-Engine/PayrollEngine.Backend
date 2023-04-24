@@ -255,7 +255,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
             var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
             if (periodStarts.Any() && EmployeeId != null)
             {
-                var results = Task.Run(() => ResultProvider.GetConsolidatedWageTypeResultsAsync(
+                var results = Task.Run(() => ResultProvider.GetConsolidatedWageTypeResultsAsync(Settings.DbContext,
                     new()
                     {
                         TenantId = TenantId,
@@ -324,7 +324,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
         var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
         if (periodStarts.Any() && EmployeeId != null)
         {
-            var results = Task.Run(() => ResultProvider.GetConsolidatedWageTypeCustomResultsAsync(
+            var results = Task.Run(() => ResultProvider.GetConsolidatedWageTypeCustomResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -367,7 +367,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
         if (PayrunJob.RetroPayMode != RetroPayMode.None)
         {
             //  get retro results by the current job (current=parent)
-            var retroResults = Task.Run(() => ResultProvider.GetWageTypeResultsAsync(
+            var retroResults = Task.Run(() => ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -391,7 +391,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
                 //  results period
                 var periodStart = retroResults.First().Start.ToUtc();
                 var periodEnd = retroResults.Last().End.ToUtc();
-                var periodResults = Task.Run(() => ResultProvider.GetWageTypeResultsAsync(
+                var periodResults = Task.Run(() => ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
                     new()
                     {
                         TenantId = TenantId,
@@ -457,7 +457,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
         {
             return new List<WageTypeResult>();
         }
-        return Task.Run(() => ResultProvider.GetWageTypeResultsAsync(
+        return Task.Run(() => ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -498,7 +498,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
         {
             return new List<WageTypeCustomResult>();
         }
-        return Task.Run(() => ResultProvider.GetWageTypeCustomResultsAsync(
+        return Task.Run(() => ResultProvider.GetWageTypeCustomResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -556,7 +556,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
         var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
         if (periodStarts.Any() && EmployeeId != null)
         {
-            var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorResultsAsync(
+            var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -621,7 +621,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
         var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
         if (periodStarts.Any() && EmployeeId != null)
         {
-            var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorCustomResultsAsync(
+            var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorCustomResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -674,7 +674,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
             return new List<CollectorResult>();
         }
 
-        var results = Task.Run(() => ResultProvider.GetCollectorResultsAsync(
+        var results = Task.Run(() => ResultProvider.GetCollectorResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -716,7 +716,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
         {
             return new List<CollectorCustomResult>();
         }
-        return Task.Run(() => ResultProvider.GetCollectorCustomResultsAsync(
+        return Task.Run(() => ResultProvider.GetCollectorCustomResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -757,7 +757,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
     public string InvokeWebhook(string requestOperation, string requestMessage = null)
     {
         // invoke payrun function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(TenantId,
+        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
             new()
             {
                 Action = WebhookAction.PayrunFunctionRequest,

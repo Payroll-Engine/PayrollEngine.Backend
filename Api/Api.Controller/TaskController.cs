@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -19,12 +20,12 @@ namespace PayrollEngine.Api.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Task)]
 public abstract class TaskController : RepositoryChildObjectController<ITenantService, ITaskService,
     ITenantRepository, ITaskRepository,
-    DomainObject.Tenant, DomainObject.Task, ApiObject.Task>
+    Tenant, DomainObject.Task, ApiObject.Task>
 {
-    public DomainObject.IWebhookDispatchService WebhookDispatcher { get; }
+    public IWebhookDispatchService WebhookDispatcher { get; }
 
     protected TaskController(ITenantService tenantService, ITaskService taskService,
-        DomainObject.IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
+        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
         base(tenantService, taskService, runtime, new TaskMap())
     {
         WebhookDispatcher = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
@@ -38,7 +39,7 @@ public abstract class TaskController : RepositoryChildObjectController<ITenantSe
         if (create.Value != null)
         {
             var json = DefaultJsonSerializer.Serialize(create.Value);
-            await WebhookDispatcher.SendMessageAsync(tenantId,
+            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
                 new()
                 {
                     Action = WebhookAction.TaskChange,
@@ -61,7 +62,7 @@ public abstract class TaskController : RepositoryChildObjectController<ITenantSe
              existing.Value.Completed != update.Value.Completed))
         {
             var json = DefaultJsonSerializer.Serialize(update.Value);
-            await WebhookDispatcher.SendMessageAsync(tenantId,
+            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
                 new()
                 {
                     Action = WebhookAction.TaskChange,

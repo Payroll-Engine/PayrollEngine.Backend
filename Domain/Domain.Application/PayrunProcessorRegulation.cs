@@ -35,7 +35,7 @@ internal sealed class PayrunProcessorRegulation
 
     internal async Task<ILookup<string, Collector>> GetDerivedCollectorsAsync(PayrunJob payrunJob, ClusterSet clusterSet)
     {
-        var collectors = (await Settings.PayrollRepository.GetDerivedCollectorsAsync(
+        var collectors = (await Settings.PayrollRepository.GetDerivedCollectorsAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -50,7 +50,7 @@ internal sealed class PayrunProcessorRegulation
 
     internal async Task<ILookup<decimal, WageType>> GetDerivedWageTypesAsync(PayrunJob payrunJob, ClusterSet clusterSet)
     {
-        var deriveWageTypes = (await Settings.PayrollRepository.GetDerivedWageTypesAsync(
+        var deriveWageTypes = (await Settings.PayrollRepository.GetDerivedWageTypesAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -65,7 +65,7 @@ internal sealed class PayrunProcessorRegulation
 
     internal async Task<ILookup<string, Lookup>> GetDerivedLookupsAsync(PayrunJob payrunJob)
     {
-        var lookups = (await Settings.PayrollRepository.GetDerivedLookupsAsync(
+        var lookups = (await Settings.PayrollRepository.GetDerivedLookupsAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -98,6 +98,7 @@ internal sealed class PayrunProcessorRegulation
         var isAvailable = new PayrunScriptController().IsWageTypeAvailable(wageType, wageTypeAttributes,
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -162,6 +163,7 @@ internal sealed class PayrunProcessorRegulation
             // execute wage type value script
             var result = new WageTypeScriptController().GetValue(context.CaseFieldProvider, new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -226,6 +228,7 @@ internal sealed class PayrunProcessorRegulation
             // execute wage type result script
             var retroJobs = new WageTypeScriptController().Result(resultSet.Value, new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -290,6 +293,7 @@ internal sealed class PayrunProcessorRegulation
             // execute collector start script
             var retroJobs = new CollectorScriptController().Start(new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -338,6 +342,7 @@ internal sealed class PayrunProcessorRegulation
             // execute collector apply script
             var result = new CollectorScriptController().ApplyValue(wageTypeResult, new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -395,6 +400,7 @@ internal sealed class PayrunProcessorRegulation
             // execute collector end script
             var retroJobs = new CollectorScriptController().End(new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -453,7 +459,7 @@ internal sealed class PayrunProcessorRegulation
         List<Case> cases = null;
         if (expandCaseSlots)
         {
-            cases = (await Settings.PayrollRepository.GetDerivedCasesAsync(
+            cases = (await Settings.PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = Tenant.Id,
@@ -470,7 +476,7 @@ internal sealed class PayrunProcessorRegulation
 #endif
 
         // case fields
-        var caseFields = await Settings.PayrollRepository.GetDerivedCaseFieldsAsync(
+        var caseFields = await Settings.PayrollRepository.GetDerivedCaseFieldsAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,

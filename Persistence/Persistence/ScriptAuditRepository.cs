@@ -5,8 +5,8 @@ namespace PayrollEngine.Persistence;
 
 public class ScriptAuditRepository : AuditChildDomainRepository<ScriptAudit>, IScriptAuditRepository
 {
-    public ScriptAuditRepository(IDbContext context) :
-        base(DbSchema.Tables.ScriptAudit, DbSchema.ScriptAuditColumn.ScriptId, context)
+    public ScriptAuditRepository() :
+        base(DbSchema.Tables.ScriptAudit, DbSchema.ScriptAuditColumn.ScriptId)
     {
     }
 

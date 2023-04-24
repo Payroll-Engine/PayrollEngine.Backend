@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Api.Controller;
@@ -17,6 +18,7 @@ internal static class PayrollControllerExtensions
 
         var settings = new DerivedCaseToolSettings
         {
+            DbContext = setup.DbContext,
             Tenant = setup.Tenant,
             User = setup.User,
             Payroll = setup.Payroll,
@@ -76,6 +78,7 @@ internal static class PayrollControllerExtensions
 
         var settings = new DerivedCaseToolSettings
         {
+            DbContext = controller.Runtime.DbContext,
             Tenant = setup.Tenant,
             User = setup.User,
             Payroll = setup.Payroll,
@@ -136,6 +139,7 @@ internal static class PayrollControllerExtensions
 
         var settings = new DerivedCaseToolSettings
         {
+            DbContext = controller.Runtime.DbContext,
             Tenant = setup.Tenant,
             User = setup.User,
             Payroll = setup.Payroll,
@@ -189,14 +193,14 @@ internal static class PayrollControllerExtensions
     }
 
     internal static async Task<RegulationLookupProvider> NewRegulationLookupProviderAsync(this PayrollController controller,
-        Domain.Model.Tenant tenant, Domain.Model.Payroll payroll, DateTime? regulationDate = null, DateTime? evaluationDate = null)
+        IDbContext context, Tenant tenant, Payroll payroll, DateTime? regulationDate = null, DateTime? evaluationDate = null)
     {
         var currentEvaluationDate = controller.CurrentEvaluationDate;
         regulationDate ??= currentEvaluationDate;
         evaluationDate ??= currentEvaluationDate;
 
         // retrieve lookups
-        var lookups = (await controller.PayrollService.Repository.GetDerivedLookupsAsync(
+        var lookups = (await controller.PayrollService.Repository.GetDerivedLookupsAsync(context,
             new()
             {
                 TenantId = tenant.Id,

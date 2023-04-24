@@ -29,10 +29,11 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
     public DateTime CurrentEvaluationDate => Date.Now.AddSeconds(1);
 
     /// <summary>Test if objects exists</summary>
+    /// <param name="context">The database context</param>
     /// <param name="id">The object id</param>
     /// <returns>True if object exists</returns>
-    protected virtual async Task<bool> ExistsAsync(int id) =>
-        await Service.ExistsAsync(id);
+    protected virtual async Task<bool> ExistsAsync(IDbContext context, int id) =>
+        await Service.ExistsAsync(context, id);
 
     /// <summary>Creates new culture</summary>
     /// <param name="culture">The culture name</param>
@@ -54,11 +55,11 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
     #region Attributes
 
     protected virtual async Task<ActionResult<bool>> ExistsAttributeAsync(int id, string attributeName) =>
-        await Service.ExistsAttributeAsync(id, attributeName);
+        await Service.ExistsAttributeAsync(Runtime.DbContext, id, attributeName);
 
     protected virtual async Task<ActionResult<string>> GetAttributeAsync(int id, string attributeName)
     {
-        var attribute = await Service.GetAttributeAsync(id, attributeName);
+        var attribute = await Service.GetAttributeAsync(Runtime.DbContext, id, attributeName);
         if (attribute == null)
         {
             return NotFound();
@@ -82,7 +83,7 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
             return BadRequest($"Invalid JSON value for attribute {attributeName}: {value}");
         }
 
-        var attribute = await Service.SetAttributeAsync(id, attributeName, value);
+        var attribute = await Service.SetAttributeAsync(Runtime.DbContext, id, attributeName, value);
         if (attribute == null)
         {
             return NotFound();
@@ -92,7 +93,7 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
 
     protected virtual async Task<ActionResult<bool>> DeleteAttributeAsync(int id, string attributeName)
     {
-        var delete = await Service.DeleteAttributeAsync(id, attributeName);
+        var delete = await Service.DeleteAttributeAsync(Runtime.DbContext, id, attributeName);
         if (delete == null)
         {
             return NotFound();

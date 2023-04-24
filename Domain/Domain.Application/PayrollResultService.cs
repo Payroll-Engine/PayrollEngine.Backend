@@ -29,56 +29,56 @@ public class PayrollResultService : ChildApplicationService<IPayrollResultReposi
         ConsolidatedResultRepository = context.ConsolidatedResultRepository ?? throw new ArgumentNullException(nameof(context.ConsolidatedResultRepository));
     }
 
-    public virtual async Task<PayrollResultSet> GetResultSetAsync(int tenantId, int resultId) =>
-        await ResultSetRepository.GetAsync(tenantId, resultId);
+    public virtual async Task<PayrollResultSet> GetResultSetAsync(IDbContext context,int tenantId, int resultId) =>
+        await ResultSetRepository.GetAsync(context, tenantId, resultId);
 
-    public virtual async Task<IEnumerable<CollectorResult>> QueryCollectorResultsAsync(int resultId, Query query = null) =>
-        await CollectorResultRepository.QueryAsync(resultId, query);
+    public virtual async Task<IEnumerable<CollectorResult>> QueryCollectorResultsAsync(IDbContext context,int resultId, Query query = null) =>
+        await CollectorResultRepository.QueryAsync(context, resultId, query);
 
-    public virtual async Task<IEnumerable<CollectorCustomResult>> QueryCollectorCustomResultsAsync(int resultId, Query query = null) =>
-        await CollectorCustomResultRepository.QueryAsync(resultId, query);
+    public virtual async Task<IEnumerable<CollectorCustomResult>> QueryCollectorCustomResultsAsync(IDbContext context, int resultId, Query query = null) =>
+        await CollectorCustomResultRepository.QueryAsync(context, resultId, query);
 
-    public virtual async Task<IEnumerable<WageTypeResult>> QueryWageTypeResultsAsync(int resultId, Query query = null) =>
-        await WageTypeResultRepository.QueryAsync(resultId, query);
+    public virtual async Task<IEnumerable<WageTypeResult>> QueryWageTypeResultsAsync(IDbContext context, int resultId, Query query = null) =>
+        await WageTypeResultRepository.QueryAsync(context, resultId, query);
 
-    public virtual async Task<IEnumerable<WageTypeCustomResult>> QueryWageTypeCustomResultsAsync(int resultId, Query query = null) =>
-        await WageTypeCustomResultRepository.QueryAsync(resultId, query);
+    public virtual async Task<IEnumerable<WageTypeCustomResult>> QueryWageTypeCustomResultsAsync(IDbContext context, int resultId, Query query = null) =>
+        await WageTypeCustomResultRepository.QueryAsync(context, resultId, query);
 
-    public virtual async Task<IEnumerable<PayrunResult>> QueryPayrunResultsAsync(int resultId, Query query = null) =>
-        await PayrunResultRepository.QueryAsync(resultId, query);
+    public virtual async Task<IEnumerable<PayrunResult>> QueryPayrunResultsAsync(IDbContext context, int resultId, Query query = null) =>
+        await PayrunResultRepository.QueryAsync(context, resultId, query);
 
-    public virtual async Task<IEnumerable<WageTypeCustomResult>> GetWageTypeCustomResultsAsync(WageTypeResultQuery query,
+    public virtual async Task<IEnumerable<WageTypeCustomResult>> GetWageTypeCustomResultsAsync(IDbContext context,WageTypeResultQuery query,
         int? payrunJobId = null, int? parentPayrunJobId = null) =>
-        await Repository.GetWageTypeCustomResultsAsync(query, payrunJobId, parentPayrunJobId);
+        await Repository.GetWageTypeCustomResultsAsync(context, query, payrunJobId, parentPayrunJobId);
 
-    public virtual async Task<IEnumerable<CollectorCustomResult>> GetCollectorCustomResultsAsync(CollectorResultQuery query,
+    public virtual async Task<IEnumerable<CollectorCustomResult>> GetCollectorCustomResultsAsync(IDbContext context,CollectorResultQuery query,
         int? payrunJobId = null, int? parentPayrunJobId = null) =>
-        await Repository.GetCollectorCustomResultsAsync(query, payrunJobId, parentPayrunJobId);
+        await Repository.GetCollectorCustomResultsAsync(context, query, payrunJobId, parentPayrunJobId);
 
-    public virtual async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(int tenantId, int employeeId, Query query = null) =>
-        await Repository.QueryResultValuesAsync(tenantId, employeeId, query);
+    public virtual async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context,int tenantId, int employeeId, Query query = null) =>
+        await Repository.QueryResultValuesAsync(context, tenantId, employeeId, query);
 
-    public virtual async Task<long> QueryResultValueCountAsync(int tenantId, int employeeId, Query query = null) =>
-        await Repository.QueryResultValueCountAsync(tenantId, employeeId, query);
+    public virtual async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null) =>
+        await Repository.QueryResultValueCountAsync(context, tenantId, employeeId, query);
 
-    public virtual async Task<IEnumerable<PayrollResultSet>> QueryResultSetsAsync(int tenantId, Query query = null) =>
-        await ResultSetRepository.QueryAsync(tenantId, query);
+    public virtual async Task<IEnumerable<PayrollResultSet>> QueryResultSetsAsync(IDbContext context, int tenantId, Query query = null) =>
+        await ResultSetRepository.QueryAsync(context, tenantId, query);
 
-    public virtual async Task<ConsolidatedPayrollResult> GetConsolidatedPayrollResultAsync(PayrollResultQuery query) =>
-        await ConsolidatedResultRepository.GetPayrollResultAsync(query);
+    public virtual async Task<ConsolidatedPayrollResult> GetConsolidatedPayrollResultAsync(IDbContext context,PayrollResultQuery query) =>
+        await ConsolidatedResultRepository.GetPayrollResultAsync(context, query);
 
-    public virtual async Task<IEnumerable<WageTypeResult>> GetConsolidatedWageTypeResultsAsync(ConsolidatedWageTypeResultQuery query) =>
-        await ConsolidatedResultRepository.GetWageTypeResultsAsync(query);
+    public virtual async Task<IEnumerable<WageTypeResult>> GetConsolidatedWageTypeResultsAsync(IDbContext context, ConsolidatedWageTypeResultQuery query) =>
+        await ConsolidatedResultRepository.GetWageTypeResultsAsync(context, query);
 
-    public virtual async Task<IEnumerable<WageTypeCustomResult>> GetConsolidatedWageTypeCustomResultsAsync(ConsolidatedWageTypeResultQuery query) =>
-        await ConsolidatedResultRepository.GetWageTypeCustomResultsAsync(query);
+    public virtual async Task<IEnumerable<WageTypeCustomResult>> GetConsolidatedWageTypeCustomResultsAsync(IDbContext context, ConsolidatedWageTypeResultQuery query) =>
+        await ConsolidatedResultRepository.GetWageTypeCustomResultsAsync(context, query);
 
-    public virtual async Task<IEnumerable<CollectorResult>> GetConsolidatedCollectorResultsAsync(ConsolidatedCollectorResultQuery query) =>
-        await ConsolidatedResultRepository.GetCollectorResultsAsync(query);
+    public virtual async Task<IEnumerable<CollectorResult>> GetConsolidatedCollectorResultsAsync(IDbContext context, ConsolidatedCollectorResultQuery query) =>
+        await ConsolidatedResultRepository.GetCollectorResultsAsync(context, query);
 
-    public virtual async Task<IEnumerable<CollectorCustomResult>> GetConsolidatedCollectorCustomResultsAsync(ConsolidatedCollectorResultQuery query) =>
-        await ConsolidatedResultRepository.GetCollectorCustomResultsAsync(query);
+    public virtual async Task<IEnumerable<CollectorCustomResult>> GetConsolidatedCollectorCustomResultsAsync(IDbContext context, ConsolidatedCollectorResultQuery query) =>
+        await ConsolidatedResultRepository.GetCollectorCustomResultsAsync(context, query);
 
-    public virtual async Task<IEnumerable<PayrunResult>> GetConsolidatedPayrunResultsAsync(ConsolidatedPayrunResultQuery query) =>
-        await ConsolidatedResultRepository.GetPayrunResultsAsync(query);
+    public virtual async Task<IEnumerable<PayrunResult>> GetConsolidatedPayrunResultsAsync(IDbContext context, ConsolidatedPayrunResultQuery query) =>
+        await ConsolidatedResultRepository.GetPayrunResultsAsync(context, query);
 }

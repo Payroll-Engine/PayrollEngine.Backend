@@ -7,8 +7,8 @@ namespace PayrollEngine.Persistence;
 
 public class WageTypeAuditRepository : AuditChildDomainRepository<WageTypeAudit>, IWageTypeAuditRepository
 {
-    public WageTypeAuditRepository(IDbContext context) :
-        base(DbSchema.Tables.WageTypeAudit, DbSchema.WageTypeAuditColumn.WageTypeId, context)
+    public WageTypeAuditRepository() :
+        base(DbSchema.Tables.WageTypeAudit, DbSchema.WageTypeAuditColumn.WageTypeId)
     {
     }
 

@@ -9,12 +9,13 @@ namespace PayrollEngine.Persistence;
 
 public class GlobalCaseChangeRepository : CaseChangeRepository<CaseChange>, IGlobalCaseChangeRepository
 {
-    public GlobalCaseChangeRepository(CaseChangeRepositorySettings settings, IDbContext context) :
-        base(DbSchema.Tables.GlobalCaseChange, DbSchema.GlobalCaseChangeColumn.TenantId, settings, context)
+    public GlobalCaseChangeRepository(CaseChangeRepositorySettings settings) :
+        base(DbSchema.Tables.GlobalCaseChange, DbSchema.GlobalCaseChangeColumn.TenantId, settings)
     {
     }
 
-    protected override async Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(int tenantId, int parentId, Query query = null)
+    protected override async Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(IDbContext context,
+        int tenantId, int parentId, Query query = null)
     {
         // db query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
@@ -31,7 +32,7 @@ public class GlobalCaseChangeRepository : CaseChangeRepository<CaseChange>, IGlo
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // SELECT execution
-        IEnumerable<CaseChangeCaseValue> items = (await QueryCaseValuesAsync<CaseChangeCaseValue>(
+        IEnumerable<CaseChangeCaseValue> items = (await QueryCaseValuesAsync<CaseChangeCaseValue>(context,
             new()
             {
                 ParentId = parentId,
@@ -43,7 +44,7 @@ public class GlobalCaseChangeRepository : CaseChangeRepository<CaseChange>, IGlo
         return items;
     }
 
-    protected override async Task<long> QueryCaseChangesValuesCountAsync(int tenantId, int parentId, Query query = null)
+    protected override async Task<long> QueryCaseChangesValuesCountAsync(IDbContext context, int tenantId, int parentId, Query query = null)
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
@@ -60,7 +61,7 @@ public class GlobalCaseChangeRepository : CaseChangeRepository<CaseChange>, IGlo
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // SELECT execution
-        var count = await QueryCaseValueCountAsync(
+        var count = await QueryCaseValueCountAsync(context,
             new()
             {
                 ParentId = parentId,

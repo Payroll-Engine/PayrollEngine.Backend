@@ -7,8 +7,8 @@ using PayrollEngine.Data;
 using PayrollEngine.Domain.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -19,7 +19,7 @@ namespace PayrollEngine.Api.Controller;
 [Route("api/tenants")]
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Tenant)]
 public abstract class TenantController : RepositoryRootObjectController<ITenantService, ITenantRepository,
-    DomainObject.Tenant, ApiObject.Tenant>
+    Tenant, ApiObject.Tenant>
 {
     protected IRegulationService RegulationService { get; }
     protected IRegulationPermissionService RegulationPermissionService { get; }
@@ -35,13 +35,13 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
         ReportService = reportService ?? throw new ArgumentNullException(nameof(reportService));
     }
 
-    public virtual async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(int tenantId,
-        int? divisionId)
+    public virtual async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(
+        int tenantId, int? divisionId)
     {
         try
         {
             // tenant
-            var tenant = await Service.GetAsync(tenantId);
+            var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
             if (tenant == null)
             {
                 return BadRequest($"Unknown tenant with id {tenantId}");
@@ -51,21 +51,21 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             var query = new Query
             {
                 Status = ObjectStatus.Active,
-                Filter = $"{nameof(DomainObject.RegulationPermission.PermissionTenantId)} eq {tenantId}"
+                Filter = $"{nameof(RegulationPermission.PermissionTenantId)} eq {tenantId}"
             };
             if (divisionId.HasValue)
             {
-                query.Filter += $" and ({nameof(DomainObject.RegulationPermission.PermissionDivisionId)} eq null or " +
-                                $"{nameof(DomainObject.RegulationPermission.PermissionDivisionId)} eq {divisionId.Value})";
+                query.Filter += $" and ({nameof(RegulationPermission.PermissionDivisionId)} eq null or " +
+                                $"{nameof(RegulationPermission.PermissionDivisionId)} eq {divisionId.Value})";
             }
-            var permissions = await RegulationPermissionService.QueryAsync(query);
+            var permissions = await RegulationPermissionService.QueryAsync(Runtime.DbContext, query);
 
             // regulations
             var map = new RegulationMap();
             var regulations = new List<ApiObject.Regulation>();
             foreach (var permission in permissions)
             {
-                var regulation = await RegulationService.GetAsync(permission.TenantId, permission.RegulationId);
+                var regulation = await RegulationService.GetAsync(Runtime.DbContext,permission.TenantId, permission.RegulationId);
                 if (regulation != null)
                 {
                     regulations.Add(map.ToApi(regulation));
@@ -84,13 +84,13 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
         }
     }
 
-    public virtual async Task<ActionResult<DataTable>> ExecuteReportQueryAsync(int tenantId, string methodName,
-        Language? language, Dictionary<string, string> parameters = null)
+    public virtual async Task<ActionResult<DataTable>> ExecuteReportQueryAsync(
+        int tenantId, string methodName, Language? language, Dictionary<string, string> parameters = null)
     {
         try
         {
             // tenant
-            var tenant = await Service.GetAsync(tenantId);
+            var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
             if (tenant == null)
             {
                 return BadRequest($"Unknown tenant with id {tenantId}");
@@ -111,13 +111,13 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
         }
     }
 
-    public virtual async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionsAsync(int tenantId,
-        FunctionType functionType = FunctionType.All)
+    public virtual async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionsAsync(
+        int tenantId, FunctionType functionType = FunctionType.All)
     {
         try
         {
             // tenant
-            var tenant = await Service.GetAsync(tenantId);
+            var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
             if (tenant == null)
             {
                 return BadRequest($"Unknown tenant with id {tenantId}");
@@ -146,7 +146,8 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
     /// zero: current<br />
     /// greater than zero: future<br /></param>
     /// <returns>The calendar period</returns>
-    protected virtual async Task<ActionResult<DatePeriod>> GetCalendarPeriod(int tenantId, CalendarCalculationMode calculationMode,
+    protected virtual async Task<ActionResult<DatePeriod>> GetCalendarPeriod(int tenantId,
+        CalendarCalculationMode calculationMode,
         DateTime? periodMoment = null, CalendarConfiguration calendar = null, string culture = null, int? offset = null)
     {
         try
@@ -154,7 +155,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             // tenant specific values
             if (calendar == null || string.IsNullOrWhiteSpace(culture))
             {
-                var tenant = await Service.GetAsync(tenantId);
+                var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
                 // tenant culture
                 if (string.IsNullOrWhiteSpace(culture))
                 {
@@ -178,7 +179,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             }
 
             // calculator
-            var calculator = DomainObject.PayrollCalculatorFactory.CreateCalculator(
+            var calculator = PayrollCalculatorFactory.CreateCalculator(
                 calculationMode: calculationMode,
                 calendar: calendar,
                 tenantId: tenantId,
@@ -198,7 +199,8 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
         }
     }
 
-    protected virtual async Task<ActionResult<DatePeriod>> GetCalendarCycle(int tenantId, CalendarCalculationMode calculationMode,
+    protected virtual async Task<ActionResult<DatePeriod>> GetCalendarCycle(
+        int tenantId, CalendarCalculationMode calculationMode,
         DateTime? cycleMoment = null, CalendarConfiguration calendar = null, string culture = null, int? offset = null)
     {
         try
@@ -206,7 +208,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             // tenant specific values
             if (calendar == null || string.IsNullOrWhiteSpace(culture))
             {
-                var tenant = await Service.GetAsync(tenantId);
+                var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
                 // tenant culture
                 if (string.IsNullOrWhiteSpace(culture))
                 {
@@ -230,7 +232,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             }
 
             // calculator
-            var calculator = DomainObject.PayrollCalculatorFactory.CreateCalculator(
+            var calculator = PayrollCalculatorFactory.CreateCalculator(
                 calculationMode: calculationMode,
                 tenantId: tenantId,
                 calendar: calendar,
@@ -250,7 +252,8 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
         }
     }
 
-    protected virtual async Task<ActionResult<decimal?>> CalculateCalendarValue(int tenantId, CalendarCalculationMode calculationMode,
+    protected virtual async Task<ActionResult<decimal?>> CalculateCalendarValue(
+        int tenantId, CalendarCalculationMode calculationMode,
         decimal value, DateTime? evaluationDate = null, DateTime? evaluationPeriodDate = null,
         CalendarConfiguration calendar = null, string culture = null)
     {
@@ -259,7 +262,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             // tenant specific values
             if (calendar == null || string.IsNullOrWhiteSpace(culture))
             {
-                var tenant = await Service.GetAsync(tenantId);
+                var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
                 // tenant culture
                 if (string.IsNullOrWhiteSpace(culture))
                 {
@@ -283,7 +286,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             }
 
             // calculator
-            var calculator = DomainObject.PayrollCalculatorFactory.CreateCalculator(
+            var calculator = PayrollCalculatorFactory.CreateCalculator(
                 calculationMode: calculationMode,
                 tenantId: tenantId,
                 calendar: calendar,
@@ -293,7 +296,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             var evaluationPayrollPeriod = calculator.GetPayrunPeriod(evaluationPeriodDate.Value);
             var evaluationPeriod = new DatePeriod(evaluationPayrollPeriod.Start, evaluationPayrollPeriod.End);
 
-            var calculation = new DomainObject.CaseValueCalculation
+            var calculation = new CaseValueCalculation
             {
                 EvaluationDate = evaluationDate.Value,
                 EvaluationPeriod = evaluationPeriod,
@@ -309,5 +312,4 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             return InternalServerError(exception);
         }
     }
-
 }

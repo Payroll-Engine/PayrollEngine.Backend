@@ -11,14 +11,13 @@ namespace PayrollEngine.Persistence;
 public class PayrunRepository : ScriptChildDomainRepository<Payrun, Payrun>, IPayrunRepository
 {
     public PayrunRepository(IPayrunScriptController scriptController,
-        IScriptRepository scriptRepository, IDbContext context) :
-        base(DbSchema.Tables.Payrun, DbSchema.PayrunColumn.TenantId, scriptController,
-            scriptRepository, context)
+        IScriptRepository scriptRepository) :
+        base(DbSchema.Tables.Payrun, DbSchema.PayrunColumn.TenantId, scriptController, scriptRepository)
     {
     }
 
     // duplicated in ScriptTrackChildDomainRepository!
-    public virtual async Task RebuildAsync(int tenantId, int payrunId)
+    public virtual async Task RebuildAsync(IDbContext context, int tenantId, int payrunId)
     {
         if (tenantId == default)
         {
@@ -30,7 +29,7 @@ public class PayrunRepository : ScriptChildDomainRepository<Payrun, Payrun>, IPa
         }
 
         // read item
-        var payrun = await GetAsync(tenantId, payrunId);
+        var payrun = await GetAsync(context, tenantId, payrunId);
         if (payrun == null)
         {
             throw new PayrollException($"Unknown payrun with id {payrunId}");
@@ -45,10 +44,10 @@ public class PayrunRepository : ScriptChildDomainRepository<Payrun, Payrun>, IPa
         using var txScope = TransactionFactory.NewTransactionScope();
 
         // rebuild script binary
-        await SetupBinaryAsync(tenantId, payrun);
+        await SetupBinaryAsync(context, tenantId, payrun);
 
         // update item
-        await UpdateAsync(tenantId, payrun);
+        await UpdateAsync(context, tenantId, payrun);
 
         // commit transaction
         txScope.Complete();
@@ -56,13 +55,13 @@ public class PayrunRepository : ScriptChildDomainRepository<Payrun, Payrun>, IPa
 
     protected override void GetObjectCreateData(Payrun payrun, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(payrun.PayrollId), payrun.PayrollId);
         parameters.Add(nameof(payrun.Name), payrun.Name);
         base.GetObjectCreateData(payrun, parameters);
     }
 
     protected override void GetObjectData(Payrun payrun, DbParameterCollection parameters)
     {
+        parameters.Add(nameof(payrun.PayrollId), payrun.PayrollId);
         parameters.Add(nameof(payrun.DefaultReason), payrun.DefaultReason);
         parameters.Add(nameof(payrun.DefaultReasonLocalizations), JsonSerializer.SerializeNamedDictionary(payrun.DefaultReasonLocalizations));
         parameters.Add(nameof(payrun.StartExpression), payrun.StartExpression);

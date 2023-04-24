@@ -3,25 +3,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryWageTypeCommand : PayrollRepositoryCommandBase
 {
-    /// <summary>Derived wage type</summary>
-    private sealed class DerivedWageType : WageType
-    {
-        /// <summary>The layer level</summary>
-        internal int Level { get; private set; }
 
-        /// <summary>The layer priority</summary>
-        internal int Priority { get; private set; }
-    }
-
-    internal PayrollRepositoryWageTypeCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryWageTypeCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -84,7 +74,7 @@ internal sealed class PayrollRepositoryWageTypeCommand : PayrollRepositoryComman
         }
 
         // retrieve all wage types (stored procedure)
-        var wageTypes = (await Connection.QueryAsync<DerivedWageType>(DbSchema.Procedures.GetDerivedWageTypes,
+        var wageTypes = (await DbContext.QueryAsync<DerivedWageType>(DbSchema.Procedures.GetDerivedWageTypes,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedWageTypes(wageTypes, overrideType);

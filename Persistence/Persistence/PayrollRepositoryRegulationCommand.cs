@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 
@@ -11,8 +10,8 @@ namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryRegulationCommand : PayrollRepositoryCommandBase
 {
-    internal PayrollRepositoryRegulationCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryRegulationCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -38,7 +37,7 @@ internal sealed class PayrollRepositoryRegulationCommand : PayrollRepositoryComm
         }
 
         // retrieve payroll layers
-        var payrollLayers = (await payrollLayerRepository.QueryAsync(query.PayrollId, QueryFactory.Active)).ToList();
+        var payrollLayers = (await payrollLayerRepository.QueryAsync(DbContext, query.PayrollId, QueryFactory.Active)).ToList();
         if (!payrollLayers.Any())
         {
             // nothing to do
@@ -53,19 +52,20 @@ internal sealed class PayrollRepositoryRegulationCommand : PayrollRepositoryComm
         parameters.Add(DbSchema.ParameterGetDerivedPayrollRegulations.PayrollId, query.PayrollId);
         parameters.Add(DbSchema.ParameterGetDerivedPayrollRegulations.RegulationDate, query.RegulationDate);
         parameters.Add(DbSchema.ParameterGetDerivedPayrollRegulations.CreatedBefore, query.EvaluationDate);
-        var regulationDefinitions = (await Connection.QueryAsync<Regulation>(DbSchema.Procedures.GetDerivedPayrollRegulations,
+
+        var regulationDefinitions = (await DbContext.QueryAsync<Regulation>(DbSchema.Procedures.GetDerivedPayrollRegulations,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         // load the regulations
         var regulations = new List<Regulation>();
         foreach (var regulationDefinition in regulationDefinitions)
         {
-            var regulationTenant = await regulationRepository.GetParentIdAsync(regulationDefinition.Id);
+            var regulationTenant = await regulationRepository.GetParentIdAsync(DbContext, regulationDefinition.Id);
             if (!regulationTenant.HasValue)
             {
                 throw new PayrollException($"Unknown tenant of regulation with id {regulationDefinition.Id}");
             }
-            var regulation = await regulationRepository.GetAsync(regulationTenant.Value, regulationDefinition.Id);
+            var regulation = await regulationRepository.GetAsync(DbContext, regulationTenant.Value, regulationDefinition.Id);
             if (regulationTenant.Value != query.TenantId && !regulation.SharedRegulation)
             {
                 throw new PayrollException($"Invalid regulation with id {regulationDefinition.Id}");

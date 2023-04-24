@@ -204,7 +204,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
             Status = ObjectStatus.Active,
             Filter = new Equals(nameof(Lookup.Name), lookupName)
         };
-        var lookup = Settings.LookupRepository.QueryAsync(regulationId, query).Result.FirstOrDefault();
+        var lookup = Settings.LookupRepository.QueryAsync(Settings.DbContext, regulationId, query).Result.FirstOrDefault();
         if (lookup == null)
         {
             return new();
@@ -212,7 +212,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
 
         // lookup values
         var values = new Dictionary<string, string>();
-        var lookupValues = Settings.LookupValueRepository.QueryAsync(lookup.Id,
+        var lookupValues = Settings.LookupValueRepository.QueryAsync(Settings.DbContext, lookup.Id,
             new() { Status = ObjectStatus.Active }).Result;
         foreach (var lookupValue in lookupValues)
         {
@@ -238,7 +238,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         Tuple<int?, string, string, string, long?, long?> queryValues)
     {
         var caseValues = Settings.GlobalCaseValueRepository.
-            QueryAsync(TenantId, BuildCaseValueQuery(queryValues)).Result;
+            QueryAsync(Settings.DbContext, TenantId, BuildCaseValueQuery(queryValues)).Result;
         return BuildCaseValueTable(tableName, caseValues);
     }
 
@@ -247,7 +247,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         Tuple<int?, string, string, string, long?, long?> queryValues)
     {
         var caseValues = Settings.NationalCaseValueRepository.
-            QueryAsync(TenantId, BuildCaseValueQuery(queryValues)).Result;
+            QueryAsync(Settings.DbContext, TenantId, BuildCaseValueQuery(queryValues)).Result;
         return BuildCaseValueTable(tableName, caseValues);
     }
 
@@ -256,7 +256,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         Tuple<int?, string, string, string, long?, long?> queryValues)
     {
         var caseValues = Settings.CompanyCaseValueRepository.
-            QueryAsync(TenantId, BuildCaseValueQuery(queryValues)).Result;
+            QueryAsync(Settings.DbContext, TenantId, BuildCaseValueQuery(queryValues)).Result;
         return BuildCaseValueTable(tableName, caseValues);
     }
 
@@ -265,7 +265,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         Tuple<int?, string, string, string, long?, long?> queryValues)
     {
         var caseValues = Settings.EmployeCaseValueRepository.
-            QueryAsync(employeeId, BuildCaseValueQuery(queryValues)).Result;
+            QueryAsync(Settings.DbContext, employeeId, BuildCaseValueQuery(queryValues)).Result;
         return BuildCaseValueTable(tableName, caseValues);
     }
 
@@ -383,7 +383,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         }
 
         // query wage types
-        var wageTypes = Settings.WageTypeRepository.QueryAsync(regulationId, query).Result;
+        var wageTypes = Settings.WageTypeRepository.QueryAsync(Settings.DbContext, regulationId, query).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);
@@ -426,7 +426,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         }
 
         // query
-        var results = Settings.PayrollResultRepository.QueryAsync(TenantId, QueryValuesToQuery(queryValues)).Result;
+        var results = Settings.PayrollResultRepository.QueryAsync(Settings.DbContext, TenantId, QueryValuesToQuery(queryValues)).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);
@@ -484,7 +484,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         }
 
         // query
-        var results = Settings.WageTypeResultRepository.QueryAsync(payrollResultId, QueryValuesToQuery(queryValues)).Result;
+        var results = Settings.WageTypeResultRepository.QueryAsync(Settings.DbContext, payrollResultId, QueryValuesToQuery(queryValues)).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);
@@ -542,7 +542,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         }
 
         // query
-        var results = Settings.WageTypeCustomResultRepository.QueryAsync(wageTypeResultId, QueryValuesToQuery(queryValues)).Result;
+        var results = Settings.WageTypeCustomResultRepository.QueryAsync(Settings.DbContext, wageTypeResultId, QueryValuesToQuery(queryValues)).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);
@@ -600,7 +600,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         }
 
         // query
-        var results = Settings.CollectorResultRepository.QueryAsync(payrollResultId, QueryValuesToQuery(queryValues)).Result;
+        var results = Settings.CollectorResultRepository.QueryAsync(Settings.DbContext, payrollResultId, QueryValuesToQuery(queryValues)).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);
@@ -658,7 +658,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         }
 
         // query results
-        var results = Settings.CollectorCustomResultRepository.QueryAsync(collectorResultId, QueryValuesToQuery(queryValues)).Result;
+        var results = Settings.CollectorCustomResultRepository.QueryAsync(Settings.DbContext, collectorResultId, QueryValuesToQuery(queryValues)).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);
@@ -712,7 +712,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         }
 
         // query results
-        var results = Settings.PayrunResultRepository.QueryAsync(payrollResultId, QueryValuesToQuery(queryValues)).Result;
+        var results = Settings.PayrunResultRepository.QueryAsync(Settings.DbContext, payrollResultId, QueryValuesToQuery(queryValues)).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);
@@ -782,7 +782,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
     /// <inheritdoc />
     public void AddReportLog(string message, string key = null, DateTime? reportDate = null)
     {
-        var _ = Settings.ReportLogRepository.CreateAsync(TenantId, new ReportLog
+        var _ = Settings.ReportLogRepository.CreateAsync(Settings.DbContext, TenantId, new ReportLog
         {
             ReportName = ReportName,
             ReportDate = reportDate ?? Date.Now,
@@ -800,7 +800,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
     public string InvokeWebhook(string requestOperation, string requestMessage = null)
     {
         // invoke report function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(TenantId,
+        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
             new()
             {
                 Action = WebhookAction.ReportFunctionRequest,

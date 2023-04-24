@@ -10,5 +10,5 @@ public interface IScriptProvider
     /// <summary>
     /// Get script binary
     /// </summary>
-    Task<byte[]> GetBinaryAsync(IScriptObject scriptObject);
+    Task<byte[]> GetBinaryAsync(IDbContext context, IScriptObject scriptObject);
 }

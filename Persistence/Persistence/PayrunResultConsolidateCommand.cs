@@ -4,15 +4,14 @@ using System.Data;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrunResultConsolidateCommand : ResultCommandBase
 {
-    internal PayrunResultConsolidateCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrunResultConsolidateCommand(IDbContext context) :
+        base(context)
     {
     }
 
@@ -85,7 +84,7 @@ internal sealed class PayrunResultConsolidateCommand : ResultCommandBase
         QueryBegin();
 
         // retrieve consolidated payrun results (stored procedure)
-        var values = await Connection.QueryAsync<PayrunResult>(DbSchema.Procedures.GetConsolidatedPayrunResults,
+        var values = await DbContext.QueryAsync<PayrunResult>(DbSchema.Procedures.GetConsolidatedPayrunResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         // query post action

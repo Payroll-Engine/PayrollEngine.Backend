@@ -18,7 +18,7 @@ internal sealed class PayrunProcessorRepositories
 
     internal async Task<Payroll> LoadPayrollAsync(int payrollId)
     {
-        var payroll = await Settings.PayrollRepository.GetAsync(Tenant.Id, payrollId);
+        var payroll = await Settings.PayrollRepository.GetAsync(Settings.DbContext, Tenant.Id, payrollId);
         if (payroll == null)
         {
             throw new PayrunException($"Unknown payroll with id {payrollId}");
@@ -30,7 +30,7 @@ internal sealed class PayrunProcessorRepositories
         DatePeriod period, DateTime evaluationDate)
     {
         // validate regulations
-        var regulations = (await Settings.PayrollRepository.GetDerivedRegulationsAsync(
+        var regulations = (await Settings.PayrollRepository.GetDerivedRegulationsAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -46,7 +46,7 @@ internal sealed class PayrunProcessorRepositories
         // validate shared regulations
         foreach (var regulation in regulations)
         {
-            var regulationTenantId = await Settings.RegulationRepository.GetParentIdAsync(regulation.Id);
+            var regulationTenantId = await Settings.RegulationRepository.GetParentIdAsync(Settings.DbContext, regulation.Id);
             if (!regulationTenantId.HasValue)
             {
                 throw new PayrunException($"Unknown regulation {regulation.Name} with id {regulation.Id}");
@@ -64,7 +64,7 @@ internal sealed class PayrunProcessorRepositories
             }
 
             // test regulation permission
-            var permission = await Settings.RegulationPermissionRepository.GetAsync(regulationTenantId.Value, regulation.Id,
+            var permission = await Settings.RegulationPermissionRepository.GetAsync(Settings.DbContext, regulationTenantId.Value, regulation.Id,
                 Tenant.Id, division?.Id);
             if (permission == null)
             {
@@ -75,7 +75,7 @@ internal sealed class PayrunProcessorRepositories
 
     internal async Task<Division> LoadDivisionAsync(int divisionId)
     {
-        var division = await Settings.DivisionRepository.GetAsync(Tenant.Id, divisionId);
+        var division = await Settings.DivisionRepository.GetAsync(Settings.DbContext, Tenant.Id, divisionId);
         if (division == null)
         {
             throw new PayrunException($"Unknown division with id {divisionId}");
@@ -85,7 +85,7 @@ internal sealed class PayrunProcessorRepositories
 
     internal async Task<User> LoadUserAsync(int userId)
     {
-        var user = await Settings.UserRepository.GetAsync(Tenant.Id, userId);
+        var user = await Settings.UserRepository.GetAsync(Settings.DbContext, Tenant.Id, userId);
         if (user == null)
         {
             throw new PayrunException($"Unknown user with id {userId}");
@@ -95,7 +95,7 @@ internal sealed class PayrunProcessorRepositories
 
     internal async Task<PayrunJob> LoadPayrunJobAsync(int payrunJobId)
     {
-        var payrunJob = await Settings.PayrunJobRepository.GetAsync(Tenant.Id, payrunJobId);
+        var payrunJob = await Settings.PayrunJobRepository.GetAsync(Settings.DbContext, Tenant.Id, payrunJobId);
         if (payrunJob == null)
         {
             throw new PayrunException($"Unknown payrun job with id {payrunJobId}");

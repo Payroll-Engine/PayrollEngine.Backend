@@ -85,7 +85,8 @@ public abstract class RuntimeBase : IRuntime
     protected abstract string LogOwnerType { get; }
 
     /// <inheritdoc />
-    public void AddLog(int level, string message, string error = null, string comment = null) =>
+    public void AddLog(int level, string message, string error = null, string comment = null)
+    {
         FunctionHost.AddLog(TenantId,
             new()
             {
@@ -97,6 +98,7 @@ public abstract class RuntimeBase : IRuntime
                 Owner = LogOwner,
                 OwnerType = LogOwnerType
             });
+    }
 
     /// <inheritdoc />
     public void AddTask(string name, string instruction, DateTime scheduleDate, string category,

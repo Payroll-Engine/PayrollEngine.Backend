@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 using SqlKata.Compilers;
 
@@ -16,25 +14,17 @@ public abstract class RepositoryBase
         UseLegacyPagination = false
     };
 
-    protected IDbContext Context { get; }
-    protected IDbConnection Connection => Context.Connection;
-
-    protected RepositoryBase(IDbContext context)
-    {
-        Context = context ?? throw new ArgumentNullException(nameof(context));
-    }
-
     // Don't use the Sql or RawSql properties
     protected string CompileQuery(SqlKata.Query query) => compiler.Compile(query).ToString();
 
-    protected virtual async Task<IEnumerable<T>> SelectByIdAsync<T>(string table, int id) where T : IDomainObject =>
-        await SelectAsync<T>(table, DbSchema.ObjectColumn.Id, id);
+    protected virtual async Task<IEnumerable<T>> SelectByIdAsync<T>(IDbContext context, string table, int id) where T : IDomainObject =>
+        await SelectAsync<T>(context, table, DbSchema.ObjectColumn.Id, id);
 
-    protected virtual async Task<IEnumerable<T>> SelectAsync<T>(string table, string column,
+    protected virtual async Task<IEnumerable<T>> SelectAsync<T>(IDbContext context, string table, string column,
         object value) where T : IDomainObject =>
-        await SelectAsync<T>(table, new() { { column, value } });
+        await SelectAsync<T>(context, table, new() { { column, value } });
 
-    protected virtual async Task<IEnumerable<T>> SelectAsync<T>(string table,
+    protected virtual async Task<IEnumerable<T>> SelectAsync<T>(IDbContext context, string table,
         Dictionary<string, object> conditions) where T : IDomainObject
     {
         if (string.IsNullOrWhiteSpace(table))
@@ -47,19 +37,19 @@ public abstract class RepositoryBase
         var compileQuery = CompileQuery(query);
 
         // SELECT execution
-        return await Connection.QueryAsync<T>(compileQuery);
+        return await context.QueryAsync<T>(compileQuery);
     }
 
-    protected virtual async Task<T> SelectSingleByIdAsync<T>(string table, int id) where T : IDomainObject =>
-        (await SelectByIdAsync<T>(table, id)).FirstOrDefault();
+    protected virtual async Task<T> SelectSingleByIdAsync<T>(IDbContext context, string table, int id) where T : IDomainObject =>
+        (await SelectByIdAsync<T>(context, table, id)).FirstOrDefault();
 
-    protected virtual async Task<T> SelectSingleAsync<T>(string table, string column, object value) where T : IDomainObject =>
-        (await SelectAsync<T>(table, column, value)).FirstOrDefault();
+    protected virtual async Task<T> SelectSingleAsync<T>(IDbContext context, string table, string column, object value) where T : IDomainObject =>
+        (await SelectAsync<T>(context, table, column, value)).FirstOrDefault();
 
-    protected virtual async Task<T> SelectSingleAsync<T>(string table, Dictionary<string, object> conditions) where T : IDomainObject =>
-        (await SelectAsync<T>(table, conditions)).FirstOrDefault();
+    protected virtual async Task<T> SelectSingleAsync<T>(IDbContext context, string table, Dictionary<string, object> conditions) where T : IDomainObject =>
+        (await SelectAsync<T>(context, table, conditions)).FirstOrDefault();
 
-    protected virtual async Task<IEnumerable<T>> SelectInnerJoinAsync<T>(string leftTable, string rightTable, string relationColumn)
+    protected virtual async Task<IEnumerable<T>> SelectInnerJoinAsync<T>(IDbContext context, string leftTable, string rightTable, string relationColumn)
     {
         if (string.IsNullOrWhiteSpace(leftTable))
         {
@@ -79,7 +69,6 @@ public abstract class RepositoryBase
                   $"{rightTable} ON {leftTable}.{DbSchema.ObjectColumn.Id} = {rightTable}.{relationColumn}";
 
         // SELECT execution
-        return await Connection.QueryAsync<T>(query);
+        return await context.QueryAsync<T>(query);
     }
-
 }

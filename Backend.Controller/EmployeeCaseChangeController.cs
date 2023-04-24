@@ -62,7 +62,7 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
         }
 
         // employee check
-        if (!await ParentService.ExistsAsync(employeeId))
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }

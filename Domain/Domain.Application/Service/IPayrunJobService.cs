@@ -12,18 +12,21 @@ public interface IPayrunJobService : IChildApplicationService<IPayrunJobReposito
     /// <summary>
     /// Query employee payrun jobs
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id</param>
     /// <param name="query">The query parameters</param>
     /// <returns>Payrun jobs of the employee</returns>
-    Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(int tenantId, int employeeId, Query query = null);
+    Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(IDbContext context, int tenantId,
+        int employeeId, Query query = null);
 
     /// <summary>
     /// Query employee payrun jobs count
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id</param>
     /// <param name="query">The query parameters</param>
     /// <returns>Payrun jobs of the employee</returns>
-    Task<long> QueryEmployeePayrunJobsCountAsync(int tenantId, int employeeId, Query query = null);
+    Task<long> QueryEmployeePayrunJobsCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null);
 }

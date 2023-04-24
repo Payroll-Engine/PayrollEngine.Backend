@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using PayrollEngine.Serilog;
 using Serilog;
 
-namespace PayrollEngine.Backend.Api;
+namespace PayrollEngine.Backend.Server;
 
 /// <summary>
 /// Start program for the provider api

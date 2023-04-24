@@ -35,7 +35,7 @@ public class ReportBuilder : ReportTool
         if (reportRequest.UserId > 0)
         {
             // user
-            var user = await GetUserAsync(reportRequest.UserId);
+            var user = await GetUserAsync(Settings.DbContext, reportRequest.UserId);
 
             // setup report, validate request
             await SetupReport(report, reportRequest);
@@ -58,6 +58,7 @@ public class ReportBuilder : ReportTool
     {
         return new ReportScriptController<ReportSet>().Build(new()
         {
+            DbContext = Settings.DbContext,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = user,

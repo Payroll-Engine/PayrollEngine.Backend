@@ -38,9 +38,10 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(
-            new CaseValueCache(globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -64,10 +65,11 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(
-            new CaseValueCache(globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -92,11 +94,12 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(
-            new CaseValueCache(globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -124,12 +127,13 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(Employee,
-            new CaseValueCache(globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(employeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, employeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -163,10 +167,11 @@ public class CaseValueTool : FunctionToolBase
     /// <summary>
     /// Test if the case field is valid
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="caseFieldName">The name of the case field</param>
     /// <returns>The case value</returns>
-    public async Task<bool> ValidCaseFieldAsync(string caseFieldName) =>
-        await CaseFieldProvider.GetCaseFieldAsync(caseFieldName) != null;
+    public async Task<bool> ValidCaseFieldAsync(IDbContext context, string caseFieldName) =>
+        await CaseFieldProvider.GetCaseFieldAsync(context, caseFieldName) != null;
 
     /// <summary>
     /// Get case values (only active objects)

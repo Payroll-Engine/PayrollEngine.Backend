@@ -53,14 +53,15 @@ public sealed class CaseProvider
     /// <summary>
     /// Get payroll cases
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="caseType">The case type (default: all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>The cases at a given time</returns>
-    public async Task<IEnumerable<Case>> GetCasesAsync(int payrollId, CaseType? caseType = null,
+    public async Task<IEnumerable<Case>> GetCasesAsync(IDbContext context, int payrollId, CaseType? caseType = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
-        await PayrollRepository.GetDerivedCasesAsync(
+        await PayrollRepository.GetDerivedCasesAsync(context,
             new()
             {
                 TenantId = Tenant.Id,
@@ -73,19 +74,20 @@ public sealed class CaseProvider
     /// <summary>
     /// Get payroll case
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="caseName">The case name</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>The case matching the name at a given time</returns>
-    public async Task<Case> GetCaseAsync(int payrollId, string caseName,
+    public async Task<Case> GetCaseAsync(IDbContext context, int payrollId, string caseName,
         OverrideType? overrideType = null, ClusterSet clusterSet = null)
     {
         if (string.IsNullOrWhiteSpace(caseName))
         {
             throw new ArgumentException(nameof(caseName));
         }
-        return (await PayrollRepository.GetDerivedCasesAsync(
+        return (await PayrollRepository.GetDerivedCasesAsync(context,
             new()
             {
                 TenantId = Tenant.Id,

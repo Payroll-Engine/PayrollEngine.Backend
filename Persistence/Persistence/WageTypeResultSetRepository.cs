@@ -14,8 +14,8 @@ public class WageTypeResultSetRepository : ChildDomainRepository<WageTypeResultS
     public bool BulkInsert { get; }
 
     public WageTypeResultSetRepository(IWageTypeCustomResultRepository wageTypeCustomResultRepository,
-        bool bulkInsert, IDbContext context) :
-        base(DbSchema.Tables.WageTypeResult, DbSchema.WageTypeResultColumn.PayrollResultId, context)
+        bool bulkInsert) :
+        base(DbSchema.Tables.WageTypeResult, DbSchema.WageTypeResultColumn.PayrollResultId)
     {
         WageTypeCustomResultRepository = wageTypeCustomResultRepository ?? throw new ArgumentNullException(nameof(wageTypeCustomResultRepository));
         BulkInsert = bulkInsert;
@@ -37,42 +37,42 @@ public class WageTypeResultSetRepository : ChildDomainRepository<WageTypeResultS
         base.GetObjectCreateData(result, parameters);
     }
 
-    protected override async Task OnRetrieved(int payrollResultId, WageTypeResultSet resultSet)
+    protected override async Task OnRetrieved(IDbContext context, int payrollResultId, WageTypeResultSet resultSet)
     {
         // wage type custom results
-        resultSet.CustomResults = (await WageTypeCustomResultRepository.QueryAsync(resultSet.Id)).ToList();
+        resultSet.CustomResults = (await WageTypeCustomResultRepository.QueryAsync(context, resultSet.Id)).ToList();
     }
 
-    protected override async Task OnCreatedAsync(int payrollResultId, WageTypeResultSet resultSet)
+    protected override async Task OnCreatedAsync(IDbContext context, int payrollResultId, WageTypeResultSet resultSet)
     {
         // wage type custom results
         if (resultSet.CustomResults != null && resultSet.CustomResults.Any())
         {
             if (BulkInsert)
             {
-                await WageTypeCustomResultRepository.CreateBulkAsync(resultSet.Id, resultSet.CustomResults);
+                await WageTypeCustomResultRepository.CreateBulkAsync(context, resultSet.Id, resultSet.CustomResults);
             }
             else
             {
-                await WageTypeCustomResultRepository.CreateAsync(resultSet.Id, resultSet.CustomResults);
+                await WageTypeCustomResultRepository.CreateAsync(context, resultSet.Id, resultSet.CustomResults);
             }
         }
-        await base.OnCreatedAsync(payrollResultId, resultSet);
+        await base.OnCreatedAsync(context, payrollResultId, resultSet);
     }
 
-    protected override Task OnUpdatedAsync(int payrollResultId, WageTypeResultSet resultSet)
+    protected override Task OnUpdatedAsync(IDbContext context, int payrollResultId, WageTypeResultSet resultSet)
     {
         throw new NotSupportedException("Update of wage type results not supported");
     }
 
-    protected override async Task<bool> OnDeletingAsync(int payrollResultId, int wageTypeResultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int payrollResultId, int wageTypeResultId)
     {
         // wage type custom results
-        var customResults = (await WageTypeCustomResultRepository.QueryAsync(wageTypeResultId)).ToList();
+        var customResults = (await WageTypeCustomResultRepository.QueryAsync(context, wageTypeResultId)).ToList();
         foreach (var customResult in customResults)
         {
-            await WageTypeCustomResultRepository.DeleteAsync(wageTypeResultId, customResult.Id);
+            await WageTypeCustomResultRepository.DeleteAsync(context, wageTypeResultId, customResult.Id);
         }
-        return await base.OnDeletingAsync(payrollResultId, wageTypeResultId);
+        return await base.OnDeletingAsync(context, payrollResultId, wageTypeResultId);
     }
 }

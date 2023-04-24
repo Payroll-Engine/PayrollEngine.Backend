@@ -5,8 +5,8 @@ namespace PayrollEngine.Persistence;
 
 public class PayrunJobEmployeeRepository : ChildDomainRepository<PayrunJobEmployee>, IPayrunJobEmployeeRepository
 {
-    public PayrunJobEmployeeRepository(IDbContext context) :
-        base(DbSchema.Tables.PayrunJobEmployee, DbSchema.PayrunJobEmployeeColumn.PayrunJobId, context)
+    public PayrunJobEmployeeRepository() :
+        base(DbSchema.Tables.PayrunJobEmployee, DbSchema.PayrunJobEmployeeColumn.PayrunJobId)
     {
     }
 

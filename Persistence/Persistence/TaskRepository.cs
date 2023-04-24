@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class TaskRepository : ChildDomainRepository<Task>, ITaskRepository
 {
-    public TaskRepository(IDbContext context) :
-        base(DbSchema.Tables.Task, DbSchema.TaskColumn.TenantId, context)
+    public TaskRepository() :
+        base(DbSchema.Tables.Task, DbSchema.TaskColumn.TenantId)
     {
     }
 

@@ -5,8 +5,8 @@ namespace PayrollEngine.Persistence;
 
 public class LookupRepository : LookupRepositoryBase<Lookup>, ILookupRepository
 {
-    public LookupRepository(ILookupAuditRepository auditRepository, IDbContext context) :
-        base(auditRepository, context)
+    public LookupRepository(ILookupAuditRepository auditRepository) :
+        base(auditRepository)
     {
     }
 }

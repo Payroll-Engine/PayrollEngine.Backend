@@ -9,8 +9,8 @@ namespace PayrollEngine.Persistence;
 
 public class ScriptRepository : TrackChildDomainRepository<Script, ScriptAudit>, IScriptRepository
 {
-    public ScriptRepository(IScriptAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.Script, DbSchema.ScriptColumn.RegulationId, auditRepository, context)
+    public ScriptRepository(IScriptAuditRepository auditRepository) :
+        base(DbSchema.Tables.Script, DbSchema.ScriptColumn.RegulationId, auditRepository)
     {
     }
 
@@ -27,11 +27,11 @@ public class ScriptRepository : TrackChildDomainRepository<Script, ScriptAudit>,
         base.GetObjectData(script, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> scriptNames) =>
-        await ExistsAnyAsync(DbSchema.ScriptColumn.RegulationId, regulationId, DbSchema.ScriptColumn.Name, scriptNames);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> scriptNames) =>
+        await ExistsAnyAsync(context, DbSchema.ScriptColumn.RegulationId, regulationId, DbSchema.ScriptColumn.Name, scriptNames);
 
-    public virtual async Task<IEnumerable<Script>> GetFunctionScriptsAsync(int regulationId, List<FunctionType> functionTypes = null,
-        DateTime? evaluationDate = null)
+    public virtual async Task<IEnumerable<Script>> GetFunctionScriptsAsync(IDbContext context, int regulationId,
+        List<FunctionType> functionTypes = null, DateTime? evaluationDate = null)
     {
         if (regulationId <= 0)
         {
@@ -58,10 +58,10 @@ public class ScriptRepository : TrackChildDomainRepository<Script, ScriptAudit>,
             compileQuery += $" AND ([{DbSchema.ScriptColumn.FunctionTypeMask}] & {bitmask} <> 0 OR [{DbSchema.ScriptColumn.FunctionTypeMask}] = 0)";
         }
 
-        var scripts = (await QueryAsync<Script>(compileQuery)).ToList();
+        var scripts = (await QueryAsync<Script>(context, compileQuery)).ToList();
 
         // notifications
-        await OnRetrieved(regulationId, scripts);
+        await OnRetrieved(context, regulationId, scripts);
 
         return scripts;
     }

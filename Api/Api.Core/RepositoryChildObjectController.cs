@@ -79,13 +79,13 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
                 return InvalidParentRequest(parentId);
             }
             // existing parent check
-            if (!await ParentService.ExistsAsync(parentId))
+            if (!await ParentService.ExistsAsync(Runtime.DbContext, parentId))
             {
                 return NotFound(typeof(TParent), parentId);
             }
 
             var apiObjects = new List<TApi>();
-            var items = (await ChildService.QueryAsync(parentId, query)).ToList();
+            var items = (await ChildService.QueryAsync(Runtime.DbContext, parentId, query)).ToList();
             foreach (var item in items)
             {
                 apiObjects.Add(MapDomainToApi(item));
@@ -112,7 +112,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     {
         try
         {
-            return await Service.QueryCountAsync(parentId, query);
+            return await Service.QueryCountAsync(Runtime.DbContext, parentId, query);
         }
         catch (QueryException exception)
         {
@@ -124,6 +124,12 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
         }
     }
 
+    /// <summary>
+    /// Get resource
+    /// </summary>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="id">The object id</param>
+    /// <returns>The resource</returns>
     protected virtual async Task<ActionResult<TApi>> GetAsync(int parentId, int id)
     {
         try
@@ -135,7 +141,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             }
 
             // get object
-            var domainObject = await Service.GetAsync(parentId, id);
+            var domainObject = await Service.GetAsync(Runtime.DbContext, parentId, id);
             if (domainObject == null)
             {
                 return ObjectNotFoundRequest(id);
@@ -174,7 +180,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
                 return InvalidParentRequest(parentId);
             }
             // existing parent
-            if (!await ParentService.ExistsAsync(parentId))
+            if (!await ParentService.ExistsAsync(Runtime.DbContext, parentId))
             {
                 return NotFound(typeof(TParent), parentId);
             }
@@ -195,7 +201,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             // create object
             try
             {
-                domainObject = await ChildService.CreateAsync(parentId, domainObject);
+                domainObject = await ChildService.CreateAsync(Runtime.DbContext, parentId, domainObject);
                 if (domainObject.Id <= 0)
                 {
                     return CreateObjectFailedRequest();
@@ -238,7 +244,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
                 return InvalidParentRequest(parentId);
             }
             // existing parent
-            if (!await ParentService.ExistsAsync(parentId))
+            if (!await ParentService.ExistsAsync(Runtime.DbContext, parentId))
             {
                 return NotFound(typeof(TParent), parentId);
             }
@@ -267,7 +273,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             IEnumerable<TDomain> createdObjects;
             try
             {
-                createdObjects = await ChildService.CreateAsync(parentId, domainObjects);
+                createdObjects = await ChildService.CreateAsync(Runtime.DbContext, parentId, domainObjects);
             }
             catch (PayrollScriptException scriptException)
             {
@@ -304,12 +310,12 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
                 return UndefinedObjectIdRequest();
             }
             // existing parent
-            if (!await ParentService.ExistsAsync(parentId))
+            if (!await ParentService.ExistsAsync(Runtime.DbContext, parentId))
             {
                 return NotFound(typeof(TParent), parentId);
             }
             // existing object
-            if (!await Service.ExistsAsync(apiObject.Id))
+            if (!await Service.ExistsAsync(Runtime.DbContext, apiObject.Id))
             {
                 return ObjectNotFoundRequest(apiObject.Id);
             }
@@ -330,7 +336,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             // update object
             try
             {
-                domainObject = await Service.UpdateAsync(parentId, domainObject);
+                domainObject = await Service.UpdateAsync(Runtime.DbContext, parentId, domainObject);
             }
             catch (PayrollScriptException scriptException)
             {
@@ -358,12 +364,12 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             }
 
             // check for existing object
-            if (!await ExistsAsync(itemId))
+            if (!await ExistsAsync(Runtime.DbContext, itemId))
             {
                 return ObjectNotFoundRequest(itemId);
             }
 
-            await Service.DeleteAsync(parentId, itemId);
+            await Service.DeleteAsync(Runtime.DbContext, parentId, itemId);
             return Ok();
         }
         catch (Exception exception)

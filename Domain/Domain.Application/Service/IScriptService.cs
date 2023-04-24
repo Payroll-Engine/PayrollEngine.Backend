@@ -10,8 +10,9 @@ public interface IScriptService : IChildApplicationService<IScriptRepository, Sc
     /// <summary>
     /// Test if scripts exists
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="scriptNames">The case names</param>
     /// <returns>True if any script exists</returns>
-    Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> scriptNames);
+    Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> scriptNames);
 }

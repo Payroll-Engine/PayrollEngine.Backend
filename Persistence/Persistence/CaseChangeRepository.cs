@@ -19,8 +19,8 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
     public ICaseValueChangeRepository CaseValueChangeRepository { get; }
 
     protected CaseChangeRepository(string tableName, string parentFieldName,
-        CaseChangeRepositorySettings settings, IDbContext context) :
-        base(tableName, parentFieldName, context)
+        CaseChangeRepositorySettings settings) :
+        base(tableName, parentFieldName)
     {
         PayrollRepository = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(settings.PayrollRepository));
         CaseRepository = settings.CaseRepository ?? throw new ArgumentNullException(nameof(settings.CaseRepository));
@@ -50,13 +50,13 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
 
     #region Query
 
-    protected abstract Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(int tenantId, int parentId, Query query = null);
-    protected abstract Task<long> QueryCaseChangesValuesCountAsync(int tenantId, int parentId, Query query = null);
+    protected abstract Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(IDbContext context, int tenantId, int parentId, Query query = null);
+    protected abstract Task<long> QueryCaseChangesValuesCountAsync(IDbContext context, int tenantId, int parentId, Query query = null);
 
-    public virtual async Task<IEnumerable<T>> QueryAsync(int tenantId, int parentId, Query query = null)
+    public virtual async Task<IEnumerable<T>> QueryAsync(IDbContext context, int tenantId, int parentId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, ParentFieldName, parentId, query);
+        var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, ParentFieldName, parentId, query);
 
         // case change query filter
         if (query is CaseChangeQuery caseChangeQuery)
@@ -68,15 +68,15 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
         var compileQuery = CompileQuery(dbQuery);
 
         // retrieve case changes
-        var caseChanges = (await QueryAsync<T>(compileQuery)).ToList();
+        var caseChanges = (await QueryAsync<T>(context, compileQuery)).ToList();
 
         // notification
-        await OnRetrieved(parentId, caseChanges);
+        await OnRetrieved(context, parentId, caseChanges);
 
         if (caseChanges.Any())
         {
             // retrieve case values
-            var caseValues = (await QueryCaseChangesValuesAsync(tenantId, parentId)).ToList();
+            var caseValues = (await QueryCaseChangesValuesAsync(context, tenantId, parentId)).ToList();
             if (!caseValues.Any())
             {
                 throw new PayrollException($"Missing case values for case change with parent id {parentId}");
@@ -98,10 +98,10 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
         return caseChanges;
     }
 
-    public virtual async Task<long> QueryCountAsync(int tenantId, int parentId, Query query = null)
+    public virtual async Task<long> QueryCountAsync(IDbContext context, int tenantId, int parentId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, ParentFieldName, parentId, query);
+        var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, ParentFieldName, parentId, query);
 
         // case change query filter
         if (query is CaseChangeQuery caseChangeQuery)
@@ -113,11 +113,12 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var count = await QuerySingleAsync<long>(compileQuery);
+        var count = await QuerySingleAsync<long>(context, compileQuery);
         return count;
     }
 
-    public virtual async Task<IEnumerable<CaseChangeCaseValue>> QueryValuesAsync(int tenantId, int parentId, Query query = null)
+    public virtual async Task<IEnumerable<CaseChangeCaseValue>> QueryValuesAsync(IDbContext context,
+        int tenantId, int parentId, Query query = null)
     {
         if (tenantId <= 0)
         {
@@ -127,10 +128,11 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
         {
             throw new ArgumentException(nameof(parentId));
         }
-        return (await QueryCaseChangesValuesAsync(tenantId, parentId, query)).ToList();
+        return (await QueryCaseChangesValuesAsync(context, tenantId, parentId, query)).ToList();
     }
 
-    public virtual async Task<long> QueryValuesCountAsync(int tenantId, int parentId, Query query = null)
+    public virtual async Task<long> QueryValuesCountAsync(IDbContext context, int tenantId,
+        int parentId, Query query = null)
     {
         if (tenantId <= 0)
         {
@@ -140,14 +142,14 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
         {
             throw new ArgumentException(nameof(parentId));
         }
-        return await QueryCaseChangesValuesCountAsync(tenantId, parentId, query);
+        return await QueryCaseChangesValuesCountAsync(context, tenantId, parentId, query);
     }
 
     #endregion
 
     #region Add New Case
 
-    public virtual async Task<T> AddCaseChangeAsync(int tenantId, int payrollId, int parentId, T caseChange)
+    public virtual async Task<T> AddCaseChangeAsync(IDbContext context, int tenantId, int payrollId, int parentId, T caseChange)
     {
         if (tenantId <= 0)
         {
@@ -178,7 +180,7 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
         foreach (var caseValue in caseChange.Values)
         {
             // case field
-            var caseField = (await PayrollRepository.GetDerivedCaseFieldsAsync(
+            var caseField = (await PayrollRepository.GetDerivedCaseFieldsAsync(context,
                 new() { TenantId = tenantId, PayrollId = payrollId },
                 new[] { caseValue.CaseFieldName })).FirstOrDefault();
             if (caseField == null)
@@ -192,22 +194,22 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
             if (string.IsNullOrWhiteSpace(caseChange.ValidationCaseName))
             {
                 // case
-                var caseId = await CaseFieldRepository.GetParentIdAsync(caseField.Id);
+                var caseId = await CaseFieldRepository.GetParentIdAsync(context, caseField.Id);
                 if (!caseId.HasValue)
                 {
                     throw new PayrollException($"Unknown case for case field {caseField}");
                 }
-                var regulationId = await CaseRepository.GetParentIdAsync(caseId.Value);
+                var regulationId = await CaseRepository.GetParentIdAsync(context, caseId.Value);
                 if (!regulationId.HasValue)
                 {
                     throw new PayrollException($"Unknown regulation case with id {caseId} on case field {caseField}");
                 }
 
-                @case = await CaseRepository.GetAsync(regulationId.Value, caseId.Value);
+                @case = await CaseRepository.GetAsync(context, regulationId.Value, caseId.Value);
             }
             else
             {
-                @case = (await PayrollRepository.GetDerivedCasesAsync(
+                @case = (await PayrollRepository.GetDerivedCasesAsync(context,
                             query: new() { TenantId = tenantId, PayrollId = payrollId },
                             caseNames: new[] { caseChange.ValidationCaseName })).FirstOrDefault();
             }
@@ -251,7 +253,7 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
                         OrderBy = $"{nameof(CaseValue.Created)} DESC",
                         Filter = filter
                     };
-                    var latestCaseValue = (await CaseValueRepository.QueryAsync(parentId, query)).FirstOrDefault();
+                    var latestCaseValue = (await CaseValueRepository.QueryAsync(context, parentId, query)).FirstOrDefault();
                     if (latestCaseValue != null &&
                         Equals(latestCaseValue.Start, caseValue.Start) &&
                         Equals(latestCaseValue.End, caseValue.End) &&
@@ -291,7 +293,7 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
         using var txScope = TransactionFactory.NewTransactionScope();
 
         // create case change
-        await CreateAsync(parentId, caseChange);
+        await CreateAsync(context, parentId, caseChange);
 
         // create case values
         for (var i = 0; i < caseChange.Values.Count; i++)
@@ -378,22 +380,22 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
             if (caseValue is CaseValueSetup caseValueSetup)
             {
                 // with documents
-                await CaseValueSetupRepository.CreateAsync(parentId, caseValueSetup);
+                await CaseValueSetupRepository.CreateAsync(context, parentId, caseValueSetup);
             }
             else
             {
                 // without documents
-                await CaseValueRepository.CreateAsync(parentId, caseValue);
+                await CaseValueRepository.CreateAsync(context, parentId, caseValue);
             }
         }
 
         // create case value changes
-        await CreateCaseValuesAsync(caseChange);
+        await CreateCaseValuesAsync(context, caseChange);
 
         // cancellation case change: update cancellation data on cancelled case change
         if (caseChange.CancellationId.HasValue)
         {
-            var cancellationCaseChange = await GetAsync(parentId, caseChange.CancellationId.Value);
+            var cancellationCaseChange = await GetAsync(context, parentId, caseChange.CancellationId.Value);
             if (cancellationCaseChange == null)
             {
                 throw new PayrollException($"Invalid cancellation case change with id {caseChange.CancellationId.Value}");
@@ -408,14 +410,14 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
             // update cancellation state
             cancellationCaseChange.CancellationId = caseChange.Id;
             cancellationCaseChange.CancellationDate = caseChange.CancellationDate;
-            await UpdateAsync(parentId, cancellationCaseChange);
+            await UpdateAsync(context, parentId, cancellationCaseChange);
         }
 
         txScope.Complete();
         return caseChange;
     }
 
-    private async Task CreateCaseValuesAsync(T caseChange)
+    private async Task CreateCaseValuesAsync(IDbContext context, T caseChange)
     {
         foreach (var caseValue in caseChange.Values)
         {
@@ -424,7 +426,7 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
                 CaseChangeId = caseChange.Id,
                 CaseValueId = caseValue.Id
             };
-            await CaseValueChangeRepository.CreateAsync(caseChange.Id, valueChange);
+            await CaseValueChangeRepository.CreateAsync(context, caseChange.Id, valueChange);
         }
     }
 

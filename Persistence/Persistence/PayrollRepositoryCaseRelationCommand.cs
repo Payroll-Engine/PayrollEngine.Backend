@@ -3,25 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryCaseRelationCommand : PayrollRepositoryCommandBase
 {
-    /// <summary>Derived case relation</summary>
-    private sealed class DerivedCaseRelation : CaseRelation
-    {
-        /// <summary>The layer level</summary>
-        internal int Level { get; private set; }
-
-        /// <summary>The layer priority</summary>
-        internal int Priority { get; private set; }
-    }
-
-    internal PayrollRepositoryCaseRelationCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryCaseRelationCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -77,7 +66,7 @@ internal sealed class PayrollRepositoryCaseRelationCommand : PayrollRepositoryCo
         }
 
         // case relations
-        var caseRelations = (await Connection.QueryAsync<DerivedCaseRelation>(DbSchema.Procedures.GetDerivedCaseRelations,
+        var caseRelations = (await DbContext.QueryAsync<DerivedCaseRelation>(DbSchema.Procedures.GetDerivedCaseRelations,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
         if (!caseRelations.Any())
         {

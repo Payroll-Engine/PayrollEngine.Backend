@@ -28,7 +28,7 @@ public abstract class WageTypeController : ScriptTrackChildObjectController<IReg
     protected override async Task<ActionResult<ApiObject.WageType>> CreateAsync(int regulationId, ApiObject.WageType wageType)
     {
         // unique wage type name per payroll
-        if (await ChildService.ExistsAnyAsync(regulationId, new[] { wageType.WageTypeNumber }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { wageType.WageTypeNumber }))
         {
             return BadRequest($"Wage type with number {wageType.WageTypeNumber} already exists");
         }

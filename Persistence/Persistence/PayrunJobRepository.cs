@@ -15,8 +15,8 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
 {
     public IPayrunJobEmployeeRepository JobEmployeeRepository { get; }
 
-    public PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeRepository, IDbContext context) :
-        base(DbSchema.Tables.PayrunJob, DbSchema.PayrunJobColumn.TenantId, context)
+    public PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeRepository) :
+        base(DbSchema.Tables.PayrunJob, DbSchema.PayrunJobColumn.TenantId)
     {
         JobEmployeeRepository = jobEmployeeRepository ?? throw new ArgumentNullException(nameof(jobEmployeeRepository));
     }
@@ -63,10 +63,11 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         base.GetObjectData(payrunJob, parameters);
     }
 
-    public virtual async Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(int tenantId, int employeeId, Query query = null)
+    public virtual async Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(IDbContext context,
+        int tenantId, int employeeId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<PayrunJob>(Context, TableName, query);
+        var dbQuery = DbQueryFactory.NewQuery<PayrunJob>(context, TableName, query);
 
         // join payrun job to job employee
         dbQuery
@@ -80,18 +81,19 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var items = (await QueryAsync<PayrunJob>(compileQuery)).ToList();
+        var items = (await QueryAsync<PayrunJob>(context, compileQuery)).ToList();
 
         // notification
-        await OnRetrieved(tenantId, items);
+        await OnRetrieved(context, tenantId, items);
 
         return items;
     }
 
-    public virtual async Task<long> QueryEmployeePayrunJobsCountAsync(int tenantId, int employeeId, Query query = null)
+    public virtual async Task<long> QueryEmployeePayrunJobsCountAsync(IDbContext context,
+        int tenantId, int employeeId, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<PayrunJob>(Context, TableName, query, QueryMode.ItemCount);
+        var dbQuery = DbQueryFactory.NewQuery<PayrunJob>(context, TableName, query, QueryMode.ItemCount);
 
         // join payrun job to job employee
         dbQuery
@@ -104,13 +106,14 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var count = await QuerySingleAsync<long>(compileQuery);
+        var count = await QuerySingleAsync<long>(context, compileQuery);
         return count;
     }
 
-    public virtual async Task<PayrunJob> PatchPayrunJobStatusAsync(int tenantId, int payrunJobId, PayrunJobStatus jobStatus)
+    public virtual async Task<PayrunJob> PatchPayrunJobStatusAsync(IDbContext context,
+        int tenantId, int payrunJobId, PayrunJobStatus jobStatus)
     {
-        var payrunJob = await GetAsync(tenantId, payrunJobId);
+        var payrunJob = await GetAsync(context, tenantId, payrunJobId);
         if (payrunJob == null)
         {
             return null;
@@ -124,47 +127,49 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
 
         // update status
         payrunJob.JobStatus = jobStatus;
-        return await UpdateAsync(tenantId, payrunJob);
+        return await UpdateAsync(context, tenantId, payrunJob);
     }
 
-    protected override async Task OnRetrieved(int tenantId, PayrunJob payrunJob)
+    protected override async Task OnRetrieved(IDbContext context, int tenantId, PayrunJob payrunJob)
     {
         // employees
-        payrunJob.Employees = (await JobEmployeeRepository.QueryAsync(payrunJob.Id)).ToList();
+        payrunJob.Employees = (await JobEmployeeRepository.QueryAsync(context, payrunJob.Id)).ToList();
     }
 
-    protected override async Task OnCreatedAsync(int caseId, PayrunJob payrunJob)
+    protected override async Task OnCreatedAsync(IDbContext context, int caseId, PayrunJob payrunJob)
     {
         // employees
         if (payrunJob.Employees != null)
         {
-            await JobEmployeeRepository.CreateAsync(payrunJob.Id, payrunJob.Employees);
+            await JobEmployeeRepository.CreateAsync(context, payrunJob.Id, payrunJob.Employees);
         }
-        await base.OnCreatedAsync(caseId, payrunJob);
+        await base.OnCreatedAsync(context, caseId, payrunJob);
     }
 
-    protected override async Task OnUpdatedAsync(int tenantId, PayrunJob payrunJob)
+    protected override async Task OnUpdatedAsync(IDbContext context, int tenantId, PayrunJob payrunJob)
     {
         // employees
         if (payrunJob.Employees != null)
         {
             foreach (var jobEmployee in payrunJob.Employees)
             {
-                await JobEmployeeRepository.UpdateAsync(payrunJob.Id, jobEmployee);
+                await JobEmployeeRepository.UpdateAsync(context, payrunJob.Id, jobEmployee);
             }
         }
-        await base.OnUpdatedAsync(tenantId, payrunJob);
+        await base.OnUpdatedAsync(context, tenantId, payrunJob);
     }
 
-    public override async Task<bool> DeleteAsync(int tenantId, int payrunJobId)
+    /// <inheritdoc />
+    /// <remarks>Do not call the base class method</remarks>
+    public override async Task<bool> DeleteAsync(IDbContext context, int tenantId, int payrunJobId)
     {
         // delete all related objects
         var parameters = new DbParameterCollection();
         parameters.Add(DbSchema.ParameterDeletePayrunJob.TenantId, tenantId);
         parameters.Add(DbSchema.ParameterDeletePayrunJob.PayrunJobId, payrunJobId);
 
-        // retrieve derived case fields (stored procedure)
-        await QueryAsync(DbSchema.Procedures.DeletePayrunJob,
+        // delete the payrun job (stored procedure)
+        await QueryAsync(context, DbSchema.Procedures.DeletePayrunJob,
                          parameters, commandType: CommandType.StoredProcedure);
         return true;
     }

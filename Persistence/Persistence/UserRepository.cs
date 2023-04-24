@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
@@ -9,13 +8,13 @@ namespace PayrollEngine.Persistence;
 
 public class UserRepository : ChildDomainRepository<User>, IUserRepository
 {
-    public UserRepository(IDbContext context) :
-        base(DbSchema.Tables.User, DbSchema.UserColumn.TenantId, context)
+    public UserRepository() :
+        base(DbSchema.Tables.User, DbSchema.UserColumn.TenantId)
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int tenantId, string identifier) =>
-        await ExistsAnyAsync(DbSchema.UserColumn.TenantId, tenantId, DbSchema.UserColumn.Identifier, identifier);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
+        await ExistsAnyAsync(context, DbSchema.UserColumn.TenantId, tenantId, DbSchema.UserColumn.Identifier, identifier);
 
     protected override void GetObjectCreateData(User user, DbParameterCollection parameters)
     {
@@ -34,9 +33,9 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
     }
 
     /// <inheritdoc />
-    public virtual async System.Threading.Tasks.Task UpdatePasswordAsync(int tenantId, int userId, string password)
+    public virtual async System.Threading.Tasks.Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, string password)
     {
-        var user = await GetAsync(tenantId, userId);
+        var user = await GetAsync(context, tenantId, userId);
         if (user == null)
         {
             throw new PayrollException($"Unknown user with id {userId}");
@@ -46,7 +45,7 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
         if (password == null)
         {
             user.Password = null;
-            await UpdateAsync(tenantId, user);
+            await UpdateAsync(context, tenantId, user);
             return;
         }
 
@@ -62,13 +61,13 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
         parameters.Add(nameof(user.Password), user.Password);
         parameters.Add(nameof(user.StoredSalt), user.StoredSalt);
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbUpdate(TableName, parameters.ParameterNames.ToList(), userId);
+        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), userId);
         var sql = queryBuilder.ToString();
 
         // transaction
         using var txScope = TransactionFactory.NewTransactionScope();
         // sql update
-        await ExecuteAsync(sql, parameters);
+        await ExecuteAsync(context, sql, parameters);
         txScope.Complete();
     }
 }

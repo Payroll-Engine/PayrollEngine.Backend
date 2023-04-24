@@ -41,7 +41,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
             return BadRequest($"Lookup {lookup.Id} without name");
         }
         // unique lookup name per tenant
-        if (await ChildService.ExistsAnyAsync(regulationId, new[] { lookup.Name }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { lookup.Name }))
         {
             return BadRequest($"Lookup with name {lookup.Name} already exists");
         }
@@ -57,12 +57,12 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
             return BadRequest("Missing lookup names");
         }
         // unique lookup name per tenant
-        if (await ChildService.ExistsAnyAsync(regulationId, names))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, names))
         {
             foreach (var name in names)
             {
                 // find the conflicting name
-                if (await ChildService.ExistsAnyAsync(regulationId, new[] { name }))
+                if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { name }))
                 {
                     return BadRequest($"Lookup with name {name} already exists");
                 }
@@ -70,7 +70,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
             return BadRequest("Lookup with existing name");
         }
 
-        return LookupMap.ToApi(await ChildService.CreateAsync(regulationId, LookupMap.ToDomain(apiObjects)));
+        return LookupMap.ToApi(await ChildService.CreateAsync(Runtime.DbContext, regulationId, LookupMap.ToDomain(apiObjects)));
     }
 
     #region Sets
@@ -113,13 +113,13 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
                 return InvalidParentRequest(regulationId);
             }
             // existing parent check
-            if (!await ParentService.ExistsAsync(regulationId))
+            if (!await ParentService.ExistsAsync(Runtime.DbContext, regulationId))
             {
                 return NotFound(typeof(IRegulationService), regulationId);
             }
 
             var apiObjects = new List<ApiObject.LookupSet>();
-            var items = (await LookupSetService.QueryAsync(regulationId, query)).ToList();
+            var items = (await LookupSetService.QueryAsync(Runtime.DbContext, regulationId, query)).ToList();
             foreach (var item in items)
             {
                 apiObjects.Add(LookupSetMap.ToApi(item));
@@ -147,7 +147,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
             }
 
             // get object
-            var lookupSet = await LookupSetService.GetSetAsync(tenantId, regulationId, lookupId);
+            var lookupSet = await LookupSetService.GetSetAsync(Runtime.DbContext, tenantId, regulationId, lookupId);
             if (lookupSet == null)
             {
                 return ObjectNotFoundRequest(lookupId);
@@ -164,7 +164,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
     {
         try
         {
-            await LookupSetService.CreateAsync(regulationId, LookupSetMap.ToDomain(lookupSets));
+            await LookupSetService.CreateAsync(Runtime.DbContext, regulationId, LookupSetMap.ToDomain(lookupSets));
             return Ok();
         }
         catch (Exception exception)
@@ -177,7 +177,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
     {
         try
         {
-            await LookupSetService.DeleteAsync(regulationId, lookupId);
+            await LookupSetService.DeleteAsync(Runtime.DbContext, regulationId, lookupId);
             return Ok();
         }
         catch (Exception exception)

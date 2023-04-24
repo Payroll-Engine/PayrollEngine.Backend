@@ -9,5 +9,5 @@ public interface IScriptTrackChildApplicationService<out TRepo, TDomain, TAudit>
     where TDomain : TrackDomainObject<TAudit>, new()
     where TAudit : AuditDomainObject
 {
-    Task RebuildAsync(int parentId, int itemId);
+    Task RebuildAsync(IDbContext context, int parentId, int itemId);
 }

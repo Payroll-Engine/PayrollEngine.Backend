@@ -3,25 +3,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBase
 {
-    /// <summary>Derived case</summary>
-    private sealed class DerivedCase : Case
-    {
-        /// <summary>The layer level</summary>
-        internal int Level { get; private set; }
 
-        /// <summary>The layer priority</summary>
-        internal int Priority { get; private set; }
-    }
-
-    internal PayrollRepositoryCaseCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryCaseCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -89,7 +79,7 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
         parameters.Add(DbSchema.ParameterGetDerivedCases.CreatedBefore, query.EvaluationDate);
 
         // retrieve all derived cases (stored procedure)
-        var cases = (await Connection.QueryAsync<DerivedCase>(DbSchema.Procedures.GetDerivedCases,
+        var cases = (await DbContext.QueryAsync<DerivedCase>(DbSchema.Procedures.GetDerivedCases,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedCases(cases, overrideType);

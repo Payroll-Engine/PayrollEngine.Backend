@@ -10,8 +10,9 @@ public interface IWageTypeService : IScriptTrackChildApplicationService<IWageTyp
     /// <summary>
     /// Test if wage types exists
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="wageTypeNumbers">The wage type numbers</param>
     /// <returns>True if the case exists</returns>
-    Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<decimal> wageTypeNumbers);
+    Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<decimal> wageTypeNumbers);
 }

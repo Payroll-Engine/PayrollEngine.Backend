@@ -27,7 +27,7 @@ public abstract class CaseFieldController : RepositoryChildObjectController<ICas
     protected override async Task<ActionResult<ApiObject.CaseField>> CreateAsync(int regulationId, ApiObject.CaseField caseField)
     {
         // unique case field name per case
-        if (await ChildService.ExistsAnyAsync(regulationId, new[] { caseField.Name }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { caseField.Name }))
         {
             return BadRequest($"Case filed with name {caseField.Name} already exists");
         }

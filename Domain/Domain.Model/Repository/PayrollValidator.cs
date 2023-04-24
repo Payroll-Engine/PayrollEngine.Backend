@@ -20,11 +20,12 @@ public class PayrollValidator
     }
 
     /// <summary>Validate payroll regulations</summary>
+    /// <param name="context">The database context</param>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payroll">The payroll to validate</param>
     /// <param name="regulationDate">The regulation date</param>
     /// <param name="evaluationDate">The evaluation date</param>
-    public async Task<string> ValidateRegulations(int tenantId, Payroll payroll,
+    public async Task<string> ValidateRegulations(IDbContext context, int tenantId, Payroll payroll,
         DateTime regulationDate, DateTime evaluationDate)
     {
         if (payroll == null)
@@ -33,7 +34,7 @@ public class PayrollValidator
         }
 
         // base regulations
-        var regulations = (await PayrollRepository.GetDerivedRegulationsAsync(
+        var regulations = (await PayrollRepository.GetDerivedRegulationsAsync(context,
             new()
             {
                 TenantId = tenantId,

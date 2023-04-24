@@ -18,27 +18,27 @@ public abstract class ScriptChildDomainRepository<TDomain, TScript> : ChildDomai
     public IScriptRepository ScriptRepository { get; }
 
     protected ScriptChildDomainRepository(string tableName, string parentFieldName,
-        IScriptController<TScript> scriptController, IScriptRepository scriptRepository, IDbContext context) :
-        base(tableName, parentFieldName, context)
+        IScriptController<TScript> scriptController, IScriptRepository scriptRepository) :
+        base(tableName, parentFieldName)
     {
         ScriptController = scriptController ?? throw new ArgumentNullException(nameof(scriptController));
         ScriptRepository = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
     }
 
-    public override async Task<TDomain> CreateAsync(int parentId, TDomain item)
+    public override async Task<TDomain> CreateAsync(IDbContext context, int parentId, TDomain item)
     {
-        await SetupBinaryAsync(parentId, item);
-        return await base.CreateAsync(parentId, item);
+        await SetupBinaryAsync(context, parentId, item);
+        return await base.CreateAsync(context, parentId, item);
     }
 
-    public override async Task<TDomain> UpdateAsync(int parentId, TDomain item)
+    public override async Task<TDomain> UpdateAsync(IDbContext context, int parentId, TDomain item)
     {
-        await SetupBinaryAsync(parentId, item);
-        return await base.UpdateAsync(parentId, item);
+        await SetupBinaryAsync(context, parentId, item);
+        return await base.UpdateAsync(context, parentId, item);
     }
 
     // duplicated in ScriptTrackChildDomainRepository!
-    protected virtual async Task SetupBinaryAsync(int parentId, TDomain item)
+    protected virtual async Task SetupBinaryAsync(IDbContext context, int parentId, TDomain item)
     {
         if (item is not IScriptObject scriptObject)
         {
@@ -58,7 +58,7 @@ public abstract class ScriptChildDomainRepository<TDomain, TScript> : ChildDomai
         IEnumerable<Script> scripts = null;
         if (functionScripts.Any() && scriptObject.HasObjectScripts)
         {
-            scripts = await ScriptRepository.GetFunctionScriptsAsync(parentId, functionScripts.Keys.ToList());
+            scripts = await ScriptRepository.GetFunctionScriptsAsync(context, parentId, functionScripts.Keys.ToList());
         }
 
         // embedded scripts (optional)

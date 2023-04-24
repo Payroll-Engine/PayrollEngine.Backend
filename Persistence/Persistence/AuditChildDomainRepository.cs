@@ -9,12 +9,12 @@ namespace PayrollEngine.Persistence;
 public abstract class AuditChildDomainRepository<T> : ChildDomainRepository<T>, IAuditChildDomainRepository<T>
     where T : AuditDomainObject
 {
-    protected AuditChildDomainRepository(string tableName, string parentFieldName, IDbContext context) :
-        base(tableName, parentFieldName, context)
+    protected AuditChildDomainRepository(string tableName, string parentFieldName) :
+        base(tableName, parentFieldName)
     {
     }
 
-    public virtual async Task<T> GetCurrentAuditAsync(int trackObjectId)
+    public virtual async Task<T> GetCurrentAuditAsync(IDbContext context, int trackObjectId)
     {
         // query: last created audit before the tracking object
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, trackObjectId);
@@ -22,18 +22,18 @@ public abstract class AuditChildDomainRepository<T> : ChildDomainRepository<T>, 
         var compileQuery = CompileQuery(query);
 
         // SELECT execution
-        var audit = (await QueryAsync<T>(compileQuery)).MaxBy(x => x.Created);
+        var audit = (await QueryAsync<T>(context, compileQuery)).MaxBy(x => x.Created);
 
         // notification
         if (audit != null)
         {
-            await OnRetrieved(trackObjectId, audit);
+            await OnRetrieved(context, trackObjectId, audit);
         }
 
         return audit;
     }
 
-    public virtual async Task<T> GetAuditAtAsync(int trackObjectId, DateTime moment)
+    public virtual async Task<T> GetAuditAtAsync(IDbContext context, int trackObjectId, DateTime moment)
     {
         // query: last created audit before the moment
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, trackObjectId);
@@ -48,7 +48,7 @@ public abstract class AuditChildDomainRepository<T> : ChildDomainRepository<T>, 
         var compileQuery = CompileQuery(query);
 
         // SELECT execution
-        var audits = (await QueryAsync<T>(compileQuery)).ToList();
+        var audits = (await QueryAsync<T>(context, compileQuery)).ToList();
         if (audits.Count != 1)
         {
             return null;
@@ -56,7 +56,7 @@ public abstract class AuditChildDomainRepository<T> : ChildDomainRepository<T>, 
 
         // notification
         var audit = audits[0];
-        await OnRetrieved(trackObjectId, audit);
+        await OnRetrieved(context, trackObjectId, audit);
 
         return audit;
     }

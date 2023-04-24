@@ -2,15 +2,14 @@
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class CollectorCustomResultCommand : CollectorResultCommandBase
 {
-    internal CollectorCustomResultCommand(IDbConnection connection) :
-        base(connection)
+    internal CollectorCustomResultCommand(IDbContext context) :
+        base(context)
     {
     }
 
@@ -29,7 +28,7 @@ internal sealed class CollectorCustomResultCommand : CollectorResultCommandBase
         QueryBegin();
 
         // retrieve employee collector values (stored procedure)
-        var values = await Connection.QueryAsync<CollectorCustomResult>(DbSchema.Procedures.GetCollectorCustomResults,
+        var values = await DbContext.QueryAsync<CollectorCustomResult>(DbSchema.Procedures.GetCollectorCustomResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         QueryEnd(() => $"{{Result query collector custom}} {GetItemsString(query.CollectorNames?.Distinct())}");

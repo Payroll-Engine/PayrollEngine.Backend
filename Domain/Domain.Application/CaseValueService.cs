@@ -27,6 +27,6 @@ public abstract class CaseValueService<TRepo> :
         CaseRepository = caseRepository ?? throw new ArgumentNullException(nameof(caseRepository));
     }
 
-    public Task<IEnumerable<string>> GetCaseValueSlotsAsync(int parentId, string caseFieldName) =>
-        Repository.GetCaseValueSlotsAsync(parentId, caseFieldName);
+    public Task<IEnumerable<string>> GetCaseValueSlotsAsync(IDbContext context, int parentId, string caseFieldName) =>
+        Repository.GetCaseValueSlotsAsync(context, parentId, caseFieldName);
 }

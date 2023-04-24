@@ -100,7 +100,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
         {
             return tenantResult;
         }
-        var results = await Service.QueryCollectorResultsAsync(payrollResultId, query);
+        var results = await Service.QueryCollectorResultsAsync(Runtime.DbContext, payrollResultId, query);
         return new CollectorResultMap().ToApi(results);
     }
 
@@ -125,7 +125,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
         {
             return tenantResult;
         }
-        var results = await Service.QueryCollectorCustomResultsAsync(collectorResultId, query);
+        var results = await Service.QueryCollectorCustomResultsAsync(Runtime.DbContext, collectorResultId, query);
         return new CollectorCustomResultMap().ToApi(results);
     }
 
@@ -153,7 +153,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
         {
             return tenantResult;
         }
-        var results = await Service.QueryWageTypeResultsAsync(payrollResultId, query);
+        var results = await Service.QueryWageTypeResultsAsync(Runtime.DbContext, payrollResultId, query);
         return new WageTypeResultMap().ToApi(results);
     }
 
@@ -178,7 +178,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
         {
             return tenantResult;
         }
-        var results = await Service.QueryWageTypeCustomResultsAsync(wageTypeResultId, query);
+        var results = await Service.QueryWageTypeCustomResultsAsync(Runtime.DbContext, wageTypeResultId, query);
         return new WageTypeCustomResultMap().ToApi(results);
     }
 
@@ -206,7 +206,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
         {
             return tenantResult;
         }
-        var results = await Service.QueryPayrunResultsAsync(payrollResultId, query);
+        var results = await Service.QueryPayrunResultsAsync(Runtime.DbContext, payrollResultId, query);
         return new PayrunResultMap().ToApi(results);
     }
 
@@ -261,7 +261,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
             return tenantResult;
         }
 
-        var resultSets = await Service.QueryResultSetsAsync(tenantId, query);
+        var resultSets = await Service.QueryResultSetsAsync(Runtime.DbContext, tenantId, query);
         return new PayrollResultSetMap().ToApi(resultSets);
     }
 
@@ -283,7 +283,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
         {
             return tenantResult;
         }
-        var resultSet = await Service.GetResultSetAsync(tenantId, payrollResultId);
+        var resultSet = await Service.GetResultSetAsync(Runtime.DbContext, tenantId, payrollResultId);
         if (resultSet == null)
         {
             return NotFound($"Payroll result with id {payrollResultId} was not found");

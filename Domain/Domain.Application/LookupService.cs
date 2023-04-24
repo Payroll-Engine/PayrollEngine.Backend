@@ -13,6 +13,6 @@ public class LookupService : ChildApplicationService<ILookupRepository, Lookup>,
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> lookupNames) =>
-        await Repository.ExistsAnyAsync(regulationId, lookupNames);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> lookupNames) =>
+        await Repository.ExistsAnyAsync(context, regulationId, lookupNames);
 }

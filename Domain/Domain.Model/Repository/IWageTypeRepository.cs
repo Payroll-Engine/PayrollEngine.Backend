@@ -11,8 +11,9 @@ public interface IWageTypeRepository : IScriptTrackDomainObjectRepository<WageTy
     /// <summary>
     /// Determine if any of the wage type identifiers are existing
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="regulationId">The payroll regulation id</param>
     /// <param name="wageTypeNumbers">The wage type numbers</param>
     /// <returns>True if any wage type with this identifier exists</returns>
-    Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<decimal> wageTypeNumbers);
+    Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<decimal> wageTypeNumbers);
 }

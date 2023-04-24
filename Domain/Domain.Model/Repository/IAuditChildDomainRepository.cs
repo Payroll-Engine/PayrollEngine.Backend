@@ -13,17 +13,19 @@ public interface IAuditChildDomainRepository<TDomain> : IChildDomainRepository<T
     /// <summary>
     /// Get current audit object from the tracked item
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="trackObjectId">The tracking object id</param>
     /// <returns>The audit object</returns>
-    Task<TDomain> GetCurrentAuditAsync(int trackObjectId);
+    Task<TDomain> GetCurrentAuditAsync(IDbContext context, int trackObjectId);
 
     /// <summary>
     /// Get audit object from a given time, based on the modification date
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="trackObjectId">The tracking object id</param>
     /// <param name="moment">The time moment</param>
     /// <returns>The domain object at a given time.
     /// For future dates the latest modified object will be used.
     /// A null result indicates that the object was not existing at the given time</returns>
-    Task<TDomain> GetAuditAtAsync(int trackObjectId, DateTime moment);
+    Task<TDomain> GetAuditAtAsync(IDbContext context, int trackObjectId, DateTime moment);
 }

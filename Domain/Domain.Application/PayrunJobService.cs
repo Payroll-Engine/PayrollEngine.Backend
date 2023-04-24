@@ -18,10 +18,10 @@ public class PayrunJobService : ChildApplicationService<IPayrunJobRepository, Pa
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(int tenantId, int employeeId, Query query = null) =>
-        await Settings.PayrunJobRepository.QueryEmployeePayrunJobsAsync(tenantId, employeeId, query);
+    public async Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(IDbContext context, int tenantId, int employeeId, Query query = null) =>
+        await Settings.PayrunJobRepository.QueryEmployeePayrunJobsAsync(context, tenantId, employeeId, query);
 
     /// <inheritdoc />
-    public async Task<long> QueryEmployeePayrunJobsCountAsync(int tenantId, int employeeId, Query query = null) =>
-        await Settings.PayrunJobRepository.QueryEmployeePayrunJobsCountAsync(tenantId, employeeId, query);
+    public async Task<long> QueryEmployeePayrunJobsCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null) =>
+        await Settings.PayrunJobRepository.QueryEmployeePayrunJobsCountAsync(context, tenantId, employeeId, query);
 }

@@ -13,8 +13,8 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
 {
     public IEmployeeDivisionRepository EmployeeDivisionRepository { get; }
 
-    public EmployeeRepository(IEmployeeDivisionRepository divisionRepository, IDbContext context) :
-        base(DbSchema.Tables.Employee, DbSchema.EmployeeColumn.TenantId, context)
+    public EmployeeRepository(IEmployeeDivisionRepository divisionRepository) :
+        base(DbSchema.Tables.Employee, DbSchema.EmployeeColumn.TenantId)
     {
         EmployeeDivisionRepository = divisionRepository ?? throw new ArgumentNullException(nameof(divisionRepository));
     }
@@ -35,25 +35,25 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
         base.GetObjectData(employee, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int tenantId, string identifier) =>
-        await ExistsAnyAsync(DbSchema.EmployeeColumn.TenantId, tenantId, DbSchema.EmployeeColumn.Identifier, identifier);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
+        await ExistsAnyAsync(context, DbSchema.EmployeeColumn.TenantId, tenantId, DbSchema.EmployeeColumn.Identifier, identifier);
 
     /// <inheritdoc />
-    public override async Task<IEnumerable<Employee>> QueryAsync(int tenantId, Query query = null)
+    public override async Task<IEnumerable<Employee>> QueryAsync(IDbContext context, int tenantId, Query query = null)
     {
         // division query
         if (query is DivisionQuery divisionQuery && divisionQuery.DivisionId.HasValue)
         {
             // division query
-            var dbDivisionQuery = GetDivisionQuery(tenantId, query, divisionQuery);
+            var dbDivisionQuery = GetDivisionQuery(context, tenantId, query, divisionQuery);
 
             // SELECT execution
-            var employees = (await QueryAsync<Employee>(dbDivisionQuery)).ToList();
+            var employees = (await QueryAsync<Employee>(context, dbDivisionQuery)).ToList();
 
             // query employee divisions
             if (query.Result == null || query.Result != QueryResultType.Count)
             {
-                var divisions = (await EmployeeDivisionRepository.DivisionRepository.QueryAsync(tenantId)).ToList();
+                var divisions = (await EmployeeDivisionRepository.DivisionRepository.QueryAsync(context, tenantId)).ToList();
                 foreach (var employee in employees)
                 {
                     employee.Divisions = divisions.Select(x => x.Name).ToList();
@@ -61,31 +61,31 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
             }
 
             // notification
-            await OnRetrieved(tenantId, employees);
+            await OnRetrieved(context, tenantId, employees);
             return employees;
         }
 
-        return await base.QueryAsync(tenantId, query);
+        return await base.QueryAsync(context, tenantId, query);
     }
 
     /// <inheritdoc />
-    public override async Task<long> QueryCountAsync(int tenantId, Query query = null)
+    public override async Task<long> QueryCountAsync(IDbContext context, int tenantId, Query query = null)
     {
         // division query
         if (query is DivisionQuery divisionQuery && divisionQuery.DivisionId.HasValue)
         {
             // division query
-            var dbDivisionQuery = GetDivisionQuery(tenantId, query, divisionQuery);
-            return await QuerySingleAsync<long>(dbDivisionQuery);
+            var dbDivisionQuery = GetDivisionQuery(context, tenantId, query, divisionQuery);
+            return await QuerySingleAsync<long>(context, dbDivisionQuery);
         }
 
-        return await base.QueryCountAsync(tenantId, query);
+        return await base.QueryCountAsync(context, tenantId, query);
     }
 
-    private string GetDivisionQuery(int tenantId, Query query, DivisionQuery divisionQuery)
+    private string GetDivisionQuery(IDbContext context, int tenantId, Query query, DivisionQuery divisionQuery)
     {
         // division query
-        var dbQuery = DbQueryFactory.NewQuery<Employee>(Context, TableName, ParentFieldName, tenantId, query);
+        var dbQuery = DbQueryFactory.NewQuery<Employee>(context, TableName, ParentFieldName, tenantId, query);
         divisionQuery.ApplyTo(dbQuery, TableName);
 
         // query compilation
@@ -95,10 +95,10 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
 
     #region Divisions (see also Payroll)
 
-    protected override async Task OnRetrieved(int tenantId, Employee employee)
+    protected override async Task OnRetrieved(IDbContext context, int tenantId, Employee employee)
     {
         // divisions
-        var divisions = await GetDivisions(tenantId, employee.Id);
+        var divisions = await GetDivisions(context, tenantId, employee.Id);
         if (divisions.Any())
         {
             // select division names
@@ -106,41 +106,37 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
         }
     }
 
-    protected override async Task OnCreatedAsync(int tenantId, Employee employee)
-    {
-        await SaveDivisions(tenantId, employee.Id, employee.Divisions);
-    }
+    protected override async Task OnCreatedAsync(IDbContext context, int tenantId, Employee employee) =>
+        await SaveDivisions(context, tenantId, employee.Id, employee.Divisions);
 
-    protected override async Task OnUpdatedAsync(int tenantId, Employee employee)
-    {
-        await SaveDivisions(tenantId, employee.Id, employee.Divisions);
-    }
+    protected override async Task OnUpdatedAsync(IDbContext context, int tenantId, Employee employee) =>
+        await SaveDivisions(context, tenantId, employee.Id, employee.Divisions);
 
-    protected override async Task<bool> OnDeletingAsync(int tenantId, int employeeId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int tenantId, int employeeId)
     {
-        var divisions = await EmployeeDivisionRepository.QueryAsync(employeeId);
+        var divisions = await EmployeeDivisionRepository.QueryAsync(context, employeeId);
         foreach (var division in divisions)
         {
-            await EmployeeDivisionRepository.DeleteAsync(employeeId, division.Id);
+            await EmployeeDivisionRepository.DeleteAsync(context, employeeId, division.Id);
         }
-        return await base.OnDeletingAsync(tenantId, employeeId);
+        return await base.OnDeletingAsync(context, tenantId, employeeId);
     }
 
-    private async Task<IList<Division>> GetDivisions(int tenantId, int employeeId)
+    private async Task<IList<Division>> GetDivisions(IDbContext context, int tenantId, int employeeId)
     {
-        var employeeDivisions = (await EmployeeDivisionRepository.QueryAsync(employeeId)).ToList();
+        var employeeDivisions = (await EmployeeDivisionRepository.QueryAsync(context, employeeId)).ToList();
         if (!employeeDivisions.Any())
         {
             return new List<Division>();
         }
         var divisionIds = employeeDivisions.Select(x => x.DivisionId);
-        return (await EmployeeDivisionRepository.DivisionRepository.GetByIdsAsync(tenantId, divisionIds)).ToList();
+        return (await EmployeeDivisionRepository.DivisionRepository.GetByIdsAsync(context, tenantId, divisionIds)).ToList();
     }
 
-    private async Task SaveDivisions(int tenantId, int employeeId, List<string> divisionNames)
+    private async Task SaveDivisions(IDbContext context, int tenantId, int employeeId, List<string> divisionNames)
     {
         // existing divisions
-        var existingDivisions = await GetDivisions(tenantId, employeeId);
+        var existingDivisions = await GetDivisions(context, tenantId, employeeId);
         if (!existingDivisions.Any() && (divisionNames == null || !divisionNames.Any()))
         {
             // employee without divisions
@@ -161,12 +157,12 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
                 else
                 {
                     // new employee division
-                    var division = await EmployeeDivisionRepository.DivisionRepository.GetByNameAsync(tenantId, divisionName);
+                    var division = await EmployeeDivisionRepository.DivisionRepository.GetByNameAsync(context, tenantId, divisionName);
                     if (division == null)
                     {
                         throw new PayrollException($"Unknown division with name {divisionName}");
                     }
-                    await EmployeeDivisionRepository.CreateAsync(employeeId, new EmployeeDivision
+                    await EmployeeDivisionRepository.CreateAsync(context, employeeId, new EmployeeDivision
                     {
                         EmployeeId = employeeId,
                         DivisionId = division.Id
@@ -183,10 +179,10 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
             {
                 Filter = $"{nameof(DbSchema.EmployeeDivisionColumn.DivisionId)} eq {division.Id}"
             };
-            var employeeDivision = (await EmployeeDivisionRepository.QueryAsync(employeeId, query)).FirstOrDefault();
+            var employeeDivision = (await EmployeeDivisionRepository.QueryAsync(context, employeeId, query)).FirstOrDefault();
             if (employeeDivision != null)
             {
-                await EmployeeDivisionRepository.DeleteAsync(employeeId, employeeDivision.Id);
+                await EmployeeDivisionRepository.DeleteAsync(context, employeeId, employeeDivision.Id);
                 existingDivisions.Remove(division);
             }
             else

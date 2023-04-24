@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 
@@ -11,18 +10,8 @@ namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandBase
 {
-    /// <summary>Derived report</summary>
-    private sealed class DerivedReport : Report
-    {
-        /// <summary>The layer level</summary>
-        internal int Level { get; private set; }
-
-        /// <summary>The layer priority</summary>
-        internal int Priority { get; private set; }
-    }
-
-    internal PayrollRepositoryReportCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryReportCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -100,7 +89,7 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
         }
 
         // retrieve all derived reports (stored procedure)
-        var reports = (await Connection.QueryAsync<DerivedReport>(DbSchema.Procedures.GetDerivedReports,
+        var reports = (await DbContext.QueryAsync<DerivedReport>(DbSchema.Procedures.GetDerivedReports,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedReports(reports, overrideType);
@@ -109,12 +98,12 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
         var reportSets = new List<ReportSet>();
         foreach (var report in reports)
         {
-            var regulationId = await reportRepository.GetParentIdAsync(report.Id);
+            var regulationId = await reportRepository.GetParentIdAsync(DbContext, report.Id);
             if (!regulationId.HasValue)
             {
                 throw new PayrollException($"Unknown regulation of report {report.Name} with id {report.Id}");
             }
-            var reportSet = await reportRepository.GetAsync(regulationId.Value, report.Id);
+            var reportSet = await reportRepository.GetAsync(DbContext, regulationId.Value, report.Id);
             reportSets.Add(reportSet);
         }
 

@@ -8,8 +8,8 @@ namespace PayrollEngine.Persistence;
 
 public class PayrunResultRepository : ChildDomainRepository<PayrunResult>, IPayrunResultRepository
 {
-    public PayrunResultRepository(IDbContext context) :
-        base(DbSchema.Tables.PayrunResult, DbSchema.PayrunResultColumn.PayrollResultId, context)
+    public PayrunResultRepository() :
+        base(DbSchema.Tables.PayrunResult, DbSchema.PayrunResultColumn.PayrollResultId)
     {
     }
 
@@ -30,7 +30,7 @@ public class PayrunResultRepository : ChildDomainRepository<PayrunResult>, IPayr
         base.GetObjectCreateData(result, parameters);
     }
 
-    protected override Task OnUpdatedAsync(int parentId, PayrunResult payrunResult)
+    protected override Task OnUpdatedAsync(IDbContext context, int parentId, PayrunResult payrunResult)
     {
         throw new NotSupportedException("Update of payrun results is not supported");
     }

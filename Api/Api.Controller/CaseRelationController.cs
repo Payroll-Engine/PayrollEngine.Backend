@@ -7,8 +7,8 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -19,8 +19,7 @@ namespace PayrollEngine.Api.Controller;
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/caserelations")]
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.CaseRelation)]
 public abstract class CaseRelationController : ScriptTrackChildObjectController<IRegulationService, ICaseRelationService,
-    IRegulationRepository, ICaseRelationRepository,
-    DomainObject.Regulation, DomainObject.CaseRelation, DomainObject.CaseRelationAudit, ApiObject.CaseRelation>
+    IRegulationRepository, ICaseRelationRepository, Regulation, CaseRelation, CaseRelationAudit, ApiObject.CaseRelation>
 {
     private ICaseService CaseService { get; }
 
@@ -31,7 +30,8 @@ public abstract class CaseRelationController : ScriptTrackChildObjectController<
         CaseService = caseService ?? throw new ArgumentNullException(nameof(caseService));
     }
 
-    protected override async Task<ActionResult<ApiObject.CaseRelation>> CreateAsync(int regulationId, ApiObject.CaseRelation apiCaseRelation)
+    protected override async Task<ActionResult<ApiObject.CaseRelation>> CreateAsync(
+        int regulationId, ApiObject.CaseRelation apiCaseRelation)
     {
         // self reference
         if (string.Equals(apiCaseRelation.SourceCaseName, apiCaseRelation.TargetCaseName))
@@ -40,20 +40,20 @@ public abstract class CaseRelationController : ScriptTrackChildObjectController<
         }
 
         // regulation
-        if (!await ParentService.ExistsAsync(regulationId))
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, regulationId))
         {
             return BadRequest($"Unknown regulation id {regulationId}");
         }
 
         // tenant
-        var tenantId = await ParentService.GetParentIdAsync(regulationId);
+        var tenantId = await ParentService.GetParentIdAsync(Runtime.DbContext, regulationId);
         if (!tenantId.HasValue)
         {
             return BadRequest($"Invalid regulation id {regulationId}");
         }
 
         // source case
-        var sourceCase = await CaseService.GetAsync(tenantId.Value, regulationId, apiCaseRelation.SourceCaseName);
+        var sourceCase = await CaseService.GetAsync(Runtime.DbContext, tenantId.Value, regulationId, apiCaseRelation.SourceCaseName);
         if (sourceCase != null)
         {
             apiCaseRelation.SourceCaseNameLocalizations = sourceCase.NameLocalizations;
@@ -68,7 +68,7 @@ public abstract class CaseRelationController : ScriptTrackChildObjectController<
         }
 
         // target case
-        var targetCase = await CaseService.GetAsync(tenantId.Value, regulationId, apiCaseRelation.TargetCaseName);
+        var targetCase = await CaseService.GetAsync(Runtime.DbContext, tenantId.Value, regulationId, apiCaseRelation.TargetCaseName);
         if (targetCase != null)
         {
             apiCaseRelation.TargetCaseNameLocalizations = targetCase.NameLocalizations;
@@ -92,7 +92,7 @@ public abstract class CaseRelationController : ScriptTrackChildObjectController<
                 { Persistence.DbSchema.CaseRelationColumn.TargetCaseName, apiCaseRelation.TargetCaseName },
                 { Persistence.DbSchema.CaseRelationColumn.TargetCaseSlot, apiCaseRelation.TargetCaseSlot }
             });
-            var relations = await Service.QueryAsync(regulationId, query);
+            var relations = await Service.QueryAsync(Runtime.DbContext, regulationId, query);
             if (relations.Any())
             {
                 return BadRequest($"Case relation from {apiCaseRelation.SourceCaseName}.{apiCaseRelation.SourceCaseSlot} to {apiCaseRelation.TargetCaseName}.{apiCaseRelation.TargetCaseSlot} already exists");

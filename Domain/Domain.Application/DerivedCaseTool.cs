@@ -73,9 +73,10 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(
-            new CaseValueCache(GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -105,10 +106,11 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(
-            new CaseValueCache(GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -141,11 +143,12 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(
-            new CaseValueCache(GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -183,12 +186,13 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(Employee,
-            new CaseValueCache(GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(EmployeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            new CaseValueCache(settings.DbContext, EmployeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = CaseRepository,
@@ -240,7 +244,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
     protected virtual async Task<RegulationLookupProvider> NewRegulationLookupProviderAsync()
     {
-        var lookups = (await PayrollRepository.GetDerivedLookupsAsync(
+        var lookups = (await PayrollRepository.GetDerivedLookupsAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -339,7 +343,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // collect fields of base case
         if (!string.IsNullOrWhiteSpace(@case.BaseCase))
         {
-            var baseCase = (await PayrollRepository.GetDerivedCasesAsync(
+            var baseCase = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = Tenant.Id,
@@ -366,7 +370,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
             if (caseFieldNames.Any())
             {
                 var baseCaseFields =
-                    (await PayrollRepository.GetDerivedCaseFieldsAsync(
+                    (await PayrollRepository.GetDerivedCaseFieldsAsync(Settings.DbContext,
                         new()
                         {
                             TenantId = Tenant.Id,
@@ -400,7 +404,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // collect current case fields
         var caseFields =
-            (await PayrollRepository.GetDerivedCaseFieldsOfCaseAsync(
+            (await PayrollRepository.GetDerivedCaseFieldsOfCaseAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = Tenant.Id,

@@ -8,8 +8,8 @@ public class EmployeeDivisionRepository : ChildDomainRepository<EmployeeDivision
 {
     public IDivisionRepository DivisionRepository { get; }
 
-    public EmployeeDivisionRepository(IDivisionRepository divisionRepository, IDbContext context) :
-        base(DbSchema.Tables.EmployeeDivision, DbSchema.EmployeeDivisionColumn.EmployeeId, context)
+    public EmployeeDivisionRepository(IDivisionRepository divisionRepository) :
+        base(DbSchema.Tables.EmployeeDivision, DbSchema.EmployeeDivisionColumn.EmployeeId)
     {
         DivisionRepository = divisionRepository ?? throw new ArgumentNullException(nameof(divisionRepository));
     }

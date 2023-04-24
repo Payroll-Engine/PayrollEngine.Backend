@@ -10,7 +10,8 @@ public interface IScriptTrackDomainObjectRepository<TDomain, TAudit> : ITrackChi
     /// <summary>
     /// Rebuild the script object
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="parentId">The parent object id</param>
     /// <param name="itemId">The items id to build</param>
-    System.Threading.Tasks.Task RebuildAsync(int parentId, int itemId);
+    System.Threading.Tasks.Task RebuildAsync(IDbContext context, int parentId, int itemId);
 }

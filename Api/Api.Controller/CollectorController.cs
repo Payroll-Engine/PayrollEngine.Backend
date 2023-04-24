@@ -31,7 +31,7 @@ public abstract class CollectorController : ScriptTrackChildObjectController<IRe
             return BadRequest($"Collector {collector.Id} without name");
         }
         // unique collector name per payroll regulation
-        if (await ChildService.ExistsAnyAsync(regulationId, new[] { collector.Name }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { collector.Name }))
         {
             return BadRequest($"Collector with name {collector.Name} already exists");
         }

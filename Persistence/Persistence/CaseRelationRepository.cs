@@ -8,10 +8,8 @@ namespace PayrollEngine.Persistence;
 
 public class CaseRelationRepository : ScriptTrackChildDomainRepository<CaseRelation, CaseRelationAudit>, ICaseRelationRepository
 {
-    public CaseRelationRepository(ICaseRelationScriptController scriptController, IScriptRepository scriptRepository,
-        ICaseRelationAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.CaseRelation, DbSchema.CaseRelationColumn.RegulationId,
-            scriptController, scriptRepository, auditRepository, context)
+    public CaseRelationRepository(ICaseRelationScriptController scriptController, IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository) :
+        base(DbSchema.Tables.CaseRelation, DbSchema.CaseRelationColumn.RegulationId, scriptController, scriptRepository, auditRepository)
     {
     }
 

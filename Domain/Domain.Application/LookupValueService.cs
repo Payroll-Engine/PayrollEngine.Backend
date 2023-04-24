@@ -12,6 +12,6 @@ public class LookupValueService : ChildApplicationService<ILookupValueRepository
     {
     }
 
-    public virtual async Task<bool> ExistsAsync(int lookupId, string key, decimal? rangeValue = null) =>
-        await Repository.ExistsAsync(lookupId, key, rangeValue);
+    public virtual async Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null) =>
+        await Repository.ExistsAsync(context, lookupId, key, rangeValue);
 }

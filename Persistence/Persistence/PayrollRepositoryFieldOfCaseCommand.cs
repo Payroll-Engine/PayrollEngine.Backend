@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryFieldOfCaseCommand : PayrollRepositoryCaseFieldCommandBase
 {
-    internal PayrollRepositoryFieldOfCaseCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryFieldOfCaseCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -81,7 +80,7 @@ internal sealed class PayrollRepositoryFieldOfCaseCommand : PayrollRepositoryCas
         parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.CreatedBefore, query.EvaluationDate);
 
         // retrieve derived case fields (stored procedure)
-        var caseFields = (await Connection.QueryAsync<DerivedCaseField>(DbSchema.Procedures.GetDerivedCaseFieldsOfCase,
+        var caseFields = (await DbContext.QueryAsync<DerivedCaseField>(DbSchema.Procedures.GetDerivedCaseFieldsOfCase,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedCaseFields(caseFields, overrideType);

@@ -14,8 +14,8 @@ public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRe
     public IReportTemplateRepository ReportTemplateRepository { get; }
     public bool BulkInsert => Settings.BulkInsert;
 
-    public ReportSetRepository(ReportSetRepositorySettings settings, IDbContext context) :
-        base(settings.ScriptController, settings.ScriptRepository, settings.AuditRepository, context)
+    public ReportSetRepository(ReportSetRepositorySettings settings) :
+        base(settings.ScriptController, settings.ScriptRepository, settings.AuditRepository)
     {
         Settings = settings;
         ReportParameterRepository = settings.ReportParameterRepository ??
@@ -24,21 +24,21 @@ public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRe
                                    throw new ArgumentNullException(nameof(settings.ReportTemplateRepository));
     }
 
-    protected override async Task OnRetrieved(int regulationId, ReportSet reportSet)
+    protected override async Task OnRetrieved(IDbContext context, int regulationId, ReportSet reportSet)
     {
         reportSet.RegulationId = regulationId;
 
         // report parameters
-        reportSet.Parameters = (await ReportParameterRepository.QueryAsync(reportSet.Id)).ToList();
+        reportSet.Parameters = (await ReportParameterRepository.QueryAsync(context, reportSet.Id)).ToList();
 
         // report templates, exclude potential large content from the report set
-        reportSet.Templates = (await ReportTemplateRepository.QueryAsync(reportSet.Id,
+        reportSet.Templates = (await ReportTemplateRepository.QueryAsync(context, reportSet.Id,
             new ReportTemplateQuery { ExcludeContent = true })).ToList();
 
-        await base.OnRetrieved(regulationId, reportSet);
+        await base.OnRetrieved(context, regulationId, reportSet);
     }
 
-    protected override async Task OnCreatedAsync(int regulationId, ReportSet reportSet)
+    protected override async Task OnCreatedAsync(IDbContext context, int regulationId, ReportSet reportSet)
     {
         reportSet.RegulationId = regulationId;
 
@@ -47,11 +47,11 @@ public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRe
         {
             if (BulkInsert)
             {
-                await ReportParameterRepository.CreateBulkAsync(reportSet.Id, reportSet.Parameters);
+                await ReportParameterRepository.CreateBulkAsync(context, reportSet.Id, reportSet.Parameters);
             }
             else
             {
-                await ReportParameterRepository.CreateAsync(reportSet.Id, reportSet.Parameters);
+                await ReportParameterRepository.CreateAsync(context, reportSet.Id, reportSet.Parameters);
             }
         }
 
@@ -60,38 +60,38 @@ public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRe
         {
             if (BulkInsert)
             {
-                await ReportTemplateRepository.CreateBulkAsync(reportSet.Id, reportSet.Templates);
+                await ReportTemplateRepository.CreateBulkAsync(context, reportSet.Id, reportSet.Templates);
             }
             else
             {
-                await ReportTemplateRepository.CreateAsync(reportSet.Id, reportSet.Templates);
+                await ReportTemplateRepository.CreateAsync(context, reportSet.Id, reportSet.Templates);
             }
         }
 
-        await base.OnCreatedAsync(regulationId, reportSet);
+        await base.OnCreatedAsync(context, regulationId, reportSet);
     }
 
-    protected override Task OnUpdatedAsync(int regulationId, ReportSet report)
+    protected override Task OnUpdatedAsync(IDbContext context, int regulationId, ReportSet report)
     {
         throw new NotSupportedException("Update of report set not supported, please use the report parameter container");
     }
 
-    protected override async Task<bool> OnDeletingAsync(int regulationId, int resultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int regulationId, int resultId)
     {
         // report templates
-        var templates = (await ReportTemplateRepository.QueryAsync(resultId)).ToList();
+        var templates = (await ReportTemplateRepository.QueryAsync(context, resultId)).ToList();
         foreach (var template in templates)
         {
-            await ReportTemplateRepository.DeleteAsync(resultId, template.Id);
+            await ReportTemplateRepository.DeleteAsync(context, resultId, template.Id);
         }
 
         // report parameters
-        var parameters = (await ReportParameterRepository.QueryAsync(resultId)).ToList();
+        var parameters = (await ReportParameterRepository.QueryAsync(context, resultId)).ToList();
         foreach (var parameter in parameters)
         {
-            await ReportParameterRepository.DeleteAsync(resultId, parameter.Id);
+            await ReportParameterRepository.DeleteAsync(context, resultId, parameter.Id);
         }
 
-        return await base.OnDeletingAsync(regulationId, resultId);
+        return await base.OnDeletingAsync(context, regulationId, resultId);
     }
 }

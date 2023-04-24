@@ -5,9 +5,9 @@ namespace PayrollEngine.Persistence;
 public class CompanyCaseValueSetupRepository : CaseValueSetupRepository, ICompanyCaseValueSetupRepository
 {
     public CompanyCaseValueSetupRepository(ICaseFieldRepository caseFieldRepository, 
-        ICompanyCaseDocumentRepository caseDocumentRepository, IDbContext context) :
+        ICompanyCaseDocumentRepository caseDocumentRepository) :
         base(DbSchema.Tables.CompanyCaseValue, DbSchema.CompanyCaseValueColumn.TenantId,
-            caseFieldRepository, caseDocumentRepository, context)
+            caseFieldRepository, caseDocumentRepository)
     {
     }
     protected override string CaseValueTableName => DbSchema.Tables.CompanyCaseValuePivot;

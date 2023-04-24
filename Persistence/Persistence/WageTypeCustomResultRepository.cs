@@ -8,8 +8,8 @@ namespace PayrollEngine.Persistence;
 
 public class WageTypeCustomResultRepository : ChildDomainRepository<WageTypeCustomResult>, IWageTypeCustomResultRepository
 {
-    public WageTypeCustomResultRepository(IDbContext context) :
-        base(DbSchema.Tables.WageTypeCustomResult, DbSchema.WageTypeCustomResultColumn.WageTypeResultId, context)
+    public WageTypeCustomResultRepository() :
+        base(DbSchema.Tables.WageTypeCustomResult, DbSchema.WageTypeCustomResultColumn.WageTypeResultId)
     {
     }
 
@@ -29,7 +29,7 @@ public class WageTypeCustomResultRepository : ChildDomainRepository<WageTypeCust
         base.GetObjectCreateData(result, parameters);
     }
 
-    protected override Task OnUpdatedAsync(int wageTypeResultId, WageTypeCustomResult customResult)
+    protected override Task OnUpdatedAsync(IDbContext context, int wageTypeResultId, WageTypeCustomResult customResult)
     {
         throw new NotSupportedException("Update of wage type custom results is not supported");
     }

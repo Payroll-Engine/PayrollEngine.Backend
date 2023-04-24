@@ -8,15 +8,17 @@ namespace PayrollEngine.Api.Core;
 
 public class ControllerRuntime : IControllerRuntime
 {
+    public IDbContext DbContext { get; }
     public IConfiguration Configuration { get; }
     public LinkGenerator LinkGenerator { get; }
     public IApiDescriptionGroupCollectionProvider ApiExplorer { get; }
     public ITenantManager Tenant { get; }
     public IScriptProvider ScriptProvider { get; }
 
-    public ControllerRuntime(IConfiguration configuration, LinkGenerator linkGenerator,
+    public ControllerRuntime(IDbContext dbContext, IConfiguration configuration, LinkGenerator linkGenerator,
         IApiDescriptionGroupCollectionProvider apiExplorer, ITenantManager tenant, IScriptProvider scriptProvider)
     {
+        DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         LinkGenerator = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
         ApiExplorer = apiExplorer ?? throw new ArgumentNullException(nameof(apiExplorer));

@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class CollectorResultRepository : ChildDomainRepository<CollectorResult>, ICollectorResultRepository
 {
-    public CollectorResultRepository(IDbContext context) :
-        base(DbSchema.Tables.CollectorResult, DbSchema.CollectorResultColumn.PayrollResultId, context)
+    public CollectorResultRepository() : 
+        base(DbSchema.Tables.CollectorResult, DbSchema.CollectorResultColumn.PayrollResultId)
     {
     }
 

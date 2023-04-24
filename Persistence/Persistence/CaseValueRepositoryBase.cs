@@ -20,8 +20,8 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
     protected abstract string CaseValueQueryProcedure { get; }
 
     protected CaseValueRepositoryBase(string tableName, string parentFieldName,
-        ICaseFieldRepository caseFieldRepository, IDbContext context) :
-        base(tableName, parentFieldName, context)
+        ICaseFieldRepository caseFieldRepository) :
+        base(tableName, parentFieldName)
     {
         CaseFieldRepository = caseFieldRepository ?? throw new ArgumentNullException(nameof(caseFieldRepository));
     }
@@ -54,7 +54,9 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
 
     #region Query
 
-    public override async Task<IEnumerable<TDomain>> QueryAsync(int parentId, Query query = null)
+    /// <inheritdoc />
+    /// <remarks>Do not call the base class method</remarks>
+    public override async Task<IEnumerable<TDomain>> QueryAsync(IDbContext context, int parentId, Query query = null)
     {
         // db query to support case value attributes
         var dbQuery = DbQueryFactory.NewTypeQuery<TDomain>(CaseValueTableName, ParentFieldName,
@@ -64,7 +66,7 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // execute stored procedure
-        var items = (await QueryCaseValuesAsync<TDomain>(
+        var items = (await QueryCaseValuesAsync<TDomain>(context,
             new()
             {
                 ParentId = parentId,
@@ -74,12 +76,14 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
             })).ToList();
 
         // notification
-        await OnRetrieved(parentId, items);
+        await OnRetrieved(context, parentId, items);
 
         return items;
     }
 
-    public override async Task<long> QueryCountAsync(int parentId, Query query = null)
+    /// <inheritdoc />
+    /// <remarks>Do not call the base class method</remarks>
+    public override async Task<long> QueryCountAsync(IDbContext context, int parentId, Query query = null)
     {
         // db query to support case value attributes
         var dbQuery = DbQueryFactory.NewTypeQuery<TDomain>(CaseValueTableName, ParentFieldName,
@@ -90,7 +94,7 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
         var compileQuery = CompileQuery(dbQuery.Item1);
 
         // execute stored procedure
-        var count = await QueryCaseValueCountAsync(
+        var count = await QueryCaseValueCountAsync(context,
             new()
             {
                 ParentId = parentId,
@@ -114,7 +118,7 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
 
     #endregion
 
-    public async Task<IEnumerable<string>> GetCaseValueSlotsAsync(int parentId, string caseFieldName)
+    public async Task<IEnumerable<string>> GetCaseValueSlotsAsync(IDbContext context, int parentId, string caseFieldName)
     {
         if (parentId <= 0)
         {
@@ -136,13 +140,13 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
 
         // compile and execute query
         var compileQuery = CompileQuery(query);
-        var caseValues = await QueryAsync<CaseValue>(compileQuery);
+        var caseValues = await QueryAsync<CaseValue>(context, compileQuery);
 
         // select case slots
         return caseValues.Select(x => x.CaseSlot);
     }
 
-    public async Task<IEnumerable<CaseValue>> GetCaseValuesAsync(DomainCaseValueQuery query,
+    public async Task<IEnumerable<CaseValue>> GetCaseValuesAsync(IDbContext context, DomainCaseValueQuery query,
         string caseFieldName = null, DateTime? evaluationDate = null)
     {
         if (query.ParentId <= 0)
@@ -187,11 +191,11 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
         // order from newest to oldest
         dbQuery.OrderBy(DbSchema.ObjectColumn.Created);
         var compileQuery = CompileQuery(dbQuery);
-        return await QueryAsync<CaseValue>(compileQuery);
+        return await QueryAsync<CaseValue>(context, compileQuery);
     }
 
-    public async Task<IEnumerable<CaseValue>> GetPeriodCaseValuesAsync(DomainCaseValueQuery query, DatePeriod period,
-        string caseFieldName = null, DateTime? evaluationDate = null)
+    public async Task<IEnumerable<CaseValue>> GetPeriodCaseValuesAsync(IDbContext context, DomainCaseValueQuery query,
+        DatePeriod period, string caseFieldName = null, DateTime? evaluationDate = null)
     {
         if (query.ParentId <= 0)
         {
@@ -253,10 +257,11 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
         // order from newest to oldest
         dbQuery.OrderByDesc(DbSchema.ObjectColumn.Created);
         var compileQuery = CompileQuery(dbQuery);
-        return await QueryAsync<CaseValue>(compileQuery);
+        return await QueryAsync<CaseValue>(context, compileQuery);
     }
 
-    public async Task<CaseValue> GetRetroCaseValueAsync(DomainCaseValueQuery query, DatePeriod period, string caseFieldName)
+    public async Task<CaseValue> GetRetroCaseValueAsync(IDbContext context, DomainCaseValueQuery query,
+        DatePeriod period, string caseFieldName)
     {
         if (query.ParentId <= 0)
         {
@@ -300,23 +305,23 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
         dbQuery.OrderByDesc(DbSchema.ObjectColumn.Created);
         // retrieve case values
         var compileQuery = CompileQuery(dbQuery);
-        var caseValues = await QueryAsync<CaseValue>(compileQuery);
+        var caseValues = await QueryAsync<CaseValue>(context, compileQuery);
         // return the oldest created case value
         return caseValues.MinBy(x => x.Start);
     }
 
-    public override async Task<TDomain> CreateAsync(int parentId, TDomain caseValue)
+    public override async Task<TDomain> CreateAsync(IDbContext context, int parentId, TDomain item)
     {
         // check for valid case field name
-        if (string.IsNullOrWhiteSpace(caseValue.CaseFieldName))
+        if (string.IsNullOrWhiteSpace(item.CaseFieldName))
         {
             throw new PayrollException("Missing case field name");
         }
-        if (!await CaseFieldRepository.ExistsAsync(DbSchema.CaseFieldColumn.Name, caseValue.CaseFieldName))
+        if (!await CaseFieldRepository.ExistsAsync(context, DbSchema.CaseFieldColumn.Name, item.CaseFieldName))
         {
-            throw new PayrollException($"Unknown case field with name {caseValue.CaseFieldName}");
+            throw new PayrollException($"Unknown case field with name {item.CaseFieldName}");
         }
 
-        return await base.CreateAsync(parentId, caseValue);
+        return await base.CreateAsync(context, parentId, item);
     }
 }

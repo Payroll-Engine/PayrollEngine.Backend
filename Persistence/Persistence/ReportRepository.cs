@@ -7,8 +7,8 @@ namespace PayrollEngine.Persistence;
 public class ReportRepository : ReportRepositoryBase<Report>, IReportRepository
 {
     public ReportRepository(IReportScriptController<Report> scriptController, IScriptRepository scriptRepository,
-        IReportAuditRepository auditRepository, IDbContext context) :
-        base(scriptController, scriptRepository, auditRepository, context)
+        IReportAuditRepository auditRepository) :
+        base(scriptController, scriptRepository, auditRepository)
     {
     }
 }

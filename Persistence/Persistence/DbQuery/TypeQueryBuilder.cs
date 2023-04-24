@@ -32,6 +32,11 @@ internal class TypeQueryBuilder<T> : QueryBuilderBase, IQueryContext
         TypeColumns = typeColumns;
     }
 
+    /// <summary>
+    /// Find a column by name
+    /// </summary>
+    /// <param name="name">The column name</param>
+    /// <returns>Existing column name</returns>
     protected string FindTypeColumn(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -43,11 +48,19 @@ internal class TypeQueryBuilder<T> : QueryBuilderBase, IQueryContext
 
     #region IQueryContext
 
+    /// <summary>
+    /// The query context
+    /// </summary>
     protected override IQueryContext QueryContext => this;
 
     Type IQueryContext.GetColumnType(string name) =>
         GetColumnType(name);
 
+    /// <summary>
+    /// Get the column type
+    /// </summary>
+    /// <param name="name">The column name</param>
+    /// <returns>The column type</returns>
     protected virtual Type GetColumnType(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -60,6 +73,11 @@ internal class TypeQueryBuilder<T> : QueryBuilderBase, IQueryContext
     string IQueryContext.ValidateColumn(string name) =>
         ValidateColumn(name);
 
+    /// <summary>
+    /// Validate query column
+    /// </summary>
+    /// <param name="name">The column name</param>
+    /// <returns>The valid column name</returns>
     protected virtual string ValidateColumn(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

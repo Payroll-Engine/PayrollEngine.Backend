@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class LookupAuditRepository : AuditChildDomainRepository<LookupAudit>, ILookupAuditRepository
 {
-    public LookupAuditRepository(IDbContext context) :
-        base(DbSchema.Tables.LookupAudit, DbSchema.LookupAudit.LookupId, context)
+    public LookupAuditRepository() :
+        base(DbSchema.Tables.LookupAudit, DbSchema.LookupAudit.LookupId)
     {
     }
 

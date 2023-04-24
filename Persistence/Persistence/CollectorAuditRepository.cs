@@ -7,8 +7,8 @@ namespace PayrollEngine.Persistence;
 
 public class CollectorAuditRepository : AuditChildDomainRepository<CollectorAudit>, ICollectorAuditRepository
 {
-    public CollectorAuditRepository(IDbContext context) :
-        base(DbSchema.Tables.CollectorAudit, DbSchema.CollectorAuditColumn.CollectorId, context)
+    public CollectorAuditRepository() :
+        base(DbSchema.Tables.CollectorAudit, DbSchema.CollectorAuditColumn.CollectorId)
     {
     }
 

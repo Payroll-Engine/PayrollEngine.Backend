@@ -16,8 +16,8 @@ public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet
 
     public PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeResultSetRepository,
         ICollectorResultSetRepository collectorResultSetRepository,
-        IPayrunResultRepository payrunResultRepository, bool bulkInsert, IDbContext context) :
-        base(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId, context)
+        IPayrunResultRepository payrunResultRepository, bool bulkInsert) :
+        base(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId)
     {
         WageTypeResultSetRepository = wageTypeResultSetRepository ?? throw new ArgumentNullException(nameof(wageTypeResultSetRepository));
         CollectorResultSetRepository = collectorResultSetRepository ?? throw new ArgumentNullException(nameof(collectorResultSetRepository));
@@ -41,19 +41,19 @@ public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet
         base.GetObjectCreateData(resultSet, parameters);
     }
 
-    protected override async Task OnRetrieved(int tenantId, PayrollResultSet resultSet)
+    protected override async Task OnRetrieved(IDbContext context, int tenantId, PayrollResultSet resultSet)
     {
         // wage type results
-        resultSet.WageTypeResults = (await WageTypeResultSetRepository.QueryAsync(resultSet.Id)).ToList();
+        resultSet.WageTypeResults = (await WageTypeResultSetRepository.QueryAsync(context, resultSet.Id)).ToList();
 
         // collector results
-        resultSet.CollectorResults = (await CollectorResultSetRepository.QueryAsync(resultSet.Id)).ToList();
+        resultSet.CollectorResults = (await CollectorResultSetRepository.QueryAsync(context, resultSet.Id)).ToList();
 
         // payrun results
-        resultSet.PayrunResults = (await PayrunResultRepository.QueryAsync(resultSet.Id)).ToList();
+        resultSet.PayrunResults = (await PayrunResultRepository.QueryAsync(context, resultSet.Id)).ToList();
     }
 
-    protected override async Task OnCreatedAsync(int tenantId, PayrollResultSet resultSet)
+    protected override async Task OnCreatedAsync(IDbContext context, int tenantId, PayrollResultSet resultSet)
     {
         // wage type results
         if (resultSet.WageTypeResults != null && resultSet.WageTypeResults.Any())
@@ -61,11 +61,11 @@ public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet
             if (resultSet.WageTypeResults.Any(x => x.CustomResults.Count > 0))
             {
                 // no bulk insert supported, new wage type result id is delegated to the child results
-                await WageTypeResultSetRepository.CreateAsync(resultSet.Id, resultSet.WageTypeResults);
+                await WageTypeResultSetRepository.CreateAsync(context, resultSet.Id, resultSet.WageTypeResults);
             }
             else
             {
-                await WageTypeResultSetRepository.CreateBulkAsync(resultSet.Id, resultSet.WageTypeResults);
+                await WageTypeResultSetRepository.CreateBulkAsync(context, resultSet.Id, resultSet.WageTypeResults);
             }
         }
 
@@ -75,11 +75,11 @@ public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet
             if (resultSet.CollectorResults.Any(x => x.CustomResults.Count > 0))
             {
                 // no bulk insert supported, new collector result id is delegated to the child results
-                await CollectorResultSetRepository.CreateAsync(resultSet.Id, resultSet.CollectorResults);
+                await CollectorResultSetRepository.CreateAsync(context, resultSet.Id, resultSet.CollectorResults);
             }
             else
             {
-                await CollectorResultSetRepository.CreateBulkAsync(resultSet.Id, resultSet.CollectorResults);
+                await CollectorResultSetRepository.CreateBulkAsync(context, resultSet.Id, resultSet.CollectorResults);
             }
         }
 
@@ -88,45 +88,45 @@ public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet
         {
             if (BulkInsert)
             {
-                await PayrunResultRepository.CreateBulkAsync(resultSet.Id, resultSet.PayrunResults);
+                await PayrunResultRepository.CreateBulkAsync(context, resultSet.Id, resultSet.PayrunResults);
             }
             else
             {
-                await PayrunResultRepository.CreateAsync(resultSet.Id, resultSet.PayrunResults);
+                await PayrunResultRepository.CreateAsync(context, resultSet.Id, resultSet.PayrunResults);
             }
         }
 
-        await base.OnCreatedAsync(tenantId, resultSet);
+        await base.OnCreatedAsync(context, tenantId, resultSet);
     }
 
-    protected override Task OnUpdatedAsync(int tenantId, PayrollResultSet payrollResultSet)
+    protected override Task OnUpdatedAsync(IDbContext context, int tenantId, PayrollResultSet payrollResultSet)
     {
         throw new NotSupportedException("Update of payroll results not supported");
     }
 
-    protected override async Task<bool> OnDeletingAsync(int tenantId, int payrollResultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int tenantId, int payrollResultId)
     {
         // wage type results
-        var wageTypeResults = (await WageTypeResultSetRepository.QueryAsync(payrollResultId)).ToList();
+        var wageTypeResults = (await WageTypeResultSetRepository.QueryAsync(context, payrollResultId)).ToList();
         foreach (var wageTypeResult in wageTypeResults)
         {
-            await WageTypeResultSetRepository.DeleteAsync(payrollResultId, wageTypeResult.Id);
+            await WageTypeResultSetRepository.DeleteAsync(context, payrollResultId, wageTypeResult.Id);
         }
 
         // collector results
-        var collectorResults = (await CollectorResultSetRepository.QueryAsync(payrollResultId)).ToList();
+        var collectorResults = (await CollectorResultSetRepository.QueryAsync(context, payrollResultId)).ToList();
         foreach (var collectorResult in collectorResults)
         {
-            await CollectorResultSetRepository.DeleteAsync(payrollResultId, collectorResult.Id);
+            await CollectorResultSetRepository.DeleteAsync(context, payrollResultId, collectorResult.Id);
         }
 
         // payrun results
-        var payrunResults = (await PayrunResultRepository.QueryAsync(payrollResultId)).ToList();
+        var payrunResults = (await PayrunResultRepository.QueryAsync(context, payrollResultId)).ToList();
         foreach (var payrunResult in payrunResults)
         {
-            await PayrunResultRepository.DeleteAsync(payrollResultId, payrunResult.Id);
+            await PayrunResultRepository.DeleteAsync(context, payrollResultId, payrunResult.Id);
         }
 
-        return await base.OnDeletingAsync(tenantId, payrollResultId);
+        return await base.OnDeletingAsync(context, tenantId, payrollResultId);
     }
 }

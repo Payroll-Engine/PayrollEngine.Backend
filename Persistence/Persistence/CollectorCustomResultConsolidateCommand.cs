@@ -2,15 +2,14 @@
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class CollectorCustomResultConsolidateCommand : CollectorResultCommandBase
 {
-    internal CollectorCustomResultConsolidateCommand(IDbConnection connection) :
-        base(connection)
+    internal CollectorCustomResultConsolidateCommand(IDbContext context) :
+        base(context)
     {
     }
 
@@ -21,7 +20,7 @@ internal sealed class CollectorCustomResultConsolidateCommand : CollectorResultC
         QueryBegin();
 
         // retrieve consolidated collector values (stored procedure)
-        var values = await Connection.QueryAsync<CollectorCustomResult>(DbSchema.Procedures.GetConsolidatedCollectorCustomResults,
+        var values = await DbContext.QueryAsync<CollectorCustomResult>(DbSchema.Procedures.GetConsolidatedCollectorCustomResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         QueryEnd(() => $"{{Result query cons collector custom}} {GetItemsString(query.CollectorNames?.Distinct())}");

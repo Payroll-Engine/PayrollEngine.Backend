@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 
@@ -11,18 +10,8 @@ namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryScriptCommand : PayrollRepositoryCommandBase
 {
-    /// <summary>Derived script</summary>
-    private sealed class DerivedScript : Script
-    {
-        /// <summary>The layer level</summary>
-        internal int Level { get; private set; }
-
-        /// <summary>The layer priority</summary>
-        internal int Priority { get; private set; }
-    }
-
-    internal PayrollRepositoryScriptCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryScriptCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -86,7 +75,7 @@ internal sealed class PayrollRepositoryScriptCommand : PayrollRepositoryCommandB
         }
 
         // retrieve all derived scripts (stored procedure)
-        var scripts = (await Connection.QueryAsync<DerivedScript>(DbSchema.Procedures.GetDerivedScripts,
+        var scripts = (await DbContext.QueryAsync<DerivedScript>(DbSchema.Procedures.GetDerivedScripts,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedScripts(scripts, overrideType);
@@ -95,12 +84,12 @@ internal sealed class PayrollRepositoryScriptCommand : PayrollRepositoryCommandB
         var scriptSets = new List<Script>();
         foreach (var script in scripts)
         {
-            var regulationId = await scriptRepository.GetParentIdAsync(script.Id);
+            var regulationId = await scriptRepository.GetParentIdAsync(DbContext, script.Id);
             if (!regulationId.HasValue)
             {
                 throw new PayrollException($"Unknown regulation of script {script.Name} with id {script.Id}");
             }
-            var scriptSet = await scriptRepository.GetAsync(regulationId.Value, script.Id);
+            var scriptSet = await scriptRepository.GetAsync(DbContext, regulationId.Value, script.Id);
             scriptSets.Add(scriptSet);
         }
 

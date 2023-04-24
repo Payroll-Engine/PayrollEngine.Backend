@@ -11,8 +11,8 @@ public class RegulationPermissionRepository : RootDomainRepository<RegulationPer
 {
     public IRegulationRepository RegulationRepository { get; }
 
-    public RegulationPermissionRepository(IRegulationRepository regulationRepository, IDbContext context) :
-        base(DbSchema.Tables.RegulationPermission, context)
+    public RegulationPermissionRepository(IRegulationRepository regulationRepository) :
+        base(DbSchema.Tables.RegulationPermission)
     {
         RegulationRepository = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
     }
@@ -27,9 +27,9 @@ public class RegulationPermissionRepository : RootDomainRepository<RegulationPer
         base.GetObjectData(permission, parameters);
     }
 
-    public override async Task<RegulationPermission> CreateAsync(RegulationPermission permission)
+    public override async Task<RegulationPermission> CreateAsync(IDbContext context, RegulationPermission permission)
     {
-        var regulation = await RegulationRepository.GetAsync(permission.TenantId, permission.RegulationId);
+        var regulation = await RegulationRepository.GetAsync(context, permission.TenantId, permission.RegulationId);
         if (regulation == null)
         {
             throw new PayrollException($"Unknown regulation {permission.RegulationId} in tenant {permission.TenantId}");
@@ -38,13 +38,13 @@ public class RegulationPermissionRepository : RootDomainRepository<RegulationPer
         {
             throw new PayrollException($"Regulation {permission.RegulationId} in tenant {permission.TenantId} is not shared");
         }
-        return await base.CreateAsync(permission);
+        return await base.CreateAsync(context, permission);
     }
 
-    public async Task<RegulationPermission> GetAsync(int tenantId, int regulationId, int permissionTenantId, int? permissionDivisionId)
+    public async Task<RegulationPermission> GetAsync(IDbContext context, int tenantId, int regulationId, int permissionTenantId, int? permissionDivisionId)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<RegulationPermission>(Context, TableName)
+        var dbQuery = DbQueryFactory.NewQuery<RegulationPermission>(context, TableName)
             .Where(nameof(RegulationPermission.TenantId), tenantId)
             .Where(nameof(RegulationPermission.RegulationId), regulationId)
             .Where(nameof(RegulationPermission.PermissionTenantId), permissionTenantId);
@@ -58,7 +58,7 @@ public class RegulationPermissionRepository : RootDomainRepository<RegulationPer
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var permission = (await QueryAsync<RegulationPermission>(compileQuery)).FirstOrDefault();
+        var permission = (await QueryAsync<RegulationPermission>(context, compileQuery)).FirstOrDefault();
         return permission;
     }
 }

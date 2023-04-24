@@ -111,7 +111,7 @@ public class DerivedCaseCollector : DerivedCaseTool
         }
 
         // case (derived)
-        var cases = (await PayrollRepository.GetDerivedCasesAsync(
+        var cases = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -141,7 +141,7 @@ public class DerivedCaseCollector : DerivedCaseTool
         var availableCases = new List<CaseSet>();
 
         // case (derived)
-        var allCases = (await PayrollRepository.GetDerivedCasesAsync(
+        var allCases = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -204,6 +204,7 @@ public class DerivedCaseCollector : DerivedCaseTool
             {
                 var available = new CaseScriptController().CaseAvailable(new()
                 {
+                    DbContext = Settings.DbContext,
                     FunctionHost = FunctionHost,
                     Tenant = Tenant,
                     User = User,

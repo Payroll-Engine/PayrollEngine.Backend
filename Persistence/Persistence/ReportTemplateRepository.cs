@@ -9,8 +9,8 @@ namespace PayrollEngine.Persistence;
 
 public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplate, ReportTemplateAudit>, IReportTemplateRepository
 {
-    public ReportTemplateRepository(IReportTemplateAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.ReportTemplate, DbSchema.ReportTemplateColumn.ReportId, auditRepository, context)
+    public ReportTemplateRepository(IReportTemplateAuditRepository auditRepository) :
+        base(DbSchema.Tables.ReportTemplate, DbSchema.ReportTemplateColumn.ReportId, auditRepository)
     {
     }
 
@@ -27,19 +27,19 @@ public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplat
     }
 
     /// <inheritdoc />
-    public override async Task<IEnumerable<ReportTemplate>> QueryAsync(int regulationId, Query query = null)
+    public override async Task<IEnumerable<ReportTemplate>> QueryAsync(IDbContext context, int regulationId, Query query = null)
     {
         // report template query
         if (query is ReportTemplateQuery reportTemplateQuery && reportTemplateQuery.Language.HasValue)
         {
             // db query
-            var dbQuery = GetTemplateQuery(regulationId, reportTemplateQuery);
+            var dbQuery = GetTemplateQuery(context, regulationId, reportTemplateQuery);
 
             // T-SQL SELECT execution
-            var reportTemplates = (await QueryAsync<ReportTemplate>(dbQuery)).ToList();
+            var reportTemplates = (await QueryAsync<ReportTemplate>(context, dbQuery)).ToList();
 
             // notification
-            await OnRetrieved(regulationId, reportTemplates);
+            await OnRetrieved(context, regulationId, reportTemplates);
 
             // exclude content
             if (reportTemplateQuery.ExcludeContent)
@@ -54,25 +54,25 @@ public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplat
             return reportTemplates;
         }
 
-        return await base.QueryAsync(regulationId, query);
+        return await base.QueryAsync(context, regulationId, query);
     }
 
     /// <inheritdoc />
-    public override async Task<long> QueryCountAsync(int regulationId, Query query = null)
+    public override async Task<long> QueryCountAsync(IDbContext context, int regulationId, Query query = null)
     {
         // report template query
         if (query is ReportTemplateQuery reportTemplateQuery && reportTemplateQuery.Language.HasValue)
         {
             // db query
-            var dbQuery = GetTemplateQuery(regulationId, reportTemplateQuery);
-            return await QuerySingleAsync<long>(dbQuery);
+            var dbQuery = GetTemplateQuery(context, regulationId, reportTemplateQuery);
+            return await QuerySingleAsync<long>(context, dbQuery);
         }
-        return await base.QueryCountAsync(regulationId, query);
+        return await base.QueryCountAsync(context, regulationId, query);
     }
 
-    private string GetTemplateQuery(int regulationId, ReportTemplateQuery query)
+    private string GetTemplateQuery(IDbContext context, int regulationId, ReportTemplateQuery query)
     {
-        var dbQuery = DbQueryFactory.NewQuery<ReportTemplate>(Context, TableName, ParentFieldName, regulationId, query);
+        var dbQuery = DbQueryFactory.NewQuery<ReportTemplate>(context, TableName, ParentFieldName, regulationId, query);
         query.ApplyTo(dbQuery);
 
         // query compilation

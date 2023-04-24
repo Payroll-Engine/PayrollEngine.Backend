@@ -1,4 +1,6 @@
 
+using PayrollEngine.Domain.Model;
+
 namespace PayrollEngine.Persistence.SqlServer.Tests
 {
     public abstract class DatabaseTests

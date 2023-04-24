@@ -39,6 +39,7 @@ internal sealed class PayrunProcessorScripts
             companyCaseValueRepository: context.CompanyCaseValues,
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = Settings.CaseRepository,
@@ -53,6 +54,7 @@ internal sealed class PayrunProcessorScripts
         // execute payrun start script
         var start = new PayrunScriptController().Start(new()
         {
+            DbContext = Settings.DbContext,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -86,6 +88,7 @@ internal sealed class PayrunProcessorScripts
             companyCaseValueRepository: context.CompanyCaseValues,
             new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 CaseRepository = Settings.CaseRepository,
@@ -100,6 +103,7 @@ internal sealed class PayrunProcessorScripts
         // execute payrun end script
         new PayrunScriptController().End(new()
         {
+            DbContext = Settings.DbContext,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -133,6 +137,7 @@ internal sealed class PayrunProcessorScripts
         // execute payrun employee start script
         var start = new PayrunScriptController().EmployeeStart(new()
         {
+            DbContext = Settings.DbContext,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -167,6 +172,7 @@ internal sealed class PayrunProcessorScripts
         // execute payrun employee end script
         new PayrunScriptController().EmployeeEnd(new()
         {
+            DbContext = Settings.DbContext,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,

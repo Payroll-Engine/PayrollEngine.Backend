@@ -39,7 +39,7 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
         }
 
         // employee check
-        if (!await ParentService.ExistsAsync(employeeId))
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
@@ -69,7 +69,7 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
         }
 
         // employee check
-        if (!await ParentService.ExistsAsync(employeeId))
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }

@@ -14,8 +14,8 @@ public class CollectorResultSetRepository : ChildDomainRepository<CollectorResul
     public bool BulkInsert { get; }
 
     public CollectorResultSetRepository(ICollectorCustomResultRepository wageTypeCustomResultRepository,
-        bool bulkInsert, IDbContext context) :
-        base(DbSchema.Tables.CollectorResult, DbSchema.CollectorResultColumn.PayrollResultId, context)
+        bool bulkInsert) :
+        base(DbSchema.Tables.CollectorResult, DbSchema.CollectorResultColumn.PayrollResultId)
     {
         CollectorCustomResultRepository = wageTypeCustomResultRepository ?? throw new ArgumentNullException(nameof(wageTypeCustomResultRepository));
         BulkInsert = bulkInsert;
@@ -38,43 +38,43 @@ public class CollectorResultSetRepository : ChildDomainRepository<CollectorResul
         base.GetObjectCreateData(result, parameters);
     }
 
-    protected override async Task OnRetrieved(int payrollResultId, CollectorResultSet resultSet)
+    protected override async Task OnRetrieved(IDbContext context, int payrollResultId, CollectorResultSet resultSet)
     {
         // custom collector results
-        resultSet.CustomResults = (await CollectorCustomResultRepository.QueryAsync(resultSet.Id)).ToList();
+        resultSet.CustomResults = (await CollectorCustomResultRepository.QueryAsync(context, resultSet.Id)).ToList();
     }
 
-    protected override async Task OnCreatedAsync(int payrollResultId, CollectorResultSet resultSet)
+    protected override async Task OnCreatedAsync(IDbContext context, int payrollResultId, CollectorResultSet resultSet)
     {
         // custom collector results
         if (resultSet.CustomResults != null && resultSet.CustomResults.Any())
         {
             if (BulkInsert)
             {
-                await CollectorCustomResultRepository.CreateBulkAsync(resultSet.Id, resultSet.CustomResults);
+                await CollectorCustomResultRepository.CreateBulkAsync(context, resultSet.Id, resultSet.CustomResults);
             }
             else
             {
-                await CollectorCustomResultRepository.CreateAsync(resultSet.Id, resultSet.CustomResults);
+                await CollectorCustomResultRepository.CreateAsync(context, resultSet.Id, resultSet.CustomResults);
             }
         }
 
-        await base.OnCreatedAsync(payrollResultId, resultSet);
+        await base.OnCreatedAsync(context, payrollResultId, resultSet);
     }
 
-    protected override Task OnUpdatedAsync(int payrollResultId, CollectorResultSet resultSet)
+    protected override Task OnUpdatedAsync(IDbContext context, int payrollResultId, CollectorResultSet resultSet)
     {
         throw new NotSupportedException("Update of custom collector results is not supported");
     }
 
-    protected override async Task<bool> OnDeletingAsync(int payrollResultId, int wageTypeResultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int payrollResultId, int wageTypeResultId)
     {
         // custom collector results
-        var customResults = (await CollectorCustomResultRepository.QueryAsync(wageTypeResultId)).ToList();
+        var customResults = (await CollectorCustomResultRepository.QueryAsync(context, wageTypeResultId)).ToList();
         foreach (var customResult in customResults)
         {
-            await CollectorCustomResultRepository.DeleteAsync(wageTypeResultId, customResult.Id);
+            await CollectorCustomResultRepository.DeleteAsync(context, wageTypeResultId, customResult.Id);
         }
-        return await base.OnDeletingAsync(payrollResultId, wageTypeResultId);
+        return await base.OnDeletingAsync(context, payrollResultId, wageTypeResultId);
     }
 }

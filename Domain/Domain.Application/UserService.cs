@@ -13,9 +13,9 @@ public class UserService : ChildApplicationService<IUserRepository, User>, IUser
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int tenantId, string identifier) =>
-        await Repository.ExistsAnyAsync(tenantId, identifier);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
+        await Repository.ExistsAnyAsync(context, tenantId, identifier);
 
-    public virtual async Task UpdatePasswordAsync(int tenantId, int userId, string password) =>
-        await Repository.UpdatePasswordAsync(tenantId, userId, password);
+    public virtual async Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, string password) =>
+        await Repository.UpdatePasswordAsync(context, tenantId, userId, password);
 }

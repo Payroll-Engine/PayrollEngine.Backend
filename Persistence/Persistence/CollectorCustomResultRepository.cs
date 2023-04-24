@@ -8,8 +8,8 @@ namespace PayrollEngine.Persistence;
 
 public class CollectorCustomResultRepository : ChildDomainRepository<CollectorCustomResult>, ICollectorCustomResultRepository
 {
-    public CollectorCustomResultRepository(IDbContext context) :
-        base(DbSchema.Tables.CollectorCustomResult, DbSchema.CollectorCustomResultColumn.CollectorResultId, context)
+    public CollectorCustomResultRepository() :
+        base(DbSchema.Tables.CollectorCustomResult, DbSchema.CollectorCustomResultColumn.CollectorResultId)
     {
     }
 
@@ -29,7 +29,7 @@ public class CollectorCustomResultRepository : ChildDomainRepository<CollectorCu
         base.GetObjectCreateData(result, parameters);
     }
 
-    protected override Task OnUpdatedAsync(int collectorResultId, CollectorCustomResult customResult)
+    protected override Task OnUpdatedAsync(IDbContext context, int collectorResultId, CollectorCustomResult customResult)
     {
         throw new NotSupportedException("Update of collector custom results is not supported");
     }

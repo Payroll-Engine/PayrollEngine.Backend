@@ -13,64 +13,64 @@ namespace PayrollEngine.Persistence;
 public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomainRepository<T>
     where T : IDomainObject
 {
-    protected RootDomainRepository(string tableName, IDbContext context) :
-        base(tableName, context)
+    protected RootDomainRepository(string tableName) :
+        base(tableName)
     {
     }
 
     #region Query/Get
 
-    public virtual async Task<IEnumerable<T>> QueryAsync(Query query = null)
+    public virtual async Task<IEnumerable<T>> QueryAsync(IDbContext context, Query query = null)
     {
         // db query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, query);
+        var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, query);
 
         // query compilation
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var items = (await QueryAsync<T>(compileQuery)).ToList();
+        var items = (await QueryAsync<T>(context, compileQuery)).ToList();
 
         // notification
-        await OnRetrieved(items);
+        await OnRetrieved(context, items);
 
         return items;
     }
 
-    public virtual async Task<long> QueryCountAsync(Query query = null)
+    public virtual async Task<long> QueryCountAsync(IDbContext context, Query query = null)
     {
         // query
-        var dbQuery = DbQueryFactory.NewQuery<T>(Context, TableName, query, QueryMode.ItemCount);
+        var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, query, QueryMode.ItemCount);
 
         // query compilation
         var compileQuery = CompileQuery(dbQuery);
 
         // SELECT execution
-        var count = await QuerySingleAsync<long>(compileQuery);
+        var count = await QuerySingleAsync<long>(context, compileQuery);
         return count;
     }
 
-    public virtual async Task<T> GetAsync(int id)
+    public virtual async Task<T> GetAsync(IDbContext context, int id)
     {
-        var item = await SelectSingleByIdAsync<T>(TableName, id);
+        var item = await SelectSingleByIdAsync<T>(context, TableName, id);
         // notification
         if (item != null)
         {
-            await OnRetrieved(item);
+            await OnRetrieved(context, item);
         }
         return item;
     }
 
-    protected virtual Task OnRetrieved(T item) =>
+    protected virtual Task OnRetrieved(IDbContext context, T item) =>
         Task.FromResult<object>(null);
 
-    protected virtual async Task OnRetrieved(IEnumerable<T> items)
+    protected virtual async Task OnRetrieved(IDbContext context, IEnumerable<T> items)
     {
         if (items != null)
         {
             foreach (var item in items)
             {
-                await OnRetrieved(item);
+                await OnRetrieved(context, item);
             }
         }
     }
@@ -78,7 +78,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
 
     #region Create
 
-    public virtual async Task<T> CreateAsync(T item)
+    public virtual async Task<T> CreateAsync(IDbContext context, T item)
     {
         if (item == null)
         {
@@ -94,18 +94,21 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
 
         // build db statement
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbInsert(TableName, parameters.ParameterNames.ToList());
+        queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
         queryBuilder.AppendIdentitySelect();
         var query = queryBuilder.ToString();
 
         // db insert
         try
         {
-            item.Id = (int)await ExecuteScalarAsync(query, parameters);
+            //using var connection = context.NewConnection();
+            //connection.Open();
+            item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
+            //item.Id = (int)await ExecuteScalarAsync(connection, query, parameters);
         }
         catch (Exception exception)
         {
-            var transformException = Context.TransformException(exception);
+            var transformException = context.TransformException(exception);
             if (transformException != null)
             {
                 throw transformException;
@@ -116,7 +119,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         return item;
     }
 
-    public virtual async Task<IEnumerable<T>> CreateAsync(IEnumerable<T> items)
+    public virtual async Task<IEnumerable<T>> CreateAsync(IDbContext context, IEnumerable<T> items)
     {
         if (items == null)
         {
@@ -128,7 +131,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         using var txScope = TransactionFactory.NewTransactionScope();
         foreach (var obj in items)
         {
-            if (await InsertObject(obj))
+            if (await InsertObject(context, obj))
             {
                 createdObjects.Add(obj);
             }
@@ -142,7 +145,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
     {
         GetObjectData(obj, data);
         GetObjectCreateData(obj, data);
-        if (!data.ParameterNames.Any())
+        if (!data.HasAny)
         {
             throw new PayrollException($"Missing object data for object {obj}");
         }
@@ -152,30 +155,30 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         data.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(obj));
     }
 
-    private async Task<bool> InsertObject(T item)
+    private async Task<bool> InsertObject(IDbContext context, T item)
     {
         // create and update date
         item.InitCreatedDate(Date.Now);
 
-        if (await OnCreatingAsync(item))
+        if (await OnCreatingAsync(context, item))
         {
             var parameters = new DbParameterCollection();
             GetCreateData(item, parameters);
 
             // build db statement
             var queryBuilder = new StringBuilder();
-            queryBuilder.AppendDbInsert(TableName, parameters.ParameterNames.ToList());
+            queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
             queryBuilder.AppendIdentitySelect();
             var query = queryBuilder.ToString();
 
             // insert
             try
             {
-                item.Id = (int)await ExecuteScalarAsync(query, parameters);
+                item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
             }
             catch (Exception exception)
             {
-                var transformException = Context.TransformException(exception);
+                var transformException = context.TransformException(exception);
                 if (transformException != null)
                 {
                     throw transformException;
@@ -183,21 +186,21 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
                 throw;
             }
 
-            await OnCreatedAsync(item);
+            await OnCreatedAsync(context, item);
             return true;
         }
 
         return false;
     }
 
-    protected virtual Task<bool> OnCreatingAsync(T item) => Task.FromResult(true);
-    protected virtual Task OnCreatedAsync(T item) => Task.FromResult(0);
+    protected virtual Task<bool> OnCreatingAsync(IDbContext context, T item) => Task.FromResult(true);
+    protected virtual Task OnCreatedAsync(IDbContext context, T item) => Task.FromResult(0);
 
     #endregion
 
     #region Update
 
-    public virtual async Task<T> UpdateAsync(T obj)
+    public virtual async Task<T> UpdateAsync(IDbContext context, T obj)
     {
         if (obj == null)
         {
@@ -211,12 +214,12 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
 
         // build db statement
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbUpdate(TableName, parameters.ParameterNames.ToList(), obj.Id);
+        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), obj.Id);
         var query = queryBuilder.ToString();
 
         // transaction
         using var txScope = TransactionFactory.NewTransactionScope();
-        await ExecuteAsync(query, parameters);
+        await ExecuteAsync(context, query, parameters);
         txScope.Complete();
         return obj;
     }
@@ -225,7 +228,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
     {
         GetObjectData(obj, parameters);
         GetObjectUpdateData(obj, parameters);
-        if (!parameters.ParameterNames.Any())
+        if (!parameters.HasAny)
         {
             throw new PayrollException($"Missing object data for object {obj}");
         }
@@ -238,7 +241,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
 
     #region Delete
 
-    public virtual async Task<bool> DeleteAsync(int id)
+    public virtual async Task<bool> DeleteAsync(IDbContext context, int id)
     {
         if (id <= 0)
         {
@@ -249,7 +252,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         var compileQuery = CompileQuery(query);
 
         // DELETE execution
-        return (await ExecuteAsync(compileQuery)) > 0;
+        return (await ExecuteAsync(context, compileQuery)) > 0;
     }
 
     #endregion

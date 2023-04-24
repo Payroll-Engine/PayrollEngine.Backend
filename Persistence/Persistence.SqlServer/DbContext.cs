@@ -1,19 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
+using PayrollEngine.Domain.Model;
+using Dapper;
 
 namespace PayrollEngine.Persistence.SqlServer;
 
 public class DbContext : IDbContext
 {
+    /// <summary>The database connection string</summary>
+    public string ConnectionString { get; }
+
     public DbContext(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new ArgumentException(nameof(connectionString));
         }
-        Connection = new SqlConnection(connectionString);
+        ConnectionString = connectionString;
     }
+
+    /// <summary>New database connection for SQL Server</summary>
+    /// <returns>The connection</returns>
+    private IDbConnection NewConnection() =>
+        new SqlConnection(ConnectionString);
 
     /// <inheritdoc />
     public string DateTimeType =>
@@ -23,8 +35,47 @@ public class DbContext : IDbContext
     public string DecimalType =>
         $"DECIMAL({SystemSpecification.DecimalPrecision}, {SystemSpecification.DecimalScale})";
 
+    #region Operations
+
+    public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null,
+        CommandType? commandType = null)
+    {
+        using var connection = NewConnection();
+        return await connection.QueryAsync<T>(sql, param, transaction, commandTimeout, commandType);
+    }
+
     /// <inheritdoc />
-    public IDbConnection Connection { get; }
+    public async Task<T> QueryFirstAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null,
+        CommandType? commandType = null)
+    {
+        using var connection = NewConnection();
+        return await connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType);
+    }
+
+    /// <inheritdoc />
+    public async Task<T> QuerySingleAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null,
+        CommandType? commandType = null)
+    {
+        using var connection = NewConnection();
+        return await connection.QuerySingleAsync<T>(sql, param, transaction, commandTimeout, commandType);
+    }
+
+    /// <inheritdoc />
+    public async Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    {
+        using var connection = NewConnection();
+        return await connection.ExecuteAsync(sql, param, transaction, commandTimeout, commandType);
+    }
+
+    /// <inheritdoc />
+    public async Task<T> ExecuteScalarAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
+        int? commandTimeout = null, CommandType? commandType = null)
+    {
+        using var connection = NewConnection();
+        return await connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout, commandType);
+    }
+
+    #endregion
 
     /// <inheritdoc />
     public Exception TransformException(Exception exception)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
 using System.Text.Json;
 using PayrollEngine.Domain.Model;
@@ -8,8 +7,8 @@ namespace PayrollEngine.Persistence;
 
 internal abstract class WageTypeResultCommandBase : ResultCommandBase
 {
-    protected WageTypeResultCommandBase(IDbConnection connection) :
-        base(connection)
+    protected WageTypeResultCommandBase(IDbContext context) :
+        base(context)
     {
     }
 

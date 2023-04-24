@@ -12,6 +12,7 @@ using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Application.Service;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -23,13 +24,13 @@ namespace PayrollEngine.Api.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrunJob)]
 public abstract class PayrunJobController : RepositoryChildObjectController<ITenantService, IPayrunJobService,
     ITenantRepository, IPayrunJobRepository,
-    DomainObject.Tenant, DomainObject.PayrunJob, ApiObject.PayrunJob>
+    Tenant, PayrunJob, ApiObject.PayrunJob>
 {
-    public DomainObject.IWebhookDispatchService WebhookDispatcher { get; }
+    public IWebhookDispatchService WebhookDispatcher { get; }
     private PayrunJobServiceSettings ServiceSettings => Service.Settings;
 
     protected PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
-        DomainObject.IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
+        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
         base(tenantService, payrunJobService, runtime, new PayrunJobMap())
     {
         WebhookDispatcher = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
@@ -67,7 +68,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
             return tenantResult;
         }
 
-        return Map.ToApi(await Service.QueryEmployeePayrunJobsAsync(tenantId, employeeId, query));
+        return Map.ToApi(await Service.QueryEmployeePayrunJobsAsync(Runtime.DbContext, tenantId, employeeId, query));
     }
 
     private async Task<ActionResult<long>> QueryEmployeeJobsCountAsync(int tenantId, int employeeId, Query query)
@@ -79,7 +80,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
             return tenantResult;
         }
 
-        return await Service.QueryEmployeePayrunJobsCountAsync(tenantId, employeeId, query);
+        return await Service.QueryEmployeePayrunJobsCountAsync(Runtime.DbContext, tenantId, employeeId, query);
     }
 
     /// <summary>
@@ -94,30 +95,30 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         stopwatch.Start();
 
         // tenant
-        var tenant = await ParentService.GetAsync(tenantId);
+        var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
         if (tenant == null)
         {
             return BadRequest($"Unknown tenant with id {tenantId}");
         }
 
         // user
-        if (jobInvocation.UserId <= 0 || !await ServiceSettings.UserRepository.ExistsAsync(jobInvocation.UserId))
+        if (jobInvocation.UserId <= 0 || !await ServiceSettings.UserRepository.ExistsAsync(Runtime.DbContext, jobInvocation.UserId))
         {
             return BadRequest($"Unknown user with id {jobInvocation.UserId}");
         }
 
         // payroll
-        if (jobInvocation.PayrollId <= 0 || !await ServiceSettings.PayrollRepository.ExistsAsync(jobInvocation.PayrollId))
+        if (jobInvocation.PayrollId <= 0 || !await ServiceSettings.PayrollRepository.ExistsAsync(Runtime.DbContext, jobInvocation.PayrollId))
         {
             return BadRequest($"Unknown payroll with id {jobInvocation.PayrollId}");
         }
 
         // payrun
-        if (jobInvocation.PayrunId <= 0 || !await ServiceSettings.PayrunRepository.ExistsAsync(jobInvocation.PayrunId))
+        if (jobInvocation.PayrunId <= 0 || !await ServiceSettings.PayrunRepository.ExistsAsync(Runtime.DbContext, jobInvocation.PayrunId))
         {
             return BadRequest($"Unknown payrun with id {jobInvocation.PayrunId}");
         }
-        var payrun = await ServiceSettings.PayrunRepository.GetAsync(tenantId, jobInvocation.PayrunId);
+        var payrun = await ServiceSettings.PayrunRepository.GetAsync(Runtime.DbContext, tenantId, jobInvocation.PayrunId);
         if (payrun.Status != ObjectStatus.Active)
         {
             return BadRequest($"Inactive payrun with id {jobInvocation.PayrunId}");
@@ -133,7 +134,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
                 {nameof(ApiObject.PayrunJob.PayrollId), jobInvocation.PayrollId},
                 {nameof(ApiObject.PayrunJob.JobStatus), (int)PayrunJobStatus.Draft}
             });
-            var openJobs = await ServiceSettings.PayrunJobRepository.QueryAsync(tenantId, query);
+            var openJobs = await ServiceSettings.PayrunJobRepository.QueryAsync(Runtime.DbContext, tenantId, query);
             if (openJobs.Any())
             {
                 // TODO payrun job status test
@@ -152,6 +153,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
                 payrun,
                 new()
                 {
+                    DbContext = Runtime.DbContext,
                     UserRepository = ServiceSettings.UserRepository,
                     DivisionRepository = ServiceSettings.DivisionRepository,
                     TaskRepository = ServiceSettings.TaskRepository,
@@ -210,14 +212,14 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
     public virtual async Task<ActionResult<string>> GetPayrunJobStatusAsync(int tenantId, int payrunJobId)
     {
         // tenant
-        var tenant = await ParentService.GetAsync(tenantId);
+        var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
         if (tenant == null)
         {
             return BadRequest($"Unknown tenant with id {tenantId}");
         }
 
         // payrun job
-        var payrunJob = await Service.GetAsync(tenantId, payrunJobId);
+        var payrunJob = await Service.GetAsync(Runtime.DbContext, tenantId, payrunJobId);
         if (payrunJob == null)
         {
             return BadRequest($"Unknown payrun job with id {payrunJobId}");
@@ -238,14 +240,14 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         PayrunJobStatus jobStatus, bool patchMode)
     {
         // tenant
-        var tenant = await ParentService.GetAsync(tenantId);
+        var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
         if (tenant == null)
         {
             return BadRequest($"Unknown tenant with id {tenantId}");
         }
 
         // payrun job
-        var payrunJob = await Service.GetAsync(tenantId, payrunJobId);
+        var payrunJob = await Service.GetAsync(Runtime.DbContext, tenantId, payrunJobId);
         if (payrunJob == null)
         {
             return BadRequest($"Unknown payrun job with id {payrunJobId}");
@@ -258,7 +260,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         // patch mode (no state change validation)
         if (patchMode)
         {
-            payrunJob = await ServiceSettings.PayrunJobRepository.PatchPayrunJobStatusAsync(tenantId, payrunJobId, jobStatus);
+            payrunJob = await ServiceSettings.PayrunJobRepository.PatchPayrunJobStatusAsync(Runtime.DbContext, tenantId, payrunJobId, jobStatus);
             if (payrunJob == null)
             {
                 return BadRequest($"Unknown patch payrun job with id {payrunJobId}");
@@ -299,7 +301,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         if (oldJobStatus.IsWebhookProcessChange(jobStatus))
         {
             var json = DefaultJsonSerializer.Serialize(payrunJob);
-            await WebhookDispatcher.SendMessageAsync(tenantId,
+            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
                 new()
                 {
                     Action = WebhookAction.PayrunJobProcess,
@@ -312,7 +314,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         if (oldJobStatus.IsWebhookFinishChange(jobStatus))
         {
             var json = DefaultJsonSerializer.Serialize(payrunJob);
-            await WebhookDispatcher.SendMessageAsync(tenantId,
+            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
                 new()
                 {
                     Action = WebhookAction.PayrunJobFinish,

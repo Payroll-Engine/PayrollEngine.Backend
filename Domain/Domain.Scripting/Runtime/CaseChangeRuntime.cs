@@ -94,7 +94,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
         }
 
         // cache or search
-        return Case.FindCase(caseName) ?? CaseProvider.GetCaseAsync(Payroll.Id, caseName).Result;
+        return Case.FindCase(caseName) ?? CaseProvider.GetCaseAsync(Settings.DbContext, Payroll.Id, caseName).Result;
     }
 
     #endregion
@@ -354,7 +354,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
         var caseFieldSet = Case.FindCaseField(caseFieldName);
         if (caseFieldSet == null)
         {
-            var caseField = CaseFieldProvider.GetCaseFieldAsync(caseFieldName).Result;
+            var caseField = CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
             if (caseField == null)
             {
                 throw new ScriptException($"Unknown case field {caseFieldName}");

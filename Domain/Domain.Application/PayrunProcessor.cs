@@ -115,11 +115,14 @@ public class PayrunProcessor : FunctionToolBase
 
         // context global, national and company case values
         context.GlobalCaseValues = setup.GlobalCaseValues ??
-                                   new CaseValueCache(Settings.GlobalCaseValueRepository, Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
+                                   new CaseValueCache(Settings.DbContext, Settings.GlobalCaseValueRepository,
+                                       Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
         context.NationalCaseValues = setup.NationalCaseValues ??
-                                     new CaseValueCache(Settings.NationalCaseValueRepository, Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
+                                     new CaseValueCache(Settings.DbContext, Settings.NationalCaseValueRepository,
+                                         Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
         context.CompanyCaseValues = setup.CompanyCaseValues ??
-                                    new CaseValueCache(Settings.CompanyCaseValueRepository, Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
+                                    new CaseValueCache(Settings.DbContext, Settings.CompanyCaseValueRepository,
+                                        Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
 
         // payrun processor regulation
         var processorRegulation = new PayrunProcessorRegulation(FunctionHost, Settings, ResultProvider, Tenant, context.Payroll, Payrun);
@@ -146,11 +149,12 @@ public class PayrunProcessor : FunctionToolBase
         context.PayrunJob.Message =
             $"Started payrun calculation with payroll {jobInvocation.PayrollId} on period {context.PayrunJob.PeriodName} for cycle {context.PayrunJob.CycleName}";
         Log.Debug(context.PayrunJob.Message);
-        await Settings.PayrunJobRepository.CreateAsync(Tenant.Id, context.PayrunJob);
+        await Settings.PayrunJobRepository.CreateAsync(Settings.DbContext, Tenant.Id, context.PayrunJob);
 
         // validate payroll regulations
-        var validation = await new PayrollValidator(Settings.PayrollRepository).ValidateRegulations(Tenant.Id, context.Payroll,
-            context.PayrunJob.PeriodEnd, context.PayrunJob.EvaluationDate);
+        var validation = await new PayrollValidator(Settings.PayrollRepository)
+            .ValidateRegulations(Settings.DbContext, Tenant.Id, context.Payroll,
+                context.PayrunJob.PeriodEnd, context.PayrunJob.EvaluationDate);
         if (!string.IsNullOrWhiteSpace(validation))
         {
             return await AbortJobAsync(context.PayrunJob, $"Payroll validation error: {validation}");
@@ -289,8 +293,8 @@ public class PayrunProcessor : FunctionToolBase
         try
         {
             var employeeCaseValueSet = setup.EmployeeCaseValues ??
-                                       new CaseValueCache(Settings.EmployeeCaseValueRepository, employee.Id,
-                                           context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
+                                       new CaseValueCache(Settings.DbContext, Settings.EmployeeCaseValueRepository,
+                                           employee.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
 
             // value provider
             var caseValueProvider = new CaseValueProvider(employee,
@@ -300,6 +304,7 @@ public class PayrunProcessor : FunctionToolBase
                 employeeCaseValueRepository: employeeCaseValueSet,
                 new()
                 {
+                    DbContext = Settings.DbContext,
                     FunctionHost = FunctionHost,
                     Tenant = Tenant,
                     CaseRepository = Settings.CaseRepository,
@@ -466,7 +471,7 @@ public class PayrunProcessor : FunctionToolBase
             }
 
             // store current period results by payrun job and employee
-            await Settings.PayrollResultSetRepository.CreateAsync(Tenant.Id, payrollResult);
+            await Settings.PayrollResultSetRepository.CreateAsync(Settings.DbContext, Tenant.Id, payrollResult);
 
             if (stopwatch != null)
             {
@@ -487,7 +492,7 @@ public class PayrunProcessor : FunctionToolBase
                     Log.Trace($"Retro payrun job {retroJob.Name}: cleanup of employee {employee.Identifier} for period {retroJob.PeriodStart}");
 
                     // cleanup retro payrun job
-                    await Settings.PayrunJobRepository.DeleteAsync(Tenant.Id, retroJob.Id);
+                    await Settings.PayrunJobRepository.DeleteAsync(Settings.DbContext, Tenant.Id, retroJob.Id);
                     retroJob.ErrorMessage = $"Retro Payrun job {retroJob.Name}: error in parent Payrun {context.PayrunJob.Name}";
                 }
                 catch (Exception exception)
@@ -804,7 +809,7 @@ public class PayrunProcessor : FunctionToolBase
                     DivisionId = context.Division.Id,
                     Filter = $"{nameof(Employee.Identifier)} eq '{employeeIdentifier}'"
                 };
-                var selectedEmployees = (await Settings.EmployeeRepository.QueryAsync(Tenant.Id, query)).ToList();
+                var selectedEmployees = (await Settings.EmployeeRepository.QueryAsync(Settings.DbContext, Tenant.Id, query)).ToList();
                 if (selectedEmployees.Count != 1)
                 {
                     throw new PayrunException($"Unknown employee with identifier {employeeIdentifier}");
@@ -835,7 +840,7 @@ public class PayrunProcessor : FunctionToolBase
             Status = ObjectStatus.Active,
             DivisionId = context.Division.Id
         };
-        employees = (await Settings.EmployeeRepository.QueryAsync(Tenant.Id, allQuery)).ToList();
+        employees = (await Settings.EmployeeRepository.QueryAsync(Settings.DbContext, Tenant.Id, allQuery)).ToList();
 
         // employee available expression
         if (employees.Any() && !string.IsNullOrWhiteSpace(Payrun.EmployeeAvailableExpression))
@@ -855,7 +860,7 @@ public class PayrunProcessor : FunctionToolBase
         foreach (var employee in employees)
         {
             // employee case values
-            var employeeCaseValueSet = new CaseValueCache(Settings.EmployeeCaseValueRepository, employee.Id,
+            var employeeCaseValueSet = new CaseValueCache(Settings.DbContext, Settings.EmployeeCaseValueRepository, employee.Id,
                 context.PayrunJob.DivisionId, context.PayrunJob.EvaluationDate, context.PayrunJob.Forecast);
 
             var caseValueProvider = new CaseValueProvider(employee,
@@ -865,6 +870,7 @@ public class PayrunProcessor : FunctionToolBase
                 employeeCaseValueRepository: employeeCaseValueSet,
                 new()
                 {
+                    DbContext = Settings.DbContext,
                     FunctionHost = FunctionHost,
                     Tenant = Tenant,
                     CaseRepository = Settings.CaseRepository,
@@ -878,6 +884,7 @@ public class PayrunProcessor : FunctionToolBase
                 });
             var isAvailable = scriptController.IsEmployeeAvailable(new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -924,7 +931,7 @@ public class PayrunProcessor : FunctionToolBase
             // ignore incremental retro jobs
             {nameof(PayrunJob.JobResult), Enum.GetName(typeof(PayrunJobResult), PayrunJobResult.Full) }
         });
-        var payrunJobs = (await Settings.PayrunJobRepository.QueryAsync(Tenant.Id, query))
+        var payrunJobs = (await Settings.PayrunJobRepository.QueryAsync(Settings.DbContext, Tenant.Id, query))
             // filter out previous periods
             .Where(x => x.PeriodStart < jobInvocation.PeriodStart)
             .ToList();
@@ -1005,7 +1012,7 @@ public class PayrunProcessor : FunctionToolBase
     #region Job
 
     private async Task UpdateJobAsync(PayrunJob payrunJob) =>
-        await Settings.PayrunJobRepository.UpdateAsync(Tenant.Id, payrunJob);
+        await Settings.PayrunJobRepository.UpdateAsync(Settings.DbContext, Tenant.Id, payrunJob);
 
     private async Task<PayrunJob> AbortJobAsync(PayrunJob payrunJob, string message, Exception error = null)
     {
@@ -1024,7 +1031,7 @@ public class PayrunProcessor : FunctionToolBase
         payrunJob.ErrorMessage = error?.ToString();
 
         // persist
-        await Settings.PayrunJobRepository.UpdateAsync(Tenant.Id, payrunJob);
+        await Settings.PayrunJobRepository.UpdateAsync(Settings.DbContext, Tenant.Id, payrunJob);
 
         return payrunJob;
     }
@@ -1042,7 +1049,7 @@ public class PayrunProcessor : FunctionToolBase
         Log.Debug(payrunJob.Message);
 
         // persist
-        await Settings.PayrunJobRepository.UpdateAsync(Tenant.Id, payrunJob);
+        await Settings.PayrunJobRepository.UpdateAsync(Settings.DbContext, Tenant.Id, payrunJob);
 
         return payrunJob;
     }
@@ -1054,7 +1061,7 @@ public class PayrunProcessor : FunctionToolBase
     private async Task RemoveUnchangedResultsAsync(int tenantId, PayrollResultSet payrollResult, DateTime evaluationDate)
     {
         // existing collectors by collector name
-        var collectorResults = (await Settings.PayrollConsolidatedResultRepository.GetCollectorResultsAsync(
+        var collectorResults = (await Settings.PayrollConsolidatedResultRepository.GetCollectorResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = tenantId,
@@ -1087,7 +1094,7 @@ public class PayrunProcessor : FunctionToolBase
         }
 
         // existing wage types by wage type number
-        var wageTypeResults = (await Settings.PayrollConsolidatedResultRepository.GetWageTypeResultsAsync(
+        var wageTypeResults = (await Settings.PayrollConsolidatedResultRepository.GetWageTypeResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = tenantId,

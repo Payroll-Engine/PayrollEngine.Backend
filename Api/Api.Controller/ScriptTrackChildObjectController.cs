@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -17,9 +18,9 @@ public abstract class ScriptTrackChildObjectController<TParentService, TService,
     where TService : class, IScriptTrackChildApplicationService<TRepo, TDomain, TAudit>, IChildApplicationService<TRepo, TDomain>
     where TParentRepo : class, IDomainRepository
     where TRepo : class, IScriptTrackDomainObjectRepository<TDomain, TAudit>, IChildDomainRepository<TDomain>
-    where TParent : class, DomainObject.IDomainObject, new()
-    where TDomain : DomainObject.TrackDomainObject<TAudit>, new()
-    where TAudit : DomainObject.AuditDomainObject
+    where TParent : class, IDomainObject, new()
+    where TDomain : TrackDomainObject<TAudit>, new()
+    where TAudit : AuditDomainObject
     where TApi : ApiObject.ApiObjectBase, new()
 {
     protected ScriptTrackChildObjectController(TParentService parentService, TService service, IControllerRuntime runtime,
@@ -37,12 +38,12 @@ public abstract class ScriptTrackChildObjectController<TParentService, TService,
         }
 
         // test item
-        if (!await ChildService.ExistsAsync(itemId))
+        if (!await ChildService.ExistsAsync(Runtime.DbContext, itemId))
         {
             return BadRequest($"Unknown script object with id {itemId}");
         }
 
-        await Service.RebuildAsync(parentId, itemId);
+        await Service.RebuildAsync(Runtime.DbContext, parentId, itemId);
         return Ok();
     }
 }

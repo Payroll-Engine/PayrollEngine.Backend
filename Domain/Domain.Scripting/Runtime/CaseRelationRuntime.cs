@@ -321,7 +321,7 @@ public abstract class CaseRelationRuntime : PayrollRuntime, ICaseRelationRuntime
     public virtual string InvokeWebhook(string requestOperation, string requestMessage = null)
     {
         // invoke case function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(TenantId,
+        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
             new()
             {
                 Action = WebhookAction.CaseFunctionRequest,

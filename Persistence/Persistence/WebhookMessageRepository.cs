@@ -5,8 +5,8 @@ namespace PayrollEngine.Persistence;
 
 public class WebhookMessageRepository : ChildDomainRepository<WebhookMessage>, IWebhookMessageRepository
 {
-    public WebhookMessageRepository(IDbContext context) :
-        base(DbSchema.Tables.WebhookMessage, DbSchema.WebhookMessageColumn.WebhookId, context)
+    public WebhookMessageRepository() :
+        base(DbSchema.Tables.WebhookMessage, DbSchema.WebhookMessageColumn.WebhookId)
     {
     }
 

@@ -41,7 +41,7 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
         }
 
         // employee with tenant check
-        var employee = await ParentService.GetAsync(tenantId, employeeId);
+        var employee = await ParentService.GetAsync(Runtime.DbContext, tenantId, employeeId);
         if (employee == null)
         {
             return BadRequest($"Unknown employee with id {employeeId}");
@@ -71,7 +71,7 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
         }
 
         // employee check
-        if (!await ParentService.ExistsAsync(employeeId))
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
@@ -100,7 +100,7 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
         }
 
         // employee check
-        if (!await ParentService.ExistsAsync(employeeId))
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }

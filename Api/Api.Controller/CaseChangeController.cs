@@ -7,8 +7,8 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -20,8 +20,8 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     where TParentService : class, IRepositoryApplicationService<TParentRepo>
     where TParentRepo : class, IDomainRepository
     where TRepo : class, IChildDomainRepository<TDomain>
-    where TParent : class, DomainObject.IDomainObject, new()
-    where TDomain : DomainObject.CaseChange, new()
+    where TParent : class, IDomainObject, new()
+    where TDomain : CaseChange, new()
     where TApi : ApiObject.CaseChange, new()
 {
     protected IUserService UserService { get; }
@@ -90,7 +90,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
             }
 
             var apiObjects = new List<ApiObject.CaseChange>();
-            var items = (await Service.QueryAsync(tenantId, parentId, query)).ToList();
+            var items = (await Service.QueryAsync(Runtime.DbContext, tenantId, parentId, query)).ToList();
             foreach (var item in items)
             {
                 apiObjects.Add(Map.ToApi(item));
@@ -114,7 +114,8 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// <param name="parentId">The change parent id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>Count of requested Api objects</returns>
-    protected virtual async Task<ActionResult<long>> QueryChangesCountAsync(int tenantId, int parentId, Query query = null)
+    protected virtual async Task<ActionResult<long>> QueryChangesCountAsync(int tenantId,
+        int parentId, Query query = null)
     {
         try
         {
@@ -130,7 +131,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
                 return InvalidParentRequest(tenantId);
             }
 
-            return await Service.QueryValuesCountAsync(tenantId, parentId, query);
+            return await Service.QueryValuesCountAsync(Runtime.DbContext, tenantId, parentId, query);
         }
         catch (QueryException exception)
         {
@@ -195,7 +196,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
             }
 
             var apiObjects = new List<ApiObject.CaseChangeCaseValue>();
-            var items = (await Service.QueryValuesAsync(tenantId, parentId, query)).ToList();
+            var items = (await Service.QueryValuesAsync(Runtime.DbContext, tenantId, parentId, query)).ToList();
             var map = new CaseChangeCaseValueMap();
             foreach (var item in items)
             {
@@ -236,7 +237,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
                 return InvalidParentRequest(tenantId);
             }
 
-            return await Service.QueryValuesCountAsync(tenantId, parentId, query);
+            return await Service.QueryValuesCountAsync(Runtime.DbContext, tenantId, parentId, query);
         }
         catch (QueryException exception)
         {
@@ -253,7 +254,8 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// </summary>
     /// <param name="parentId">The case change parent id</param>
     /// <param name="caseChangeId">The case change id</param>
+    /// <remarks>Do not call the base class method</remarks>
     /// <returns>A case change</returns>
     protected override async Task<ActionResult<TApi>> GetAsync(int parentId, int caseChangeId) =>
-        Map.ToApi(await Service.Repository.GetAsync(parentId, caseChangeId));
+        Map.ToApi(await Service.Repository.GetAsync(Runtime.DbContext, parentId, caseChangeId));
 }

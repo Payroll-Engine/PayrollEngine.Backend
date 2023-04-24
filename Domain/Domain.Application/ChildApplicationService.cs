@@ -16,31 +16,31 @@ public abstract class ChildApplicationService<TRepo, TDomain> : RepositoryApplic
     {
     }
 
-    public virtual async Task<IEnumerable<TDomain>> QueryAsync(int parentId, Query query = null) =>
-        await Repository.QueryAsync(parentId, query);
+    public virtual async Task<IEnumerable<TDomain>> QueryAsync(IDbContext context, int parentId, Query query = null) =>
+        await Repository.QueryAsync(context, parentId, query);
 
-    public virtual async Task<long> QueryCountAsync(int parentId, Query query = null) =>
-        await Repository.QueryCountAsync(parentId, query);
+    public virtual async Task<long> QueryCountAsync(IDbContext context, int parentId, Query query = null) =>
+        await Repository.QueryCountAsync(context, parentId, query);
 
-    public virtual async Task<int?> GetParentIdAsync(int itemId) =>
-        await Repository.GetParentIdAsync(itemId);
+    public virtual async Task<int?> GetParentIdAsync(IDbContext context, int itemId) =>
+        await Repository.GetParentIdAsync(context, itemId);
 
-    public virtual async Task<TDomain> GetAsync(int parentId, int itemId) =>
-        await Repository.GetAsync(parentId, itemId);
+    public virtual async Task<TDomain> GetAsync(IDbContext context, int parentId, int itemId) =>
+        await Repository.GetAsync(context, parentId, itemId);
 
-    public virtual async Task<TDomain> CreateAsync(int parentId, TDomain item) =>
-        await Repository.CreateAsync(parentId, item);
+    public virtual async Task<TDomain> CreateAsync(IDbContext context, int parentId, TDomain item) =>
+        await Repository.CreateAsync(context, parentId, item);
 
-    public virtual async Task CreateBulkAsync(int parentId, IEnumerable<TDomain> items) =>
-        await Repository.CreateBulkAsync(parentId, items);
+    public virtual async Task CreateBulkAsync(IDbContext context, int parentId, IEnumerable<TDomain> items) =>
+        await Repository.CreateBulkAsync(context, parentId, items);
 
-    public virtual async Task<IEnumerable<TDomain>> CreateAsync(int parentId, IEnumerable<TDomain> items) =>
-        await Repository.CreateAsync(parentId, items);
+    public virtual async Task<IEnumerable<TDomain>> CreateAsync(IDbContext context, int parentId, IEnumerable<TDomain> items) =>
+        await Repository.CreateAsync(context, parentId, items);
 
-    public virtual async Task<TDomain> UpdateAsync(int parentId, TDomain item) =>
-        await Repository.UpdateAsync(parentId, item);
+    public virtual async Task<TDomain> UpdateAsync(IDbContext context, int parentId, TDomain item) =>
+        await Repository.UpdateAsync(context, parentId, item);
 
-    public virtual async Task<bool> DeleteAsync(int parentId, int itemId) =>
-        await Repository.DeleteAsync(parentId, itemId);
+    public virtual async Task<bool> DeleteAsync(IDbContext context, int parentId, int itemId) =>
+        await Repository.DeleteAsync(context, parentId, itemId);
 
 }

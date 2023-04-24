@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class PayrunParameterRepository : ChildDomainRepository<PayrunParameter>, IPayrunParameterRepository
 {
-    public PayrunParameterRepository(IDbContext context) :
-        base(DbSchema.Tables.PayrunParameter, DbSchema.PayrunParameterColumn.PayrunId, context)
+    public PayrunParameterRepository() :
+        base(DbSchema.Tables.PayrunParameter, DbSchema.PayrunParameterColumn.PayrunId)
     {
     }
 

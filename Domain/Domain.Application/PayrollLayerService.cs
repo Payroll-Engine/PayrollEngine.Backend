@@ -12,6 +12,6 @@ public class PayrollLayerService : ChildApplicationService<IPayrollLayerReposito
     {
     }
 
-    public virtual async Task<bool> ExistsAsync(int payrollId, int level, int priority) =>
-        await Repository.ExistsAsync(payrollId, level, priority);
+    public virtual async Task<bool> ExistsAsync(IDbContext context, int payrollId, int level, int priority) =>
+        await Repository.ExistsAsync(context, payrollId, level, priority);
 }

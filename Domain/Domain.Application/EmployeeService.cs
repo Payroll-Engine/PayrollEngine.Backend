@@ -11,6 +11,6 @@ public class EmployeeService : ChildApplicationService<IEmployeeRepository, Empl
         base(repository)
     {
     }
-    public virtual async Task<bool> ExistsAnyAsync(int tenantId, string identifier) =>
-        await Repository.ExistsAnyAsync(tenantId, identifier);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
+        await Repository.ExistsAnyAsync(context, tenantId, identifier);
 }

@@ -2960,6 +2960,78 @@
             The clusters
             </summary>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.IDbContext">
+            <summary>Database context</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IDbContext.DateTimeType">
+            <summary>The date time type name</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IDbContext.DecimalType">
+            <summary>The decimal type name</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Execute a query asynchronously using Task.
+            </summary>
+            <typeparam name="T">The type of results to return.</typeparam>
+            <param name="sql">The SQL to execute for the query.</param>
+            <param name="param">The parameters to pass, if any.</param>
+            <param name="transaction">The transaction to use, if any.</param>
+            <param name="commandTimeout">The command timeout (in seconds).</param>
+            <param name="commandType">The type of command to execute.</param>
+            <returns>
+            A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
+            created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+            </returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryFirstAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Execute a single-row query asynchronously using Task.
+            </summary>
+            <typeparam name="T">The type of result to return.</typeparam>
+            <param name="sql">The SQL to execute for the query.</param>
+            <param name="param">The parameters to pass, if any.</param>
+            <param name="transaction">The transaction to use, if any.</param>
+            <param name="commandTimeout">The command timeout (in seconds).</param>
+            <param name="commandType">The type of command to execute.</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.QuerySingleAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Execute a single-row query asynchronously using Task.
+            </summary>
+            <typeparam name="T">The type of result to return.</typeparam>
+            <param name="sql">The SQL to execute for the query.</param>
+            <param name="param">The parameters to pass, if any.</param>
+            <param name="transaction">The transaction to use, if any.</param>
+            <param name="commandTimeout">The command timeout (in seconds).</param>
+            <param name="commandType">The type of command to execute.</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.ExecuteAsync(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Execute a command asynchronously using Task.
+            </summary>
+            <param name="sql">The SQL to execute for this query.</param>
+            <param name="param">The parameters to use for this query.</param>
+            <param name="transaction">The transaction to use for this query.</param>
+            <param name="commandTimeout">Number of seconds before command execution timeout.</param>
+            <param name="commandType">Is it a stored proc or a batch?</param>
+            <returns>The number of rows affected.</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.ExecuteScalarAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Execute parameterized SQL that selects a single value.
+            </summary>
+            <typeparam name="T">The type to return.</typeparam>
+            <param name="sql">The SQL to execute.</param>
+            <param name="param">The parameters to use for this command.</param>
+            <param name="transaction">The transaction to use for this command.</param>
+            <param name="commandTimeout">Number of seconds before command execution timeout.</param>
+            <param name="commandType">Is it a stored proc or a batch?</param>
+            <returns>The first cell returned, as <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.TransformException(System.Exception)">
+            <summary>Transform a database exception</summary>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.IDerivableObject">
             <summary>
             Represents a derivable object
@@ -3108,7 +3180,7 @@
             A script provider
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IScriptProvider.GetBinaryAsync(PayrollEngine.Domain.Model.IScriptObject)">
+        <member name="M:PayrollEngine.Domain.Model.IScriptProvider.GetBinaryAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.IScriptObject)">
             <summary>
             Get script binary
             </summary>
@@ -3126,19 +3198,21 @@
             Webhook dispatcher service
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.InvokeAsync(System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage,System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.InvokeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage,System.Nullable{System.Int32})">
             <summary>
             Invoke webhook and receive the response object
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="dispatchMessage">The dispatch message</param>
             <param name="userId">The user id</param>
             <returns>The webhook response object as JSON</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.SendMessageAsync(System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage,System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.SendMessageAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage,System.Nullable{System.Int32})">
             <summary>
             Send message to the webhook
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="dispatchMessage">The dispatch message</param>
             <param name="userId">The user id</param>
@@ -5826,21 +5900,26 @@
             <param name="evaluationDate">The evaluation date</param>
             <param name="clusterSet">The cluster set</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetCaseTypeAsync(System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetCaseTypeAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetParentCaseIdAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetParentCaseIdAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetDerivedCaseFieldsAsync(PayrollEngine.CaseType)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.CaseType)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetDerivedCaseFieldsAsync(System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.CaseFieldProxyRepository.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
             <inheritdoc />
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.CaseValueCache">
             <summary>
             Set with all repository case values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Repository.CaseValueCache.Context">
+            <summary>
+            The database context
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Repository.CaseValueCache.CaseValueRepository">
@@ -5868,10 +5947,11 @@
             The forecast name
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.CaseValueCache.#ctor(PayrollEngine.Domain.Model.Repository.ICaseValueRepository,System.Int32,System.Int32,System.DateTime,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.CaseValueCache.#ctor(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.Repository.ICaseValueRepository,System.Int32,System.Int32,System.DateTime,System.String)">
             <summary>
             Case value cache constructor
             </summary>
+            <param name="context">The database context</param>
             <param name="caseValueRepository"></param>
             <param name="parentId"></param>
             <param name="divisionId"></param>
@@ -5896,17 +5976,19 @@
             </summary>
             <typeparam name="TDomain">The domain object with an audit</typeparam>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IAuditChildDomainRepository`1.GetCurrentAuditAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IAuditChildDomainRepository`1.GetCurrentAuditAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Get current audit object from the tracked item
             </summary>
+            <param name="context">The database context</param>
             <param name="trackObjectId">The tracking object id</param>
             <returns>The audit object</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IAuditChildDomainRepository`1.GetAuditAtAsync(System.Int32,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IAuditChildDomainRepository`1.GetAuditAtAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.DateTime)">
             <summary>
             Get audit object from a given time, based on the modification date
             </summary>
+            <param name="context">The database context</param>
             <param name="trackObjectId">The tracking object id</param>
             <param name="moment">The time moment</param>
             <returns>The domain object at a given time.
@@ -5943,46 +6025,51 @@
             Repository for case changes
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query resources
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="parentId">The parent object id</param>
             <param name="query">The query parameters</param>
             <returns>A list of the resources, matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryCountAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryCountAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Count query of resources
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="parentId">The parent object id</param>
             <param name="query">The query parameters</param>
             <returns>Resource count matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryValuesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryValuesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query case values of case changes
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="parentId">The change parent id</param>
             <param name="query">The query parameters</param>
             <returns>A list of case values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryValuesCountAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.QueryValuesCountAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query count of case values of case changes
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="parentId">The change parent id</param>
             <param name="query">The query parameters</param>
             <returns>Resource count matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.AddCaseChangeAsync(System.Int32,System.Int32,System.Int32,`0)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.AddCaseChangeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,`0)">
             <summary>
             Add new case change
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
             <param name="parentId">The change parent id</param>
@@ -6029,30 +6116,34 @@
             The evaluation date
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetCaseTypeAsync(System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetCaseTypeAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
             <summary>
             Get case type of a case field
             </summary>
+            <param name="context">The database context</param>
             <param name="caseFieldName">The case field name</param>
             <returns>The case type</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetParentCaseIdAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetParentCaseIdAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Get id of the parent case
             </summary>
+            <param name="context">The database context</param>
             <param name="caseFieldId">The case field object id</param>
             <returns>The id of the parent case</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetDerivedCaseFieldsAsync(PayrollEngine.CaseType)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.CaseType)">
             <summary>
             The available case fields by case type
             </summary>
+            <param name="context">The database context</param>
             <param name="caseType">The case type</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetDerivedCaseFieldsAsync(System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
             <summary>
             Get a case field by his name, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="caseFieldName">The case field name (default: all)</param>
             <returns>The matching case field, null if no field was found</returns>
         </member>
@@ -6061,18 +6152,20 @@
             Repository for case fields
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldRepository.ExistsAnyAsync(System.Int32,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldRepository.ExistsAnyAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Determine if a case contains a case field name
             </summary>
+            <param name="context">The database context</param>
             <param name="caseId">The case id</param>
             <param name="caseFieldNames">The case field names</param>
             <returns>True if the case contains a case field with this name</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldRepository.GetRegulationCaseFieldsAsync(System.Int32,System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldRepository.GetRegulationCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32})">
             <summary>
             Get regulation case fields by name
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="caseFieldNames">The case field names</param>
             <param name="regulationId">The regulation id</param>
@@ -6093,19 +6186,21 @@
             Repository for cases
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseRepository.QueryAsync(System.Int32,System.String,System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseRepository.QueryAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String,System.Nullable{System.Int32})">
             <summary>
             Query cases by name
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="caseName">The case name</param>
             <param name="regulationId">The regulation id</param>
             <returns>The regulation cases</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseRepository.ExistsAsync(System.Int32,System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.String)">
             <summary>
             Determine if a case name exists
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="caseName">The case name</param>
@@ -6141,37 +6236,41 @@
             Repository for case values
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetCaseValueSlotsAsync(System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetCaseValueSlotsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Get all case slots from a specific case field
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The case value parent id</param>
             <param name="caseFieldName">The case field name</param>
             <returns>The case values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetCaseValuesAsync(PayrollEngine.Domain.Model.DomainCaseValueQuery,System.String,System.Nullable{System.DateTime})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetCaseValuesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.DomainCaseValueQuery,System.String,System.Nullable{System.DateTime})">
             <summary>
             Get all case values from a specific case field
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The case value query</param>
             <param name="caseFieldName">The case field name</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>The case values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetPeriodCaseValuesAsync(PayrollEngine.Domain.Model.DomainCaseValueQuery,PayrollEngine.DatePeriod,System.String,System.Nullable{System.DateTime})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetPeriodCaseValuesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.DomainCaseValueQuery,PayrollEngine.DatePeriod,System.String,System.Nullable{System.DateTime})">
             <summary>
             Get all case values from a specific case field restricted to a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The case value query</param>
             <param name="period">The period</param>
             <param name="caseFieldName">The case field name</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>The case values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetRetroCaseValueAsync(PayrollEngine.Domain.Model.DomainCaseValueQuery,PayrollEngine.DatePeriod,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetRetroCaseValueAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.DomainCaseValueQuery,PayrollEngine.DatePeriod,System.String)">
             <summary>
             Get retro case values from a certain time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The case value query</param>
             <param name="period">The date period</param>
             <param name="caseFieldName">The case field name</param>
@@ -6233,72 +6332,81 @@
             </summary>
             <typeparam name="T">The hosted domain child object</typeparam>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.QueryAsync(System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.QueryAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Query)">
             <summary>
             Query resources
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="query">The query parameters</param>
             <returns>A list of the resources, matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.QueryCountAsync(System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.QueryCountAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Query)">
             <summary>
             Count query of resources
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="query">The query parameters</param>
             <returns>Resource count matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.GetParentIdAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.GetParentIdAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Get id of the parent object
             </summary>
+            <param name="context">The database context</param>
             <param name="itemId">The domain object id</param>
             <returns>The id of the parent object</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.GetAsync(System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.GetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
             <summary>
             Get object by parent and id
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="itemId">The domain object id</param>
             <returns>The id of the parent object</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateAsync(System.Int32,`0)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,`0)">
             <summary>
             Add a new domain object to the repository
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
-            <param name="obj">The domain object to add</param>
+            <param name="item">The domain object to add</param>
             <returns>The newly created domain object including the new id</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateAsync(System.Int32,System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Add multiple new domain objects to the repository
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="items">The domain objects to add</param>
             <returns>The newly created domain objects including the new id</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateBulkAsync(System.Int32,System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateBulkAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Add multiple new domain objects to the repository using bulk insert
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="items">The domain objects to add</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.UpdateAsync(System.Int32,`0)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.UpdateAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,`0)">
             <summary>
             Update a repository domain object including his parent
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="item">The domain object to update</param>
             <returns>The updated domain object</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.DeleteAsync(System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.DeleteAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
             <summary>
             Remove a domain object from the repository
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="itemId">The if of the domain object to delete</param>
             <returns>True if the record was deleted</returns>
@@ -6318,10 +6426,11 @@
             Repository for payroll collectors
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICollectorRepository.ExistsAnyAsync(System.Int32,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICollectorRepository.ExistsAnyAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Determine if any of the collector names are existing
             </summary>
+            <param name="context">The database context</param>
             <param name="regulationId">The payroll regulation id</param>
             <param name="collectorNames">The collector names</param>
             <returns>True if any collector with a name exists</returns>
@@ -6346,18 +6455,20 @@
             Repository for divisions
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDivisionRepository.GetByIdsAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDivisionRepository.GetByIdsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
             Get multiple divisions by ids
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="divisionIds">The division ids</param>
             <returns>The divisions matching the ids</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDivisionRepository.GetByNameAsync(System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDivisionRepository.GetByNameAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Get division by name
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="name">The division name</param>
             <returns>The division matching the name</returns>
@@ -6367,49 +6478,55 @@
             Generic domain object repository with support of the basic CRUD operations
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Test if an domain object exists
             </summary>
+            <param name="context">The database context</param>
             <param name="id">The object id</param>
             <returns>True, if the domain object exists</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(System.String,System.Object)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.Object)">
             <summary>
             Test if an domain object exists
             </summary>
+            <param name="context">The database context</param>
             <param name="fieldName">The object field name</param>
             <param name="value">The object field value</param>
             <returns>True, if the domain object exists</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.GetAttributeAsync(System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.GetAttributeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Gets attribute value as JSON
             </summary>
+            <param name="context">The database context</param>
             <param name="id">The object id</param>
             <param name="attributeName">The attribute name</param>
             <returns>The attribute value</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAttributeAsync(System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAttributeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Test if an attribute exists
             </summary>
+            <param name="context">The database context</param>
             <param name="id">The object id</param>
             <param name="attributeName">The attribute name</param>
             <returns>True, if the attribute exists</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.SetAttributeAsync(System.Int32,System.String,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.SetAttributeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String,System.String)">
             <summary>
             Creates or updates the attribute value
             </summary>
+            <param name="context">The database context</param>
             <param name="id">The object id</param>
             <param name="attributeName">The attribute name</param>
             <param name="value">The attribute value as JSON</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.DeleteAttributeAsync(System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.DeleteAttributeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Delete an attribute
             </summary>
+            <param name="context">The database context</param>
             <param name="id">The if of the domain object to delete</param>
             <param name="attributeName">The attribute name</param>
         </member>
@@ -6428,10 +6545,11 @@
             Repository for tenants
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IEmployeeRepository.ExistsAnyAsync(System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IEmployeeRepository.ExistsAnyAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Determine if the employee existing by the identifier
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="identifier">The user identifier</param>
             <returns>True if the employee with this identifier exists</returns>
@@ -6456,10 +6574,11 @@
             Repository for lookups
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupRepository`1.ExistsAnyAsync(System.Int32,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupRepository`1.ExistsAnyAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Determine if any of the lookup names are existing
             </summary>
+            <param name="context">The database context</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupNames">The lookup names</param>
             <returns>True if any lookup with this name exists</returns>
@@ -6469,37 +6588,41 @@
             Repository for lookup sets
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetSetAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetSetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a lookup set, including the lookup values
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The lookup id</param>
             <returns>The lookup set</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupDataAsync(System.Int32,System.Int32,System.Int32,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,System.Nullable{PayrollEngine.Language})">
             <summary>
             Get lookup values in a specific language
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="language">The content language</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupValueDataAsync(System.Int32,System.Int32,System.String,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.String,System.Nullable{PayrollEngine.Language})">
             <summary>
             Get lookup values in a specific language
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="lookupKey">The lookup key</param>
             <param name="language">The content language</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetRangeLookupValueDataAsync(System.Int32,System.Int32,System.Decimal,System.String,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetRangeLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Decimal,System.String,System.Nullable{PayrollEngine.Language})">
             <summary>
             Get lookup values in a specific language
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="rangeValue">The range value</param>
@@ -6516,19 +6639,21 @@
             Repository for lookup values
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupValueRepository.ExistsAsync(System.Int32,System.String,System.Nullable{System.Decimal})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupValueRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String,System.Nullable{System.Decimal})">
             <summary>
             Determine if a lookup value with the same key exists
             </summary>
+            <param name="context">The database context</param>
             <param name="lookupId">The lookup id</param>
             <param name="key">The lookup value key</param>
             <param name="rangeValue">The lookup range value</param>
             <returns>True if the lookup value with any of the key exists</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupValueRepository.DeleteAll(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupValueRepository.DeleteAll(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Delete all lookup values from a lookup
             </summary>
+            <param name="context">The database context</param>
             <param name="lookupId">The lookup id</param>
             <returns>The count of deleted lookup values</returns>
         </member>
@@ -6537,45 +6662,51 @@
             Repository for payroll consolidated result infos
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetPayrollResultAsync(PayrollEngine.Domain.Model.PayrollResultQuery)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetPayrollResultAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollResultQuery)">
             <summary>
             Get consolidated payroll results collected within a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll result query</param>
             <returns>Period payroll results</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetWageTypeResultsAsync(PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetWageTypeResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery)">
             <summary>
             Get consolidated period wage type results collected within a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The wage type result query</param>
             <returns>Period wage type values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetWageTypeCustomResultsAsync(PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetWageTypeCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery)">
             <summary>
             Get consolidated wage type custom results collected within a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The wage type result query</param>
             <returns>Custom wage type values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetCollectorResultsAsync(PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetCollectorResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery)">
             <summary>
             Get consolidated collector results collected within a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The collector result query</param>
             <returns>Period collector values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetCollectorCustomResultsAsync(PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetCollectorCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery)">
             <summary>
             Get consolidated collector custom results collected within a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The collector result query</param>
             <returns>Period collector values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetPayrunResultsAsync(PayrollEngine.Domain.Model.ConsolidatedPayrunResultQuery)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository.GetPayrunResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedPayrunResultQuery)">
             <summary>
             Get consolidated payrun results collected within a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payrun result query</param>
             <returns>Period wage type values</returns>
         </member>
@@ -6584,10 +6715,11 @@
             Repository for payroll layers
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollLayerRepository.ExistsAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollLayerRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32)">
             <summary>
             Determine if a payroll layer with the same level and priority exists
             </summary>
+            <param name="context">The database context</param>
             <param name="payrollId">The payroll id</param>
             <param name="level">The layer level</param>
             <param name="priority">The layer priority</param>
@@ -6598,24 +6730,27 @@
             Repository for payrolls
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetParentCaseIdAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetParentCaseIdAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Get id of the parent case
             </summary>
+            <param name="context">The database context</param>
             <param name="caseFieldId">The case field object id</param>
             <returns>The id of the parent case</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedRegulationsAsync(PayrollEngine.Domain.Model.PayrollQuery)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedRegulationsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery)">
             <summary>
             Get all active derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <returns>The derived cases</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCasesAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Nullable{PayrollEngine.CaseType},System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCasesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Nullable{PayrollEngine.CaseType},System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get all active derived cases, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="caseType">The case type (default: all)</param>
             <param name="caseNames">The case names (default: all)</param>
@@ -6623,30 +6758,33 @@
             <param name="clusterSet">The cluster set</param>
             <returns>The derived cases</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get a case field by his name, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="caseFieldNames">The case field names (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSet">The cluster set</param>
             <returns>The matching case field, null if no field was found</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCaseFieldsOfCaseAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCaseFieldsOfCaseAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get a case field by his name, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="caseNames">The case names</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSet">The cluster set</param>
             <returns>The matching case field, null if no field was found</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCaseRelationsAsync(PayrollEngine.Domain.Model.PayrollQuery,System.String,System.String,System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCaseRelationsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.String,System.String,System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get all active case relations, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="sourceCaseName">The relation source case name (default: all)</param>
             <param name="targetCaseName">The relation target case name (default: all)</param>
@@ -6654,58 +6792,64 @@
             <param name="clusterSet">The cluster set</param>
             <returns>The derived case relations</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedWageTypesAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.Decimal},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedWageTypesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.Decimal},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get from all wage types the the topmost derived regulation
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="wageTypeNumbers">The wage type numbers (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSet">The cluster set</param>
             <returns>The derived wage types</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCollectorsAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCollectorsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get all active collectors, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="collectorNames">The collector names filter (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSet">The cluster set</param>
             <returns>The derived collectors</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedLookupsAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedLookupsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType})">
             <summary>
             Get all active lookups, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="lookupNames">The lookup names filter (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <returns>The derived lookups</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportsAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get all active reports, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="reportNames">The report names filter (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSet">The cluster set</param>
             <returns>The derived reports</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportTemplateAsync(PayrollEngine.Domain.Model.PayrollQuery,PayrollEngine.Language,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportTemplateAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,PayrollEngine.Language,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Get all active reports, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="language">The report language</param>
             <param name="reportNames">The report names filter (default: all)</param>
             <returns>The derived reports</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedScriptsAsync(PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedScriptsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType})">
             <summary>
             Get all active scripts, considering derived regulations
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="scriptNames">The script names filter (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
@@ -6716,55 +6860,61 @@
             Repository for payroll result infos
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValuesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValuesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Get all result values
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The employee id</param>
             <param name="query">The query parameters</param>
             <returns>A list of payroll result values, matching the parameters and conditions</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValueCountAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValueCountAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Count query payroll result values
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The employee id</param>
             <param name="query">The query parameters</param>
             <returns>Payroll result values count matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetWageTypeResultsAsync(PayrollEngine.Domain.Model.WageTypeResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetWageTypeResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.WageTypeResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Get employee wage type results from a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The wage type result query</param>
             <param name="payrunJobId">The payrun job id</param>
             <param name="parentPayrunJobId">The parent payrun job id</param>
             <returns>Employee wage type values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetWageTypeCustomResultsAsync(PayrollEngine.Domain.Model.WageTypeResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetWageTypeCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.WageTypeResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Get employee wage type custom results from a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The wage type result query</param>
             <param name="payrunJobId">The payrun job id</param>
             <param name="parentPayrunJobId">The parent payrun job id</param>
             <returns>Employee wage type values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetCollectorResultsAsync(PayrollEngine.Domain.Model.CollectorResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetCollectorResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.CollectorResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Get employee collector results from a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The collector result query</param>
             <param name="payrunJobId">The payrun job id</param>
             <param name="parentPayrunJobId">The parent payrun job id</param>
             <returns>Employee collector values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetCollectorCustomResultsAsync(PayrollEngine.Domain.Model.CollectorResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.GetCollectorCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.CollectorResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Get collector custom results collected within a time period
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The collector result query</param>
             <param name="payrunJobId">The payrun job id</param>
             <param name="parentPayrunJobId">The parent payrun job id</param>
@@ -6795,28 +6945,31 @@
             Repository for payrun jobs
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.QueryEmployeePayrunJobsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.QueryEmployeePayrunJobsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query employee payrun jobs
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The employee id</param>
             <param name="query">The query parameters</param>
             <returns>Payrun jobs of the employee</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.QueryEmployeePayrunJobsCountAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.QueryEmployeePayrunJobsCountAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query employee payrun jobs count
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The employee id</param>
             <param name="query">The query parameters</param>
             <returns>Payrun jobs of the employee</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.PatchPayrunJobStatusAsync(System.Int32,System.Int32,PayrollEngine.PayrunJobStatus)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.PatchPayrunJobStatusAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.PayrunJobStatus)">
             <summary>
             Patch the payrun job status
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="payrunJobId">The payrun job id</param>
             <param name="jobStatus">The job status to path</param>
@@ -6832,10 +6985,11 @@
             Repository for payruns
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunRepository.RebuildAsync(System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunRepository.RebuildAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
             <summary>
             Rebuild the payrun
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="payrunId">The payrun id</param>
         </member>
@@ -6849,10 +7003,11 @@
             Repository for regulation permissions
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRegulationPermissionRepository.GetAsync(System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRegulationPermissionRepository.GetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
             <summary>
             Test for permission
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="permissionTenantId">The permission tenant id</param>
@@ -6925,52 +7080,59 @@
             </summary>
             <typeparam name="T">The hosted root domain object</typeparam>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.QueryAsync(PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.QueryAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Query)">
             <summary>
             Query resources
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The query parameters</param>
             <returns>A list of the resources, matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.QueryCountAsync(PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.QueryCountAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Query)">
             <summary>
             Count query of resources
             </summary>
+            <param name="context">The database context</param>
             <param name="query">The query parameters</param>
             <returns>Resource count matching the query</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.GetAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.GetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Get one specific domain object by id
             </summary>
+            <param name="context">The database context</param>
             <param name="id">The object id</param>
             <returns>The domain object</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.CreateAsync(`0)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.CreateAsync(PayrollEngine.Domain.Model.IDbContext,`0)">
             <summary>
             Add a new domain object to the repository
             </summary>
+            <param name="context">The database context</param>
             <param name="item">The domain object to add</param>
             <returns>The newly created domain object including the new id</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.CreateAsync(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.CreateAsync(PayrollEngine.Domain.Model.IDbContext,System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Add multiple new domain objects to the repository
             </summary>
+            <param name="context">The database context</param>
             <param name="items">The domain objects to add</param>
             <returns>The newly created domain objects including the new id</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.UpdateAsync(`0)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.UpdateAsync(PayrollEngine.Domain.Model.IDbContext,`0)">
             <summary>
             Update a repository domain object
             </summary>
+            <param name="context">The database context</param>
             <param name="obj">The domain object to update</param>
             <returns>The updated domain object</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.DeleteAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRootDomainRepository`1.DeleteAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Remove a domain object from the repository
             </summary>
+            <param name="context">The database context</param>
             <param name="id">The if of the domain object to delete</param>
             <returns>True if the record was deleted</returns>
         </member>
@@ -6984,18 +7146,20 @@
             Repository for payroll scripts
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IScriptRepository.ExistsAnyAsync(System.Int32,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IScriptRepository.ExistsAnyAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Determine if any of the script names are existing
             </summary>
+            <param name="context">The database context</param>
             <param name="regulationId">The payroll regulation id</param>
             <param name="scriptNames">The script names</param>
             <returns>True if any script with this name exists</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IScriptRepository.GetFunctionScriptsAsync(System.Int32,System.Collections.Generic.List{PayrollEngine.FunctionType},System.Nullable{System.DateTime})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IScriptRepository.GetFunctionScriptsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.List{PayrollEngine.FunctionType},System.Nullable{System.DateTime})">
             <summary>
             Get script from specific function types
             </summary>
+            <param name="context">The database context</param>
             <param name="regulationId">The payroll regulation id</param>
             <param name="functionTypes">The function types</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
@@ -7006,10 +7170,11 @@
             Repository for script objects
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IScriptTrackDomainObjectRepository`2.RebuildAsync(System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IScriptTrackDomainObjectRepository`2.RebuildAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
             <summary>
             Rebuild the script object
             </summary>
+            <param name="context">The database context</param>
             <param name="parentId">The parent object id</param>
             <param name="itemId">The items id to build</param>
         </member>
@@ -7023,10 +7188,11 @@
             Repository for tenants
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ITenantRepository.ExistsAsync(System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ITenantRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
             <summary>
             Test if tenant exists
             </summary>
+            <param name="context">The database context</param>
             <param name="identifier">The tenant identifier</param>
             <returns>True any collector exists</returns>
         </member>
@@ -7037,10 +7203,11 @@
             <typeparam name="TDomain">The domain object with an audit</typeparam>
             <typeparam name="TAudit">The audit object</typeparam>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ITrackChildDomainRepository`2.GetCurrentAuditAsync(System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ITrackChildDomainRepository`2.GetCurrentAuditAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
             Get current audit object from the tracked item
             </summary>
+            <param name="context">The database context</param>
             <param name="trackObjectId">The tracking object id</param>
             <returns>The audit object</returns>
         </member>
@@ -7056,18 +7223,20 @@
             Repository for tenant users
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IUserRepository.ExistsAnyAsync(System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IUserRepository.ExistsAnyAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Determine if the user existing by the identifier
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="identifier">The user identifier</param>
             <returns>True if the user with this identifier exists</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IUserRepository.UpdatePasswordAsync(System.Int32,System.Int32,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IUserRepository.UpdatePasswordAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.String)">
             <summary>
             Change the user password
             </summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="userId">The user id</param>
             <param name="password">The new user password, use null to reset the password</param>
@@ -7088,10 +7257,11 @@
             Repository for wage types
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IWageTypeRepository.ExistsAnyAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Decimal})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IWageTypeRepository.ExistsAnyAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{System.Decimal})">
             <summary>
             Determine if any of the wage type identifiers are existing
             </summary>
+            <param name="context">The database context</param>
             <param name="regulationId">The payroll regulation id</param>
             <param name="wageTypeNumbers">The wage type numbers</param>
             <returns>True if any wage type with this identifier exists</returns>
@@ -7133,8 +7303,9 @@
             </summary>
             <param name="payrollRepository">"The payroll repository></param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.PayrollValidator.ValidateRegulations(System.Int32,PayrollEngine.Domain.Model.Payroll,System.DateTime,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.PayrollValidator.ValidateRegulations(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Domain.Model.Payroll,System.DateTime,System.DateTime)">
             <summary>Validate payroll regulations</summary>
+            <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
             <param name="payroll">The payroll to validate</param>
             <param name="regulationDate">The regulation date</param>

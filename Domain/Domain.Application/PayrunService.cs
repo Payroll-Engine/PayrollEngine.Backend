@@ -12,6 +12,6 @@ public class PayrunService : ChildApplicationService<IPayrunRepository, Payrun>,
     {
     }
 
-    public virtual async Task RebuildAsync(int parentId, int itemId) =>
-        await Repository.RebuildAsync(parentId, itemId);
+    public virtual async Task RebuildAsync(IDbContext context, int parentId, int itemId) =>
+        await Repository.RebuildAsync(context, parentId, itemId);
 }

@@ -2,15 +2,14 @@
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class WageTypeCustomResultCommand : WageTypeResultCommandBase
 {
-    internal WageTypeCustomResultCommand(IDbConnection connection) :
-        base(connection)
+    internal WageTypeCustomResultCommand(IDbContext context) :
+        base(context)
     {
     }
 
@@ -22,7 +21,7 @@ internal sealed class WageTypeCustomResultCommand : WageTypeResultCommandBase
         QueryBegin();
 
         // retrieve employee wage type values (stored procedure)
-        var values = await Connection.QueryAsync<WageTypeCustomResult>(DbSchema.Procedures.GetWageTypeCustomResults,
+        var values = await DbContext.QueryAsync<WageTypeCustomResult>(DbSchema.Procedures.GetWageTypeCustomResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         QueryEnd(() => $"{{Result query wage type custom}} {GetItemsString(query.WageTypeNumbers?.Distinct())}");

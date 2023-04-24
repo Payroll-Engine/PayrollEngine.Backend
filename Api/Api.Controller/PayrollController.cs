@@ -79,7 +79,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         query.RegulationDate ??= collectMoment;
         query.EvaluationDate ??= collectMoment;
         var derivedRegulations = await
-            Service.GetDerivedRegulationsAsync(
+            Service.GetDerivedRegulationsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -106,14 +106,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 return tenantResult;
             }
-            var tenant = await ParentService.GetAsync(query.TenantId);
+            var tenant = await ParentService.GetAsync(Runtime.DbContext, query.TenantId);
             if (tenant == null)
             {
                 return BadRequest($"Unknown tenant with id {query.TenantId}");
             }
 
             // user
-            var user = await UserService.GetAsync(query.TenantId, query.UserId);
+            var user = await UserService.GetAsync(Runtime.DbContext, query.TenantId, query.UserId);
             if (user == null)
             {
                 return BadRequest($"Unknown user with id {query.UserId}");
@@ -121,7 +121,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
             // payroll
             query.PayrollId = query.PayrollId;
-            var payroll = await Service.GetAsync(query.TenantId, query.PayrollId);
+            var payroll = await Service.GetAsync(Runtime.DbContext, query.TenantId, query.PayrollId);
             if (payroll == null)
             {
                 return BadRequest($"Unknown payroll with id {query.PayrollId}");
@@ -141,11 +141,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 {
                     return BadRequest("Missing employee id on employee cases");
                 }
-                employee = await EmployeeService.GetAsync(query.TenantId, query.EmployeeId.Value);
+                employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
             }
 
             // lookups
-            var lookupProvider = await this.NewRegulationLookupProviderAsync(tenant, payroll);
+            var lookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, tenant, payroll);
 
             // case collector
             var collectMoment = CurrentEvaluationDate;
@@ -153,6 +153,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.EvaluationDate ??= collectMoment;
             using var collector = this.NewCaseCollector(new()
             {
+                DbContext = Runtime.DbContext,
                 CaseType = query.CaseType,
                 Tenant = tenant,
                 Payroll = payroll,
@@ -186,8 +187,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    public virtual async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseSetAsync(int tenantId, int payrollId,
-        string caseName, CaseBuildQuery query, ApiObject.CaseChangeSetup caseChangeSetup = null)
+    public virtual async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseSetAsync(
+        int tenantId, int payrollId, string caseName, CaseBuildQuery query, ApiObject.CaseChangeSetup caseChangeSetup = null)
     {
         // apply path ids to the query
         query.TenantId = tenantId;
@@ -210,7 +211,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 return BadRequest("Missing case name");
             }
-            var regulationCases = (await PayrollService.GetDerivedCasesAsync(query,
+            var regulationCases = (await PayrollService.GetDerivedCasesAsync(Runtime.DbContext, query,
                 caseNames: new[] { query.CaseName })).ToList();
             if (!regulationCases.Any())
             {
@@ -226,7 +227,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 {
                     return BadRequest("Missing employee id on employee cases");
                 }
-                employee = await EmployeeService.GetAsync(query.TenantId, query.EmployeeId.Value);
+                employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
             }
 
             // case change
@@ -248,7 +249,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
 
             // lookups
-            var lookupProvider = await this.NewRegulationLookupProviderAsync(querySetup.Tenant, querySetup.Payroll);
+            var lookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, querySetup.Tenant, querySetup.Payroll);
 
             // resolver
             var collectMoment = CurrentEvaluationDate;
@@ -256,6 +257,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.EvaluationDate ??= collectMoment;
             using var builder = this.NewCaseBuilder(new()
             {
+                DbContext = Runtime.DbContext,
                 CaseType = @case.CaseType,
                 Tenant = querySetup.Tenant,
                 Payroll = querySetup.Payroll,
@@ -295,8 +297,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
     #region Case Changes
 
-    public virtual async Task<ActionResult> QueryPayrollCaseChangeValuesAsync(int tenantId, int payrollId,
-        DomainObject.PayrollCaseChangeQuery query = null)
+    public virtual async Task<ActionResult> QueryPayrollCaseChangeValuesAsync(
+        int tenantId, int payrollId, DomainObject.PayrollCaseChangeQuery query = null)
     {
         query ??= new();
         if (query.CaseType == CaseType.Employee && !query.EmployeeId.HasValue)
@@ -327,7 +329,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 // case fields
                 var now = Date.Now;
-                var caseFieldNames = (await Service.GetDerivedCaseFieldsOfCaseAsync(
+                var caseFieldNames = (await Service.GetDerivedCaseFieldsOfCaseAsync(Runtime.DbContext,
                     new()
                     {
                         TenantId = tenantId,
@@ -346,11 +348,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                     {
                         var domainValues = query.CaseType switch
                         {
-                            CaseType.Global => await GlobalChangeService.QueryValuesAsync(tenantId, tenantId, query),
-                            CaseType.National => await NationalChangeService.QueryValuesAsync(tenantId, tenantId, query),
-                            CaseType.Company => await CompanyChangeService.QueryValuesAsync(tenantId, tenantId, query),
+                            CaseType.Global => await GlobalChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query),
+                            CaseType.National => await NationalChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query),
+                            CaseType.Company => await CompanyChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query),
                             // ReSharper disable once PossibleInvalidOperationException
-                            CaseType.Employee => await EmployeeChangeService.QueryValuesAsync(tenantId, query.EmployeeId.Value, query),
+                            CaseType.Employee => await EmployeeChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, query.EmployeeId.Value, query),
                             _ => throw new ArgumentOutOfRangeException(nameof(query.CaseType), query.CaseType, null)
                         };
                         caseChangeValues = new CaseChangeCaseValueMap().ToApi(domainValues);
@@ -362,11 +364,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                     {
                         caseChangeValuesCount = query.CaseType switch
                         {
-                            CaseType.Global => await GlobalChangeService.QueryValuesCountAsync(tenantId, tenantId, query),
-                            CaseType.National => await NationalChangeService.QueryValuesCountAsync(tenantId, tenantId, query),
-                            CaseType.Company => await CompanyChangeService.QueryValuesCountAsync(tenantId, tenantId, query),
+                            CaseType.Global => await GlobalChangeService.QueryValuesCountAsync(Runtime.DbContext, tenantId, tenantId, query),
+                            CaseType.National => await NationalChangeService.QueryValuesCountAsync(Runtime.DbContext, tenantId, tenantId, query),
+                            CaseType.Company => await CompanyChangeService.QueryValuesCountAsync(Runtime.DbContext, tenantId, tenantId, query),
                             // ReSharper disable once PossibleInvalidOperationException
-                            CaseType.Employee => await EmployeeChangeService.QueryValuesCountAsync(tenantId, query.EmployeeId.Value, query),
+                            CaseType.Employee => await EmployeeChangeService.QueryValuesCountAsync(Runtime.DbContext, tenantId, query.EmployeeId.Value, query),
                             _ => throw new ArgumentOutOfRangeException(nameof(query.CaseType), query.CaseType, null)
                         };
                     }
@@ -404,12 +406,19 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
     #region Case Values
 
-    Task<ActionResult<IEnumerable<ApiObject.CaseValue>>> IPayrollControllerServices.GetPayrollTimeCaseValuesAsync(
-        DomainObject.PayrollQuery query, CaseType caseType, string[] caseFieldNames, DateTime? valueDate) =>
-        GetPayrollTimeCaseValuesAsync(query, caseType, caseFieldNames, valueDate);
+    async Task<IEnumerable<DomainObject.CaseValue>> IPayrollControllerServices.GetPayrollTimeCaseValuesAsync(
+        DomainObject.IDbContext context, DomainObject.PayrollQuery query, CaseType caseType, string[] caseFieldNames, DateTime? valueDate)
+    {
+        var result = await GetPayrollTimeCaseValuesAsync(query, caseType, caseFieldNames, valueDate);
+        return new CaseValueMap().ToDomain(result.Value);
+    }
 
-    protected async Task<ActionResult<IEnumerable<ApiObject.CaseValue>>> GetPayrollTimeCaseValuesAsync(DomainObject.PayrollQuery query,
-        CaseType caseType, string[] caseFieldNames = null, DateTime? valueDate = null)
+    protected async Task<ActionResult<IEnumerable<ApiObject.CaseValue>>> GetPayrollTimeCaseValuesAsync(
+        DomainObject.PayrollQuery query, CaseType caseType, string[] caseFieldNames = null, DateTime? valueDate = null) =>
+        await GetPayrollTimeCaseValuesAsync(Runtime.DbContext, query, caseType, caseFieldNames, valueDate);
+
+    protected async Task<ActionResult<IEnumerable<ApiObject.CaseValue>>> GetPayrollTimeCaseValuesAsync(DomainObject.IDbContext context,
+        DomainObject.PayrollQuery query, CaseType caseType, string[] caseFieldNames = null, DateTime? valueDate = null)
     {
         try
         {
@@ -426,7 +435,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             DomainObject.Employee employee = null;
             if (query.EmployeeId.HasValue)
             {
-                employee = await EmployeeService.GetAsync(query.TenantId, query.EmployeeId.Value);
+                employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
                 if (employee == null)
                 {
                     return BadRequest($"Unknown employee with id {query.EmployeeId}");
@@ -439,7 +448,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var caseEvaluationDate = (query.EvaluationDate ?? caseValueDate).ToUtc();
 
             // lookups
-            var lookupProvider = await this.NewRegulationLookupProviderAsync(querySetup.Tenant,
+            var lookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, querySetup.Tenant,
                 querySetup.Payroll, caseRegulationDate, caseEvaluationDate);
 
             // server configuration
@@ -448,6 +457,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             // settings
             var settings = new CaseValueToolSettings
             {
+                DbContext = Runtime.DbContext,
                 Tenant = querySetup.Tenant,
                 Payroll = querySetup.Payroll,
                 TaskRepository = TaskService.Repository,
@@ -488,7 +498,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollAvailableCaseFieldValuesAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollAvailableCaseFieldValuesAsync(
+        DomainObject.PayrollQuery query,
         int userId, string[] caseFieldNames, DateTime startDate, DateTime endDate)
     {
         if (caseFieldNames == null || !caseFieldNames.Any())
@@ -521,7 +532,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 // case field
                 var caseValueReference = new CaseValueReference(caseFieldName);
-                var caseFields = await Service.GetDerivedCaseFieldsAsync(query, new[] { caseValueReference.CaseFieldName });
+                var caseFields = await Service.GetDerivedCaseFieldsAsync(Runtime.DbContext, query, new[] { caseValueReference.CaseFieldName });
                 //var caseFields = await CaseFieldService.GetRegulationCaseFieldsAsync(query.TenantId, new[] { caseValueReference.CaseFieldName });
                 var caseFieldId = caseFields.FirstOrDefault()?.Id;
                 if (!caseFieldId.HasValue)
@@ -530,21 +541,21 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 }
 
                 // case
-                var caseId = await CaseFieldService.GetParentIdAsync(caseFieldId.Value);
+                var caseId = await CaseFieldService.GetParentIdAsync(Runtime.DbContext, caseFieldId.Value);
                 if (!caseId.HasValue)
                 {
                     return BadRequest($"Unknown case field with id {caseFieldId.Value}");
                 }
 
                 // regulation
-                var regulationId = await CaseService.GetParentIdAsync(caseId.Value);
+                var regulationId = await CaseService.GetParentIdAsync(Runtime.DbContext, caseId.Value);
                 if (!regulationId.HasValue)
                 {
                     return BadRequest($"Unknown regulation for case field {caseValueReference.CaseFieldName}");
                 }
 
                 // case
-                DomainObject.Case @case = await CaseService.GetAsync(regulationId.Value, caseId.Value);
+                DomainObject.Case @case = await CaseService.GetAsync(Runtime.DbContext, regulationId.Value, caseId.Value);
                 if (@case == null)
                 {
                     return BadRequest($"Unknown regulation case with id {caseId.Value}");
@@ -563,11 +574,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 {
                     return BadRequest("Missing employee id on employee cases");
                 }
-                employee = await EmployeeService.GetAsync(query.TenantId, query.EmployeeId.Value);
+                employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
             }
 
             // lookups
-            var lookupProvider = await this.NewRegulationLookupProviderAsync(querySetup.Tenant, querySetup.Payroll);
+            var lookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, querySetup.Tenant, querySetup.Payroll);
 
             // resolver
             var collectMoment = CurrentEvaluationDate;
@@ -575,6 +586,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.EvaluationDate ??= collectMoment;
             using var collector = this.NewCaseCollector(new()
             {
+                DbContext = Runtime.DbContext,
                 CaseType = caseType,
                 Tenant = querySetup.Tenant,
                 Payroll = querySetup.Payroll,
@@ -606,8 +618,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollCaseValuesAsync(DomainObject.PayrollQuery query,
-        DateTime startDate, DateTime endDate, string[] caseFieldNames, string caseSlot = null)
+    protected virtual async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollCaseValuesAsync(
+        DomainObject.PayrollQuery query, DateTime startDate, DateTime endDate, string[] caseFieldNames, string caseSlot = null)
     {
         if (startDate >= endDate)
         {
@@ -640,7 +652,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var evaluationDate = query.EvaluationDate ?? valueDate;
             var regulationDate = query.RegulationDate ?? valueDate;
 
-            var caseFields = (await Service.GetDerivedCaseFieldsAsync(
+            var caseFields = (await Service.GetDerivedCaseFieldsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -659,28 +671,28 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 }
 
                 // case
-                var caseId = await CaseFieldService.GetParentIdAsync(caseField.Id);
+                var caseId = await CaseFieldService.GetParentIdAsync(Runtime.DbContext, caseField.Id);
                 if (!caseId.HasValue)
                 {
                     return BadRequest($"Unknown case field {caseField.Name}");
                 }
 
                 // regulation
-                var regulationId = await CaseService.GetParentIdAsync(caseId.Value);
+                var regulationId = await CaseService.GetParentIdAsync(Runtime.DbContext, caseId.Value);
                 if (!regulationId.HasValue)
                 {
                     return BadRequest($"Unknown regulation for case field {caseField.Name}");
                 }
 
                 // case
-                DomainObject.Case @case = await CaseService.GetAsync(regulationId.Value, caseId.Value);
+                DomainObject.Case @case = await CaseService.GetAsync(Runtime.DbContext, regulationId.Value, caseId.Value);
                 if (@case == null)
                 {
                     return BadRequest($"Unknown regulation case with id {caseId.Value}");
                 }
 
                 // lookups
-                var lookupProvider = await this.NewRegulationLookupProviderAsync(querySetup.Tenant, querySetup.Payroll);
+                var lookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, querySetup.Tenant, querySetup.Payroll);
 
                 // server configuration
                 var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
@@ -688,6 +700,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 // settings
                 var settings = new CaseValueToolSettings
                 {
+                    DbContext = Runtime.DbContext,
                     Tenant = querySetup.Tenant,
                     Payroll = querySetup.Payroll,
                     TaskRepository = TaskService.Repository,
@@ -743,7 +756,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                                 return BadRequest("Missing employee id to access employee data");
                             }
                             // employee case value periods
-                            var employee = await EmployeeService.GetAsync(query.TenantId, query.EmployeeId.Value);
+                            var employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
                             using var caseValueTool = new CaseValueTool(employee,
                                 globalCaseValueRepository: Service.GlobalCaseValueRepository,
                                 nationalCaseValueRepository: Service.NationalCaseValueRepository,
@@ -781,7 +794,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
 
             var builder = new PayrollControllerCaseBuilder(this);
-            var caseChange = await builder.AddPayrollCaseAsync(tenantId, payrollId,
+            var caseChange = await builder.AddPayrollCaseAsync(Runtime.DbContext, tenantId, payrollId,
                 caseChangeSetup, Request.Path);
             return caseChange;
         }
@@ -801,7 +814,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     private async Task<List<DomainObject.CaseValidationIssue>> ValidateCaseAsync(ValidateCaseSettings settings)
     {
         // lookups
-        var regulationLookupProvider = await this.NewRegulationLookupProviderAsync(settings.Tenant, settings.Payroll);
+        var regulationLookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, settings.Tenant, settings.Payroll);
 
         // setup validator
         var collectMoment = CurrentEvaluationDate;
@@ -809,6 +822,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         settings.EvaluationDate ??= collectMoment;
         using var validator = this.NewCaseValidator(new()
         {
+            DbContext = Runtime.DbContext,
             CaseType = settings.CaseType,
             Tenant = settings.Tenant,
             Payroll = settings.Payroll,
@@ -840,7 +854,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
     #region Payroll Regulation Items
 
-    protected virtual async Task<ActionResult<ApiObject.Case[]>> GetPayrollCasesAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.Case[]>> GetPayrollCasesAsync(
+        DomainObject.PayrollQuery query,
         CaseType? caseType, string[] caseNames, OverrideType? overrideType, string clusterSetName)
     {
         try
@@ -866,7 +881,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var cases = await Service.Repository.GetDerivedCasesAsync(
+            var cases = await Service.Repository.GetDerivedCasesAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -896,7 +911,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.CaseField[]>> GetPayrollCaseFieldsAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.CaseField[]>> GetPayrollCaseFieldsAsync(
+        DomainObject.PayrollQuery query,
         string[] caseFieldNames, OverrideType? overrideType, string clusterSetName)
     {
         try
@@ -922,7 +938,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var caseFields = await Service.GetDerivedCaseFieldsAsync(
+            var caseFields = await Service.GetDerivedCaseFieldsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -954,7 +970,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.CaseRelation[]>> GetPayrollCaseRelationsAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.CaseRelation[]>> GetPayrollCaseRelationsAsync(
+        DomainObject.PayrollQuery query,
         string sourceCaseName, string targetCaseName, OverrideType? overrideType, string clusterSetName)
     {
         try
@@ -980,7 +997,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var caseRelations = await Service.GetDerivedCaseRelationsAsync(
+            var caseRelations = await Service.GetDerivedCaseRelationsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1013,7 +1030,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.WageType[]>> GetPayrollWageTypesAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.WageType[]>> GetPayrollWageTypesAsync(
+        DomainObject.PayrollQuery query,
         decimal[] wageTypeNumbers, OverrideType? overrideType, string clusterSetName)
     {
         try
@@ -1039,7 +1057,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var wageTypes = (await Service.GetDerivedWageTypesAsync(
+            var wageTypes = (await Service.GetDerivedWageTypesAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1068,7 +1086,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.Collector[]>> GetPayrollCollectorsAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.Collector[]>> GetPayrollCollectorsAsync(
+        DomainObject.PayrollQuery query,
         string[] collectorNames, OverrideType? overrideType, string clusterSetName)
     {
         try
@@ -1094,7 +1113,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var collectors = await Service.GetDerivedCollectorsAsync(
+            var collectors = await Service.GetDerivedCollectorsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1123,7 +1142,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.Lookup[]>> GetPayrollLookupsAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.Lookup[]>> GetPayrollLookupsAsync(
+        DomainObject.PayrollQuery query,
         string[] lookupNames, OverrideType? overrideType)
     {
         try
@@ -1148,7 +1168,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var lookups = (await Service.GetDerivedLookupsAsync(
+            var lookups = (await Service.GetDerivedLookupsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1176,8 +1196,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupValuesAsync(DomainObject.PayrollQuery query,
-        string[] lookupNames, Language? language)
+    protected virtual async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupValuesAsync(
+        DomainObject.PayrollQuery query, string[] lookupNames, Language? language)
     {
         if (lookupNames == null || !lookupNames.Any())
         {
@@ -1210,7 +1230,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             foreach (var lookupName in lookupNames)
             {
                 // lookups
-                var lookups = (await Service.GetDerivedLookupsAsync(
+                var lookups = (await Service.GetDerivedLookupsAsync(Runtime.DbContext,
                     new()
                     {
                         TenantId = query.TenantId,
@@ -1229,14 +1249,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 for (var i = lookups.Count - 1; i >= 0; i--)
                 {
                     var lookup = lookups[i];
-                    var regulationId = await RegulationLookupSetService.Repository.GetParentIdAsync(lookup.Id);
+                    var regulationId = await RegulationLookupSetService.Repository.GetParentIdAsync(Runtime.DbContext, lookup.Id);
                     if (!regulationId.HasValue)
                     {
                         return BadRequest($"Unknown regulation for lookup {lookupName}");
                     }
 
                     var currentLookupData = await RegulationLookupSetService.Repository.GetLookupDataAsync(
-                        query.TenantId, regulationId.Value, lookup.Id, language);
+                        Runtime.DbContext, query.TenantId, regulationId.Value, lookup.Id, language);
 
                     // first/base regulation
                     if (lookupData == null)
@@ -1270,7 +1290,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.LookupValueData>> GetPayrollLookupValueDataAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.LookupValueData>> GetPayrollLookupValueDataAsync(
+        DomainObject.PayrollQuery query,
         string lookupName, string lookupKey, decimal? rangeValue, Language? language)
     {
         // verify tenant
@@ -1295,23 +1316,24 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         var querySetup = setupQuery.Item1;
 
         // lookups
-        var lookupProvider = await this.NewRegulationLookupProviderAsync(querySetup.Tenant,
+        var lookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, querySetup.Tenant,
             querySetup.Payroll, query.RegulationDate, query.EvaluationDate);
 
         // range value request
         if (rangeValue.HasValue)
         {
             var rangeValueData = await lookupProvider.
-                GetRangeLookupValueDataAsync(lookupName, rangeValue.Value, lookupKey, language);
+                GetRangeLookupValueDataAsync(Runtime.DbContext, lookupName, rangeValue.Value, lookupKey, language);
             return new LookupValueDataMap().ToApi(rangeValueData);
         }
 
         // simple value request
-        var valueData = await lookupProvider.GetLookupValueDataAsync(lookupName, lookupKey, language);
+        var valueData = await lookupProvider.GetLookupValueDataAsync(Runtime.DbContext, lookupName, lookupKey, language);
         return new LookupValueDataMap().ToApi(valueData);
     }
 
-    protected virtual async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(
+        DomainObject.PayrollQuery query,
         string[] reportNames, OverrideType? overrideType, string clusterSetName)
     {
         try
@@ -1337,7 +1359,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var reports = await Service.GetDerivedReportsAsync(
+            var reports = await Service.GetDerivedReportsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1357,7 +1379,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.ReportTemplate>> GetPayrollReportTemplateAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.ReportTemplate>> GetPayrollReportTemplateAsync(
+        DomainObject.PayrollQuery query,
         string[] reportNames, Language language)
     {
         try
@@ -1381,7 +1404,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var collectMoment = CurrentEvaluationDate;
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
-            var reportTemplate = await Service.GetDerivedReportTemplateAsync(
+            var reportTemplate = await Service.GetDerivedReportTemplateAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1405,7 +1428,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.Script[]>> GetPayrollScriptAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.Script[]>> GetPayrollScriptAsync(
+        DomainObject.PayrollQuery query,
         string[] scriptNames, OverrideType? overrideType)
     {
         try
@@ -1430,7 +1454,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var scripts = await Service.GetDerivedScriptsAsync(
+            var scripts = await Service.GetDerivedScriptsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1449,7 +1473,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.ActionInfo[]>> GetPayrollScriptActionsAsync(DomainObject.PayrollQuery query,
+    protected virtual async Task<ActionResult<ApiObject.ActionInfo[]>> GetPayrollScriptActionsAsync(
+        DomainObject.PayrollQuery query,
         string[] scriptNames, OverrideType? overrideType, FunctionType functionType = FunctionType.All)
     {
         try
@@ -1476,7 +1501,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.RegulationDate ??= collectMoment;
             query.EvaluationDate ??= collectMoment;
             overrideType ??= OverrideType.Active;
-            var actions = await Service.GetDerivedScriptActionsAsync(
+            var actions = await Service.GetDerivedScriptActionsAsync(Runtime.DbContext,
                 new()
                 {
                     TenantId = query.TenantId,
@@ -1527,7 +1552,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 return new(querySetup, tenantResult);
             }
-            var tenant = await ParentService.GetAsync(query.TenantId);
+            var tenant = await ParentService.GetAsync(Runtime.DbContext, query.TenantId);
             if (tenant == null)
             {
                 return new(querySetup, BadRequest($"Unknown tenant with id {query.TenantId}"));
@@ -1539,7 +1564,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 return new(querySetup, BadRequest($"Invalid query payroll id: {query.PayrollId}"));
             }
-            var payroll = await Service.GetAsync(query.TenantId, query.PayrollId);
+            var payroll = await Service.GetAsync(Runtime.DbContext, query.TenantId, query.PayrollId);
             if (payroll == null)
             {
                 return new(querySetup, BadRequest($"Unknown payroll with id {query.PayrollId}"));
@@ -1553,7 +1578,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 {
                     return new(querySetup, BadRequest($"Invalid query user id {userId.Value}"));
                 }
-                var user = await UserService.GetAsync(query.TenantId, userId.Value);
+                var user = await UserService.GetAsync(Runtime.DbContext, query.TenantId, userId.Value);
                 if (user == null)
                 {
                     return new(querySetup, BadRequest($"Unknown user with id {userId}"));

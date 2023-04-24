@@ -23,8 +23,8 @@ internal sealed class PayrollControllerCaseBuilder
         Services = services ?? throw new ArgumentNullException(nameof(services));
     }
 
-    internal async Task<ActionResult<Model.CaseChange>> AddPayrollCaseAsync(int tenantId, int payrollId,
-        Model.CaseChangeSetup caseChangeSetup, PathString path)
+    internal async Task<ActionResult<Model.CaseChange>> AddPayrollCaseAsync(IDbContext context,
+        int tenantId, int payrollId, Model.CaseChangeSetup caseChangeSetup, PathString path)
     {
         if (caseChangeSetup == null)
         {
@@ -34,14 +34,14 @@ internal sealed class PayrollControllerCaseBuilder
         try
         {
             // tenant
-            var tenant = await Context.TenantService.GetAsync(tenantId);
+            var tenant = await Context.TenantService.GetAsync(context, tenantId);
             if (tenant == null)
             {
                 return ActionResultFactory.BadRequest($"Unknown tenant with id {tenantId}");
             }
 
             // payroll
-            var payroll = await Context.PayrollService.GetAsync(tenantId, payrollId);
+            var payroll = await Context.PayrollService.GetAsync(context, tenantId, payrollId);
             if (payroll == null)
             {
                 return ActionResultFactory.BadRequest($"Unknown payroll with id {payrollId}");
@@ -53,7 +53,7 @@ internal sealed class PayrollControllerCaseBuilder
                 return ActionResultFactory.BadRequest($"Invalid user id {caseChangeSetup.UserId}");
             }
 
-            var user = await Context.UserService.GetAsync(tenantId, caseChangeSetup.UserId);
+            var user = await Context.UserService.GetAsync(context, tenantId, caseChangeSetup.UserId);
             if (user == null)
             {
                 return ActionResultFactory.BadRequest($"Unknown user with id {caseChangeSetup.UserId}");
@@ -87,7 +87,7 @@ internal sealed class PayrollControllerCaseBuilder
                     return ActionResultFactory.BadRequest($"Missing case name in case setup {caseSetup}");
                 }
 
-                var derivedCases = await GetDerivedCaseAsync(tenantId, payrollId, caseName);
+                var derivedCases = await GetDerivedCaseAsync(context, tenantId, payrollId, caseName);
                 if (!derivedCases.Any())
                 {
                     return ActionResultFactory.BadRequest($"Unknown case {caseName}");
@@ -119,7 +119,7 @@ internal sealed class PayrollControllerCaseBuilder
                         return ActionResultFactory.BadRequest("Missing employee id on employee cases");
                     }
 
-                    employee = await Context.EmployeeService.GetAsync(tenantId, caseChangeSetup.EmployeeId.Value);
+                    employee = await Context.EmployeeService.GetAsync(context, tenantId, caseChangeSetup.EmployeeId.Value);
                     // case change
                     if (employee == null)
                     {
@@ -133,7 +133,7 @@ internal sealed class PayrollControllerCaseBuilder
                     foreach (var caseValue in caseSetup.Values)
                     {
                         // case field available test
-                        var caseField = (await GetDerivedCaseFieldAsync(tenantId, payrollId, caseValue.CaseFieldName)).FirstOrDefault();
+                        var caseField = (await GetDerivedCaseFieldAsync(context, tenantId, payrollId, caseValue.CaseFieldName)).FirstOrDefault();
                         if (caseField == null)
                         {
                             return ActionResultFactory.BadRequest($"Unknown case field {caseValue.CaseFieldName}");
@@ -167,7 +167,7 @@ internal sealed class PayrollControllerCaseBuilder
 
                 // case change
                 CaseChange caseChange = await GetCancellationCaseChangeAsync(
-                    tenantId, caseType.Value, domainCaseChangeSetup);
+                    context, tenantId, caseType.Value, domainCaseChangeSetup);
                 if (caseChange == null)
                 {
                     return ActionResultFactory.NotFound(
@@ -194,7 +194,7 @@ internal sealed class PayrollControllerCaseBuilder
                 // prevent double case cancellation
                 var cancellationQuery =
                     QueryFactory.NewEqualFilterQuery(nameof(CaseChange.CancellationId), caseChange.Id);
-                var cancellationCaseChange = await GetCancellationCaseChangeAsync(tenantId, caseChangeSetup,
+                var cancellationCaseChange = await GetCancellationCaseChangeAsync(context, tenantId, caseChangeSetup,
                     caseType.Value, cancellationQuery);
                 if (cancellationCaseChange != null)
                 {
@@ -210,7 +210,7 @@ internal sealed class PayrollControllerCaseBuilder
                     caseValue.CancellationDate = caseChange.CancellationDate;
 
                     // case field
-                    var caseField = (await GetDerivedCaseFieldAsync(tenantId, payrollId, caseValue.CaseFieldName)).FirstOrDefault();
+                    var caseField = (await GetDerivedCaseFieldAsync(context, tenantId, payrollId, caseValue.CaseFieldName)).FirstOrDefault();
                     if (caseField == null)
                     {
                         return ActionResultFactory.BadRequest($"Unknown case field {caseValue.CaseFieldName}");
@@ -218,7 +218,7 @@ internal sealed class PayrollControllerCaseBuilder
 
                     // case value
                     var cancellationMode = GetCaseFieldCancellationMode(caseField);
-                    caseValue.Value = await GetCancellationCaseValueAsync(tenantId, payrollId,
+                    caseValue.Value = await GetCancellationCaseValueAsync(context, tenantId, payrollId,
                         caseChangeSetup, caseValue, cancellationMode, caseType.Value);
 
                     // ensure newer case value using the next second as creation date
@@ -230,7 +230,7 @@ internal sealed class PayrollControllerCaseBuilder
                 }
 
                 // validation case
-                var validationCase = (await GetDerivedCaseAsync(tenantId, payrollId, caseChangeSetup.Case.CaseName))
+                var validationCase = (await GetDerivedCaseAsync(context, tenantId, payrollId, caseChangeSetup.Case.CaseName))
                     .FirstOrDefault();
                 if (validationCase == null)
                 {
@@ -278,7 +278,7 @@ internal sealed class PayrollControllerCaseBuilder
             {
                 // new case
                 // validation case
-                var validationCase = (await GetDerivedCaseAsync(tenantId, payrollId, caseChangeSetup.Case.CaseName))
+                var validationCase = (await GetDerivedCaseAsync(context, tenantId, payrollId, caseChangeSetup.Case.CaseName))
                     .FirstOrDefault();
                 if (validationCase == null)
                 {
@@ -325,7 +325,7 @@ internal sealed class PayrollControllerCaseBuilder
             }
 
             // create case change
-            domainCaseChange = await AddCaseChangeAsync(tenantId, domainCaseChange.UserId,
+            domainCaseChange = await AddCaseChangeAsync(context, tenantId, domainCaseChange.UserId,
                 payrollId, caseType.Value, employee, domainCaseChange);
             var caseChangeMap = new CaseChangeMap<CaseChange, Model.CaseChange>();
 
@@ -376,7 +376,7 @@ internal sealed class PayrollControllerCaseBuilder
         return buffer.ToString();
     }
 
-    private async Task<string> GetCancellationCaseValueAsync(int tenantId, int payrollId,
+    private async Task<string> GetCancellationCaseValueAsync(IDbContext context, int tenantId, int payrollId,
         Model.CaseChangeSetup caseChangeSetup, Domain.Model.CaseValue caseValue,
         CaseFieldCancellationMode cancellationMode, CaseType caseType)
     {
@@ -384,7 +384,7 @@ internal sealed class PayrollControllerCaseBuilder
         switch (cancellationMode)
         {
             case CaseFieldCancellationMode.Previous:
-                cancellationCaseValue = await GetPreviousCaseValueAsync(tenantId, payrollId,
+                cancellationCaseValue = await GetPreviousCaseValueAsync(context, tenantId, payrollId,
                     caseChangeSetup.EmployeeId, caseValue, caseType, caseValue.ValueType);
                 break;
             case CaseFieldCancellationMode.Reset:
@@ -400,7 +400,7 @@ internal sealed class PayrollControllerCaseBuilder
         return cancellationCaseValue;
     }
 
-    private async Task<CaseChange> GetCancellationCaseChangeAsync(int tenantId,
+    private async Task<CaseChange> GetCancellationCaseChangeAsync(IDbContext context, int tenantId,
         Model.CaseChangeSetup caseChangeSetup, CaseType caseType, Query cancellationQuery)
     {
         CaseChange cancellationCaseChange = null;
@@ -408,24 +408,24 @@ internal sealed class PayrollControllerCaseBuilder
         {
             case CaseType.Global:
                 cancellationCaseChange =
-                    (await Context.GlobalChangeService.QueryAsync(tenantId, tenantId, cancellationQuery))
+                    (await Context.GlobalChangeService.QueryAsync(context, tenantId, tenantId, cancellationQuery))
                     .FirstOrDefault();
                 break;
             case CaseType.National:
                 cancellationCaseChange =
-                    (await Context.NationalChangeService.QueryAsync(tenantId, tenantId, cancellationQuery))
+                    (await Context.NationalChangeService.QueryAsync(context, tenantId, tenantId, cancellationQuery))
                     .FirstOrDefault();
                 break;
             case CaseType.Company:
                 cancellationCaseChange =
-                    (await Context.CompanyChangeService.QueryAsync(tenantId, tenantId, cancellationQuery))
+                    (await Context.CompanyChangeService.QueryAsync(context, tenantId, tenantId, cancellationQuery))
                     .FirstOrDefault();
                 break;
             case CaseType.Employee:
                 if (caseChangeSetup.EmployeeId.HasValue)
                 {
                     cancellationCaseChange =
-                        (await Context.EmployeeChangeService.QueryAsync(tenantId, caseChangeSetup.EmployeeId.Value,
+                        (await Context.EmployeeChangeService.QueryAsync(context, tenantId, caseChangeSetup.EmployeeId.Value,
                             cancellationQuery))
                         .FirstOrDefault();
                 }
@@ -457,8 +457,8 @@ internal sealed class PayrollControllerCaseBuilder
         return cancellationMode;
     }
 
-    private async Task<CaseChange> GetCancellationCaseChangeAsync(int tenantId, CaseType caseType,
-        CaseChangeSetup caseChangeSetup)
+    private async Task<CaseChange> GetCancellationCaseChangeAsync(IDbContext context,
+        int tenantId, CaseType caseType, CaseChangeSetup caseChangeSetup)
     {
         if (!caseChangeSetup.CancellationId.HasValue)
         {
@@ -470,15 +470,15 @@ internal sealed class PayrollControllerCaseBuilder
         switch (caseType)
         {
             case CaseType.Global:
-                caseChange = (await Context.GlobalChangeService.QueryAsync(tenantId, tenantId, query))
+                caseChange = (await Context.GlobalChangeService.QueryAsync(context, tenantId, tenantId, query))
                     .FirstOrDefault();
                 break;
             case CaseType.National:
-                caseChange = (await Context.NationalChangeService.QueryAsync(tenantId, tenantId, query))
+                caseChange = (await Context.NationalChangeService.QueryAsync(context, tenantId, tenantId, query))
                     .FirstOrDefault();
                 break;
             case CaseType.Company:
-                caseChange = (await Context.CompanyChangeService.QueryAsync(tenantId, tenantId, query))
+                caseChange = (await Context.CompanyChangeService.QueryAsync(context, tenantId, tenantId, query))
                     .FirstOrDefault();
                 break;
             case CaseType.Employee:
@@ -488,7 +488,7 @@ internal sealed class PayrollControllerCaseBuilder
                 }
 
                 caseChange =
-                    (await Context.EmployeeChangeService.QueryAsync(tenantId, caseChangeSetup.EmployeeId.Value,
+                    (await Context.EmployeeChangeService.QueryAsync(context, tenantId, caseChangeSetup.EmployeeId.Value,
                         query))
                     .FirstOrDefault();
                 break;
@@ -497,27 +497,27 @@ internal sealed class PayrollControllerCaseBuilder
         return caseChange;
     }
 
-    private async Task<CaseChange> AddCaseChangeAsync(int tenantId, int userId, int payrollId,
+    private async Task<CaseChange> AddCaseChangeAsync(IDbContext context, int tenantId, int userId, int payrollId,
         CaseType caseType, Employee employee, CaseChange caseChange)
     {
         switch (caseType)
         {
             case CaseType.Global:
-                caseChange = await Context.GlobalChangeService.AddCaseChangeAsync(tenantId, userId, payrollId,
+                caseChange = await Context.GlobalChangeService.AddCaseChangeAsync(context, tenantId, userId, payrollId,
                     tenantId, caseChange);
                 break;
             case CaseType.National:
-                caseChange = await Context.NationalChangeService.AddCaseChangeAsync(tenantId, userId, payrollId,
+                caseChange = await Context.NationalChangeService.AddCaseChangeAsync(context, tenantId, userId, payrollId,
                     tenantId, caseChange);
                 break;
             case CaseType.Company:
-                caseChange = await Context.CompanyChangeService.AddCaseChangeAsync(tenantId, userId, payrollId,
+                caseChange = await Context.CompanyChangeService.AddCaseChangeAsync(context, tenantId, userId, payrollId,
                     tenantId, caseChange);
                 break;
             case CaseType.Employee:
                 if (employee != null)
                 {
-                    caseChange = await Context.EmployeeChangeService.AddCaseChangeAsync(tenantId,
+                    caseChange = await Context.EmployeeChangeService.AddCaseChangeAsync(context, tenantId,
                         userId, payrollId, employee.Id, caseChange);
                 }
 
@@ -559,27 +559,27 @@ internal sealed class PayrollControllerCaseBuilder
     private static string InvertCaseValue(string inputValue, ValueType valueType) =>
         ValueConvert.InvertValue(inputValue, valueType);
 
-    private async Task<List<Case>> GetDerivedCaseAsync(int tenantId, int payrollId, string caseName)
+    private async Task<List<Case>> GetDerivedCaseAsync(IDbContext context, int tenantId, int payrollId, string caseName)
     {
-        var cases = (await Context.PayrollService.GetDerivedCasesAsync(
+        var cases = (await Context.PayrollService.GetDerivedCasesAsync(context,
             new() { TenantId = tenantId, PayrollId = payrollId },
             caseNames: new[] { caseName })).ToList();
         return cases;
     }
 
-    private async Task<List<ChildCaseField>> GetDerivedCaseFieldAsync(int tenantId, int payrollId, string caseFieldName)
+    private async Task<List<ChildCaseField>> GetDerivedCaseFieldAsync(IDbContext context, int tenantId, int payrollId, string caseFieldName)
     {
-        var caseFields = (await Context.PayrollService.GetDerivedCaseFieldsAsync(
+        var caseFields = (await Context.PayrollService.GetDerivedCaseFieldsAsync(context,
             new() { TenantId = tenantId, PayrollId = payrollId },
             new[] { caseFieldName })).ToList();
         return caseFields;
     }
 
-    private async Task<string> GetPreviousCaseValueAsync(int tenantId, int payrollId, int? employeeId,
+    private async Task<string> GetPreviousCaseValueAsync(IDbContext context, int tenantId, int payrollId, int? employeeId,
         Domain.Model.CaseValue caseValue, CaseType caseType, ValueType valueType)
     {
         // get case value before the case value was created
-        var caseValues = (await Services.GetPayrollTimeCaseValuesAsync(
+        var caseValues = await Services.GetPayrollTimeCaseValuesAsync(context,
             new()
             {
                 TenantId = tenantId,
@@ -588,7 +588,7 @@ internal sealed class PayrollControllerCaseBuilder
             },
             caseType,
             new[] { caseValue.CaseFieldName },
-            caseValue.Created)).Value;
+            caseValue.Created);
         if (caseValues == null)
         {
             return null;

@@ -15,8 +15,8 @@ public class TenantService : RootApplicationService<ITenantRepository, Tenant>, 
     {
     }
 
-    public virtual async Task<bool> ExistsAsync(string identifier) =>
-        await Repository.ExistsAsync(identifier);
+    public virtual async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
+        await Repository.ExistsAsync(context, identifier);
 
     public Task<IEnumerable<ActionInfo>> GetSystemScriptActionsAsync(FunctionType functionType = FunctionType.All)
     {
@@ -26,10 +26,9 @@ public class TenantService : RootApplicationService<ITenantRepository, Tenant>, 
         var actionScripts = SystemActionProvider.GetSystemActionScripts(functionType);
 
         // parse code
-        var actionParser = new ActionParser();
         foreach (var script in actionScripts)
         {
-            var scriptActions = actionParser.Parse(script);
+            var scriptActions = ActionParser.Parse(script);
             actions.AddRange(scriptActions);
         }
 

@@ -4,8 +4,8 @@ namespace PayrollEngine.Persistence;
 
 public class LogRepository : ChildDomainRepository<Domain.Model.Log>, ILogRepository
 {
-    public LogRepository(IDbContext context) :
-        base(DbSchema.Tables.Log, DbSchema.LogColumn.TenantId, context)
+    public LogRepository() : 
+        base(DbSchema.Tables.Log, DbSchema.LogColumn.TenantId)
     {
     }
 

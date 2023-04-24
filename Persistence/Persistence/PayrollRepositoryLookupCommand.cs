@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
 internal sealed class PayrollRepositoryLookupCommand : PayrollRepositoryCommandBase
 {
-    internal PayrollRepositoryLookupCommand(IDbConnection connection) :
-        base(connection)
+    internal PayrollRepositoryLookupCommand(IDbContext dbContext) :
+        base(dbContext)
     {
     }
 
@@ -58,7 +57,7 @@ internal sealed class PayrollRepositoryLookupCommand : PayrollRepositoryCommandB
             parameters.Add(DbSchema.ParameterGetDerivedLookups.LookupNames,
                 System.Text.Json.JsonSerializer.Serialize(names));
         }
-        var lookups = (await Connection.QueryAsync<Lookup>(DbSchema.Procedures.GetDerivedLookups,
+        var lookups = (await DbContext.QueryAsync<Lookup>(DbSchema.Procedures.GetDerivedLookups,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         // consolidation

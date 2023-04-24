@@ -10,10 +10,8 @@ namespace PayrollEngine.Persistence;
 
 public class CollectorRepository : ScriptTrackChildDomainRepository<Collector, CollectorAudit>, ICollectorRepository
 {
-    public CollectorRepository(ICollectorScriptController scriptController, IScriptRepository scriptRepository,
-        ICollectorAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.Collector, DbSchema.CollectorColumn.RegulationId,
-            scriptController, scriptRepository, auditRepository, context)
+    public CollectorRepository(ICollectorScriptController scriptController, IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository) :
+        base(DbSchema.Tables.Collector, DbSchema.CollectorColumn.RegulationId, scriptController, scriptRepository, auditRepository)
     {
     }
 
@@ -45,6 +43,6 @@ public class CollectorRepository : ScriptTrackChildDomainRepository<Collector, C
         base.GetObjectData(collector, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(int regulationId, IEnumerable<string> collectorNames) =>
-        await ExistsAnyAsync(DbSchema.CollectorColumn.RegulationId, regulationId, DbSchema.CollectorColumn.Name, collectorNames);
+    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> collectorNames) =>
+        await ExistsAnyAsync(context, DbSchema.CollectorColumn.RegulationId, regulationId, DbSchema.CollectorColumn.Name, collectorNames);
 }

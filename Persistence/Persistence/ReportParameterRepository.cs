@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class ReportParameterRepository : TrackChildDomainRepository<ReportParameter, ReportParameterAudit>, IReportParameterRepository
 {
-    public ReportParameterRepository(IReportParameterAuditRepository auditRepository, IDbContext context) :
-        base(DbSchema.Tables.ReportParameter, DbSchema.ReportParameterColumn.ReportId, auditRepository, context)
+    public ReportParameterRepository(IReportParameterAuditRepository auditRepository) : 
+        base(DbSchema.Tables.ReportParameter, DbSchema.ReportParameterColumn.ReportId, auditRepository)
     {
     }
 

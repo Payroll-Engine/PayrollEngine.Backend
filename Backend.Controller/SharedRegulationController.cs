@@ -121,13 +121,13 @@ public class SharedRegulationController : Api.Controller.SharedRegulationControl
     public async Task<ActionResult<ApiObject.RegulationPermission>> CreateRegulationPermissionAsync(ApiObject.RegulationPermission permission)
     {
         // validate tenant
-        var tenantId = await RegulationService.GetParentIdAsync(permission.RegulationId);
+        var tenantId = await RegulationService.GetParentIdAsync(Runtime.DbContext, permission.RegulationId);
         if (!tenantId.HasValue || tenantId.Value != permission.TenantId)
         {
             return BadRequest($"Invalid permission regulation id {permission.RegulationId}");
         }
         // validate regulation
-        var regulation = await RegulationService.GetAsync(tenantId.Value, permission.RegulationId);
+        var regulation = await RegulationService.GetAsync(Runtime.DbContext, tenantId.Value, permission.RegulationId);
         if (regulation == null)
         {
             return BadRequest($"Unknown regulation id {permission.RegulationId} on tenant id {permission.TenantId}");
@@ -144,7 +144,7 @@ public class SharedRegulationController : Api.Controller.SharedRegulationControl
         // validate permission division
         if (permission.PermissionDivisionId.HasValue)
         {
-            tenantId = await DivisionService.GetParentIdAsync(permission.PermissionDivisionId.Value);
+            tenantId = await DivisionService.GetParentIdAsync(Runtime.DbContext, permission.PermissionDivisionId.Value);
             if (!tenantId.HasValue || tenantId.Value != permission.PermissionTenantId)
             {
                 return BadRequest($"Invalid permission division id {permission.PermissionDivisionId}");

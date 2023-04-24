@@ -86,7 +86,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
         }
 
         // case (derived)
-        var cases = (await PayrollRepository.GetDerivedCasesAsync(
+        var cases = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -126,7 +126,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
         }
 
         // case relations (active only)
-        var relations = (await PayrollRepository.GetDerivedCaseRelationsAsync(
+        var relations = (await PayrollRepository.GetDerivedCaseRelationsAsync(Settings.DbContext,
             new()
             {
                 TenantId = Tenant.Id,
@@ -158,7 +158,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             }
 
             // target case (derived)
-            var targetCases = (await PayrollRepository.GetDerivedCasesAsync(
+            var targetCases = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = Tenant.Id,
@@ -226,6 +226,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
         {
             var caseBuild = new CaseScriptController().CaseBuild(buildScripts, new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,
@@ -261,6 +262,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
         {
             var build = new CaseRelationScriptController().CaseRelationBuild(buildScripts, new()
             {
+                DbContext = Settings.DbContext,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,

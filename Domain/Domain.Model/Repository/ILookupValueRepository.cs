@@ -10,16 +10,18 @@ public interface ILookupValueRepository : ITrackChildDomainRepository<LookupValu
     /// <summary>
     /// Determine if a lookup value with the same key exists
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="lookupId">The lookup id</param>
     /// <param name="key">The lookup value key</param>
     /// <param name="rangeValue">The lookup range value</param>
     /// <returns>True if the lookup value with any of the key exists</returns>
-    Task<bool> ExistsAsync(int lookupId, string key, decimal? rangeValue = null);
+    Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null);
 
     /// <summary>
     /// Delete all lookup values from a lookup
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="lookupId">The lookup id</param>
     /// <returns>The count of deleted lookup values</returns>
-    Task<int> DeleteAll(int lookupId);
+    Task<int> DeleteAll(IDbContext context, int lookupId);
 }

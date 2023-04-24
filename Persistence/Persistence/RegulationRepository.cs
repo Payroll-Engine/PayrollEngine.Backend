@@ -6,8 +6,8 @@ namespace PayrollEngine.Persistence;
 
 public class RegulationRepository : ChildDomainRepository<Regulation>, IRegulationRepository
 {
-    public RegulationRepository(IDbContext context) :
-        base(DbSchema.Tables.Regulation, DbSchema.RegulationColumn.TenantId, context)
+    public RegulationRepository() :
+        base(DbSchema.Tables.Regulation, DbSchema.RegulationColumn.TenantId)
     {
     }
 

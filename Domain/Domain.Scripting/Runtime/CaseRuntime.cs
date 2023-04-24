@@ -40,7 +40,7 @@ public abstract class CaseRuntime : PayrollRuntime, ICaseRuntime
     public string InvokeWebhook(string requestOperation, string requestMessage = null)
     {
         // invoke case function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(TenantId,
+        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
             new()
             {
                 Action = WebhookAction.CaseFunctionRequest,

@@ -83,15 +83,23 @@ public class AssemblyCache
     /// <summary>
     /// The script provider
     /// </summary>
+    public IDbContext DbContext { get; set; }
+
+    /// <summary>
+    /// The script provider
+    /// </summary>
     public IScriptProvider ScriptProvider { get; set; }
 
     /// <summary>
     /// Assembly cache ctor
     /// </summary>
+    /// <param name="dbContext">The database context</param>
     /// <param name="cacheTimeout">The cache timeout, use <see cref="TimeSpan.Zero"/> to disable the cache</param>
     /// <param name="scriptProvider">The script provider</param>
-    public AssemblyCache(TimeSpan cacheTimeout, IScriptProvider scriptProvider = null)
+    public AssemblyCache(IDbContext dbContext, TimeSpan cacheTimeout, IScriptProvider scriptProvider = null)
     {
+        DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+
         // initialize cleanup timer
         if (cacheTimeout != TimeSpan.Zero && UpdateTimer == null)
         {
@@ -141,7 +149,7 @@ public class AssemblyCache
                     var stopwatch = new System.Diagnostics.Stopwatch();
                     stopwatch.Start();
 #endif
-                binary = ScriptProvider.GetBinaryAsync(scriptObject).Result;
+                binary = ScriptProvider.GetBinaryAsync(DbContext, scriptObject).Result;
 #if ASSEMBLY_GET
                     stopwatch.Stop();
                     Log.Information($"Assembly load {type.Name} [{scriptObject.Id}]: {stopwatch.ElapsedMilliseconds} ms");

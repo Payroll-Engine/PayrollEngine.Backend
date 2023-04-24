@@ -5,8 +5,8 @@ namespace PayrollEngine.Persistence;
 
 public class ReportLogRepository : ChildDomainRepository<ReportLog>, IReportLogRepository
 {
-    public ReportLogRepository(IDbContext context) :
-        base(DbSchema.Tables.ReportLog, DbSchema.ReportLogColumn.TenantId, context)
+    public ReportLogRepository() :
+        base(DbSchema.Tables.ReportLog, DbSchema.ReportLogColumn.TenantId)
     {
     }
 

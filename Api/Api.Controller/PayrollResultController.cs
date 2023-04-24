@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -20,7 +21,7 @@ namespace PayrollEngine.Api.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrollResult)]
 public abstract class PayrollResultController : RepositoryChildObjectController<ITenantService, IPayrollResultService,
     ITenantRepository, IPayrollResultRepository,
-    DomainObject.Tenant, DomainObject.PayrollResult, ApiObject.PayrollResult>
+    Tenant, PayrollResult, ApiObject.PayrollResult>
 {
     protected PayrollResultController(ITenantService tenantService, IPayrollResultService payrollResultService,
         IControllerRuntime runtime) :
@@ -41,9 +42,9 @@ public abstract class PayrollResultController : RepositoryChildObjectController<
         try
         {
             // tenant check
-            if (!await ParentService.ExistsAsync(tenantId))
+            if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
             {
-                return NotFound(typeof(DomainObject.Tenant), tenantId);
+                return NotFound(typeof(Tenant), tenantId);
             }
 
             query ??= new();
@@ -83,7 +84,7 @@ public abstract class PayrollResultController : RepositoryChildObjectController<
         try
         {
             var apiObjects = new List<ApiObject.PayrollResultValue>();
-            var items = (await ChildService.QueryResultValuesAsync(tenantId, employeeId, query)).ToList();
+            var items = (await ChildService.QueryResultValuesAsync(Runtime.DbContext, tenantId, employeeId, query)).ToList();
 
             var map = new PayrollResultValueMap();
             foreach (var item in items)
@@ -113,7 +114,7 @@ public abstract class PayrollResultController : RepositoryChildObjectController<
     {
         try
         {
-            return await Service.QueryResultValueCountAsync(tenantId, employeeId, query);
+            return await Service.QueryResultValueCountAsync(Runtime.DbContext, tenantId, employeeId, query);
         }
         catch (QueryException exception)
         {

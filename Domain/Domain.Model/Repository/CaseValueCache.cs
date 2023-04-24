@@ -1,5 +1,4 @@
 ﻿//#define CASE_VALUE_LOAD
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +18,11 @@ public class CaseValueCache : ICaseValueCache
         {
         }
     }
+
+    /// <summary>
+    /// The database context
+    /// </summary>
+    public IDbContext Context { get; }
 
     /// <summary>
     /// The case value repository
@@ -51,24 +55,26 @@ public class CaseValueCache : ICaseValueCache
     /// <summary>
     /// Case value cache constructor
     /// </summary>
+    /// <param name="context">The database context</param>
     /// <param name="caseValueRepository"></param>
     /// <param name="parentId"></param>
     /// <param name="divisionId"></param>
     /// <param name="evaluationDate"></param>
     /// <param name="forecast"></param>
-    public CaseValueCache(ICaseValueRepository caseValueRepository, int parentId, int divisionId,
+    public CaseValueCache(IDbContext context, ICaseValueRepository caseValueRepository, int parentId, int divisionId,
         DateTime evaluationDate, string forecast = null)
     {
+        Context = context ?? throw new ArgumentNullException(nameof(context));
+        CaseValueRepository = caseValueRepository ?? throw new ArgumentNullException(nameof(caseValueRepository));
         ParentId = parentId;
         DivisionId = divisionId;
         EvaluationDate = evaluationDate;
         Forecast = forecast;
-        CaseValueRepository = caseValueRepository ?? throw new ArgumentNullException(nameof(caseValueRepository));
     }
 
     /// <inheritdoc />
     public virtual async Task<IEnumerable<string>> GetCaseValueSlotsAsync(string caseFieldName) =>
-        await CaseValueRepository.GetCaseValueSlotsAsync(ParentId, caseFieldName);
+        await CaseValueRepository.GetCaseValueSlotsAsync(Context, ParentId, caseFieldName);
 
     /// <inheritdoc />
     public virtual async Task<IEnumerable<CaseValue>> GetCaseValuesAsync(string caseFieldName)
@@ -87,7 +93,7 @@ public class CaseValueCache : ICaseValueCache
 #endif
 
             // all values until the evaluation date
-            var allCaseValues = (await CaseValueRepository.GetCaseValuesAsync(
+            var allCaseValues = (await CaseValueRepository.GetCaseValuesAsync(Context,
                 new()
                 {
                     ParentId = ParentId,
@@ -141,7 +147,7 @@ public class CaseValueCache : ICaseValueCache
                 stopwatch.Start();
 #endif
 
-            var allCaseValues = (await CaseValueRepository.GetPeriodCaseValuesAsync(
+            var allCaseValues = (await CaseValueRepository.GetPeriodCaseValuesAsync(Context,
                 new()
                 {
                     ParentId = ParentId,
@@ -177,7 +183,7 @@ public class CaseValueCache : ICaseValueCache
 
     /// <inheritdoc />
     public virtual async Task<CaseValue> GetRetroCaseValueAsync(string caseFieldName, DatePeriod period) =>
-        await CaseValueRepository.GetRetroCaseValueAsync(
+        await CaseValueRepository.GetRetroCaseValueAsync(Context,
             new()
             {
                 ParentId = ParentId,
