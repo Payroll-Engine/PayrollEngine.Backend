@@ -1978,12 +1978,12 @@ public static class ValueTypeExtensions
             case ValueType.String:
             case ValueType.WebResource:
                 return string.IsNullOrWhiteSpace(json) ? default :
-                    json.StartsWith("\"") ? JsonSerializer.Deserialize<string>(json) : json;
+                    json.StartsWith('"') ? JsonSerializer.Deserialize<string>(json) : json;
 
             case ValueType.Date:
             case ValueType.DateTime:
                 return string.IsNullOrWhiteSpace(json) ? default :
-                    json.StartsWith("\"") ? JsonSerializer.Deserialize<DateTime>(json) : DateTime.Parse(json, null, DateTimeStyles.AdjustToUniversal);
+                    json.StartsWith('"') ? JsonSerializer.Deserialize<DateTime>(json) : DateTime.Parse(json, null, DateTimeStyles.AdjustToUniversal);
 
             case ValueType.Boolean:
                 return !string.IsNullOrWhiteSpace(json) && JsonSerializer.Deserialize<bool>(json);

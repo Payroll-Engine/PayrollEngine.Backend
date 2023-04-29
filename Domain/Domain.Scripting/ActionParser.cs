@@ -136,7 +136,7 @@ public static class ActionParser
 
                     var parameterName = GetElementText(parameterArgumentNodes[0]);
                     var parameterDescription = GetElementText(parameterArgumentNodes[1]);
-                    if (string.IsNullOrEmpty(parameterName) || string.IsNullOrWhiteSpace(parameterDescription))
+                    if (string.IsNullOrWhiteSpace(parameterName) || string.IsNullOrWhiteSpace(parameterDescription))
                     {
                         continue;
                     }
@@ -179,7 +179,7 @@ public static class ActionParser
 
                     var issueName = GetElementText(issueArgumentNodes[0]);
                     var issueMessage = GetElementText(issueArgumentNodes[1]);
-                    if (string.IsNullOrEmpty(issueName) || string.IsNullOrWhiteSpace(issueMessage))
+                    if (string.IsNullOrWhiteSpace(issueName) || string.IsNullOrWhiteSpace(issueMessage))
                     {
                         continue;
                     }
@@ -233,7 +233,7 @@ public static class ActionParser
             foreach (var arrayValueNode in arrayValueNodes)
             {
                 var value = arrayValueNode.GetText().ToString().Trim();
-                if (!string.IsNullOrEmpty(value))
+                if (!string.IsNullOrWhiteSpace(value))
                 {
                     values.Add(value);
                 }

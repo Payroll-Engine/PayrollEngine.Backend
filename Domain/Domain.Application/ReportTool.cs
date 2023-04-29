@@ -325,7 +325,7 @@ public abstract class ReportTool : FunctionToolBase
         IDictionary<string, string> requestParameters, IList<ReportParameter> reportParameters)
     {
         // pattern check
-        if (string.IsNullOrEmpty(parameterValue) || !parameterValue.Contains(VariableStartMarker) ||
+        if (string.IsNullOrWhiteSpace(parameterValue) || !parameterValue.Contains(VariableStartMarker) ||
             !parameterValue.Contains(VariableEndMarker))
         {
             return parameterValue;
