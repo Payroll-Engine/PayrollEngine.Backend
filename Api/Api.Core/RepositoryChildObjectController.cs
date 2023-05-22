@@ -78,12 +78,12 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             {
                 return InvalidParentRequest(parentId);
             }
-            // existing parent check
             if (!await ParentService.ExistsAsync(Runtime.DbContext, parentId))
             {
                 return NotFound(typeof(TParent), parentId);
             }
 
+            // query items
             var apiObjects = new List<TApi>();
             var items = (await ChildService.QueryAsync(Runtime.DbContext, parentId, query)).ToList();
             foreach (var item in items)

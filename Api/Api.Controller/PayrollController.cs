@@ -95,7 +95,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
     #region Cases
 
-    protected async Task<ActionResult<ApiObject.CaseSet[]>> GetPayrollAvailableCaseSetsAsync(PayrollCaseQuery query)
+    protected async Task<ActionResult<ApiObject.Case[]>> GetPayrollAvailableCasesAsync(PayrollCaseQuery query)
     {
         try
         {
@@ -167,7 +167,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
             // cases
             query.Language ??= default;
-            var caseSets = query.CaseType switch
+            var cases = query.CaseType switch
             {
                 CaseType.Global => await collector.GetAvailableGlobalCasesAsync(query.Language.Value, query.CaseNames),
                 CaseType.National => await collector.GetAvailableNationalCasesAsync(query.Language.Value, query.CaseNames),
@@ -175,7 +175,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 CaseType.Employee => await collector.GetAvailableEmployeeCasesAsync(query.Language.Value, query.CaseNames),
                 _ => throw new ArgumentOutOfRangeException(nameof(query.CaseType), query.CaseType, null)
             };
-            return new CaseSetMap().ToApi(caseSets);
+            return new CaseMap().ToApi(cases);
         }
         catch (ScriptException exception)
         {
@@ -187,7 +187,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    public virtual async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseSetAsync(
+    public virtual async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseAsync(
         int tenantId, int payrollId, string caseName, CaseBuildQuery query, ApiObject.CaseChangeSetup caseChangeSetup = null)
     {
         // apply path ids to the query
@@ -1196,7 +1196,50 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupValuesAsync(
+    protected virtual async Task<ActionResult<ApiObject.LookupValue[]>> GetPayrollLookupValuesAsync(
+        DomainObject.PayrollQuery query, string[] lookupNames, string[] lookupKeys)
+    {
+        try
+        {
+            // tenant
+            var tenantResult = VerifyTenant(query.TenantId);
+            if (tenantResult != null)
+            {
+                return tenantResult;
+            }
+
+            // query setup
+            var setupQuery = await SetupQuery(query);
+            if (setupQuery.Item2 != null)
+            {
+                // invalid setup response
+                return setupQuery.Item2;
+            }
+
+            // reports
+            var collectMoment = CurrentEvaluationDate;
+            query.RegulationDate ??= collectMoment;
+            query.EvaluationDate ??= collectMoment;
+            var lookupValues = await Service.GetDerivedLookupValuesAsync(Runtime.DbContext,
+                new()
+                {
+                    TenantId = query.TenantId,
+                    PayrollId = query.PayrollId,
+                    RegulationDate = query.RegulationDate.Value.ToUtc(),
+                    EvaluationDate = query.EvaluationDate.Value.ToUtc()
+                },
+                lookupNames: lookupNames,
+                lookupKeys: lookupKeys);
+
+            return new LookupValueMap().ToApi(lookupValues);
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
+    }
+
+    protected virtual async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupDataAsync(
         DomainObject.PayrollQuery query, string[] lookupNames, Language? language)
     {
         if (lookupNames == null || !lookupNames.Any())
@@ -1332,7 +1375,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         return new LookupValueDataMap().ToApi(valueData);
     }
 
-    protected virtual async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(
+    protected virtual async Task<ActionResult<ApiObject.Report[]>> GetPayrollReportsAsync(
         DomainObject.PayrollQuery query,
         string[] reportNames, OverrideType? overrideType, string clusterSetName)
     {
@@ -1371,7 +1414,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 overrideType: overrideType,
                 clusterSet: querySetup.ClusterSet);
 
-            return new ReportSetMap().ToApi(reports);
+            return new ReportMap().ToApi(reports);
         }
         catch (Exception exception)
         {
@@ -1379,9 +1422,50 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.ReportTemplate>> GetPayrollReportTemplateAsync(
-        DomainObject.PayrollQuery query,
-        string[] reportNames, Language language)
+    protected virtual async Task<ActionResult<ApiObject.ReportParameter[]>> GetPayrollReportParametersAsync(
+        DomainObject.PayrollQuery query, string[] reportNames)
+    {
+        try
+        {
+            // tenant
+            var tenantResult = VerifyTenant(query.TenantId);
+            if (tenantResult != null)
+            {
+                return tenantResult;
+            }
+
+            // query setup
+            var setupQuery = await SetupQuery(query);
+            if (setupQuery.Item2 != null)
+            {
+                // invalid setup response
+                return setupQuery.Item2;
+            }
+
+            // reports
+            var collectMoment = CurrentEvaluationDate;
+            query.RegulationDate ??= collectMoment;
+            query.EvaluationDate ??= collectMoment;
+            var reportParameters = await Service.GetDerivedReportParametersAsync(Runtime.DbContext,
+                new()
+                {
+                    TenantId = query.TenantId,
+                    PayrollId = query.PayrollId,
+                    RegulationDate = query.RegulationDate.Value.ToUtc(),
+                    EvaluationDate = query.EvaluationDate.Value.ToUtc()
+                },
+                reportNames: reportNames);
+
+            return new ReportParameterMap().ToApi(reportParameters);
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
+    }
+
+    protected virtual async Task<ActionResult<ApiObject.ReportTemplate[]>> GetPayrollReportTemplatesAsync(
+        DomainObject.PayrollQuery query, string[] reportNames = null, Language? language = null)
     {
         try
         {
@@ -1414,11 +1498,6 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 },
                 reportNames: reportNames,
                 language: language);
-
-            if (reportTemplate == null)
-            {
-                return NotFound("No templates available");
-            }
 
             return new ReportTemplateMap().ToApi(reportTemplate);
         }

@@ -20,6 +20,7 @@ public class LookupAuditRepository : AuditChildDomainRepository<LookupAudit>, IL
         parameters.Add(nameof(audit.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(audit.DescriptionLocalizations));
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.RangeSize), audit.RangeSize);
+        parameters.Add(nameof(audit.Attributes), JsonSerializer.SerializeNamedDictionary(audit.Attributes));
         base.GetObjectCreateData(audit, parameters);
     }
 }

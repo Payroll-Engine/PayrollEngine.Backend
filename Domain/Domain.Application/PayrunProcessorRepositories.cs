@@ -63,10 +63,10 @@ internal sealed class PayrunProcessorRepositories
                 throw new PayrunException($"Invalid access to regulation {regulation.Name} with id {regulation.Id}");
             }
 
-            // test regulation permission
-            var permission = await Settings.RegulationPermissionRepository.GetAsync(Settings.DbContext, regulationTenantId.Value, regulation.Id,
+            // test regulation shares
+            var shares = await Settings.RegulationShareRepository.GetAsync(Settings.DbContext, regulationTenantId.Value, regulation.Id,
                 Tenant.Id, division?.Id);
-            if (permission == null)
+            if (shares == null)
             {
                 throw new PayrunException($"Access denied to regulation {regulation.Name} with id {regulation.Id}");
             }

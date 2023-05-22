@@ -13,7 +13,7 @@ internal static class ApiRepositoryFactory
     internal static void SetupApiServices(IServiceCollection services)
     {
         // system repositories
-        services.AddScoped(_ => NewRegulationPermissionRepository());
+        services.AddScoped(_ => NewRegulationShareRepository());
         TenantRepositoryFactory.SetupRepositories(services);
         RegulationRepositoryFactory.SetupRepositories(services);
         PayrollRepositoryFactory.SetupRepositories(services);
@@ -22,8 +22,8 @@ internal static class ApiRepositoryFactory
         ReportRepositoryFactory.SetupRepositories(services);
     }
 
-    private static IRegulationPermissionRepository NewRegulationPermissionRepository() =>
-        new RegulationPermissionRepository(
+    private static IRegulationShareRepository NewRegulationShareRepository() =>
+        new RegulationShareRepository(
             RegulationRepositoryFactory.NewRegulationRepository());
 
     #region Repository Factories

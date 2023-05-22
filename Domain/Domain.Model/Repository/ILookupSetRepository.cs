@@ -15,7 +15,7 @@ public interface ILookupSetRepository : ILookupRepository<LookupSet>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
     /// <returns>The lookup set</returns>
-    Task<LookupSet> GetSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId);
+    Task<LookupSet> GetLookupSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId);
 
     /// <summary>
     /// Get lookup values in a specific language

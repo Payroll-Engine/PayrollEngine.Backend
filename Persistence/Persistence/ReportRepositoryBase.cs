@@ -27,6 +27,7 @@ public abstract class ReportRepositoryBase<T> : ScriptTrackChildDomainRepository
         parameters.Add(nameof(report.NameLocalizations), JsonSerializer.SerializeNamedDictionary(report.NameLocalizations));
         parameters.Add(nameof(report.Description), report.Description);
         parameters.Add(nameof(report.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(report.DescriptionLocalizations));
+        parameters.Add(nameof(report.OverrideType), report.OverrideType);
         parameters.Add(nameof(report.Category), report.Category);
         parameters.Add(nameof(report.AttributeMode), report.AttributeMode);
         parameters.Add(nameof(report.Queries), JsonSerializer.SerializeNamedDictionary(report.Queries));

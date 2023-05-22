@@ -21,9 +21,11 @@ public static class Procedures
     public static readonly string GetDerivedCaseRelations = "GetDerivedCaseRelations";
     // reports
     public static readonly string GetDerivedReports = "GetDerivedReports";
+    public static readonly string GetDerivedReportParameters = "GetDerivedReportParameters";
     public static readonly string GetDerivedReportTemplates = "GetDerivedReportTemplates";
     // lookup
     public static readonly string GetDerivedLookups = "GetDerivedLookups";
+    public static readonly string GetDerivedLookupValues = "GetDerivedLookupValues";
     public static readonly string GetLookupRangeValue = "GetLookupRangeValue";
     // script
     public static readonly string GetDerivedScripts = "GetDerivedScripts";

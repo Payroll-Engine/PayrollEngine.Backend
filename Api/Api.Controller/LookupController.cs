@@ -78,23 +78,24 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
     /// <summary>
     /// Query items
     /// </summary>
-    /// <param name="regulationId">The tenant id</param>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="query">The query</param>
     /// <returns>Items, count or both</returns>
-    protected virtual async Task<ActionResult> QueryLookupSetsAsync(int regulationId, Query query = null)
+    public virtual async Task<ActionResult> QueryLookupSetsAsync(int tenantId, int regulationId, Query query)
     {
         query ??= new();
         query.Result ??= QueryResultType.Items;
         switch (query.Result)
         {
             case QueryResultType.Items:
-                var items = await QuerySetsAsync(regulationId, query);
+                var items = await QuerySetsAsync(tenantId, regulationId, query);
                 return items.IsValidResult() ? Ok(items.Value) : items.Result;
             case QueryResultType.Count:
                 var count = await QueryCountAsync(regulationId, query);
                 return count.IsValidResult() ? Ok(count.Value) : count.Result;
             case QueryResultType.ItemsWithCount:
-                items = await QuerySetsAsync(regulationId, query);
+                items = await QuerySetsAsync(tenantId, regulationId, query);
                 count = await QueryCountAsync(regulationId, query);
                 return items.IsValidResult() && count.IsValidResult() ?
                     Ok(new QueryResult<ApiObject.LookupSet>(items.Value, count.Value)) : items.Result;
@@ -103,16 +104,25 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
         }
     }
 
-    protected async Task<ActionResult<ApiObject.LookupSet[]>> QuerySetsAsync(int regulationId, Query query = null)
+    protected async Task<ActionResult<ApiObject.LookupSet[]>> QuerySetsAsync(int tenantId, int regulationId, Query query = null)
     {
         try
         {
-            // parent check
+            // tenant check
+            if (tenantId <= 0)
+            {
+                return InvalidParentRequest(tenantId);
+            }
+            if (await ParentService.GetParentIdAsync(Runtime.DbContext, regulationId) != tenantId)
+            {
+                return NotFound(typeof(IRegulationService), regulationId);
+            }
+
+            // regulation check
             if (regulationId <= 0)
             {
                 return InvalidParentRequest(regulationId);
             }
-            // existing parent check
             if (!await ParentService.ExistsAsync(Runtime.DbContext, regulationId))
             {
                 return NotFound(typeof(IRegulationService), regulationId);

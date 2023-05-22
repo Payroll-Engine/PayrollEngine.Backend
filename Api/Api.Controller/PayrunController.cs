@@ -48,7 +48,13 @@ public abstract class PayrunController : RepositoryChildObjectController<ITenant
             return InvalidParentRequest(tenantId);
         }
 
-        // test item
+        // test tenant
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
+        {
+            return BadRequest($"Unknown tenant with id {tenantId}");
+        }
+
+        // test payrun
         if (!await ChildService.ExistsAsync(Runtime.DbContext, payrunId))
         {
             return BadRequest($"Unknown payrun with id {payrunId}");

@@ -27,11 +27,6 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     private readonly List<decimal> values = new();
 
     /// <summary>
-    /// The collection type (immutable)
-    /// </summary>
-    public CollectType CollectType { get; set; }
-
-    /// <summary>
     /// The collector name (immutable)
     /// </summary>
     public string Name { get; set; }
@@ -40,6 +35,11 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     /// The localized collector names
     /// </summary>
     public Dictionary<string, string> NameLocalizations { get; set; }
+
+    /// <summary>
+    /// The collection type (immutable)
+    /// </summary>
+    public CollectType CollectType { get; set; }
 
     /// <summary>
     /// The override type
@@ -264,9 +264,9 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
             CollectorId = Id,
             Name = Name,
             NameLocalizations = NameLocalizations,
+            CollectType = CollectType,
             OverrideType = OverrideType,
             CollectorGroups = CollectorGroups,
-            CollectType = CollectType,
             ValueType = ValueType,
             Threshold = Threshold,
             MinResult = MinResult,
@@ -291,9 +291,9 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
         Id = audit.CollectorId;
         Name = audit.Name;
         NameLocalizations = audit.NameLocalizations;
+        CollectType = audit.CollectType;
         OverrideType = audit.OverrideType;
         CollectorGroups = audit.CollectorGroups;
-        CollectType = audit.CollectType;
         ValueType = audit.ValueType;
         Threshold = audit.Threshold;
         MinResult = audit.MinResult;

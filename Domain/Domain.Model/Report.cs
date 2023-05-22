@@ -126,6 +126,7 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
             NameLocalizations = NameLocalizations,
             Description = Description,
             DescriptionLocalizations = DescriptionLocalizations,
+            OverrideType = OverrideType,
             Category = Category,
             AttributeMode = AttributeMode,
             Queries = Queries,
@@ -148,6 +149,7 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
         NameLocalizations = audit.NameLocalizations.Copy();
         Description = audit.Description;
         DescriptionLocalizations = audit.DescriptionLocalizations.Copy();
+        OverrideType = audit.OverrideType;
         Category = audit.Category;
         AttributeMode = audit.AttributeMode;
         Queries = audit.Queries.Copy();

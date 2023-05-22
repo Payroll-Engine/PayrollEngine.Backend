@@ -40,7 +40,7 @@ public static class PayrunJobFactory
             PayrunId = jobInvocation.PayrunId,
             PayrollId = jobInvocation.PayrollId,
             DivisionId = divisionId,
-            UserId = jobInvocation.UserId,
+            CreatedUserId = jobInvocation.UserId,
             ParentJobId = jobInvocation.ParentJobId,
             Name = jobInvocation.Name,
             Owner = jobInvocation.Owner,
@@ -59,7 +59,7 @@ public static class PayrunJobFactory
             PeriodStart = evaluationPeriod.Start,
             PeriodEnd = evaluationPeriod.End,
             EvaluationDate = jobInvocation.EvaluationDate.Value,
-            Reason = jobInvocation.Reason,
+            CreatedReason = jobInvocation.Reason,
             // runtime
             Employees = new(),
             JobStatus = string.IsNullOrWhiteSpace(jobInvocation.Forecast) ? jobInvocation.JobStatus : PayrunJobStatus.Forecast

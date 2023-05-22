@@ -32,6 +32,11 @@ public class ReportAudit : ScriptAuditDomainObject, IDomainAttributeObject
     /// The localized payroll result report descriptions
     /// </summary>
     public Dictionary<string, string> DescriptionLocalizations { get; set; }
+    
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// The report category

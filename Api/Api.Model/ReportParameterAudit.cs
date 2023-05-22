@@ -57,6 +57,11 @@ public class ReportParameterAudit : ApiObjectBase
     /// The parameter value type
     /// </summary>
     public ReportParameterType ParameterType { get; set; }
+    
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// Custom attributes

@@ -16,11 +16,6 @@ public static class DapperTypes
         // type handlers
         // date time
         SqlMapper.AddTypeMap(typeof(DateTime), DbType.DateTime2);
-
-        // boolean
-        // TODO: support boolean type handler
-        // https://github.com/StackExchange/Dapper/issues/433
-
         // calendar configuration
         SqlMapper.AddTypeHandler(new JsonObjectTypeHandler<CalendarConfiguration>());
         // lookup settings

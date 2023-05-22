@@ -39,17 +39,17 @@ public abstract class CaseRelationController : ScriptTrackChildObjectController<
             return BadRequest($"Invalid relation to itself in case {regulationId}");
         }
 
-        // regulation
-        if (!await ParentService.ExistsAsync(Runtime.DbContext, regulationId))
-        {
-            return BadRequest($"Unknown regulation id {regulationId}");
-        }
-
         // tenant
         var tenantId = await ParentService.GetParentIdAsync(Runtime.DbContext, regulationId);
         if (!tenantId.HasValue)
         {
             return BadRequest($"Invalid regulation id {regulationId}");
+        }
+
+        // regulation
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId.Value, regulationId))
+        {
+            return BadRequest($"Unknown regulation id {regulationId}");
         }
 
         // source case

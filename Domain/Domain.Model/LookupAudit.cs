@@ -42,6 +42,11 @@ public class LookupAudit : ScriptAuditDomainObject, IDerivableObject
     /// </summary>
     public decimal? RangeSize { get; set; }
 
+    /// <summary>
+    /// Custom attributes
+    /// </summary>
+    public Dictionary<string, object> Attributes { get; set; }
+
     /// <inheritdoc/>
     public LookupAudit()
     {

@@ -15,8 +15,8 @@ public class TenantController : Api.Controller.TenantController
 {
     /// <inheritdoc/>
     public TenantController(ITenantService tenantService, IRegulationService regulationService,
-        IRegulationPermissionService regulationPermissionService, IReportService reportService, IControllerRuntime runtime) :
-        base(tenantService, regulationService, regulationPermissionService, reportService, runtime)
+        IRegulationShareService regulationShareService, IReportService reportService, IControllerRuntime runtime) :
+        base(tenantService, regulationService, regulationShareService, reportService, runtime)
     {
     }
 

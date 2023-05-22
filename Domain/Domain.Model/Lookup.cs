@@ -6,7 +6,8 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A value lookup
 /// </summary>
-public class Lookup : TrackDomainObject<LookupAudit>, IDerivableObject, INamedObject, IEquatable<Lookup>
+public class Lookup : TrackDomainObject<LookupAudit>, IDomainAttributeObject,
+    IDerivableObject, INamedObject, IEquatable<Lookup>
 {
     /// <summary>
     /// The lookup name
@@ -37,6 +38,11 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDerivableObject, INamedOb
     /// The lookup range size
     /// </summary>
     public decimal? RangeSize { get; set; }
+
+    /// <summary>
+    /// Custom attributes
+    /// </summary>
+    public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>
     public Lookup()
@@ -70,7 +76,8 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDerivableObject, INamedOb
             NameLocalizations = NameLocalizations,
             Description = Description,
             DescriptionLocalizations = DescriptionLocalizations,
-            RangeSize = RangeSize
+            RangeSize = RangeSize,
+            Attributes = Attributes
         };
     }
 
@@ -85,5 +92,6 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDerivableObject, INamedOb
         Description = audit.Description;
         DescriptionLocalizations = audit.DescriptionLocalizations;
         RangeSize = audit.RangeSize;
+        Attributes = audit.Attributes;
     }
 }

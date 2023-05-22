@@ -13,6 +13,11 @@ public class ReportTemplateAudit : ScriptAuditDomainObject, IDomainAttributeObje
     public int ReportTemplateId { get; set; }
 
     /// <summary>
+    /// The report template name
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
     /// The report language
     /// </summary>
     public Language Language { get; set; }
@@ -36,6 +41,11 @@ public class ReportTemplateAudit : ScriptAuditDomainObject, IDomainAttributeObje
     /// The report external resource
     /// </summary>
     public string Resource { get; set; }
+
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// Custom attributes

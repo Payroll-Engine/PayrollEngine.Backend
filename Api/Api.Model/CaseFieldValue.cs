@@ -12,6 +12,7 @@ public class CaseFieldValue
     /// <summary>
     /// The case field name
     /// </summary>
+    [Required]
     public string CaseFieldName { get; set; }
 
     /// <summary>

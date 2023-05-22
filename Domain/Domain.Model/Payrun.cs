@@ -33,6 +33,11 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
     /// The payrun name (immutable)
     /// </summary>
     public string Name { get; set; }
+    
+    /// <summary>
+    /// The localized payrun name
+    /// </summary>
+    public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
     /// The default payrun reason

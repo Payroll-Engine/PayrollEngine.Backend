@@ -27,6 +27,6 @@ internal static class ApiFactory
 
         // repositories
         ApiRepositoryFactory.SetupApiServices(services);
-        ApiServiceFactory.SetupApiServices(services);
+        ApiServiceFactory.SetupApiServices(services, configuration);
     }
 }

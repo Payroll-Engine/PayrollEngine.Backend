@@ -77,8 +77,8 @@ BEGIN
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[Report].[Clusters]) = 1)
     AND (
       @reportNames IS NULL
-      OR dbo.[Report].[Name] IN (
-        SELECT value
+      OR LOWER(dbo.[Report].[Name]) IN (
+        SELECT LOWER(value)
         FROM OPENJSON(@reportNames)
         )
       )

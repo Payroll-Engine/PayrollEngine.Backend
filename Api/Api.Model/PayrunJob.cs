@@ -13,6 +13,7 @@ public class PayrunJob : ApiObjectBase
     /// The payrun job name (immutable)
     /// </summary>
     [Required]
+    [StringLength(128)]
     public string Name { get; set; }
 
     /// <summary>
@@ -38,15 +39,30 @@ public class PayrunJob : ApiObjectBase
     public int DivisionId { get; set; }
 
     /// <summary>
-    /// The user id (immutable)
-    /// </summary>
-    [Required]
-    public int UserId { get; set; }
-
-    /// <summary>
     /// The parent payrun job id, e.g. the parent retro pay run job (immutable)
     /// </summary>
     public int? ParentJobId { get; set; }
+
+    /// <summary>
+    /// The created user id (immutable)
+    /// </summary>
+    [Required]
+    public int CreatedUserId { get; set; }
+
+    /// <summary>
+    /// The release user id (immutable)
+    /// </summary>
+    public int? ReleasedUserId { get; set; }
+
+    /// <summary>
+    /// The processed user id (immutable)
+    /// </summary>
+    public int? ProcessedUserId { get; set; }
+
+    /// <summary>
+    /// The finished user id (immutable)
+    /// </summary>
+    public int? FinishedUserId { get; set; }
 
     /// <summary>
     /// The payrun retro pay mode (immutable)
@@ -71,6 +87,7 @@ public class PayrunJob : ApiObjectBase
     /// <summary>
     /// The forecast name (immutable)
     /// </summary>
+    [StringLength(128)]
     public string Forecast { get; set; }
 
     /// <summary>
@@ -121,10 +138,40 @@ public class PayrunJob : ApiObjectBase
     public DateTime EvaluationDate { get; set; }
 
     /// <summary>
-    /// The execution reason (immutable)
+    /// The job release date (immutable)
+    /// </summary>
+    public DateTime? Released { get; set; }
+
+    /// <summary>
+    /// The job process date (immutable)
+    /// </summary>
+    public DateTime? Processed { get; set; }
+
+    /// <summary>
+    /// The job finish date (immutable)
+    /// </summary>
+    public DateTime? Finished { get; set; }
+
+    /// <summary>
+    /// The create reason (immutable)
     /// </summary>
     [Required]
-    public string Reason { get; set; }
+    public string CreatedReason { get; set; }
+
+    /// <summary>
+    /// The release reason (immutable)
+    /// </summary>
+    public string ReleasedReason { get; set; }
+
+    /// <summary>
+    /// The process reason (immutable)
+    /// </summary>
+    public string ProcessedReason { get; set; }
+
+    /// <summary>
+    /// The finished reason (immutable)
+    /// </summary>
+    public string FinishedReason { get; set; }
 
     /// <summary>
     /// Total employee count (immutable)

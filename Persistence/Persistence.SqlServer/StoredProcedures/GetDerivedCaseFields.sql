@@ -58,8 +58,8 @@ BEGIN
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[CaseField].[Clusters]) = 1)
     AND (
       @caseFieldNames IS NULL
-      OR dbo.[CaseField].[Name] IN (
-        SELECT value
+      OR LOWER(dbo.[CaseField].[Name]) IN (
+        SELECT LOWER(value)
         FROM OPENJSON(@caseFieldNames)
         )
       )

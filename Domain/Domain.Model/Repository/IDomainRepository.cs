@@ -3,27 +3,27 @@
 namespace PayrollEngine.Domain.Model.Repository;
 
 /// <summary>
-/// Generic domain object repository with support of the basic CRUD operations
+/// Generic domain item repository with support of the basic CRUD operations
 /// </summary>
 public interface IDomainRepository : IRepository
 {
     #region Basic Operations
 
     /// <summary>
-    /// Test if an domain object exists
+    /// Test if an domain item exists
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The object id</param>
-    /// <returns>True, if the domain object exists</returns>
+    /// <param name="id">The item id</param>
+    /// <returns>True, if the domain item exists</returns>
     Task<bool> ExistsAsync(IDbContext context, int id);
 
     /// <summary>
-    /// Test if an domain object exists
+    /// Test if an domain item exists
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="fieldName">The object field name</param>
-    /// <param name="value">The object field value</param>
-    /// <returns>True, if the domain object exists</returns>
+    /// <param name="fieldName">The item field name</param>
+    /// <param name="value">The item field value</param>
+    /// <returns>True, if the domain item exists</returns>
     Task<bool> ExistsAsync(IDbContext context, string fieldName, object value);
 
     #endregion
@@ -34,7 +34,7 @@ public interface IDomainRepository : IRepository
     /// Gets attribute value as JSON
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The object id</param>
+    /// <param name="id">The item id</param>
     /// <param name="attributeName">The attribute name</param>
     /// <returns>The attribute value</returns>
     Task<string> GetAttributeAsync(IDbContext context, int id, string attributeName);
@@ -43,7 +43,7 @@ public interface IDomainRepository : IRepository
     /// Test if an attribute exists
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The object id</param>
+    /// <param name="id">The item id</param>
     /// <param name="attributeName">The attribute name</param>
     /// <returns>True, if the attribute exists</returns>
     Task<bool> ExistsAttributeAsync(IDbContext context, int id, string attributeName);
@@ -52,7 +52,7 @@ public interface IDomainRepository : IRepository
     /// Creates or updates the attribute value
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The object id</param>
+    /// <param name="id">The item id</param>
     /// <param name="attributeName">The attribute name</param>
     /// <param name="value">The attribute value as JSON</param>
     Task<string> SetAttributeAsync(IDbContext context, int id, string attributeName, string value);
@@ -61,7 +61,7 @@ public interface IDomainRepository : IRepository
     /// Delete an attribute
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The if of the domain object to delete</param>
+    /// <param name="id">The if of the domain item to delete</param>
     /// <param name="attributeName">The attribute name</param>
     Task<bool?> DeleteAttributeAsync(IDbContext context, int id, string attributeName);
 

@@ -71,10 +71,10 @@ public class CaseFieldAudit : ApiObjectBase
     public CaseFieldCancellationMode CancellationMode { get; set; }
 
     /// <summary>
-    /// Optional case field
+    /// Mandatory case field
     /// </summary>
     [Required]
-    public bool Optional { get; set; }
+    public bool Mandatory { get; set; }
 
     /// <summary>
     /// The case field order

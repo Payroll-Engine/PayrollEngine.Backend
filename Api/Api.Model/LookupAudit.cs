@@ -47,6 +47,11 @@ public class LookupAudit : ApiObjectBase
     /// </summary>
     public decimal? RangeSize { get; set; }
 
+    /// <summary>
+    /// Custom attributes
+    /// </summary>
+    public Dictionary<string, object> Attributes { get; set; }
+
     /// <inheritdoc/>
     public override string ToString() =>
         $"{Name} {base.ToString()}";

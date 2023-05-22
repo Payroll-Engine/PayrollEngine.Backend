@@ -70,19 +70,19 @@ public class DerivedCaseCollector : DerivedCaseTool
     public virtual async Task<bool> EmployeeCaseAvailableAsync(string caseName, Language language) =>
         await CaseAvailableAsync(CaseType.Employee, caseName, language);
 
-    public virtual async Task<IEnumerable<CaseSet>> GetAvailableGlobalCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableGlobalCasesAsync(Language language,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.Global, language, caseNames);
 
-    public virtual async Task<IEnumerable<CaseSet>> GetAvailableNationalCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableNationalCasesAsync(Language language,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.National, language, caseNames);
 
-    public virtual async Task<IEnumerable<CaseSet>> GetAvailableCompanyCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableCompanyCasesAsync(Language language,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.Company, language, caseNames);
 
-    public virtual async Task<IEnumerable<CaseSet>> GetAvailableEmployeeCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableEmployeeCasesAsync(Language language,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.Employee, language, caseNames);
 
@@ -135,10 +135,10 @@ public class DerivedCaseCollector : DerivedCaseTool
     /// <param name="caseNames">The case names (default: all)</param>
     /// <param name="language">The language</param>
     /// <returns>List of available cases</returns>
-    protected virtual async Task<IEnumerable<CaseSet>> GetAvailableCasesAsync(CaseType caseType, Language language,
+    protected virtual async Task<IEnumerable<Case>> GetAvailableCasesAsync(CaseType caseType, Language language,
         IEnumerable<string> caseNames = null)
     {
-        var availableCases = new List<CaseSet>();
+        var availableCases = new List<Case>();
 
         // case (derived)
         var allCases = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
@@ -165,6 +165,7 @@ public class DerivedCaseCollector : DerivedCaseTool
                 var available = await CaseAvailable(cases, language);
                 if (available)
                 {
+                    // collect derived case values
                     var caseSet = DerivedCaseFactory.BuildCase(cases, null, language);
                     availableCases.Add(caseSet);
                     Log.Trace($"Case {groupedCase.Key} available");

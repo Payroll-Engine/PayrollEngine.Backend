@@ -104,11 +104,11 @@ BEGIN
     FROM [dbo].[Payroll]
     WHERE [TenantId] = @tenantId
 
-    -- regulation permissions
-    DELETE [dbo].[RegulationPermission]
-    FROM [dbo].[RegulationPermission]
-    WHERE [dbo].[RegulationPermission].[PermissionTenantId] = @tenantId
-      OR [dbo].[RegulationPermission].[TenantId] = @tenantId
+    -- regulation shares
+    DELETE [dbo].[RegulationShare]
+    FROM [dbo].[RegulationShare]
+    WHERE [dbo].[RegulationShare].[ProviderTenantId] = @tenantId
+      OR [dbo].[RegulationShare].[ConsumerTenantId] = @tenantId
 
     -- regulation
     DELETE [dbo].[ReportTemplateAudit]

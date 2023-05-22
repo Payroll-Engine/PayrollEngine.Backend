@@ -70,7 +70,7 @@ public class ReportController : Api.Controller.ReportController
     /// <param name="reportId">The id of the report</param>
     /// <param name="request">The report execute request</param>
     /// <returns>The report response including the report data</returns>
-    [HttpGet("{reportId}/execute")]
+    [HttpPost("{reportId}/execute")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("ExecuteReport")]

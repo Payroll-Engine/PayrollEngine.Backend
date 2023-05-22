@@ -17,8 +17,8 @@ namespace PayrollEngine.Domain.Application;
 public class WebhookDispatchService : IWebhookDispatchService
 {
     private static HttpClient HttpClient { get; }
-    // TODO webhook timeout setup
-    public static TimeSpan Timeout
+
+    public TimeSpan Timeout
     {
         get => HttpClient.Timeout;
         set => HttpClient.Timeout = value;
@@ -40,12 +40,13 @@ public class WebhookDispatchService : IWebhookDispatchService
     }
 
     public WebhookDispatchService(ITenantRepository tenantRepository, IUserRepository userRepository,
-        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository)
+        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository, TimeSpan timeout)
     {
         TenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
         UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         WebhookRepository = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
         MessageRepository = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
+        Timeout = timeout;
     }
 
     /// <inheritdoc />

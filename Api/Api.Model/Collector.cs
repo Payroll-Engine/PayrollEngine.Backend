@@ -9,12 +9,6 @@ namespace PayrollEngine.Api.Model;
 public class Collector : ApiObjectBase
 {
     /// <summary>
-    /// The collection type (immutable)
-    /// </summary>
-    [Required]
-    public CollectType CollectType { get; set; }
-
-    /// <summary>
     /// The collector name (immutable)
     /// </summary>
     [Required]
@@ -26,6 +20,12 @@ public class Collector : ApiObjectBase
     /// </summary>
     [Localization(nameof(Name))]
     public Dictionary<string, string> NameLocalizations { get; set; }
+
+    /// <summary>
+    /// The collection type (immutable)
+    /// </summary>
+    [Required]
+    public CollectType CollectType { get; set; }
 
     /// <summary>
     /// The override type

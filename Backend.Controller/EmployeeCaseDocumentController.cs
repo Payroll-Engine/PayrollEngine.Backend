@@ -39,9 +39,16 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
         }
 
         // employee check
-        if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
+        var parentEmployeeId = await ParentService.GetParentIdAsync(Runtime.DbContext, caseValueId);
+        if (parentEmployeeId != employeeId)
         {
             return BadRequest($"Unknown employee with id {employeeId}");
+        }
+
+        // case value check
+        if (!await ParentService.ExistsAsync(Runtime.DbContext, caseValueId))
+        {
+            return BadRequest($"Unknown case value with id {caseValueId}");
         }
 
         return await QueryItemsAsync(caseValueId, query);
@@ -72,6 +79,12 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
         if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
+        }
+
+        // case value check
+        if (!await Service.ExistsAsync(Runtime.DbContext, caseValueId))
+        {
+            return BadRequest($"Unknown case value with id {caseValueId}");
         }
 
         return await GetAsync(caseValueId, documentId);

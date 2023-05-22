@@ -111,6 +111,18 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
         IEnumerable<string> lookupNames = null, OverrideType? overrideType = null);
 
     /// <summary>
+    /// Get all active lookup values, considering derived regulations
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="query">The payroll query</param>
+    /// <param name="lookupNames">The lookup names filter (default: all)</param>
+    /// <param name="lookupKeys">The lookup-value keys filter (default: all)</param>
+    /// <param name="overrideType">The override type filter (default: active)</param>
+    /// <returns>The derived lookup values</returns>
+    Task<IEnumerable<LookupValue>> GetDerivedLookupValuesAsync(IDbContext context, PayrollQuery query,
+        IEnumerable<string> lookupNames = null, IEnumerable<string> lookupKeys = null, OverrideType? overrideType = null);
+
+    /// <summary>
     /// Get all active reports, considering derived regulations
     /// </summary>
     /// <param name="context">The database context</param>
@@ -119,19 +131,31 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>The derived reports</returns>
-    Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
+    Task<IEnumerable<Report>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> reportNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null);
 
     /// <summary>
-    /// Get all active reports, considering derived regulations
+    /// Get all active report parameters, considering derived regulations
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="query">The payroll query</param>
-    /// <param name="language">The report language</param>
     /// <param name="reportNames">The report names filter (default: all)</param>
-    /// <returns>The derived reports</returns>
-    Task<ReportTemplate> GetDerivedReportTemplateAsync(IDbContext context, PayrollQuery query, Language language,
-        IEnumerable<string> reportNames = null);
+    /// <param name="overrideType">The override type filter (default: active)</param>
+    /// <returns>The derived report parameters</returns>
+    Task<IEnumerable<ReportParameter>> GetDerivedReportParametersAsync(IDbContext context, PayrollQuery query,
+        IEnumerable<string> reportNames = null, OverrideType? overrideType = null);
+
+    /// <summary>
+    /// Get all active report templates, considering derived regulations
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="query">The payroll query</param>
+    /// <param name="reportNames">The report names filter (default: all)</param>
+    /// <param name="language">The report language</param>
+    /// <param name="overrideType">The override type filter (default: active)</param>
+    /// <returns>The derived report templates</returns>
+    Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(IDbContext context, PayrollQuery query, 
+        IEnumerable<string> reportNames = null, Language? language = null,OverrideType? overrideType = null);
 
     /// <summary>
     /// Get all active scripts, considering derived regulations

@@ -48,8 +48,8 @@ BEGIN
     AND dbo.[Lookup].[Created] < @createdBefore
     AND (
       @lookupNames IS NULL
-      OR dbo.[Lookup].[Name] IN (
-        SELECT value
+      OR LOWER(dbo.[Lookup].[Name]) IN (
+        SELECT LOWER(value)
         FROM OPENJSON(@lookupNames)
         )
       )

@@ -56,8 +56,8 @@ BEGIN
     AND dbo.[Script].[Created] < @createdBefore
     AND (
       @scriptNames IS NULL
-      OR dbo.[Script].[Name] IN (
-        SELECT value
+      OR LOWER(dbo.[Script].[Name]) IN (
+        SELECT LOWER(value)
         FROM OPENJSON(@scriptNames)
         )
       )

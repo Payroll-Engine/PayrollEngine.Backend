@@ -27,6 +27,7 @@ public abstract class LookupRepositoryBase<T> : TrackChildDomainRepository<T, Lo
         parameters.Add(nameof(lookup.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(lookup.DescriptionLocalizations));
         parameters.Add(nameof(lookup.OverrideType), lookup.OverrideType);
         parameters.Add(nameof(lookup.RangeSize), lookup.RangeSize);
+        parameters.Add(nameof(lookup.Attributes), JsonSerializer.SerializeNamedDictionary(lookup.Attributes));
         base.GetObjectData(lookup, parameters);
     }
 

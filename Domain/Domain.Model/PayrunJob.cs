@@ -35,14 +35,29 @@ public class PayrunJob : DomainObjectBase, INamedObject, IDomainAttributeObject,
     public int DivisionId { get; set; }
 
     /// <summary>
-    /// The user id (immutable)
-    /// </summary>
-    public int UserId { get; set; }
-
-    /// <summary>
     /// The parent payrun job id, e.g. the parent retro pay run job (immutable)
     /// </summary>
     public int? ParentJobId { get; set; }
+
+    /// <summary>
+    /// The created user id (immutable)
+    /// </summary>
+    public int CreatedUserId { get; set; }
+
+    /// <summary>
+    /// The release user id (immutable)
+    /// </summary>
+    public int? ReleasedUserId { get; set; }
+
+    /// <summary>
+    /// The processed user id (immutable)
+    /// </summary>
+    public int? ProcessedUserId { get; set; }
+
+    /// <summary>
+    /// The finished user id (immutable)
+    /// </summary>
+    public int? FinishedUserId { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether this instance is retro payrun job
@@ -116,9 +131,39 @@ public class PayrunJob : DomainObjectBase, INamedObject, IDomainAttributeObject,
     public DateTime EvaluationDate { get; set; }
 
     /// <summary>
-    /// The execution reason (immutable)
+    /// The job release date (immutable)
     /// </summary>
-    public string Reason { get; set; }
+    public DateTime? Released { get; set; }
+
+    /// <summary>
+    /// The job process date (immutable)
+    /// </summary>
+    public DateTime? Processed { get; set; }
+
+    /// <summary>
+    /// The job finish date (immutable)
+    /// </summary>
+    public DateTime? Finished { get; set; }
+
+    /// <summary>
+    /// The create reason (immutable)
+    /// </summary>
+    public string CreatedReason { get; set; }
+
+    /// <summary>
+    /// The release reason (immutable)
+    /// </summary>
+    public string ReleasedReason { get; set; }
+
+    /// <summary>
+    /// The process reason (immutable)
+    /// </summary>
+    public string ProcessedReason { get; set; }
+
+    /// <summary>
+    /// The finished reason (immutable)
+    /// </summary>
+    public string FinishedReason { get; set; }
 
     /// <summary>
     /// Total employee count

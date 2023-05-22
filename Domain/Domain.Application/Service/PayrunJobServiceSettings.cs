@@ -23,7 +23,7 @@ public class PayrunJobServiceSettings
     public IWageTypeRepository WageTypeRepository { get; set; }
     public IWageTypeAuditRepository WageTypeAuditRepository { get; set; }
     public IRegulationRepository RegulationRepository { get; set; }
-    public IRegulationPermissionRepository RegulationPermissionRepository { get; set; }
+    public IRegulationShareRepository RegulationShareRepository { get; set; }
     public IPayrollRepository PayrollRepository { get; set; }
     public IPayrollResultRepository PayrollResultRepository { get; set; }
     public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; set; }

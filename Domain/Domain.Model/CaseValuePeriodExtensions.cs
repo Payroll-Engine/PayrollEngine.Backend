@@ -51,7 +51,7 @@ public static class CaseValuePeriodExtensions
             }
 
             // integer
-            if (valueType == ValueType.Integer)
+            if (valueType.IsInteger())
             {
                 intSummary += caseValue.Value.JsonToInteger();
             }

@@ -60,6 +60,10 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
         {
             return tenantResult;
         }
+        if (await ParentService.GetParentIdAsync(Runtime.DbContext, employeeId) != tenantId)
+        {
+            return BadRequest($"Unknown tenant employee with id {employeeId}");
+        }
 
         // employee check
         if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))

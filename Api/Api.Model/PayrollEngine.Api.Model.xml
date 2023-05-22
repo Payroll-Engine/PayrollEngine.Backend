@@ -558,9 +558,9 @@
             The case value creation mode
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.CaseField.Optional">
+        <member name="P:PayrollEngine.Api.Model.CaseField.ValueMandatory">
             <summary>
-            Optional case field
+            Mandatory case field value
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CaseField.Order">
@@ -696,9 +696,9 @@
             The cancellation mode
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Optional">
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Mandatory">
             <summary>
-            Optional case field
+            Mandatory case field
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Order">
@@ -1392,11 +1392,6 @@
             The regulation collector API object
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.Collector.CollectType">
-            <summary>
-            The collection type (immutable)
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.Collector.Name">
             <summary>
             The collector name (immutable)
@@ -1405,6 +1400,11 @@
         <member name="P:PayrollEngine.Api.Model.Collector.NameLocalizations">
             <summary>
             The localized collector names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.CollectType">
+            <summary>
+            The collection type (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Collector.OverrideType">
@@ -1475,11 +1475,6 @@
             The collector id
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectType">
-            <summary>
-            The collection type
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.CollectorAudit.Name">
             <summary>
             The collector name
@@ -1488,6 +1483,11 @@
         <member name="P:PayrollEngine.Api.Model.CollectorAudit.NameLocalizations">
             <summary>
             The localized collector names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectType">
+            <summary>
+            The collection type
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CollectorAudit.OverrideType">
@@ -1863,6 +1863,11 @@
             The lookup range size
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Api.Model.Lookup.ToString">
             <inheritdoc/>
         </member>
@@ -1904,6 +1909,11 @@
         <member name="P:PayrollEngine.Api.Model.LookupAudit.RangeSize">
             <summary>
             The lookup range size
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupAudit.Attributes">
+            <summary>
+            Custom attributes
             </summary>
         </member>
         <member name="M:PayrollEngine.Api.Model.LookupAudit.ToString">
@@ -1993,6 +2003,11 @@
         <member name="P:PayrollEngine.Api.Model.LookupValue.RangeValue">
             <summary>
             The lookup range value, unique within a lookup
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupValue.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="M:PayrollEngine.Api.Model.LookupValue.ToString">
@@ -2454,6 +2469,11 @@
             The payrun name (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Payrun.NameLocalizations">
+            <summary>
+            The localized payrun name
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Payrun.DefaultReason">
             <summary>
             The default payrun reason
@@ -2537,14 +2557,29 @@
             The division id (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.PayrunJob.UserId">
-            <summary>
-            The user id (immutable)
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJob.ParentJobId">
             <summary>
             The parent payrun job id, e.g. the parent retro pay run job (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.CreatedUserId">
+            <summary>
+            The created user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.ReleasedUserId">
+            <summary>
+            The release user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.ProcessedUserId">
+            <summary>
+            The processed user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.FinishedUserId">
+            <summary>
+            The finished user id (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJob.RetroPayMode">
@@ -2612,9 +2647,39 @@
             The evaluation date (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.PayrunJob.Reason">
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Released">
             <summary>
-            The execution reason (immutable)
+            The job release date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Processed">
+            <summary>
+            The job process date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.Finished">
+            <summary>
+            The job finish date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.CreatedReason">
+            <summary>
+            The create reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.ReleasedReason">
+            <summary>
+            The release reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.ProcessedReason">
+            <summary>
+            The process reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.FinishedReason">
+            <summary>
+            The finished reason (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJob.TotalEmployeeCount">
@@ -2941,29 +3006,29 @@
         <member name="M:PayrollEngine.Api.Model.Regulation.ToString">
             <inheritdoc/>
         </member>
-        <member name="T:PayrollEngine.Api.Model.RegulationPermission">
+        <member name="T:PayrollEngine.Api.Model.RegulationShare">
             <summary>
             The regulation permission API object
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.RegulationPermission.TenantId">
-            <summary>The tenant id</summary>
+        <member name="P:PayrollEngine.Api.Model.RegulationShare.ProviderTenantId">
+            <summary>The provider tenant id</summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.RegulationPermission.RegulationId">
-            <summary>The regulation id</summary>
+        <member name="P:PayrollEngine.Api.Model.RegulationShare.ProviderRegulationId">
+            <summary>The provider regulation id</summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.RegulationPermission.PermissionTenantId">
-            <summary>The permission tenant id</summary>
+        <member name="P:PayrollEngine.Api.Model.RegulationShare.ConsumerTenantId">
+            <summary>The consumer tenant id</summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.RegulationPermission.PermissionDivisionId">
-            <summary>The permission division id</summary>
+        <member name="P:PayrollEngine.Api.Model.RegulationShare.ConsumerDivisionId">
+            <summary>The consumer division id</summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.RegulationPermission.Attributes">
+        <member name="P:PayrollEngine.Api.Model.RegulationShare.Attributes">
             <summary>
             Custom attributes
             </summary>
         </member>
-        <member name="M:PayrollEngine.Api.Model.RegulationPermission.ToString">
+        <member name="M:PayrollEngine.Api.Model.RegulationShare.ToString">
             <inheritdoc/>
         </member>
         <member name="T:PayrollEngine.Api.Model.Report">
@@ -2973,22 +3038,22 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Report.Name">
             <summary>
-            The payroll result report name
+            The payroll report name
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Report.NameLocalizations">
             <summary>
-            The localized payroll result report names
+            The localized payroll report names
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Report.Description">
             <summary>
-            The payroll result report description
+            The payroll report description
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Report.DescriptionLocalizations">
             <summary>
-            The localized payroll result report descriptions
+            The localized payroll report descriptions
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Report.Category">
@@ -3024,6 +3089,11 @@
         <member name="P:PayrollEngine.Api.Model.Report.EndExpression">
             <summary>
             The report end expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Report.Attributes">
@@ -3077,6 +3147,11 @@
         <member name="P:PayrollEngine.Api.Model.ReportAudit.AttributeMode">
             <summary>
             The report attribute mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportAudit.Queries">
@@ -3192,6 +3267,11 @@
             The parameter value type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.ReportParameter.Attributes">
             <summary>
             Custom attributes
@@ -3248,6 +3328,11 @@
         <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.ParameterType">
             <summary>
             The parameter value type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Attributes">
@@ -3343,6 +3428,11 @@
             The report template API object
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Name">
+            <summary>
+            The payroll report template name
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.ReportTemplate.Language">
             <summary>
             The report language
@@ -3368,6 +3458,11 @@
             The report external resource
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.ReportTemplate.Attributes">
             <summary>
             Custom attributes
@@ -3379,6 +3474,11 @@
         <member name="T:PayrollEngine.Api.Model.ReportTemplateAudit">
             <summary>
             The report template audit API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Name">
+            <summary>
+            The payroll report template name
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.ReportTemplateId">
@@ -3409,6 +3509,11 @@
         <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Resource">
             <summary>
             The report external resource
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Attributes">
@@ -3602,6 +3707,11 @@
         <member name="P:PayrollEngine.Api.Model.User.Language">
             <summary>
             The users language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.User.Supervisor">
+            <summary>
+            Supervisor user
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.User.Attributes">

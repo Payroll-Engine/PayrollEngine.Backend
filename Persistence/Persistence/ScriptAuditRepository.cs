@@ -16,6 +16,7 @@ public class ScriptAuditRepository : AuditChildDomainRepository<ScriptAudit>, IS
         parameters.Add(nameof(audit.Name), audit.Name);
         parameters.Add(nameof(audit.FunctionTypeMask), audit.FunctionTypes.ToBitmask());
         parameters.Add(nameof(audit.Value), audit.Value);
+        parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         base.GetObjectCreateData(audit, parameters);
     }
 }

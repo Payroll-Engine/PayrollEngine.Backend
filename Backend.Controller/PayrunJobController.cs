@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
@@ -123,9 +124,10 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     /// Change the status of a payrun job
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="userId">The user id</param>
     /// <param name="payrunJobId">The payrun job id</param>
     /// <param name="jobStatus">The new payrun job status</param>
+    /// <param name="userId">The user id</param>
+    /// <param name="reason">The change reason</param>
     /// <param name="patchMode">Use the patch mode</param>
     /// <returns>The updated payrun job</returns>
     [HttpPost("{payrunJobId}/status")]
@@ -133,9 +135,9 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("ChangePayrunJobStatus")]
-    public override async Task<IActionResult> ChangePayrunJobStatusAsync(int tenantId, int userId, int payrunJobId,
-        [FromBody] PayrunJobStatus jobStatus, bool patchMode) =>
-        await base.ChangePayrunJobStatusAsync(tenantId, userId, payrunJobId, jobStatus, patchMode);
+    public override async Task<IActionResult> ChangePayrunJobStatusAsync(int tenantId, int payrunJobId,
+        [FromBody] PayrunJobStatus jobStatus, [Required] int userId, [Required] string reason, bool patchMode) =>
+        await base.ChangePayrunJobStatusAsync(tenantId, payrunJobId, jobStatus, userId, reason, patchMode);
 
     /// <summary>
     /// Delete a payrun jobs including all payroll results

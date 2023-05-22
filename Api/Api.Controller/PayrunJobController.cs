@@ -10,7 +10,6 @@ using PayrollEngine.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 using PayrollEngine.Domain.Model;
 
@@ -102,19 +101,22 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         }
 
         // user
-        if (jobInvocation.UserId <= 0 || !await ServiceSettings.UserRepository.ExistsAsync(Runtime.DbContext, jobInvocation.UserId))
+        if (jobInvocation.UserId <= 0 || !await ServiceSettings.UserRepository.ExistsAsync(
+                Runtime.DbContext, tenantId, jobInvocation.UserId))
         {
             return BadRequest($"Unknown user with id {jobInvocation.UserId}");
         }
 
         // payroll
-        if (jobInvocation.PayrollId <= 0 || !await ServiceSettings.PayrollRepository.ExistsAsync(Runtime.DbContext, jobInvocation.PayrollId))
+        if (jobInvocation.PayrollId <= 0 || !await ServiceSettings.PayrollRepository.ExistsAsync(
+                Runtime.DbContext, tenantId, jobInvocation.PayrollId))
         {
             return BadRequest($"Unknown payroll with id {jobInvocation.PayrollId}");
         }
 
         // payrun
-        if (jobInvocation.PayrunId <= 0 || !await ServiceSettings.PayrunRepository.ExistsAsync(Runtime.DbContext, jobInvocation.PayrunId))
+        if (jobInvocation.PayrunId <= 0 || !await ServiceSettings.PayrunRepository.ExistsAsync(
+                Runtime.DbContext, tenantId, jobInvocation.PayrunId))
         {
             return BadRequest($"Unknown payrun with id {jobInvocation.PayrunId}");
         }
@@ -170,7 +172,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
                     WageTypeRepository = ServiceSettings.WageTypeRepository,
                     RegulationLookupSetRepository = ServiceSettings.RegulationLookupSetRepository,
                     RegulationRepository = ServiceSettings.RegulationRepository,
-                    RegulationPermissionRepository = ServiceSettings.RegulationPermissionRepository,
+                    RegulationShareRepository = ServiceSettings.RegulationShareRepository,
                     PayrollRepository = ServiceSettings.PayrollRepository,
                     PayrollResultRepository = ServiceSettings.PayrollResultRepository,
                     PayrollConsolidatedResultRepository = ServiceSettings.PayrollConsolidatedResultRepository,
@@ -232,12 +234,13 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
     /// Change the status of a payrun job
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="userId">The user id</param>
     /// <param name="payrunJobId">The payrun job id</param>
     /// <param name="jobStatus">The new payrun job status</param>
+    /// <param name="userId">The user id</param>
+    /// <param name="reason">The change reason</param>
     /// <param name="patchMode">Use the patch mode</param>
-    public virtual async Task<IActionResult> ChangePayrunJobStatusAsync(int tenantId, int userId, int payrunJobId,
-        PayrunJobStatus jobStatus, bool patchMode)
+    public virtual async Task<IActionResult> ChangePayrunJobStatusAsync(int tenantId, int payrunJobId,
+        PayrunJobStatus jobStatus, int userId, string reason, bool patchMode)
     {
         // tenant
         var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
@@ -260,7 +263,8 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         // patch mode (no state change validation)
         if (patchMode)
         {
-            payrunJob = await ServiceSettings.PayrunJobRepository.PatchPayrunJobStatusAsync(Runtime.DbContext, tenantId, payrunJobId, jobStatus);
+            payrunJob = await ServiceSettings.PayrunJobRepository.PatchPayrunJobStatusAsync(
+                Runtime.DbContext, tenantId, payrunJobId, jobStatus, userId, reason);
             if (payrunJob == null)
             {
                 return BadRequest($"Unknown patch payrun job with id {payrunJobId}");
@@ -280,7 +284,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         }
 
         // change status
-        if (payrunJob.JobStatus.IsFinalState())
+        if (payrunJob.JobStatus.IsFinal())
         {
             return BadRequest($"Finalized payrun job with status {payrunJob.JobStatus} can not be changed in payrun job with id {payrunJobId}");
         }

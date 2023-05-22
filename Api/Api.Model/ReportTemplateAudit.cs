@@ -9,6 +9,13 @@ namespace PayrollEngine.Api.Model;
 public class ReportTemplateAudit : ApiObjectBase
 {
     /// <summary>
+    /// The payroll report template name
+    /// </summary>
+    [Required]
+    [StringLength(128)]
+    public string Name { get; set; }
+
+    /// <summary>
     /// The report parameter id
     /// </summary>
     [Required]
@@ -42,6 +49,11 @@ public class ReportTemplateAudit : ApiObjectBase
     /// </summary>
     [StringLength(256)]
     public string Resource { get; set; }
+    
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// Custom attributes

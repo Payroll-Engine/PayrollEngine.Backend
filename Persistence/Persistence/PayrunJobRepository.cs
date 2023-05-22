@@ -30,7 +30,7 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         parameters.Add(nameof(payrunJob.PayrunId), payrunJob.PayrunId);
         parameters.Add(nameof(payrunJob.PayrollId), payrunJob.PayrollId);
         parameters.Add(nameof(payrunJob.DivisionId), payrunJob.DivisionId);
-        parameters.Add(nameof(payrunJob.UserId), payrunJob.UserId);
+        parameters.Add(nameof(payrunJob.CreatedUserId), payrunJob.CreatedUserId);
         parameters.Add(nameof(payrunJob.ParentJobId), payrunJob.ParentJobId);
         parameters.Add(nameof(payrunJob.Tags), JsonSerializer.SerializeList(payrunJob.Tags));
         parameters.Add(nameof(payrunJob.Forecast), payrunJob.Forecast);
@@ -44,7 +44,7 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         parameters.Add(nameof(payrunJob.PeriodStart), payrunJob.PeriodStart);
         parameters.Add(nameof(payrunJob.PeriodEnd), payrunJob.PeriodEnd);
         parameters.Add(nameof(payrunJob.EvaluationDate), payrunJob.EvaluationDate);
-        parameters.Add(nameof(payrunJob.Reason), payrunJob.Reason);
+        parameters.Add(nameof(payrunJob.CreatedReason), payrunJob.CreatedReason);
 
         // base fields
         base.GetObjectCreateData(payrunJob, parameters);
@@ -52,6 +52,15 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
 
     protected override void GetObjectData(PayrunJob payrunJob, DbParameterCollection parameters)
     {
+        parameters.Add(nameof(payrunJob.ReleasedUserId), payrunJob.ReleasedUserId);
+        parameters.Add(nameof(payrunJob.ProcessedUserId), payrunJob.ProcessedUserId);
+        parameters.Add(nameof(payrunJob.FinishedUserId), payrunJob.FinishedUserId);
+        parameters.Add(nameof(payrunJob.Released), payrunJob.Released);
+        parameters.Add(nameof(payrunJob.Processed), payrunJob.Processed);
+        parameters.Add(nameof(payrunJob.Finished), payrunJob.Finished);
+        parameters.Add(nameof(payrunJob.ReleasedReason), payrunJob.ReleasedReason);
+        parameters.Add(nameof(payrunJob.ProcessedReason), payrunJob.ProcessedReason);
+        parameters.Add(nameof(payrunJob.FinishedReason), payrunJob.FinishedReason);
         parameters.Add(nameof(payrunJob.JobStatus), payrunJob.JobStatus);
         parameters.Add(nameof(payrunJob.TotalEmployeeCount), payrunJob.TotalEmployeeCount);
         parameters.Add(nameof(payrunJob.ProcessedEmployeeCount), payrunJob.ProcessedEmployeeCount);
@@ -111,8 +120,13 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
     }
 
     public virtual async Task<PayrunJob> PatchPayrunJobStatusAsync(IDbContext context,
-        int tenantId, int payrunJobId, PayrunJobStatus jobStatus)
+        int tenantId, int payrunJobId, PayrunJobStatus jobStatus, int userId, string reason)
     {
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            throw new ArgumentException(nameof(reason));
+        }
+
         var payrunJob = await GetAsync(context, tenantId, payrunJobId);
         if (payrunJob == null)
         {
@@ -127,6 +141,32 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
 
         // update status
         payrunJob.JobStatus = jobStatus;
+        switch (jobStatus)
+        {
+            case PayrunJobStatus.Forecast:
+                // nothing to do
+                break;
+            case PayrunJobStatus.Release:
+                payrunJob.Released = Date.Now;
+                payrunJob.ReleasedUserId = userId;
+                payrunJob.ReleasedReason = reason;
+                break;
+            case PayrunJobStatus.Process:
+                payrunJob.Processed = Date.Now;
+                payrunJob.ProcessedUserId = userId;
+                payrunJob.ProcessedReason = reason;
+                break;
+            case PayrunJobStatus.Complete:
+            case PayrunJobStatus.Abort:
+            case PayrunJobStatus.Cancel:
+                payrunJob.Finished = Date.Now;
+                payrunJob.FinishedUserId = userId;
+                payrunJob.FinishedReason = reason;
+                break;
+            default:
+                throw new InvalidOperationException($"Unsupported payrun job status change to {jobStatus}");
+        }
+
         return await UpdateAsync(context, tenantId, payrunJob);
     }
 

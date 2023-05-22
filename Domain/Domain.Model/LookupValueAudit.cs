@@ -43,6 +43,11 @@ public class LookupValueAudit : ScriptAuditDomainObject
     /// The hash is used by database indexes
     /// </summary>
     public int LookupHash { get; set; }
+    
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <inheritdoc/>
     public LookupValueAudit()

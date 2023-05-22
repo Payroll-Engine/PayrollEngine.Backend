@@ -29,7 +29,7 @@ public class CaseFieldAuditRepository : AuditChildDomainRepository<CaseFieldAudi
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.CancellationMode), audit.CancellationMode);
         parameters.Add(nameof(audit.ValueCreationMode), audit.ValueCreationMode);
-        parameters.Add(nameof(audit.Optional), audit.Optional.ToDbValue());
+        parameters.Add(nameof(audit.ValueMandatory), audit.ValueMandatory);
         parameters.Add(nameof(audit.Order), audit.Order);
         parameters.Add(nameof(audit.StartDateType), audit.StartDateType);
         parameters.Add(nameof(audit.EndDateType), audit.EndDateType);

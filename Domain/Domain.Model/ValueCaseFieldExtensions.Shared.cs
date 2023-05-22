@@ -25,12 +25,12 @@ public static class CaseFieldSetExtensions
         // timeless
         if (caseFieldSet.TimeType == CaseFieldTimeType.Timeless)
         {
-            return caseFieldSet.Optional || hasValue;
+            return !caseFieldSet.ValueMandatory || hasValue;
         }
 
         // timed value
         var hasStart = caseFieldSet.Start.HasValue;
-        if (caseFieldSet.Optional)
+        if (!caseFieldSet.ValueMandatory)
         {
             // optional field: both set or unset
             return hasStart == hasValue;

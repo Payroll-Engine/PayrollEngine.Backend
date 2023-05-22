@@ -62,6 +62,7 @@ public class PayrunRepository : ScriptChildDomainRepository<Payrun, Payrun>, IPa
     protected override void GetObjectData(Payrun payrun, DbParameterCollection parameters)
     {
         parameters.Add(nameof(payrun.PayrollId), payrun.PayrollId);
+        parameters.Add(nameof(payrun.NameLocalizations), JsonSerializer.SerializeNamedDictionary(payrun.NameLocalizations));
         parameters.Add(nameof(payrun.DefaultReason), payrun.DefaultReason);
         parameters.Add(nameof(payrun.DefaultReasonLocalizations), JsonSerializer.SerializeNamedDictionary(payrun.DefaultReasonLocalizations));
         parameters.Add(nameof(payrun.StartExpression), payrun.StartExpression);

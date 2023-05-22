@@ -248,7 +248,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                     CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
                     CaseFieldName = caseFieldSet.Name,
                     CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
-                    Message = $"Invalid start date {caseFieldSet.Start.Value.ToPeriodStartString()}, expected {caseFieldSet.StartDateType}"
+                    Message = $"Case field {caseFieldSet.Name}: invalid start date {caseFieldSet.Start.Value.ToPeriodStartString()}, expected {caseFieldSet.StartDateType}"
                 });
             }
         }
@@ -268,10 +268,11 @@ public class DerivedCaseValidator : DerivedCaseTool
                     CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
                     CaseFieldName = caseFieldSet.Name,
                     CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
-                    Message = $"Invalid end date {caseFieldSet.End.Value.ToPeriodStartString()}, expected {caseFieldSet.EndDateType}"
+                    Message = $"Case field {caseFieldSet.Name}: invalid end date {caseFieldSet.End.Value.ToPeriodStartString()}, expected {caseFieldSet.EndDateType}"
                 });
             }
         }
+
         // mandatory end date
         if (caseFieldSet.EndMandatory && !caseFieldSet.End.HasValue)
         {
@@ -285,8 +286,65 @@ public class DerivedCaseValidator : DerivedCaseTool
                 CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
                 CaseFieldName = caseFieldSet.Name,
                 CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
-                Message = "Missing mandatory end date"
+                Message = $"Case field {caseFieldSet.Name}: missing mandatory end date"
             });
+        }
+
+        // mandatory value
+        if (caseFieldSet.ValueType != ValueType.None && caseFieldSet.ValueMandatory && !caseFieldSet.HasValue)
+        {
+            issues.Add(new()
+            {
+                IssueType = CaseIssueType.CaseValueMissing,
+                Number = (int)CaseIssueType.CaseValueMissing * -1,
+                CaseName = @case.Name,
+                CaseNameLocalizations = @case.NameLocalizations,
+                CaseSlot = caseFieldSet.CaseSlot,
+                CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
+                CaseFieldName = caseFieldSet.Name,
+                CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
+                Message = $"Case field {caseFieldSet.Name}: missing mandatory value"
+            });
+        }
+
+        // weekday value
+        if (caseFieldSet.ValueType == ValueType.Weekday && caseFieldSet.HasValue)
+        {
+            if (!(caseFieldSet.GetValue() is int value) || !Enum.IsDefined(typeof(DayOfWeek), value))
+            {
+                issues.Add(new()
+                {
+                    IssueType = CaseIssueType.CaseValueWeekdayInvalid,
+                    Number = (int)CaseIssueType.CaseValueWeekdayInvalid * -1,
+                    CaseName = @case.Name,
+                    CaseNameLocalizations = @case.NameLocalizations,
+                    CaseSlot = caseFieldSet.CaseSlot,
+                    CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
+                    CaseFieldName = caseFieldSet.Name,
+                    CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
+                    Message = $"Case field {caseFieldSet.Name} with invalid weekday: {caseFieldSet.GetValue()}"
+                });
+            }
+        }
+
+        // month value
+        if (caseFieldSet.ValueType == ValueType.Month && caseFieldSet.HasValue)
+        {
+            if (!(caseFieldSet.GetValue() is int value) || !Enum.IsDefined(typeof(Month), value))
+            {
+                issues.Add(new()
+                {
+                    IssueType = CaseIssueType.CaseValueMonthInvalid,
+                    Number = (int)CaseIssueType.CaseValueMonthInvalid * -1,
+                    CaseName = @case.Name,
+                    CaseNameLocalizations = @case.NameLocalizations,
+                    CaseSlot = caseFieldSet.CaseSlot,
+                    CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
+                    CaseFieldName = caseFieldSet.Name,
+                    CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
+                    Message = $"Case field {caseFieldSet.Name} with invalid month: {caseFieldSet.GetValue()}"
+                });
+            }
         }
 
         return issues;

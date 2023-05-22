@@ -79,11 +79,11 @@ BEGIN
     AND dbo.[CaseRelation].[Created] < @createdBefore
     AND (
       @sourceCaseName IS NULL
-      OR dbo.[CaseRelation].[SourceCaseName] = @sourceCaseName
+      OR LOWER(dbo.[CaseRelation].[SourceCaseName]) = LOWER(@sourceCaseName)
       )
     AND (
       @targetCaseName IS NULL
-      OR dbo.[CaseRelation].[TargetCaseName] = @targetCaseName
+      OR LOWER(dbo.[CaseRelation].[TargetCaseName]) = LOWER(@targetCaseName)
       )
     AND ((@includeClusters IS NULL AND @excludeClusters IS NULL)
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[CaseRelation].[Clusters]) = 1)

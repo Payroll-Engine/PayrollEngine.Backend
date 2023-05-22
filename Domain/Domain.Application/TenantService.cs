@@ -18,7 +18,7 @@ public class TenantService : RootApplicationService<ITenantRepository, Tenant>, 
     public virtual async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
         await Repository.ExistsAsync(context, identifier);
 
-    public Task<IEnumerable<ActionInfo>> GetSystemScriptActionsAsync(FunctionType functionType = FunctionType.All)
+    public Task<IEnumerable<ActionInfo>> GetSystemScriptActionsAsync(FunctionType functionType)
     {
         var actions = new List<ActionInfo>();
 

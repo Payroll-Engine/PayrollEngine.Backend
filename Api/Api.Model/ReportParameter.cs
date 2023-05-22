@@ -53,6 +53,11 @@ public class ReportParameter : ApiObjectBase
     public ReportParameterType ParameterType { get; set; }
 
     /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
+
+    /// <summary>
     /// Custom attributes
     /// </summary>
     public Dictionary<string, object> Attributes { get; set; }

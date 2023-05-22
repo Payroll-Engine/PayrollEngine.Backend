@@ -51,6 +51,11 @@ public class ReportParameterAudit : ScriptAuditDomainObject, IDomainAttributeObj
     /// The parameter type
     /// </summary>
     public ReportParameterType ParameterType { get; set; }
+    
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// Custom attributes

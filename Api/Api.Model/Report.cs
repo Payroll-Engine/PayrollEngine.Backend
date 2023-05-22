@@ -10,25 +10,25 @@ namespace PayrollEngine.Api.Model;
 public class Report : ApiObjectBase
 {
     /// <summary>
-    /// The payroll result report name
+    /// The payroll report name
     /// </summary>
     [Required]
     [StringLength(128)]
     public string Name { get; set; }
 
     /// <summary>
-    /// The localized payroll result report names
+    /// The localized payroll report names
     /// </summary>
     [Localization(nameof(Name))]
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The payroll result report description
+    /// The payroll report description
     /// </summary>
     public string Description { get; set; }
 
     /// <summary>
-    /// The localized payroll result report descriptions
+    /// The localized payroll report descriptions
     /// </summary>
     [Localization(nameof(Description))]
     public Dictionary<string, string> DescriptionLocalizations { get; set; }
@@ -67,6 +67,11 @@ public class Report : ApiObjectBase
     /// The report end expression
     /// </summary>
     public string EndExpression { get; set; }
+
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// Custom attributes

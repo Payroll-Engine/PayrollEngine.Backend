@@ -65,9 +65,9 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
     public CaseValueCreationMode ValueCreationMode { get; set; }
 
     /// <summary>
-    /// Optional case field
+    /// Mandatory case field value
     /// </summary>
-    public bool Optional { get; set; }
+    public bool ValueMandatory { get; set; }
 
     /// <summary>
     /// The case field order
@@ -178,7 +178,7 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
             OverrideType = OverrideType,
             CancellationMode = CancellationMode,
             ValueCreationMode = ValueCreationMode,
-            Optional = Optional,
+            ValueMandatory = ValueMandatory,
             Order = Order,
             StartDateType = StartDateType,
             EndDateType = EndDateType,
@@ -216,7 +216,7 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
         OverrideType = audit.OverrideType;
         CancellationMode = audit.CancellationMode;
         ValueCreationMode = audit.ValueCreationMode;
-        Optional = audit.Optional;
+        ValueMandatory = audit.ValueMandatory;
         Order = audit.Order;
         StartDateType = audit.StartDateType;
         EndDateType = audit.EndDateType;

@@ -6,7 +6,7 @@ namespace PayrollEngine.Persistence;
 
 public class ReportParameterRepository : TrackChildDomainRepository<ReportParameter, ReportParameterAudit>, IReportParameterRepository
 {
-    public ReportParameterRepository(IReportParameterAuditRepository auditRepository) : 
+    public ReportParameterRepository(IReportParameterAuditRepository auditRepository) :
         base(DbSchema.Tables.ReportParameter, DbSchema.ReportParameterColumn.ReportId, auditRepository)
     {
     }
@@ -26,6 +26,7 @@ public class ReportParameterRepository : TrackChildDomainRepository<ReportParame
         parameters.Add(nameof(parameter.Value), parameter.Value);
         parameters.Add(nameof(parameter.ValueType), parameter.ValueType);
         parameters.Add(nameof(parameter.ParameterType), parameter.ParameterType);
+        parameters.Add(nameof(parameter.OverrideType), parameter.OverrideType);
         parameters.Add(nameof(parameter.Attributes), JsonSerializer.SerializeNamedDictionary(parameter.Attributes));
         base.GetObjectData(parameter, parameters);
     }

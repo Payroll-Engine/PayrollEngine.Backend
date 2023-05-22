@@ -22,17 +22,31 @@ public abstract class TaskController : RepositoryChildObjectController<ITenantSe
     ITenantRepository, ITaskRepository,
     Tenant, DomainObject.Task, ApiObject.Task>
 {
+    public IUserService UserService { get; }
     public IWebhookDispatchService WebhookDispatcher { get; }
 
     protected TaskController(ITenantService tenantService, ITaskService taskService,
-        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
+        IUserService userService, IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
         base(tenantService, taskService, runtime, new TaskMap())
     {
+        UserService = userService ?? throw new ArgumentNullException(nameof(userService));
         WebhookDispatcher = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
     }
 
     protected override async Task<ActionResult<ApiObject.Task>> CreateAsync(int tenantId, ApiObject.Task task)
     {
+        // validate user references
+        if (!await UserService.ExistsAsync(Runtime.DbContext, tenantId, task.ScheduledUserId))
+        {
+            return BadRequest($"Task {task.Name} has unknown schedule user id {task.ScheduledUserId}");
+        }
+        if (task.CompletedUserId.HasValue &&
+            !await UserService.ExistsAsync(Runtime.DbContext, tenantId, task.CompletedUserId.Value))
+        {
+            return BadRequest($"Task {task.Name} has unknown complete user id {task.CompletedUserId.Value}");
+        }
+
+        // create task
         var create = await base.CreateAsync(tenantId, task);
 
         // webhook
@@ -53,6 +67,17 @@ public abstract class TaskController : RepositoryChildObjectController<ITenantSe
 
     protected override async Task<ActionResult<ApiObject.Task>> UpdateAsync(int tenantId, ApiObject.Task task)
     {
+        // validate user references
+        if (!await UserService.ExistsAsync(Runtime.DbContext, tenantId, task.ScheduledUserId))
+        {
+            return BadRequest($"Task {task.Name} has unknown schedule user id {task.ScheduledUserId}");
+        }
+        if (task.CompletedUserId.HasValue &&
+            !await UserService.ExistsAsync(Runtime.DbContext, tenantId, task.CompletedUserId.Value))
+        {
+            return BadRequest($"Task {task.Name} has unknown complete user id {task.CompletedUserId.Value}");
+        }
+
         var existing = await GetAsync(tenantId, task.Id);
         var update = await base.UpdateAsync(tenantId, task);
 

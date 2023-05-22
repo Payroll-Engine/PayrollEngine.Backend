@@ -35,6 +35,9 @@ public interface IPayrunJobRepository : IChildDomainRepository<PayrunJob>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrunJobId">The payrun job id</param>
     /// <param name="jobStatus">The job status to path</param>
-    /// <returns>The payrun job matching the status</returns>
-    Task<PayrunJob> PatchPayrunJobStatusAsync(IDbContext context, int tenantId, int payrunJobId, PayrunJobStatus jobStatus);
+    /// <param name="userId">The user id</param>
+    /// <param name="reason">The change reason</param>
+    /// <returns>The payrun job with the new status</returns>
+    Task<PayrunJob> PatchPayrunJobStatusAsync(IDbContext context, int tenantId, int payrunJobId,
+        PayrunJobStatus jobStatus, int userId, string reason);
 }

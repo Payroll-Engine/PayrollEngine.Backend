@@ -390,7 +390,7 @@ public class PayrunProcessor : FunctionToolBase
                             ParentJobId = currentJob.Id,
                             PayrunId = currentJob.PayrunId,
                             PayrollId = currentJob.PayrollId,
-                            UserId = currentJob.UserId,
+                            UserId = currentJob.CreatedUserId,
                             Name = currentJob.Name,
                             Owner = currentJob.Owner,
                             Forecast = currentJob.Forecast,
@@ -404,7 +404,7 @@ public class PayrunProcessor : FunctionToolBase
                             JobStatus = PayrunJobStatus.Complete,
                             PeriodStart = retroPeriod.Start,
                             EvaluationDate = context.EvaluationDate,
-                            Reason = currentJob.Reason,
+                            Reason = currentJob.CreatedReason,
                             // current employee only
                             EmployeeIdentifiers = new() { employee.Identifier },
                             // consider runtime attribute changes
@@ -1039,11 +1039,6 @@ public class PayrunProcessor : FunctionToolBase
     private async Task<PayrunJob> CompleteJobAsync(PayrunJob payrunJob)
     {
         // setup
-        if (!string.IsNullOrWhiteSpace(payrunJob.Forecast))
-        {
-            // complete forecast job
-            payrunJob.JobStatus = PayrunJobStatus.Complete;
-        }
         payrunJob.JobEnd = Date.Now;
         payrunJob.Message = "Completed payrun calculation successfully";
         Log.Debug(payrunJob.Message);

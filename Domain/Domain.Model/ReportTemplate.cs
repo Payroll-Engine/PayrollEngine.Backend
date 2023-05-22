@@ -6,8 +6,14 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A payroll report template
 /// </summary>
-public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAttributeObject, IEquatable<ReportTemplate>
+public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAttributeObject,
+    IDerivableObject, IEquatable<ReportTemplate>
 {
+    /// <summary>
+    /// The report template name
+    /// </summary>
+    public string Name { get; set; }
+
     /// <summary>
     /// The report language
     /// </summary>
@@ -32,6 +38,11 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
     /// The report external resource
     /// </summary>
     public string Resource { get; set; }
+
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// Custom attributes
@@ -70,12 +81,14 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
         return new()
         {
             ReportTemplateId = Id,
+            Name = Name,
             Language = Language,
             Content = Content,
             ContentType = ContentType,
             Schema = Schema,
             Resource = Resource,
             Attributes = Attributes,
+            OverrideType = OverrideType
         };
     }
 
@@ -85,15 +98,17 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
         base.FromAuditObject(audit);
 
         Id = audit.ReportTemplateId;
+        Name = audit.Name;
         Language = audit.Language;
         Content = audit.Content;
         ContentType = audit.ContentType;
         Schema = audit.Schema;
         Resource = audit.Resource;
+        OverrideType = audit.OverrideType;
         Attributes = audit.Attributes.Copy();
     }
 
     /// <inheritdoc/>
     public override string ToString() =>
-        $"{Language} {base.ToString()}";
+        $"{Name} ({Language}) {base.ToString()}";
 }

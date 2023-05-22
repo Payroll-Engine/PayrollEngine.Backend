@@ -5,7 +5,7 @@ public static class Tables
 {
     #region Global
 
-    public static readonly string RegulationPermission = "RegulationPermission";
+    public static readonly string RegulationShare = "RegulationShare";
 
     #endregion
 

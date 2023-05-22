@@ -12,8 +12,8 @@ public class TaskController : Api.Controller.TaskController
 {
     /// <inheritdoc/>
     public TaskController(ITenantService tenantService, ITaskService taskService,
-        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
-        base(tenantService, taskService, webhookDispatcher, runtime)
+        IUserService userService, IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
+        base(tenantService, taskService, userService, webhookDispatcher, runtime)
     {
     }
 

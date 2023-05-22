@@ -237,7 +237,7 @@ public static class ProviderStartupExtensions
         services.AddTransient(ctx => new TenantController(
             ctx.GetRequiredService<ITenantService>(),
             ctx.GetRequiredService<IRegulationService>(),
-            ctx.GetRequiredService<IRegulationPermissionService>(),
+            ctx.GetRequiredService<IRegulationShareService>(),
             ctx.GetRequiredService<IReportService>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 

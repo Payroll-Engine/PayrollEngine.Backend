@@ -40,6 +40,7 @@ public class LookupValueRepository : TrackChildDomainRepository<LookupValue, Loo
         parameters.Add(nameof(value.Value), value.Value);
         parameters.Add(nameof(value.ValueLocalizations), JsonSerializer.SerializeNamedDictionary(value.ValueLocalizations));
         parameters.Add(nameof(value.LookupHash), value.LookupHash);
+        parameters.Add(nameof(value.OverrideType), value.OverrideType);
         base.GetObjectData(value, parameters);
     }
 }

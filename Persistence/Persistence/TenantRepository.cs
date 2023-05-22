@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
@@ -42,10 +43,18 @@ public class TenantRepository : RootDomainRepository<Tenant>, ITenantRepository
         var parameters = new DbParameterCollection();
         parameters.Add(DbSchema.ParameterDeleteTenant.TenantId, tenantId);
 
-        // delete tenant (stored procedure)
-        // TODO: stored procedure result
-        await QueryAsync<Tenant>(context, DbSchema.Procedures.DeleteTenant,
-            parameters, commandType: CommandType.StoredProcedure);
+        try
+        {
+            // delete tenant (stored procedure)
+            // TODO: stored procedure result
+            await QueryAsync<Tenant>(context, DbSchema.Procedures.DeleteTenant,
+                parameters, commandType: CommandType.StoredProcedure);
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, exception.GetBaseMessage());
+            return false;
+        }
 
         return true;
     }

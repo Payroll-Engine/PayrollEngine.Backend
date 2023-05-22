@@ -15,15 +15,23 @@ public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplat
     }
 
     /// <inheritdoc />
-    protected override void GetObjectData(ReportTemplate parameter, DbParameterCollection parameters)
+    protected override void GetObjectCreateData(ReportTemplate template, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(parameter.Language), parameter.Language);
-        parameters.Add(nameof(parameter.Content), parameter.Content);
-        parameters.Add(nameof(parameter.ContentType), parameter.ContentType);
-        parameters.Add(nameof(parameter.Schema), parameter.Schema);
-        parameters.Add(nameof(parameter.Resource), parameter.Resource);
-        parameters.Add(nameof(parameter.Attributes), JsonSerializer.SerializeNamedDictionary(parameter.Attributes));
-        base.GetObjectData(parameter, parameters);
+        parameters.Add(nameof(template.Name), template.Name);
+        base.GetObjectCreateData(template, parameters);
+    }
+
+    /// <inheritdoc />
+    protected override void GetObjectData(ReportTemplate template, DbParameterCollection parameters)
+    {
+        parameters.Add(nameof(template.Language), template.Language);
+        parameters.Add(nameof(template.Content), template.Content);
+        parameters.Add(nameof(template.ContentType), template.ContentType);
+        parameters.Add(nameof(template.Schema), template.Schema);
+        parameters.Add(nameof(template.Resource), template.Resource);
+        parameters.Add(nameof(template.OverrideType), template.OverrideType);
+        parameters.Add(nameof(template.Attributes), JsonSerializer.SerializeNamedDictionary(template.Attributes));
+        base.GetObjectData(template, parameters);
     }
 
     /// <inheritdoc />

@@ -21,6 +21,11 @@ public class Payrun : ApiObjectBase
     public string Name { get; set; }
 
     /// <summary>
+    /// The localized payrun name
+    /// </summary>
+    public Dictionary<string, string> NameLocalizations { get; set; }
+
+    /// <summary>
     /// The default payrun reason
     /// </summary>
     public string DefaultReason { get; set; }

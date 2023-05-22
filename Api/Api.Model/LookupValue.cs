@@ -31,6 +31,11 @@ public class LookupValue : ApiObjectBase
     /// </summary>
     public decimal? RangeValue { get; set; }
 
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
+
     /// <inheritdoc/>
     public override string ToString() =>
         $"{Key} {Value} {base.ToString()}";

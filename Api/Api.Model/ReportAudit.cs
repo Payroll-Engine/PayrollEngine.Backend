@@ -50,6 +50,11 @@ public class ReportAudit : ApiObjectBase
     public ReportAttributeMode AttributeMode { get; set; }
 
     /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
+
+    /// <summary>
     /// The report queries, key is the query name and value the api operation name
     /// </summary>
     public Dictionary<string, string> Queries { get; set; }

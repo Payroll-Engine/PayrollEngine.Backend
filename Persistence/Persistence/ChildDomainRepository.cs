@@ -45,15 +45,32 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     {
     }
 
-    /// <summary>
-    /// Query items
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="query">The payroll query</param>
-    /// <returns>The items matching the query criteria</returns>
+    /// <inheritdoc />
+    public async Task<bool> ExistsAsync(IDbContext context, int parentId, int id)
+    {
+        if (parentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(parentId));
+        }
+
+        // parent check
+        if (await GetParentIdAsync(context, id) != parentId)
+        {
+            return false;
+        }
+
+        // item base check
+        return await ExistsAsync(context, id);
+    }
+
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<T>> QueryAsync(IDbContext context, int parentId, Query query = null)
     {
+        if (parentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(parentId));
+        }
+
         // query
         var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, ParentFieldName, parentId, query);
         SetupDbQuery(dbQuery, query);
@@ -70,15 +87,14 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         return items;
     }
 
-    /// <summary>
-    /// Query items count
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="query">The payroll query</param>
-    /// <returns>The count of items, matching the query criteria</returns>
+    /// <inheritdoc />
     public virtual async Task<long> QueryCountAsync(IDbContext context, int parentId, Query query = null)
     {
+        if (parentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(parentId));
+        }
+
         // query
         var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, ParentFieldName, parentId, query, QueryMode.ItemCount);
         SetupDbQuery(dbQuery, query);
@@ -91,12 +107,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         return count;
     }
 
-    /// <summary>
-    /// Get the parent record id
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="itemId">The item id</param>
-    /// <returns>The parent item id</returns>
+    /// <inheritdoc />
     public virtual async Task<int?> GetParentIdAsync(IDbContext context, int itemId)
     {
         if (itemId <= 0)
@@ -113,13 +124,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         return result.FirstOrDefault();
     }
 
-    /// <summary>
-    /// Get item
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="itemId">The item id</param>
-    /// <returns>The item</returns>
+    /// <inheritdoc />
     public virtual async Task<T> GetAsync(IDbContext context, int parentId, int itemId)
     {
         if (parentId <= 0)
@@ -175,15 +180,13 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
     #region Create
 
-    /// <summary>
-    /// Create item
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="item">The item to create</param>
-    /// <returns>Created item</returns>
+    /// <inheritdoc />
     public virtual async Task<T> CreateAsync(IDbContext context, int parentId, T item)
     {
+        if (parentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(parentId));
+        }
         if (item == null)
         {
             throw new ArgumentNullException(nameof(item));
@@ -196,15 +199,13 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         return inserted ? item : default;
     }
 
-    /// <summary>
-    /// Create items
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="items">The items to create</param>
-    /// <returns>Created items</returns>
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<T>> CreateAsync(IDbContext context, int parentId, IEnumerable<T> items)
     {
+        if (parentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(parentId));
+        }
         if (items == null)
         {
             throw new ArgumentNullException(nameof(items));
@@ -225,14 +226,14 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         return createdObjects;
     }
 
-    /// <summary>
-    /// Create items within a bulk operation
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="items">The items to create</param>
+    /// <inheritdoc />
     public virtual async Task CreateBulkAsync(IDbContext context, int parentId, IEnumerable<T> items)
     {
+        if (parentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(parentId));
+        }
+
         var objectList = items.ToList();
         if (!objectList.Any())
         {
@@ -326,7 +327,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     /// <param name="parentId">The parent id</param>
     /// <param name="item">The item to create</param>
     /// <returns>True for a valid item</returns>
-    protected virtual Task<bool> OnCreatingAsync(IDbContext context, int parentId, T item) => 
+    protected virtual Task<bool> OnCreatingAsync(IDbContext context, int parentId, T item) =>
         Task.FromResult(true);
 
     /// <summary>
@@ -341,15 +342,13 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
     #region Update
 
-    /// <summary>
-    /// Update existing item
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="item">The item to update</param>
-    /// <returns>The updated item</returns>
+    /// <inheritdoc />
     public virtual async Task<T> UpdateAsync(IDbContext context, int parentId, T item)
     {
+        if (parentId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(parentId));
+        }
         if (item == null)
         {
             throw new ArgumentNullException(nameof(item));
@@ -414,13 +413,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
     #region Delete
 
-    /// <summary>
-    /// Delete existing item
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="itemId">The item id</param>
-    /// <returns>The updated item</returns>
+    /// <inheritdoc />
     public virtual async Task<bool> DeleteAsync(IDbContext context, int parentId, int itemId)
     {
         if (parentId <= 0)

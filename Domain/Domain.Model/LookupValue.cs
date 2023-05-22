@@ -6,7 +6,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Represents a value within a lookup
 /// </summary>
-public class LookupValue : TrackDomainObject<LookupValueAudit>, IEquatable<LookupValue>
+public class LookupValue : TrackDomainObject<LookupValueAudit>, IDerivableObject, IEquatable<LookupValue>
 {
     /// <summary>
     /// The lookup value key
@@ -56,6 +56,11 @@ public class LookupValue : TrackDomainObject<LookupValueAudit>, IEquatable<Looku
         }
     }
 
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
+
     /// <inheritdoc/>
     public LookupValue()
     {
@@ -89,7 +94,8 @@ public class LookupValue : TrackDomainObject<LookupValueAudit>, IEquatable<Looku
             RangeValue = RangeValue,
             Value = Value,
             ValueLocalizations = ValueLocalizations,
-            LookupHash = LookupHash
+            LookupHash = LookupHash,
+            OverrideType = OverrideType
         };
     }
 
@@ -103,5 +109,6 @@ public class LookupValue : TrackDomainObject<LookupValueAudit>, IEquatable<Looku
         RangeValue = audit.RangeValue;
         Value = audit.Value;
         ValueLocalizations = audit.ValueLocalizations;
+        OverrideType = audit.OverrideType;
     }
 }

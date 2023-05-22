@@ -175,17 +175,17 @@ public class PayrollController : Api.Controller.PayrollController
     #region Cases
 
     /// <summary>
-    /// Get active and available case sets
+    /// Get active and available cases
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="query">The payroll case query</param>
     /// <returns>All payroll cases</returns>
-    [HttpGet("{payrollId}/cases/sets")]
+    [HttpGet("{payrollId}/cases/available")]
     [OkResponse]
     [NotFoundResponse]
-    [ApiOperationId("GetPayrollAvailableCaseSets")]
-    public async Task<ActionResult<ApiObject.CaseSet[]>> GetPayrollAvailableCaseSetsAsync(int tenantId,
+    [ApiOperationId("GetPayrollAvailableCases")]
+    public async Task<ActionResult<ApiObject.Case[]>> GetPayrollAvailableCasesAsync(int tenantId,
         int payrollId, [FromQuery][Required] PayrollCaseQuery query)
     {
         // tenant check
@@ -199,7 +199,7 @@ public class PayrollController : Api.Controller.PayrollController
         query.TenantId = tenantId;
         query.PayrollId = payrollId;
 
-        return await base.GetPayrollAvailableCaseSetsAsync(query);
+        return await GetPayrollAvailableCasesAsync(query);
     }
 
     /// <summary>
@@ -207,6 +207,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <remarks>
     /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
     /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
@@ -214,12 +215,13 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="query">The case build query</param>
     /// <param name="caseChangeSetup">The case change setup (optional)</param>
     /// <returns>The created case set</returns>
-    [HttpGet("{payrollId}/cases/sets/{caseName}")]
+    // TODO replace all GETs with request body with a POST
+    [HttpPost("{payrollId}/cases/build/{caseName}")]
     [OkResponse]
     [NotFoundResponse]
-    [ApiOperationId("BuildPayrollCaseSet")]
+    [ApiOperationId("BuildPayrollCase")]
     [QueryIgnore]
-    public override async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseSetAsync(int tenantId, int payrollId,
+    public override async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseAsync(int tenantId, int payrollId,
         string caseName, [FromQuery][Required] CaseBuildQuery query,
         [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<ApiObject.CaseChangeSetup>))] ApiObject.CaseChangeSetup caseChangeSetup = null)
     {
@@ -230,7 +232,7 @@ public class PayrollController : Api.Controller.PayrollController
             return tenantResult;
         }
 
-        return await base.BuildPayrollCaseSetAsync(tenantId, payrollId, caseName, query, caseChangeSetup);
+        return await base.BuildPayrollCaseAsync(tenantId, payrollId, caseName, query, caseChangeSetup);
     }
 
     #endregion
@@ -392,7 +394,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="payrollId">The payroll id</param>
     /// <param name="caseChangeSetup">The case change setup</param>
     /// <returns>The case change setup with the created case values <see cref="CaseValueCreationMode"/>, including issues</returns>
-    [HttpPost("{payrollId}/cases/sets")]
+    [HttpPost("{payrollId}/cases")]
     [CreatedResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
@@ -411,7 +413,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="caseType">The case type (default: all)</param>
-    /// <param name="caseNames">The case names (default: all)</param>
+    /// <param name="caseNames">The case names (case-insensitive, default: all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSetName">The cluster set name</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -448,7 +450,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="caseFieldNames">The case field names (default: all)</param>
+    /// <param name="caseFieldNames">The case field names (case-insensitive, default: all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSetName">The cluster set name</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -484,8 +486,8 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="sourceCaseName">The relation source case name (default: all)</param>
-    /// <param name="targetCaseName">The relation target case name (default: all)</param>
+    /// <param name="sourceCaseName">The relation source case name (case-insensitive, default: all)</param>
+    /// <param name="targetCaseName">The relation target case name (case-insensitive, default: all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSetName">The cluster set name</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -557,7 +559,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="collectorNames">The collector names filter (Default is all)</param>
+    /// <param name="collectorNames">The collector names filter (case-insensitive, default is all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSetName">The cluster set name</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -593,7 +595,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="lookupNames">The lookup names filter (default is all)</param>
+    /// <param name="lookupNames">The lookup names filter (case-insensitive, default is all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
@@ -628,18 +630,18 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="lookupNames">The lookup names</param>
+    /// <param name="lookupNames">The lookup names filter (case-insensitive, default is all)</param>
+    /// <param name="lookupKeys">The lookup-value keys filter (case-insensitive, default is all)</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
-    /// <param name="language">The content language</param>
-    /// <returns>The lookup values</returns>
+    /// <returns>Payroll lookup values</returns>
     [HttpGet("{payrollId}/lookups/values")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollLookupValues")]
-    public async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupValuesAsync(int tenantId, int payrollId,
-        [FromQuery] string[] lookupNames, [FromQuery] DateTime? regulationDate,
-        [FromQuery] DateTime? evaluationDate, [FromQuery] Language? language)
+    public async Task<ActionResult<ApiObject.LookupValue[]>> GetPayrollLookupValuesAsync(int tenantId, int payrollId,
+        [FromQuery] string[] lookupNames, [FromQuery] string[] lookupKeys,
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -655,6 +657,41 @@ public class PayrollController : Api.Controller.PayrollController
                 RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             },
+            lookupNames, lookupKeys);
+    }
+
+    /// <summary>
+    /// Get payroll lookup data
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="payrollId">The payroll id</param>
+    /// <param name="lookupNames">The lookup names (case-insensitive)</param>
+    /// <param name="regulationDate">The regulation date (default: UTC now)</param>
+    /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+    /// <param name="language">The content language</param>
+    /// <returns>The lookup data</returns>
+    [HttpGet("{payrollId}/lookups/data")]
+    [OkResponse]
+    [NotFoundResponse]
+    [ApiOperationId("GetPayrollLookupData")]
+    public async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupDataAsync(int tenantId, int payrollId,
+        [FromQuery][Required] string[] lookupNames, [FromQuery] DateTime? regulationDate,
+        [FromQuery] DateTime? evaluationDate, [FromQuery] Language? language)
+    {
+        // tenant check
+        var tenantResult = VerifyTenant(tenantId);
+        if (tenantResult != null)
+        {
+            return tenantResult;
+        }
+        return await base.GetPayrollLookupDataAsync(
+            new()
+            {
+                TenantId = tenantId,
+                PayrollId = payrollId,
+                RegulationDate = regulationDate,
+                EvaluationDate = evaluationDate
+            },
             lookupNames, language);
     }
 
@@ -663,7 +700,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="lookupName">The lookup name</param>
+    /// <param name="lookupName">The lookup name (case-insensitive)</param>
     /// <param name="lookupKey">The lookup key, optionally with range value</param>
     /// <param name="rangeValue">The lookup range value</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -700,7 +737,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="reportNames">The report names filter (Default is all)</param>
+    /// <param name="reportNames">The report names filter (case-insensitive, default is all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSetName">The cluster set name</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -710,7 +747,7 @@ public class PayrollController : Api.Controller.PayrollController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollReports")]
-    public async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(int tenantId, int payrollId,
+    public async Task<ActionResult<ApiObject.Report[]>> GetPayrollReportsAsync(int tenantId, int payrollId,
         [FromQuery] string[] reportNames, [FromQuery] OverrideType? overrideType, [FromQuery] string clusterSetName,
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
@@ -732,21 +769,54 @@ public class PayrollController : Api.Controller.PayrollController
     }
 
     /// <summary>
-    /// Get payroll report template
+    /// Get payroll report parameters
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="reportNames">The report names</param>
-    /// <param name="language">The report language</param>
+    /// <param name="reportNames">The report names (case-insensitive, default is all)</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
-    /// <returns>Payroll report template</returns>
-    [HttpGet("{payrollId}/reports/template")]
+    /// <returns>Payroll report parameters</returns>
+    [HttpGet("{payrollId}/reports/parameters")]
     [OkResponse]
     [NotFoundResponse]
-    [ApiOperationId("GetPayrollReportTemplate")]
-    public async Task<ActionResult<ApiObject.ReportTemplate>> GetPayrollReportTemplateAsync(int tenantId, int payrollId,
-        [FromQuery][Required] string[] reportNames, [FromQuery][Required] Language language,
+    [ApiOperationId("GetPayrollReportParameters")]
+    public async Task<ActionResult<ApiObject.ReportParameter[]>> GetPayrollReportParametersAsync(int tenantId, int payrollId,
+        [FromQuery] string[] reportNames, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
+    {
+        // tenant check
+        var tenantResult = VerifyTenant(tenantId);
+        if (tenantResult != null)
+        {
+            return tenantResult;
+        }
+        return await base.GetPayrollReportParametersAsync(
+            new()
+            {
+                TenantId = tenantId,
+                PayrollId = payrollId,
+                RegulationDate = regulationDate,
+                EvaluationDate = evaluationDate
+            },
+            reportNames);
+    }
+
+    /// <summary>
+    /// Get payroll report templates
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="payrollId">The payroll id</param>
+    /// <param name="reportNames">The report names (case-insensitive, default is all)</param>
+    /// <param name="language">The report language (default is all)</param>
+    /// <param name="regulationDate">The regulation date (default: UTC now)</param>
+    /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+    /// <returns>Payroll report templates</returns>
+    [HttpGet("{payrollId}/reports/templates")]
+    [OkResponse]
+    [NotFoundResponse]
+    [ApiOperationId("GetPayrollReportTemplates")]
+    public async Task<ActionResult<ApiObject.ReportTemplate[]>> GetPayrollReportTemplatesAsync(int tenantId, int payrollId,
+        [FromQuery] string[] reportNames, [FromQuery] Language? language,
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // tenant check
@@ -755,7 +825,7 @@ public class PayrollController : Api.Controller.PayrollController
         {
             return tenantResult;
         }
-        return await base.GetPayrollReportTemplateAsync(
+        return await base.GetPayrollReportTemplatesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -771,7 +841,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="scriptNames">The script names filter (Default is all)</param>
+    /// <param name="scriptNames">The script names filter (case-insensitive, default is all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
@@ -806,7 +876,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <param name="scriptNames">The script names filter (Default is all)</param>
+    /// <param name="scriptNames">The script names filter (case-insensitive, default is all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="functionType">The function type (default: all)</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>

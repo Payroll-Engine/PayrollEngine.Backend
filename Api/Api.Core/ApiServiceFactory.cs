@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
@@ -11,13 +12,13 @@ namespace PayrollEngine.Api.Core;
 internal static class ApiServiceFactory
 {
     // services setup
-    internal static void SetupApiServices(IServiceCollection services)
+    internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
     {
         // system services
-        services.AddScoped(NewRegulationPermissionService);
+        services.AddScoped(NewRegulationShareService);
 
         // services
-        TenantServiceFactory.SetupServices(services);
+        TenantServiceFactory.SetupServices(services, configuration);
         RegulationServiceFactory.SetupServices(services);
         PayrollServiceFactory.SetupServices(services);
         CaseValueServiceFactory.SetupServices(services);
@@ -27,14 +28,17 @@ internal static class ApiServiceFactory
 
     #region Service Factories
 
-    private static IRegulationPermissionService NewRegulationPermissionService(IServiceProvider serviceProvider) =>
-        new RegulationPermissionService(serviceProvider.GetRequiredService<IRegulationPermissionRepository>());
+    private static IRegulationShareService NewRegulationShareService(IServiceProvider serviceProvider) =>
+        new RegulationShareService(serviceProvider.GetRequiredService<IRegulationShareRepository>());
 
     private static class TenantServiceFactory
     {
+        private static IConfiguration Configuration { get; set; }
+
         // services setup
-        internal static void SetupServices(IServiceCollection services)
+        internal static void SetupServices(IServiceCollection services, IConfiguration configuration)
         {
+            Configuration = configuration;
             services.AddScoped(NewTenantService);
             services.AddScoped(NewWebhookService);
             services.AddScoped(NewWebhookMessageService);
@@ -57,12 +61,22 @@ internal static class ApiServiceFactory
         private static IWebhookMessageService NewWebhookMessageService(IServiceProvider serviceProvider) =>
             new WebhookMessageService(serviceProvider.GetRequiredService<IWebhookMessageRepository>());
 
-        private static IWebhookDispatchService NewWebhookDispatchService(IServiceProvider serviceProvider) =>
-            new WebhookDispatchService(
+        private static IWebhookDispatchService NewWebhookDispatchService(IServiceProvider serviceProvider)
+        {
+            var webhookTimeout = TimeSpan.FromMinutes(1);
+            if (Configuration != null)
+            {
+                var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
+                webhookTimeout = serverConfiguration.WebhookTimeout;
+            }
+
+            return new WebhookDispatchService(
                 serviceProvider.GetRequiredService<ITenantRepository>(),
                 serviceProvider.GetRequiredService<IUserRepository>(),
                 serviceProvider.GetRequiredService<IWebhookRepository>(),
-                serviceProvider.GetRequiredService<IWebhookMessageRepository>());
+                serviceProvider.GetRequiredService<IWebhookMessageRepository>(),
+                webhookTimeout);
+        }
 
         private static IUserService NewUserService(IServiceProvider serviceProvider) =>
             new UserService(serviceProvider.GetRequiredService<IUserRepository>());
@@ -345,7 +359,7 @@ internal static class ApiServiceFactory
                 WageTypeRepository = serviceProvider.GetRequiredService<IWageTypeRepository>(),
                 WageTypeAuditRepository = serviceProvider.GetRequiredService<IWageTypeAuditRepository>(),
                 RegulationRepository = serviceProvider.GetRequiredService<IRegulationRepository>(),
-                RegulationPermissionRepository = serviceProvider.GetRequiredService<IRegulationPermissionRepository>(),
+                RegulationShareRepository = serviceProvider.GetRequiredService<IRegulationShareRepository>(),
                 PayrollRepository = serviceProvider.GetRequiredService<IPayrollRepository>(),
                 PayrollResultRepository = serviceProvider.GetRequiredService<IPayrollResultRepository>(),
                 PayrollConsolidatedResultRepository = serviceProvider.GetRequiredService<IPayrollConsolidatedResultRepository>(),

@@ -68,9 +68,9 @@ public class CaseFieldAudit : AuditDomainObject, IDomainAttributeObject
     public CaseValueCreationMode ValueCreationMode { get; set; }
 
     /// <summary>
-    /// Optional case field
+    /// Mandatory case field value
     /// </summary>
-    public bool Optional { get; set; }
+    public bool ValueMandatory { get; set; }
 
     /// <summary>
     /// The case field order

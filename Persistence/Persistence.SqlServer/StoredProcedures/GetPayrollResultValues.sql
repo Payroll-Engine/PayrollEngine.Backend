@@ -67,7 +67,7 @@ BEGIN
   -- payrun job
   [PayrunJob].[Id] AS [JobId],
   [PayrunJob].[Name] AS [JobName],
-  [PayrunJob].[Reason] AS [JobReason],
+  [PayrunJob].[CreatedReason] AS [JobReason],
   [PayrunJob].[Forecast],
   [PayrunJob].[JobStatus],
   [PayrunJob].[CycleName],
@@ -246,7 +246,7 @@ LEFT JOIN
 LEFT JOIN
   -- user
   [dbo].[User]
-  ON [PayrunJob].[UserId] = [User].Id ' +
+  ON [PayrunJob].[CreatedUserId] = [User].Id ' +
   IIF(@employeeId = NULL, N'', N'WHERE [dbo].[Employee].[Id] = ' +  cast(@employeeId as varchar(10))) +
   N') AS PCV';
 

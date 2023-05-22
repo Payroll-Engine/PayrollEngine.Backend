@@ -6,7 +6,8 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A payroll report parameter
 /// </summary>
-public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDomainAttributeObject, IEquatable<ReportParameter>
+public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDerivableObject,
+    IDomainAttributeObject, IEquatable<ReportParameter>
 {
     /// <summary>
     /// The report parameter name (immutable)
@@ -47,6 +48,11 @@ public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDomainA
     /// The parameter value type
     /// </summary>
     public ReportParameterType ParameterType { get; set; }
+
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
 
     /// <summary>
     /// Custom attributes
@@ -93,6 +99,7 @@ public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDomainA
             Value = Value,
             ValueType = ValueType,
             ParameterType = ParameterType,
+            OverrideType = OverrideType,
             Attributes = Attributes,
         };
     }
@@ -111,6 +118,7 @@ public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDomainA
         Value = audit.Value;
         ValueType = audit.ValueType;
         ParameterType = audit.ParameterType;
+        OverrideType = audit.OverrideType;
         Attributes = audit.Attributes.Copy();
     }
 

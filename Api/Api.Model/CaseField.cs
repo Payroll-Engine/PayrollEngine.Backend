@@ -12,6 +12,7 @@ public class CaseField : ApiObjectBase
     /// The case field name (immutable)
     /// </summary>
     [Required]
+    [StringLength(128)]
     public string Name { get; set; }
 
     /// <summary>
@@ -67,9 +68,9 @@ public class CaseField : ApiObjectBase
     public CaseValueCreationMode ValueCreationMode { get; set; }
 
     /// <summary>
-    /// Optional case field
+    /// Mandatory case field value
     /// </summary>
-    public bool Optional { get; set; }
+    public bool ValueMandatory { get; set; }
 
     /// <summary>
     /// The case field order

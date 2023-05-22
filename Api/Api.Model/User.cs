@@ -47,6 +47,11 @@ public class User : ApiObjectBase
     public Language Language { get; set; }
 
     /// <summary>
+    /// Supervisor user
+    /// </summary>
+    public bool Supervisor { get; set; }
+
+    /// <summary>
     /// Custom attributes
     /// </summary>
     public Dictionary<string, object> Attributes { get; set; }

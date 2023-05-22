@@ -23,8 +23,8 @@ public static class ApiServiceIgnore
     // administration
     public const bool Admin = Ignore;
 
-    // shared
-    public const bool SharedRegulation = Ignore;
+    // shares
+    public const bool RegulationShare = Ignore;
 
     // tenant
     public const bool Tenant = Ignore;

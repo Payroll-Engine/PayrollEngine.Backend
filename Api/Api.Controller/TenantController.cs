@@ -22,16 +22,16 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
     Tenant, ApiObject.Tenant>
 {
     protected IRegulationService RegulationService { get; }
-    protected IRegulationPermissionService RegulationPermissionService { get; }
+    protected IRegulationShareService RegulationShareService { get; }
     protected IReportService ReportService { get; }
 
     protected TenantController(ITenantService tenantService, IRegulationService regulationService,
-        IRegulationPermissionService regulationPermissionService,
+        IRegulationShareService regulationShareService,
         IReportService reportService, IControllerRuntime runtime) :
         base(tenantService, runtime, new TenantMap())
     {
         RegulationService = regulationService ?? throw new ArgumentNullException(nameof(regulationService));
-        RegulationPermissionService = regulationPermissionService ?? throw new ArgumentNullException(nameof(regulationPermissionService));
+        RegulationShareService = regulationShareService ?? throw new ArgumentNullException(nameof(regulationShareService));
         ReportService = reportService ?? throw new ArgumentNullException(nameof(reportService));
     }
 
@@ -51,21 +51,21 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             var query = new Query
             {
                 Status = ObjectStatus.Active,
-                Filter = $"{nameof(RegulationPermission.PermissionTenantId)} eq {tenantId}"
+                Filter = $"{nameof(RegulationShare.ConsumerTenantId)} eq {tenantId}"
             };
             if (divisionId.HasValue)
             {
-                query.Filter += $" and ({nameof(RegulationPermission.PermissionDivisionId)} eq null or " +
-                                $"{nameof(RegulationPermission.PermissionDivisionId)} eq {divisionId.Value})";
+                query.Filter += $" and ({nameof(RegulationShare.ConsumerDivisionId)} eq null or " +
+                                $"{nameof(RegulationShare.ConsumerDivisionId)} eq {divisionId.Value})";
             }
-            var permissions = await RegulationPermissionService.QueryAsync(Runtime.DbContext, query);
+            var permissions = await RegulationShareService.QueryAsync(Runtime.DbContext, query);
 
             // regulations
             var map = new RegulationMap();
             var regulations = new List<ApiObject.Regulation>();
             foreach (var permission in permissions)
             {
-                var regulation = await RegulationService.GetAsync(Runtime.DbContext,permission.TenantId, permission.RegulationId);
+                var regulation = await RegulationService.GetAsync(Runtime.DbContext,permission.ProviderTenantId, permission.ProviderRegulationId);
                 if (regulation != null)
                 {
                     regulations.Add(map.ToApi(regulation));

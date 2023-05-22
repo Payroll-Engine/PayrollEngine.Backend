@@ -42,9 +42,9 @@ public static class CaseFieldExtensions
                                            $"and case field #{refCaseField.Id} ({refCaseField.TimeUnit})");
             }
             // optional
-            if (caseField.Optional != refCaseField.Optional)
+            if (caseField.ValueMandatory != refCaseField.ValueMandatory)
             {
-                throw new PayrollException($"Case field {refCaseField.Name}: different optional state in case field #{caseField.Id} ({caseField.TimeUnit}) " +
+                throw new PayrollException($"Case field {refCaseField.Name}: different value mandatory state in case field #{caseField.Id} ({caseField.TimeUnit}) " +
                                            $"and case field #{refCaseField.Id} ({refCaseField.TimeUnit})");
             }
         }

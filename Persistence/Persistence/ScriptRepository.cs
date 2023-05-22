@@ -24,6 +24,7 @@ public class ScriptRepository : TrackChildDomainRepository<Script, ScriptAudit>,
     {
         parameters.Add(nameof(script.FunctionTypeMask), script.FunctionTypeMask);
         parameters.Add(nameof(script.Value), script.Value);
+        parameters.Add(nameof(script.OverrideType), script.OverrideType);
         base.GetObjectData(script, parameters);
     }
 

@@ -78,8 +78,8 @@ BEGIN
         )
       AND (
         @names IS NULL
-        OR dbo.[PayrunResult].[Name] IN (
-          SELECT value
+        OR LOWER(dbo.[PayrunResult].[Name]) IN (
+          SELECT LOWER(value)
           FROM OPENJSON(@names)
           )
         )

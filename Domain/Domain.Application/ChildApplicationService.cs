@@ -15,6 +15,9 @@ public abstract class ChildApplicationService<TRepo, TDomain> : RepositoryApplic
         base(repository)
     {
     }
+    
+    public virtual async Task<bool> ExistsAsync(IDbContext context, int parentId, int itemId) =>
+        await Repository.ExistsAsync(context, parentId, itemId);
 
     public virtual async Task<IEnumerable<TDomain>> QueryAsync(IDbContext context, int parentId, Query query = null) =>
         await Repository.QueryAsync(context, parentId, query);

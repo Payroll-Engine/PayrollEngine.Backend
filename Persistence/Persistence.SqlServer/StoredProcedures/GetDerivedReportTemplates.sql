@@ -52,8 +52,8 @@ BEGIN
     AND dbo.[ReportTemplate].[Created] < @createdBefore
     AND (
       @reportNames IS NULL
-      OR dbo.[Report].[Name] IN (
-        SELECT value
+      OR LOWER(dbo.[Report].[Name]) IN (
+        SELECT LOWER(value)
         FROM OPENJSON(@reportNames)
         )
       )

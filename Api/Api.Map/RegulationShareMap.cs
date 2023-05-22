@@ -7,6 +7,6 @@ namespace PayrollEngine.Api.Map;
 /// <summary>
 /// Map a domain object with an api object
 /// </summary>
-public class RegulationPermissionMap : ApiMapBase<DomainObject.RegulationPermission, ApiObject.RegulationPermission>
+public class RegulationShareMap : ApiMapBase<DomainObject.RegulationShare, ApiObject.RegulationShare>
 {
 }

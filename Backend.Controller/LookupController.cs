@@ -141,7 +141,7 @@ public class LookupController : Api.Controller.LookupController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLookupSets")]
-    public async Task<ActionResult> QueryLookupSetsAsync(int tenantId, int regulationId, [FromQuery] Query query)
+    public override async Task<ActionResult> QueryLookupSetsAsync(int tenantId, int regulationId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -149,7 +149,7 @@ public class LookupController : Api.Controller.LookupController
         {
             return tenantResult;
         }
-        return await QueryLookupSetsAsync(regulationId, query);
+        return await base.QueryLookupSetsAsync(tenantId, regulationId, query);
     }
 
     /// <summary>

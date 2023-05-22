@@ -44,6 +44,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Backend.Serve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Persistence", "Persistence\Persistence\PayrollEngine.Persistence.csproj", "{E568C91A-A8D2-4E56-BACA-4D9432000B80}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbScripts", "DbScripts", "{310A2C3A-18E3-4725-906B-899562617D1F}"
+	ProjectSection(SolutionItems) = preProject
+		DbScripts\CreateObjectsDbScript.sql = DbScripts\CreateObjectsDbScript.sql
+		DbScripts\DropObjectsDbScript.sql = DbScripts\DropObjectsDbScript.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +129,7 @@ Global
 		{696595D8-55C0-48FD-8D22-9A6BADE6ABD2} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
 		{9F13CB4C-E1F3-4794-8BFB-8990273DF8CD} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
 		{E568C91A-A8D2-4E56-BACA-4D9432000B80} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
+		{310A2C3A-18E3-4725-906B-899562617D1F} = {FB52813B-8A24-40E3-98AA-DC140C590DC3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01864D44-5949-42DD-AFFF-B48E0E7DC141}

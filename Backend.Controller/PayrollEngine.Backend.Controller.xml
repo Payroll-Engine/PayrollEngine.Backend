@@ -1252,21 +1252,22 @@
             <param name="evaluationDate">Creation date filter (default: UTC now)</param>
             <returns>The payroll regulations, including the shared regulations</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCaseSetsAsync(System.Int32,System.Int32,PayrollEngine.Api.Core.PayrollCaseQuery)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCasesAsync(System.Int32,System.Int32,PayrollEngine.Api.Core.PayrollCaseQuery)">
             <summary>
-            Get active and available case sets
+            Get active and available cases
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
             <param name="query">The payroll case query</param>
             <returns>All payroll cases</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.BuildPayrollCaseSetAsync(System.Int32,System.Int32,System.String,PayrollEngine.Api.Core.CaseBuildQuery,PayrollEngine.Api.Model.CaseChangeSetup)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.BuildPayrollCaseAsync(System.Int32,System.Int32,System.String,PayrollEngine.Api.Core.CaseBuildQuery,PayrollEngine.Api.Model.CaseChangeSetup)">
             <summary>
             Build case with fields and related cases
             </summary>
             <remarks>
             Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
             </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
@@ -1345,7 +1346,7 @@
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
             <param name="caseType">The case type (default: all)</param>
-            <param name="caseNames">The case names (default: all)</param>
+            <param name="caseNames">The case names (case-insensitive, default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSetName">The cluster set name</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -1358,7 +1359,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="caseFieldNames">The case field names (default: all)</param>
+            <param name="caseFieldNames">The case field names (case-insensitive, default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSetName">The cluster set name</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -1371,8 +1372,8 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="sourceCaseName">The relation source case name (default: all)</param>
-            <param name="targetCaseName">The relation target case name (default: all)</param>
+            <param name="sourceCaseName">The relation source case name (case-insensitive, default: all)</param>
+            <param name="targetCaseName">The relation target case name (case-insensitive, default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSetName">The cluster set name</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -1398,7 +1399,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="collectorNames">The collector names filter (Default is all)</param>
+            <param name="collectorNames">The collector names filter (case-insensitive, default is all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSetName">The cluster set name</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -1411,23 +1412,35 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="lookupNames">The lookup names filter (default is all)</param>
+            <param name="lookupNames">The lookup names filter (case-insensitive, default is all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>Payroll lookups</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupValuesAsync(System.Int32,System.Int32,System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupValuesAsync(System.Int32,System.Int32,System.String[],System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
             Get payroll lookup values
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="lookupNames">The lookup names</param>
+            <param name="lookupNames">The lookup names filter (case-insensitive, default is all)</param>
+            <param name="lookupKeys">The lookup-value keys filter (case-insensitive, default is all)</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll lookup values</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupDataAsync(System.Int32,System.Int32,System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{PayrollEngine.Language})">
+            <summary>
+            Get payroll lookup data
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="lookupNames">The lookup names (case-insensitive)</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <param name="language">The content language</param>
-            <returns>The lookup values</returns>
+            <returns>The lookup data</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupValueDataAsync(System.Int32,System.Int32,System.String,System.String,System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{PayrollEngine.Language})">
             <summary>
@@ -1435,7 +1448,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="lookupName">The lookup name</param>
+            <param name="lookupName">The lookup name (case-insensitive)</param>
             <param name="lookupKey">The lookup key, optionally with range value</param>
             <param name="rangeValue">The lookup range value</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -1449,24 +1462,35 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="reportNames">The report names filter (Default is all)</param>
+            <param name="reportNames">The report names filter (case-insensitive, default is all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSetName">The cluster set name</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>Payroll reports</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportTemplateAsync(System.Int32,System.Int32,System.String[],PayrollEngine.Language,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportParametersAsync(System.Int32,System.Int32,System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Get payroll report template
+            Get payroll report parameters
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="reportNames">The report names</param>
-            <param name="language">The report language</param>
+            <param name="reportNames">The report names (case-insensitive, default is all)</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
-            <returns>Payroll report template</returns>
+            <returns>Payroll report parameters</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportTemplatesAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.Language},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get payroll report templates
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="reportNames">The report names (case-insensitive, default is all)</param>
+            <param name="language">The report language (default is all)</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <returns>Payroll report templates</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollScriptsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
@@ -1474,7 +1498,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="scriptNames">The script names filter (Default is all)</param>
+            <param name="scriptNames">The script names filter (case-insensitive, default is all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
@@ -1486,7 +1510,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <param name="scriptNames">The script names filter (Default is all)</param>
+            <param name="scriptNames">The script names filter (case-insensitive, default is all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="functionType">The function type (default: all)</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
@@ -1806,14 +1830,15 @@
             <param name="payrunJobId">The payrun job id</param>
             <returns>The payrun job status</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.ChangePayrunJobStatusAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.PayrunJobStatus,System.Boolean)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.ChangePayrunJobStatusAsync(System.Int32,System.Int32,PayrollEngine.PayrunJobStatus,System.Int32,System.String,System.Boolean)">
             <summary>
             Change the status of a payrun job
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="userId">The user id</param>
             <param name="payrunJobId">The payrun job id</param>
             <param name="jobStatus">The new payrun job status</param>
+            <param name="userId">The user id</param>
+            <param name="reason">The change reason</param>
             <param name="patchMode">Use the patch mode</param>
             <returns>The updated payrun job</returns>
         </member>
@@ -1986,6 +2011,82 @@
             <param name="attributeName">The attribute name</param>
             <returns>True if the attribute was deleted</returns>
         </member>
+        <member name="T:PayrollEngine.Backend.Controller.RegulationShareController">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.RegulationShareController.RegulationService">
+            <summary>
+            The regulation service
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Backend.Controller.RegulationShareController.DivisionService">
+            <summary>
+            The division service
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationShareService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.GetRegulationShareAsync(System.Int32)">
+            <summary>
+            Get a regulation share
+            </summary>
+            <param name="shareId">The regulation share id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.QueryRegulationSharesAsync(PayrollEngine.Query)">
+            <summary>
+            Query regulation shares
+            </summary>
+            <param name="query">Query parameters</param>
+            <returns>The regulation shares matching the query</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.CreateRegulationShareAsync(PayrollEngine.Api.Model.RegulationShare)">
+            <summary>
+            Add a new regulation share
+            </summary>
+            <param name="share">The regulation share to add</param>
+            <returns>The newly created regulation share</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.UpdateRegulationShareAsync(PayrollEngine.Api.Model.RegulationShare)">
+            <summary>
+            Update a regulation share
+            </summary>
+            <param name="share">The regulation share with updated values</param>
+            <returns>The modified regulation share</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.DeleteRegulationShareAsync(System.Int32)">
+            <summary>
+            Delete a regulation share
+            </summary>
+            <param name="shareId">The regulation share id</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.GetRegulationShareAttributeAsync(System.Int32,System.String)">
+            <summary>
+            Get a regulation share attribute
+            </summary>
+            <param name="shareId">The regulation share id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>The attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.SetRegulationShareAttributeAsync(System.Int32,System.String,System.String)">
+            <summary>
+            Set a regulation share attribute
+            </summary>
+            <param name="shareId">The regulation share id</param>
+            <param name="attributeName">The attribute name</param>
+            <param name="value">The attribute value as JSON</param>
+            <returns>The current attribute value as JSON</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.DeleteRegulationShareAttributeAsync(System.Int32,System.String)">
+            <summary>
+            Delete a regulation share attribute
+            </summary>
+            <param name="shareId">The regulation share id</param>
+            <param name="attributeName">The attribute name</param>
+            <returns>True if the attribute was deleted</returns>
+        </member>
         <member name="T:PayrollEngine.Backend.Controller.ReportAuditController">
             <inheritdoc/>
         </member>
@@ -2143,39 +2244,35 @@
         <member name="M:PayrollEngine.Backend.Controller.ReportLogController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IReportLogService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.QueryReportLogsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.QueryReportLogsAsync(System.Int32,PayrollEngine.Query)">
             <summary>
             Query report logs
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportId">The report id</param>
             <param name="query">Query logs</param>
             <returns>The report logs</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.GetReportLogAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.GetReportLogAsync(System.Int32,System.Int32)">
             <summary>
             Get a report log
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportId">The report id</param>
             <param name="logId">The id of the log</param>
             <returns>The report log</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.CreateReportLogAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportLog)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.CreateReportLogAsync(System.Int32,PayrollEngine.Api.Model.ReportLog)">
             <summary>
             Add a new report log
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportId">The report id</param>
             <param name="log">The report log to add</param>
             <returns>The newly created report log</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.DeleteReportLogAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportLogController.DeleteReportLogAsync(System.Int32,System.Int32)">
             <summary>
             Delete a report log
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportId">The report id</param>
             <param name="logId">The id of the report log</param>
             <returns></returns>
         </member>
@@ -2403,79 +2500,10 @@
             <param name="regulationId">The regulation id</param>
             <param name="scriptId">The script id</param>
         </member>
-        <member name="T:PayrollEngine.Backend.Controller.SharedRegulationController">
-            <inheritdoc/>
-        </member>
-        <member name="P:PayrollEngine.Backend.Controller.SharedRegulationController.RegulationService">
-            <summary>
-            The regulation service
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Backend.Controller.SharedRegulationController.DivisionService">
-            <summary>
-            The division service
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.#ctor(PayrollEngine.Domain.Application.Service.IRegulationPermissionService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Api.Core.IControllerRuntime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.GetRegulationPermissionAsync(System.Int32)">
-            <summary>
-            Get a regulation permission
-            </summary>
-            <param name="permissionId">The regulation permission id</param>
-            <returns></returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.GetRegulationPermissionAttributeAsync(System.Int32,System.String)">
-            <summary>
-            Get a regulation permission attribute
-            </summary>
-            <param name="permissionId">The regulation permission id</param>
-            <param name="attributeName">The attribute name</param>
-            <returns>The attribute value as JSON</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.SetRegulationPermissionAttributeAsync(System.Int32,System.String,System.String)">
-            <summary>
-            Set a regulation permission attribute
-            </summary>
-            <param name="permissionId">The regulation permission id</param>
-            <param name="attributeName">The attribute name</param>
-            <param name="value">The attribute value as JSON</param>
-            <returns>The current attribute value as JSON</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.DeleteRegulationPermissionAttributeAsync(System.Int32,System.String)">
-            <summary>
-            Delete a regulation permission attribute
-            </summary>
-            <param name="permissionId">The regulation permission id</param>
-            <param name="attributeName">The attribute name</param>
-            <returns>True if the attribute was deleted</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.QueryRegulationPermissionsAsync(PayrollEngine.Query)">
-            <summary>
-            Query regulation permissions
-            </summary>
-            <param name="query">Query parameters</param>
-            <returns>The regulation permissions matching the query</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.CreateRegulationPermissionAsync(PayrollEngine.Api.Model.RegulationPermission)">
-            <summary>
-            Add a new regulation permission
-            </summary>
-            <param name="permission">The regulation permission to add</param>
-            <returns>The newly created regulation permission</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.SharedRegulationController.DeleteRegulationPermissionAsync(System.Int32)">
-            <summary>
-            Delete a regulation permission
-            </summary>
-            <param name="permissionId">The regulation permission id</param>
-            <returns></returns>
-        </member>
         <member name="T:PayrollEngine.Backend.Controller.TaskController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.TaskController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ITaskService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.TaskController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ITaskService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TaskController.QueryTasksAsync(System.Int32,PayrollEngine.Query)">
@@ -2549,7 +2577,7 @@
         <member name="T:PayrollEngine.Backend.Controller.TenantController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IRegulationPermissionService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IRegulationShareService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TenantController.QueryTenantsAsync(PayrollEngine.Query)">

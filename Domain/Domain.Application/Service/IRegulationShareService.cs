@@ -3,6 +3,6 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface IRegulationPermissionService : IRootApplicationService<IRegulationPermissionRepository, RegulationPermission>
+public interface IRegulationShareService : IRootApplicationService<IRegulationShareRepository, RegulationShare>
 {
 }

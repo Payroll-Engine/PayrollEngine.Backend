@@ -24,7 +24,7 @@ public class PayrunProcessorSettings : FunctionToolSettings
     public IWageTypeRepository WageTypeRepository { get; set; }
     public ILookupSetRepository RegulationLookupSetRepository { get; set; }
     public IRegulationRepository RegulationRepository { get; set; }
-    public IRegulationPermissionRepository RegulationPermissionRepository { get; set; }
+    public IRegulationShareRepository RegulationShareRepository { get; set; }
     public IPayrollRepository PayrollRepository { get; set; }
     public IPayrollResultRepository PayrollResultRepository { get; set; }
     public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; set; }

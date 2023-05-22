@@ -29,7 +29,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         }
     }
 
-    public virtual async Task<LookupSet> GetSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId)
+    public virtual async Task<LookupSet> GetLookupSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId)
     {
         if (tenantId <= 0)
         {
@@ -100,7 +100,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         var lookupData = new LookupData();
 
         // lookup set
-        var lookupSet = await GetSetAsync(context, tenantId, regulationId, lookupId);
+        var lookupSet = await GetLookupSetAsync(context, tenantId, regulationId, lookupId);
         if (lookupSet == null)
         {
             return lookupData;

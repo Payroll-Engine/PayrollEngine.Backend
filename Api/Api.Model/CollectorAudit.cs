@@ -15,11 +15,6 @@ public class CollectorAudit : ApiObjectBase
     public int CollectorId { get; set; }
 
     /// <summary>
-    /// The collection type
-    /// </summary>
-    public CollectType CollectType { get; set; }
-
-    /// <summary>
     /// The collector name
     /// </summary>
     public string Name { get; set; }
@@ -29,6 +24,11 @@ public class CollectorAudit : ApiObjectBase
     /// </summary>
     [Localization(nameof(Name))]
     public Dictionary<string, string> NameLocalizations { get; set; }
+
+    /// <summary>
+    /// The collection type
+    /// </summary>
+    public CollectType CollectType { get; set; }
 
     /// <summary>
     /// The override type

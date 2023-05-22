@@ -780,9 +780,9 @@
             The case value creation mode
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseField.Optional">
+        <member name="P:PayrollEngine.Domain.Model.CaseField.ValueMandatory">
             <summary>
-            Optional case field
+            Mandatory case field value
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseField.Order">
@@ -940,9 +940,9 @@
             The case value creation mode
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.Optional">
+        <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.ValueMandatory">
             <summary>
-            Optional case field
+            Mandatory case field value
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.Order">
@@ -2055,11 +2055,6 @@
             A payroll collector
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Collector.CollectType">
-            <summary>
-            The collection type (immutable)
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.Name">
             <summary>
             The collector name (immutable)
@@ -2068,6 +2063,11 @@
         <member name="P:PayrollEngine.Domain.Model.Collector.NameLocalizations">
             <summary>
             The localized collector names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.CollectType">
+            <summary>
+            The collection type (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.OverrideType">
@@ -3306,6 +3306,11 @@
             The lookup range size
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Lookup.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.Lookup.#ctor">
             <inheritdoc/>
         </member>
@@ -3361,6 +3366,11 @@
         <member name="P:PayrollEngine.Domain.Model.LookupAudit.RangeSize">
             <summary>
             The lookup range size
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupAudit.Attributes">
+            <summary>
+            Custom attributes
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.LookupAudit.#ctor">
@@ -3509,6 +3519,11 @@
             The hash is used by database indexes
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupValue.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.LookupValue.#ctor">
             <inheritdoc/>
         </member>
@@ -3566,6 +3581,11 @@
             <summary>
             The lookup hash code
             The hash is used by database indexes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupValueAudit.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.LookupValueAudit.#ctor">
@@ -4394,6 +4414,11 @@
             The payrun name (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Payrun.NameLocalizations">
+            <summary>
+            The localized payrun name
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Payrun.DefaultReason">
             <summary>
             The default payrun reason
@@ -4503,14 +4528,29 @@
             The division id (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrunJob.UserId">
-            <summary>
-            The user id (immutable)
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.ParentJobId">
             <summary>
             The parent payrun job id, e.g. the parent retro pay run job (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.CreatedUserId">
+            <summary>
+            The created user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.ReleasedUserId">
+            <summary>
+            The release user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.ProcessedUserId">
+            <summary>
+            The processed user id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.FinishedUserId">
+            <summary>
+            The finished user id (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.IsRetroJob">
@@ -4583,9 +4623,39 @@
             The evaluation date (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrunJob.Reason">
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.Released">
             <summary>
-            The execution reason (immutable)
+            The job release date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.Processed">
+            <summary>
+            The job process date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.Finished">
+            <summary>
+            The job finish date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.CreatedReason">
+            <summary>
+            The create reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.ReleasedReason">
+            <summary>
+            The release reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.ProcessedReason">
+            <summary>
+            The process reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.FinishedReason">
+            <summary>
+            The finished reason (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.TotalEmployeeCount">
@@ -5134,50 +5204,6 @@
             <param name="compare">The object to compare with this</param>
             <returns>True for objects with the same data</returns>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.RegulationPermission">
-            <summary>
-            A regulation division
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationPermission.TenantId">
-            <summary>
-            The tenant id
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationPermission.RegulationId">
-            <summary>
-            The regulation id
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationPermission.PermissionTenantId">
-            <summary>
-            The permission tenant id
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationPermission.PermissionDivisionId">
-            <summary>
-            The permission division id
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationPermission.Attributes">
-            <summary>
-            Custom attributes
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationPermission.#ctor">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationPermission.#ctor(PayrollEngine.Domain.Model.RegulationPermission)">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationPermission.Equals(PayrollEngine.Domain.Model.RegulationPermission)">
-            <summary>Compare two objects</summary>
-            <param name="compare">The object to compare with this</param>
-            <returns>True for objects with the same data</returns>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationPermission.ToString">
-            <inheritdoc/>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.RegulationReference">
             <summary>Reference to regulation</summary>
         </member>
@@ -5205,6 +5231,50 @@
             <param name="name">The regulation name</param>
             <param name="version">The regulation version</param>
             <returns>True if the regulation reference matches the test regulation</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.RegulationShare">
+            <summary>
+            A regulation division
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.RegulationShare.ProviderTenantId">
+            <summary>
+            The provider tenant id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.RegulationShare.ProviderRegulationId">
+            <summary>
+            The provider regulation id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.RegulationShare.ConsumerTenantId">
+            <summary>
+            The consumer tenant id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.RegulationShare.ConsumerDivisionId">
+            <summary>
+            The consumer division id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.RegulationShare.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.RegulationShare.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.RegulationShare.#ctor(PayrollEngine.Domain.Model.RegulationShare)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.RegulationShare.Equals(PayrollEngine.Domain.Model.RegulationShare)">
+            <summary>Compare two objects</summary>
+            <param name="compare">The object to compare with this</param>
+            <returns>True for objects with the same data</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.RegulationShare.ToString">
+            <inheritdoc/>
         </member>
         <member name="T:PayrollEngine.Domain.Model.RegulationWageType">
             <summary>
@@ -5367,6 +5437,11 @@
             The localized payroll result report descriptions
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.ReportAudit.Category">
             <summary>
             The report category
@@ -5509,6 +5584,11 @@
             The parameter value type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportParameter.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.ReportParameter.Attributes">
             <summary>
             Custom attributes
@@ -5587,6 +5667,11 @@
         <member name="P:PayrollEngine.Domain.Model.ReportParameterAudit.ParameterType">
             <summary>
             The parameter type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportParameterAudit.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportParameterAudit.Attributes">
@@ -5733,6 +5818,11 @@
             A payroll report template
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportTemplate.Name">
+            <summary>
+            The report template name
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.ReportTemplate.Language">
             <summary>
             The report language
@@ -5756,6 +5846,11 @@
         <member name="P:PayrollEngine.Domain.Model.ReportTemplate.Resource">
             <summary>
             The report external resource
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportTemplate.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportTemplate.Attributes">
@@ -5798,6 +5893,11 @@
             The report template id
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.Name">
+            <summary>
+            The report template name
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.Language">
             <summary>
             The report language
@@ -5821,6 +5921,11 @@
         <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.Resource">
             <summary>
             The report external resource
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.OverrideType">
+            <summary>
+            The override type
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.Attributes">
@@ -6328,16 +6433,25 @@
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1">
             <summary>
-            Generic domain object repository with support of the basic CRUD operations
+            Generic domain item repository with support of the basic CRUD operations
             </summary>
-            <typeparam name="T">The hosted domain child object</typeparam>
+            <typeparam name="T">The hosted domain child item</typeparam>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
+            <summary>
+            Test if an domain item exists
+            </summary>
+            <param name="context">The database context</param>
+            <param name="parentId">The parent item id</param>
+            <param name="id">The item id</param>
+            <returns>True, if the domain item exists</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.QueryAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Query)">
             <summary>
             Query resources
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
+            <param name="parentId">The parent item id</param>
             <param name="query">The query parameters</param>
             <returns>A list of the resources, matching the query</returns>
         </member>
@@ -6346,69 +6460,69 @@
             Count query of resources
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
+            <param name="parentId">The parent item id</param>
             <param name="query">The query parameters</param>
             <returns>Resource count matching the query</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.GetParentIdAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
-            Get id of the parent object
+            Get id of the parent item
             </summary>
             <param name="context">The database context</param>
-            <param name="itemId">The domain object id</param>
-            <returns>The id of the parent object</returns>
+            <param name="itemId">The domain item id</param>
+            <returns>The id of the parent item</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.GetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
             <summary>
-            Get object by parent and id
+            Get item by parent and id
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
-            <param name="itemId">The domain object id</param>
-            <returns>The id of the parent object</returns>
+            <param name="parentId">The parent item id</param>
+            <param name="itemId">The domain item id</param>
+            <returns>The id of the parent item</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,`0)">
             <summary>
-            Add a new domain object to the repository
+            Add a new domain item to the repository
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
-            <param name="item">The domain object to add</param>
-            <returns>The newly created domain object including the new id</returns>
+            <param name="parentId">The parent item id</param>
+            <param name="item">The domain item to add</param>
+            <returns>The newly created domain item including the new id</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Add multiple new domain objects to the repository
+            Add multiple new domain items to the repository
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
-            <param name="items">The domain objects to add</param>
-            <returns>The newly created domain objects including the new id</returns>
+            <param name="parentId">The parent item id</param>
+            <param name="items">The domain items to add</param>
+            <returns>The newly created domain items including the new id</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.CreateBulkAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Add multiple new domain objects to the repository using bulk insert
+            Add multiple new domain items to the repository using bulk insert
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
-            <param name="items">The domain objects to add</param>
+            <param name="parentId">The parent item id</param>
+            <param name="items">The domain items to add</param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.UpdateAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,`0)">
             <summary>
-            Update a repository domain object including his parent
+            Update a repository domain item including his parent
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
-            <param name="item">The domain object to update</param>
-            <returns>The updated domain object</returns>
+            <param name="parentId">The parent item id</param>
+            <param name="item">The domain item to update</param>
+            <returns>The updated domain item</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.DeleteAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
             <summary>
-            Remove a domain object from the repository
+            Remove a domain item from the repository
             </summary>
             <param name="context">The database context</param>
-            <param name="parentId">The parent object id</param>
-            <param name="itemId">The if of the domain object to delete</param>
+            <param name="parentId">The parent item id</param>
+            <param name="itemId">The if of the domain item to delete</param>
             <returns>True if the record was deleted</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICollectorAuditRepository">
@@ -6475,32 +6589,32 @@
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IDomainRepository">
             <summary>
-            Generic domain object repository with support of the basic CRUD operations
+            Generic domain item repository with support of the basic CRUD operations
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
-            Test if an domain object exists
+            Test if an domain item exists
             </summary>
             <param name="context">The database context</param>
-            <param name="id">The object id</param>
-            <returns>True, if the domain object exists</returns>
+            <param name="id">The item id</param>
+            <returns>True, if the domain item exists</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.Object)">
             <summary>
-            Test if an domain object exists
+            Test if an domain item exists
             </summary>
             <param name="context">The database context</param>
-            <param name="fieldName">The object field name</param>
-            <param name="value">The object field value</param>
-            <returns>True, if the domain object exists</returns>
+            <param name="fieldName">The item field name</param>
+            <param name="value">The item field value</param>
+            <returns>True, if the domain item exists</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.GetAttributeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
             <summary>
             Gets attribute value as JSON
             </summary>
             <param name="context">The database context</param>
-            <param name="id">The object id</param>
+            <param name="id">The item id</param>
             <param name="attributeName">The attribute name</param>
             <returns>The attribute value</returns>
         </member>
@@ -6509,7 +6623,7 @@
             Test if an attribute exists
             </summary>
             <param name="context">The database context</param>
-            <param name="id">The object id</param>
+            <param name="id">The item id</param>
             <param name="attributeName">The attribute name</param>
             <returns>True, if the attribute exists</returns>
         </member>
@@ -6518,7 +6632,7 @@
             Creates or updates the attribute value
             </summary>
             <param name="context">The database context</param>
-            <param name="id">The object id</param>
+            <param name="id">The item id</param>
             <param name="attributeName">The attribute name</param>
             <param name="value">The attribute value as JSON</param>
         </member>
@@ -6527,7 +6641,7 @@
             Delete an attribute
             </summary>
             <param name="context">The database context</param>
-            <param name="id">The if of the domain object to delete</param>
+            <param name="id">The if of the domain item to delete</param>
             <param name="attributeName">The attribute name</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeDivisionRepository">
@@ -6588,7 +6702,7 @@
             Repository for lookup sets
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetSetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupSetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a lookup set, including the lookup values
             </summary>
@@ -6824,6 +6938,17 @@
             <param name="overrideType">The override type filter (default: active)</param>
             <returns>The derived lookups</returns>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedLookupValuesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType})">
+            <summary>
+            Get all active lookup values, considering derived regulations
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The payroll query</param>
+            <param name="lookupNames">The lookup names filter (default: all)</param>
+            <param name="lookupKeys">The lookup-value keys filter (default: all)</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <returns>The derived lookup values</returns>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get all active reports, considering derived regulations
@@ -6835,15 +6960,26 @@
             <param name="clusterSet">The cluster set</param>
             <returns>The derived reports</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportTemplateAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,PayrollEngine.Language,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportParametersAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType})">
             <summary>
-            Get all active reports, considering derived regulations
+            Get all active report parameters, considering derived regulations
             </summary>
             <param name="context">The database context</param>
             <param name="query">The payroll query</param>
-            <param name="language">The report language</param>
             <param name="reportNames">The report names filter (default: all)</param>
-            <returns>The derived reports</returns>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <returns>The derived report parameters</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportTemplatesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.Language},System.Nullable{PayrollEngine.OverrideType})">
+            <summary>
+            Get all active report templates, considering derived regulations
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The payroll query</param>
+            <param name="reportNames">The report names filter (default: all)</param>
+            <param name="language">The report language</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <returns>The derived report templates</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedScriptsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType})">
             <summary>
@@ -6965,7 +7101,7 @@
             <param name="query">The query parameters</param>
             <returns>Payrun jobs of the employee</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.PatchPayrunJobStatusAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.PayrunJobStatus)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrunJobRepository.PatchPayrunJobStatusAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.PayrunJobStatus,System.Int32,System.String)">
             <summary>
             Patch the payrun job status
             </summary>
@@ -6973,7 +7109,9 @@
             <param name="tenantId">The tenant id</param>
             <param name="payrunJobId">The payrun job id</param>
             <param name="jobStatus">The job status to path</param>
-            <returns>The payrun job matching the status</returns>
+            <param name="userId">The user id</param>
+            <param name="reason">The change reason</param>
+            <returns>The payrun job with the new status</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IPayrunParameterRepository">
             <summary>
@@ -6998,26 +7136,26 @@
             Repository for payrun results
             </summary>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IRegulationPermissionRepository">
-            <summary>
-            Repository for regulation permissions
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IRegulationPermissionRepository.GetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
-            <summary>
-            Test for permission
-            </summary>
-            <param name="context">The database context</param>
-            <param name="tenantId">The tenant id</param>
-            <param name="regulationId">The regulation id</param>
-            <param name="permissionTenantId">The permission tenant id</param>
-            <param name="permissionDivisionId">The permission division id</param>
-            <returns>True any collector exists</returns>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IRegulationRepository">
             <summary>
             Repository for payroll regulations
             </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IRegulationShareRepository">
+            <summary>
+            Repository for regulation permissions
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRegulationShareRepository.GetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Test for permission
+            </summary>
+            <param name="context">The database context</param>
+            <param name="providerTenantId">The tenant id</param>
+            <param name="providerRegulationId">The regulation id</param>
+            <param name="consumerTenantId">The permission tenant id</param>
+            <param name="consumerDivisionId">The permission division id</param>
+            <returns>True any collector exists</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IReportAuditRepository">
             <summary>
@@ -7424,6 +7562,11 @@
             The script value
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptAudit.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.ScriptAudit.#ctor">
             <inheritdoc/>
         </member>
@@ -7815,6 +7958,11 @@
         <member name="P:PayrollEngine.Domain.Model.User.Language">
             <summary>
             The users language
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.User.Supervisor">
+            <summary>
+            Supervisor user
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.User.Attributes">

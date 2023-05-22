@@ -20,7 +20,6 @@ public class ReportLogController : Api.Controller.ReportLogController
     /// Query report logs
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportId">The report id</param>
     /// <param name="query">Query logs</param>
     /// <returns>The report logs</returns>
     [HttpGet]
@@ -28,7 +27,7 @@ public class ReportLogController : Api.Controller.ReportLogController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryReportLogs")]
-    public async Task<ActionResult> QueryReportLogsAsync(int tenantId, int reportId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryReportLogsAsync(int tenantId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -36,21 +35,20 @@ public class ReportLogController : Api.Controller.ReportLogController
         {
             return tenantResult;
         }
-        return await QueryItemsAsync(reportId, query);
+        return await QueryItemsAsync(tenantId, query);
     }
 
     /// <summary>
     /// Get a report log
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportId">The report id</param>
     /// <param name="logId">The id of the log</param>
     /// <returns>The report log</returns>
     [HttpGet("{logId}")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportLog")]
-    public async Task<ActionResult<ApiObject.ReportLog>> GetReportLogAsync(int tenantId, int reportId, int logId)
+    public async Task<ActionResult<ApiObject.ReportLog>> GetReportLogAsync(int tenantId, int logId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -58,14 +56,13 @@ public class ReportLogController : Api.Controller.ReportLogController
         {
             return tenantResult;
         }
-        return await GetAsync(reportId, logId);
+        return await GetAsync(tenantId, logId);
     }
 
     /// <summary>
     /// Add a new report log
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportId">The report id</param>
     /// <param name="log">The report log to add</param>
     /// <returns>The newly created report log</returns>
     [HttpPost]
@@ -74,7 +71,7 @@ public class ReportLogController : Api.Controller.ReportLogController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateReportLog")]
     public async Task<ActionResult<ApiObject.ReportLog>> CreateReportLogAsync(int tenantId,
-        int reportId, ApiObject.ReportLog log)
+        ApiObject.ReportLog log)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -82,19 +79,18 @@ public class ReportLogController : Api.Controller.ReportLogController
         {
             return tenantResult;
         }
-        return await CreateAsync(reportId, log);
+        return await CreateAsync(tenantId, log);
     }
 
     /// <summary>
     /// Delete a report log
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportId">The report id</param>
     /// <param name="logId">The id of the report log</param>
     /// <returns></returns>
     [HttpDelete("{logId}")]
     [ApiOperationId("DeleteReportLog")]
-    public async Task<IActionResult> DeleteReportLogAsync(int tenantId, int reportId, int logId)
+    public async Task<IActionResult> DeleteReportLogAsync(int tenantId, int logId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -102,6 +98,6 @@ public class ReportLogController : Api.Controller.ReportLogController
         {
             return tenantResult;
         }
-        return await DeleteAsync(reportId, logId);
+        return await DeleteAsync(tenantId, logId);
     }
 }

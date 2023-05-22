@@ -31,7 +31,7 @@ public class Script : TrackDomainObject<ScriptAudit>, INamedObject, IDerivableOb
     /// The script value
     /// </summary>
     public string Value { get; set; }
-    
+
     /// <summary>
     /// The override type
     /// </summary>
@@ -68,7 +68,8 @@ public class Script : TrackDomainObject<ScriptAudit>, INamedObject, IDerivableOb
             Name = Name,
             FunctionTypes = FunctionTypes,
             FunctionTypeMask = FunctionTypeMask,
-            Value = Value
+            Value = Value,
+            OverrideType = OverrideType,
         };
     }
 
@@ -81,6 +82,7 @@ public class Script : TrackDomainObject<ScriptAudit>, INamedObject, IDerivableOb
         Name = audit.Name;
         FunctionTypes = audit.FunctionTypes;
         Value = audit.Value;
+        OverrideType = audit.OverrideType;
     }
 
     /// <inheritdoc/>

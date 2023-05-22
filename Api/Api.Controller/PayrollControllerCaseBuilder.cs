@@ -534,26 +534,19 @@ internal sealed class PayrollControllerCaseBuilder
 
     private static string ResetCaseValue(string inputValue, ValueType valueType)
     {
-        switch (valueType)
+        if (valueType.IsInteger())
         {
-            case ValueType.Integer:
-                return ValueConvert.ToJson(0);
-            case ValueType.NumericBoolean:
-            case ValueType.Decimal:
-            case ValueType.Money:
-            case ValueType.Percent:
-            case ValueType.Hour:
-            case ValueType.Day:
-            case ValueType.Week:
-            case ValueType.Month:
-            case ValueType.Year:
-            case ValueType.Distance:
-                return ValueConvert.ToJson(0M);
-            case ValueType.Boolean:
-                return ValueConvert.ToJson(false);
-            default:
-                return inputValue;
+            return ValueConvert.ToJson(0);
         }
+        if (valueType.IsDecimal())
+        {
+            return ValueConvert.ToJson(0M);
+        }
+        if (valueType.IsBoolean())
+        {
+            return ValueConvert.ToJson(false);
+        }
+        return inputValue;
     }
 
     private static string InvertCaseValue(string inputValue, ValueType valueType) =>

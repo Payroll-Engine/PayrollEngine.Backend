@@ -17,6 +17,9 @@ public class PayrollServerConfiguration
     /// <summary>Use health check (default: false)</summary>
     public bool UseHealthCheck { get; set; }
 
+    /// <summary>Webhook timeout</summary>
+    public TimeSpan WebhookTimeout { get; set; }
+
     /// <summary>Function log timeout</summary>
     public TimeSpan FunctionLogTimeout { get; set; }
 
