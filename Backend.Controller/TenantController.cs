@@ -145,12 +145,16 @@ public class TenantController : Api.Controller.TenantController
     /// <summary>
     /// Execute a report query
     /// </summary>
+    /// <remarks>
+    /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
+    /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="methodName">The query method</param>
     /// <param name="language">The data language</param>
     /// <param name="parameters">The query parameters</param>
     /// <returns>The resulting data table</returns>
-    [HttpGet("{tenantId}/queries")]
+    [HttpPost("{tenantId}/queries")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("ExecuteReportQuery")]
@@ -173,7 +177,8 @@ public class TenantController : Api.Controller.TenantController
     /// Get tenant calendar period
     /// </summary>
     /// <remarks>
-    /// Request body contains the calendar configuration (optional)
+    /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
     /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="calculationMode">The calendar calculation mode</param>
@@ -185,7 +190,7 @@ public class TenantController : Api.Controller.TenantController
     /// zero: current (default)<br />
     /// greater than zero: future<br /></param>
     /// <returns>The calendar period</returns>
-    [HttpGet("{tenantId}/calendar/periods")]
+    [HttpPost("{tenantId}/calendar/periods")]
     [OkResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
@@ -209,7 +214,8 @@ public class TenantController : Api.Controller.TenantController
     /// Get tenant calendar cycle
     /// </summary>
     /// <remarks>
-    /// Request body contains the calendar configuration (optional)
+    /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
     /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="calculationMode">The calendar calculation mode</param>
@@ -221,7 +227,7 @@ public class TenantController : Api.Controller.TenantController
     /// zero: current (default)<br />
     /// greater than zero: future<br /></param>
     /// <returns>The calendar cycle</returns>
-    [HttpGet("{tenantId}/calendar/cycles")]
+    [HttpPost("{tenantId}/calendar/cycles")]
     [OkResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
@@ -245,7 +251,8 @@ public class TenantController : Api.Controller.TenantController
     /// Calculate calendar value
     /// </summary>
     /// <remarks>
-    /// Request body contains the calendar configuration (optional)
+    /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
     /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="calculationMode">The calendar calculation mode</param>
@@ -255,7 +262,7 @@ public class TenantController : Api.Controller.TenantController
     /// <param name="calendar">The calendar configuration (default: tenant calendar)</param>
     /// <param name="culture">The culture to use (default: tenant culture)</param>
     /// <returns>The calendar value</returns>
-    [HttpGet("{tenantId}/calendar/values")]
+    [HttpPost("{tenantId}/calendar/values")]
     [OkResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]

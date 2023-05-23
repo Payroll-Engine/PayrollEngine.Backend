@@ -39,6 +39,10 @@ internal static class ApiServiceFactory
         internal static void SetupServices(IServiceCollection services, IConfiguration configuration)
         {
             Configuration = configuration;
+
+            // webhook timeout
+            WebhookDispatchService.Timeout = GetWebhookTimeout();
+
             services.AddScoped(NewTenantService);
             services.AddScoped(NewWebhookService);
             services.AddScoped(NewWebhookMessageService);
@@ -63,19 +67,22 @@ internal static class ApiServiceFactory
 
         private static IWebhookDispatchService NewWebhookDispatchService(IServiceProvider serviceProvider)
         {
-            var webhookTimeout = TimeSpan.FromMinutes(1);
-            if (Configuration != null)
-            {
-                var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
-                webhookTimeout = serverConfiguration.WebhookTimeout;
-            }
-
             return new WebhookDispatchService(
                 serviceProvider.GetRequiredService<ITenantRepository>(),
                 serviceProvider.GetRequiredService<IUserRepository>(),
                 serviceProvider.GetRequiredService<IWebhookRepository>(),
-                serviceProvider.GetRequiredService<IWebhookMessageRepository>(),
-                webhookTimeout);
+                serviceProvider.GetRequiredService<IWebhookMessageRepository>());
+        }
+
+        private static TimeSpan GetWebhookTimeout()
+        {
+            var timeout = TimeSpan.FromMinutes(1);
+            if (Configuration != null)
+            {
+                var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
+                timeout = serverConfiguration.WebhookTimeout;
+            }
+            return timeout;
         }
 
         private static IUserService NewUserService(IServiceProvider serviceProvider) =>

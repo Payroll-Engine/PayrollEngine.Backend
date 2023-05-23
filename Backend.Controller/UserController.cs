@@ -133,11 +133,15 @@ public class UserController : Api.Controller.UserController
     /// <summary>
     /// Test the user password
     /// </summary>
+    /// <remarks>
+    /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
+    /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="userId">The id of the user</param>
     /// <param name="password">The password to test</param>
     /// <returns>True for a valid password</returns>
-    [HttpGet("{userId}/password")]
+    [HttpPost("{userId}/password")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("TestUserPassword")]
@@ -177,7 +181,7 @@ public class UserController : Api.Controller.UserController
     /// <param name="userId">The id of the user</param>
     /// <param name="password">The new user password, use null to reset the password</param>
     /// <returns>The updated user</returns>
-    [HttpPost("{userId}/password")]
+    [HttpPut("{userId}/password")]
     [CreatedResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]

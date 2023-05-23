@@ -65,6 +65,10 @@ public class ReportController : Api.Controller.ReportController
     /// <summary>
     /// Execute a report
     /// </summary>
+    /// <remarks>
+    /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
+    /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="reportId">The id of the report</param>
@@ -159,12 +163,16 @@ public class ReportController : Api.Controller.ReportController
     /// <summary>
     /// Get a report set
     /// </summary>
+    /// <remarks>
+    /// Request body contains array of case values (optional)
+    /// Without the request body, this would be a GET method
+    /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The id of the report</param>
     /// <param name="reportRequest">The report execute request</param>
     /// <returns>The regulation report set</returns>
-    [HttpGet("sets/{reportId}")]
+    [HttpPost("sets/{reportId}")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportSet")]

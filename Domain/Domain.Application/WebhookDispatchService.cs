@@ -18,7 +18,7 @@ public class WebhookDispatchService : IWebhookDispatchService
 {
     private static HttpClient HttpClient { get; }
 
-    public TimeSpan Timeout
+    public static TimeSpan Timeout
     {
         get => HttpClient.Timeout;
         set => HttpClient.Timeout = value;
@@ -40,13 +40,12 @@ public class WebhookDispatchService : IWebhookDispatchService
     }
 
     public WebhookDispatchService(ITenantRepository tenantRepository, IUserRepository userRepository,
-        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository, TimeSpan timeout)
+        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository)
     {
         TenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
         UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         WebhookRepository = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
         MessageRepository = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
-        Timeout = timeout;
     }
 
     /// <inheritdoc />

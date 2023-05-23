@@ -2139,6 +2139,10 @@
             <summary>
             Execute a report
             </summary>
+            <remarks>
+            Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
+            </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="reportId">The id of the report</param>
@@ -2176,6 +2180,10 @@
             <summary>
             Get a report set
             </summary>
+            <remarks>
+            Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
+            </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The tenant id</param>
             <param name="reportId">The id of the report</param>
@@ -2636,6 +2644,10 @@
             <summary>
             Execute a report query
             </summary>
+            <remarks>
+            Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
+            </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="methodName">The query method</param>
             <param name="language">The data language</param>
@@ -2647,7 +2659,8 @@
             Get tenant calendar period
             </summary>
             <remarks>
-            Request body contains the calendar configuration (optional)
+            Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
             </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="calculationMode">The calendar calculation mode</param>
@@ -2665,7 +2678,8 @@
             Get tenant calendar cycle
             </summary>
             <remarks>
-            Request body contains the calendar configuration (optional)
+            Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
             </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="calculationMode">The calendar calculation mode</param>
@@ -2683,7 +2697,8 @@
             Calculate calendar value
             </summary>
             <remarks>
-            Request body contains the calendar configuration (optional)
+            Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
             </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="calculationMode">The calendar calculation mode</param>
@@ -2769,6 +2784,10 @@
             <summary>
             Test the user password
             </summary>
+            <remarks>
+            Request body contains array of case values (optional)
+            Without the request body, this would be a GET method
+            </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="userId">The id of the user</param>
             <param name="password">The password to test</param>

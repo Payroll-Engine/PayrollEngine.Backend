@@ -215,7 +215,6 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="query">The case build query</param>
     /// <param name="caseChangeSetup">The case change setup (optional)</param>
     /// <returns>The created case set</returns>
-    // TODO replace all GETs with request body with a POST
     [HttpPost("{payrollId}/cases/build/{caseName}")]
     [OkResponse]
     [NotFoundResponse]
