@@ -1,156 +1,156 @@
-/****** Object:  StoredProcedure [dbo].[GetWageTypeResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetWageTypeResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetWageTypeResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetWageTypeCustomResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetWageTypeCustomResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetWageTypeCustomResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetPayrollResultValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetPayrollResultValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetPayrollResultValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetNationalCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetNationalCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetNationalCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetNationalCaseChangeValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetNationalCaseChangeValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetNationalCaseChangeValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetLookupRangeValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetLookupRangeValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetLookupRangeValue]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetGlobalCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetGlobalCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetGlobalCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetGlobalCaseChangeValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetGlobalCaseChangeValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetGlobalCaseChangeValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetEmployeeCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseChangeValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseChangeValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetEmployeeCaseChangeValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedWageTypes]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedWageTypes]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedWageTypes]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedScripts]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedScripts]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedScripts]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedReportTemplates]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedReportTemplates]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedReportTemplates]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedReports]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedReports]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedReports]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedReportParameters]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedReportParameters]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedReportParameters]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedPayrollRegulations]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedPayrollRegulations]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedPayrollRegulations]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedLookupValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedLookupValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedLookupValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedLookups]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedLookups]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedLookups]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCollectors]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCollectors]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedCollectors]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCases]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCases]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedCases]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCaseRelations]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCaseRelations]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedCaseRelations]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFieldsOfCase]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFieldsOfCase]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedCaseFieldsOfCase]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFields]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFields]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetDerivedCaseFields]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetConsolidatedWageTypeResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeCustomResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeCustomResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetConsolidatedWageTypeCustomResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedPayrunResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedPayrunResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetConsolidatedPayrunResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetConsolidatedCollectorResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorCustomResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorCustomResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetConsolidatedCollectorCustomResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCompanyCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetCompanyCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetCompanyCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCompanyCaseChangeValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetCompanyCaseChangeValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetCompanyCaseChangeValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCollectorResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetCollectorResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetCollectorResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCollectorCustomResults]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[GetCollectorCustomResults]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[GetCollectorCustomResults]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteTenant]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteTenant]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[DeleteTenant]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeletePayrunJob]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[DeletePayrunJob]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[DeletePayrunJob]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllNationalCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllNationalCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[DeleteAllNationalCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllGlobalCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllGlobalCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[DeleteAllGlobalCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllEmployeeCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllEmployeeCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[DeleteAllEmployeeCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllCompanyCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllCompanyCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[DeleteAllCompanyCaseValues]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllCaseValues]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllCaseValues]    Script Date: 26.05.2023 08:54:56 ******/
 DROP PROCEDURE [dbo].[DeleteAllCaseValues]
 GO
 
@@ -649,286 +649,290 @@ ALTER TABLE [dbo].[Case]
 DROP CONSTRAINT [FK_Case_Regulation]
 GO
 
-/****** Object:  Table [dbo].[WebhookMessage]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[WebhookMessage]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[WebhookMessage]
 GO
 
-/****** Object:  Table [dbo].[Webhook]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Webhook]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Webhook]
 GO
 
-/****** Object:  Table [dbo].[WageTypeResult]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[WageTypeResult]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[WageTypeResult]
 GO
 
-/****** Object:  Table [dbo].[WageTypeCustomResult]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[WageTypeCustomResult]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[WageTypeCustomResult]
 GO
 
-/****** Object:  Table [dbo].[WageTypeAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[WageTypeAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[WageTypeAudit]
 GO
 
-/****** Object:  Table [dbo].[WageType]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[WageType]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[WageType]
 GO
 
-/****** Object:  Table [dbo].[User]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Version]    Script Date: 26.05.2023 08:54:56 ******/
+DROP TABLE [dbo].[Version]
+GO
+
+/****** Object:  Table [dbo].[User]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[User]
 GO
 
-/****** Object:  Table [dbo].[Tenant]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Tenant]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Tenant]
 GO
 
-/****** Object:  Table [dbo].[Task]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Task]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Task]
 GO
 
-/****** Object:  Table [dbo].[ScriptAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[ScriptAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[ScriptAudit]
 GO
 
-/****** Object:  Table [dbo].[Script]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Script]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Script]
 GO
 
-/****** Object:  Table [dbo].[ReportTemplateAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[ReportTemplateAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[ReportTemplateAudit]
 GO
 
-/****** Object:  Table [dbo].[ReportTemplate]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[ReportTemplate]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[ReportTemplate]
 GO
 
-/****** Object:  Table [dbo].[ReportParameterAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[ReportParameterAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[ReportParameterAudit]
 GO
 
-/****** Object:  Table [dbo].[ReportParameter]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[ReportParameter]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[ReportParameter]
 GO
 
-/****** Object:  Table [dbo].[ReportLog]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[ReportLog]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[ReportLog]
 GO
 
-/****** Object:  Table [dbo].[ReportAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[ReportAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[ReportAudit]
 GO
 
-/****** Object:  Table [dbo].[Report]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Report]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Report]
 GO
 
-/****** Object:  Table [dbo].[RegulationShare]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[RegulationShare]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[RegulationShare]
 GO
 
-/****** Object:  Table [dbo].[PayrunTrace]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[PayrunTrace]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[PayrunTrace]
 GO
 
-/****** Object:  Table [dbo].[PayrunResult]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[PayrunResult]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[PayrunResult]
 GO
 
-/****** Object:  Table [dbo].[PayrunParameter]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[PayrunParameter]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[PayrunParameter]
 GO
 
-/****** Object:  Table [dbo].[PayrunJobEmployee]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[PayrunJobEmployee]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[PayrunJobEmployee]
 GO
 
-/****** Object:  Table [dbo].[PayrunJob]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[PayrunJob]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[PayrunJob]
 GO
 
-/****** Object:  Table [dbo].[Payrun]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Payrun]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Payrun]
 GO
 
-/****** Object:  Table [dbo].[PayrollResult]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[PayrollResult]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[PayrollResult]
 GO
 
-/****** Object:  Table [dbo].[Payroll]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Payroll]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Payroll]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseValueChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[NationalCaseValueChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[NationalCaseValueChange]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[NationalCaseValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[NationalCaseValue]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseDocument]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[NationalCaseDocument]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[NationalCaseDocument]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[NationalCaseChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[NationalCaseChange]
 GO
 
-/****** Object:  Table [dbo].[LookupValueAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[LookupValueAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[LookupValueAudit]
 GO
 
-/****** Object:  Table [dbo].[LookupValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[LookupValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[LookupValue]
 GO
 
-/****** Object:  Table [dbo].[LookupAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[LookupAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[LookupAudit]
 GO
 
-/****** Object:  Table [dbo].[Lookup]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Lookup]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Lookup]
 GO
 
-/****** Object:  Table [dbo].[Log]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Log]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Log]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseValueChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[GlobalCaseValueChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[GlobalCaseValueChange]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[GlobalCaseValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[GlobalCaseValue]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseDocument]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[GlobalCaseDocument]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[GlobalCaseDocument]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[GlobalCaseChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[GlobalCaseChange]
 GO
 
-/****** Object:  Table [dbo].[EmployeeDivision]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[EmployeeDivision]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[EmployeeDivision]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseValueChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[EmployeeCaseValueChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[EmployeeCaseValueChange]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[EmployeeCaseValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[EmployeeCaseValue]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseDocument]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[EmployeeCaseDocument]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[EmployeeCaseDocument]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[EmployeeCaseChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[EmployeeCaseChange]
 GO
 
-/****** Object:  Table [dbo].[Employee]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Employee]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Employee]
 GO
 
-/****** Object:  Table [dbo].[Division]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Division]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Division]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseValueChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CompanyCaseValueChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CompanyCaseValueChange]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CompanyCaseValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CompanyCaseValue]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseDocument]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CompanyCaseDocument]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CompanyCaseDocument]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseChange]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CompanyCaseChange]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CompanyCaseChange]
 GO
 
-/****** Object:  Table [dbo].[CollectorResult]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CollectorResult]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CollectorResult]
 GO
 
-/****** Object:  Table [dbo].[CollectorCustomResult]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CollectorCustomResult]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CollectorCustomResult]
 GO
 
-/****** Object:  Table [dbo].[CollectorAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CollectorAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CollectorAudit]
 GO
 
-/****** Object:  Table [dbo].[Collector]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Collector]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Collector]
 GO
 
-/****** Object:  Table [dbo].[CaseRelationAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CaseRelationAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CaseRelationAudit]
 GO
 
-/****** Object:  Table [dbo].[CaseRelation]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CaseRelation]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CaseRelation]
 GO
 
-/****** Object:  Table [dbo].[CaseFieldAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CaseFieldAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CaseFieldAudit]
 GO
 
-/****** Object:  Table [dbo].[CaseField]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CaseField]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CaseField]
 GO
 
-/****** Object:  Table [dbo].[CaseAudit]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[CaseAudit]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[CaseAudit]
 GO
 
-/****** Object:  Table [dbo].[Case]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Case]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Case]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetDerivedRegulations]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetDerivedRegulations]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[GetDerivedRegulations]
 GO
 
-/****** Object:  Table [dbo].[Regulation]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[Regulation]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[Regulation]
 GO
 
-/****** Object:  Table [dbo].[PayrollLayer]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  Table [dbo].[PayrollLayer]    Script Date: 26.05.2023 08:54:56 ******/
 DROP TABLE [dbo].[PayrollLayer]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[IsMatchingCluster]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[IsMatchingCluster]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[IsMatchingCluster]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetTextAttributeValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetTextAttributeValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[GetTextAttributeValue]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetNumericAttributeValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetNumericAttributeValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[GetNumericAttributeValue]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetLocalizedValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetLocalizedValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[GetLocalizedValue]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetDateAttributeValue]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetDateAttributeValue]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[GetDateAttributeValue]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetAttributeNames]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetAttributeNames]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[GetAttributeNames]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[BuildAttributeQuery]    Script Date: 20.05.2023 11:39:30 ******/
+/****** Object:  UserDefinedFunction [dbo].[BuildAttributeQuery]    Script Date: 26.05.2023 08:54:56 ******/
 DROP FUNCTION [dbo].[BuildAttributeQuery]
 GO
