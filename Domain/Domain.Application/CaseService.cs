@@ -15,7 +15,4 @@ public class CaseService : ScriptTrackChildApplicationService<ICaseRepository, C
 
     public virtual async Task<Case> GetAsync(IDbContext context, int tenantId, int regulationId, string name) =>
         (await Repository.QueryAsync(context, tenantId, name, regulationId)).FirstOrDefault();
-
-    public virtual async Task<bool> ExistsAsync(IDbContext context, int tenantId, int regulationId, string name) =>
-        await Repository.ExistsAsync(context, tenantId, regulationId, name);
 }

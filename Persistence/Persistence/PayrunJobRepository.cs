@@ -207,10 +207,14 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         var parameters = new DbParameterCollection();
         parameters.Add(DbSchema.ParameterDeletePayrunJob.TenantId, tenantId);
         parameters.Add(DbSchema.ParameterDeletePayrunJob.PayrunJobId, payrunJobId);
+        parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
         // delete the payrun job (stored procedure)
         await QueryAsync(context, DbSchema.Procedures.DeletePayrunJob,
                          parameters, commandType: CommandType.StoredProcedure);
-        return true;
+
+        // stored procedure return value
+        var result = parameters.Get<int>("@sp_return");
+        return result == 1;
     }
 }

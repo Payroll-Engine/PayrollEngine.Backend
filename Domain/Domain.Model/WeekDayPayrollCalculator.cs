@@ -27,7 +27,7 @@ public class WeekDayPayrollCalculator : PayrollCalculatorBase
 
     /// <inheritdoc />
     public override IPayrollPeriod GetPayrunCycle(DateTime cycleMoment) =>
-        new WeekPayrollCycle(Calendar, cycleMoment);
+        new YearPayrollCycle(Calendar, cycleMoment);
 
     /// <inheritdoc />
     protected override decimal? CalculateValue(CaseValueCalculation calculation)

@@ -42,20 +42,22 @@ public class TenantRepository : RootDomainRepository<Tenant>, ITenantRepository
 
         var parameters = new DbParameterCollection();
         parameters.Add(DbSchema.ParameterDeleteTenant.TenantId, tenantId);
+        parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
         try
         {
             // delete tenant (stored procedure)
-            // TODO: stored procedure result
             await QueryAsync<Tenant>(context, DbSchema.Procedures.DeleteTenant,
                 parameters, commandType: CommandType.StoredProcedure);
+
+            // stored procedure return value
+            var result = parameters.Get<int>("@sp_return");
+            return result == 1;
         }
         catch (Exception exception)
         {
             Log.Error(exception, exception.GetBaseMessage());
             return false;
         }
-
-        return true;
     }
 }

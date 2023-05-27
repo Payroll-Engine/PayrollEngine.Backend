@@ -45,10 +45,6 @@ public class CaseRepository : ScriptTrackChildDomainRepository<Case, CaseAudit>,
         return cases;
     }
 
-    // TODO: add tenant and regulation check
-    public virtual async Task<bool> ExistsAsync(IDbContext context, int tenantId, int regulationId, string caseName)
-        => await ExistsAsync(context, DbSchema.CaseColumn.Name, caseName);
-
     protected override void GetObjectCreateData(Case @case, DbParameterCollection parameters)
     {
         parameters.Add(nameof(@case.CaseType), @case.CaseType);

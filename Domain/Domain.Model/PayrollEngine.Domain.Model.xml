@@ -1711,6 +1711,8 @@
         <member name="P:PayrollEngine.Domain.Model.CaseValidationIssue.Message">
             <summary>
             Gets the validation message
+            <remarks>No support for localized issue messages.
+            Translation should use the issue id and parameters to build the localized message</remarks>
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseValidationIssue.#ctor">
@@ -6301,16 +6303,6 @@
             <param name="regulationId">The regulation id</param>
             <returns>The regulation cases</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.String)">
-            <summary>
-            Determine if a case name exists
-            </summary>
-            <param name="context">The database context</param>
-            <param name="tenantId">The tenant id</param>
-            <param name="regulationId">The regulation id</param>
-            <param name="caseName">The case name</param>
-            <returns>True if any case with this name exists</returns>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseValueChangeRepository">
             <summary>
             Repository for global case value changes
@@ -8592,38 +8584,6 @@
             <inheritdoc />
         </member>
         <member name="M:PayrollEngine.Domain.Model.WeekDayPayrollCalculator.CalculateValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.WeekPayrollCycle">
-            <summary>Payroll week cycle</summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.WeekPayrollCycle.Calendar">
-            <summary>The payroll calendar</summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.WeekPayrollCycle.WeekOfYear">
-            <summary>Gets the week of year</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekPayrollCycle.#ctor(PayrollEngine.IPayrollCalendar,System.Int32,System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekPayrollCycle.#ctor(PayrollEngine.IPayrollCalendar,System.DateTime)">
-            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.WeekPayrollCycle"/> class</summary>
-            <param name="calendar">The calendar</param>
-            <param name="moment">The moment</param>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.WeekPayrollCycle.Start">
-            <inheritdoc />
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.WeekPayrollCycle.End">
-            <inheritdoc />
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.WeekPayrollCycle.Name">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekPayrollCycle.GetPayrollPeriod(System.DateTime,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekPayrollCycle.ToString">
             <inheritdoc />
         </member>
         <member name="T:PayrollEngine.Domain.Model.WeekPayrollPeriod">

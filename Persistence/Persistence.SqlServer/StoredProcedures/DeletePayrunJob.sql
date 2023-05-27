@@ -116,6 +116,9 @@ BEGIN
 
     -- transaction end
     COMMIT TRANSACTION;
+
+    -- success
+    RETURN 1
   END TRY
 
   BEGIN CATCH
@@ -123,6 +126,9 @@ BEGIN
     BEGIN
       ROLLBACK TRANSACTION DeletePayrunJobTransaction;
     END
+
+    -- failure
+    RETURN 0
   END CATCH
 END
 GO

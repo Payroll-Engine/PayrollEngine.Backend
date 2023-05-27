@@ -90,10 +90,10 @@ public class CaseValidationIssue : IEquatable<CaseValidationIssue>
 
     /// <summary>
     /// Gets the validation message
+    /// <remarks>No support for localized issue messages.
+    /// Translation should use the issue id and parameters to build the localized message</remarks>
     /// </summary>
     public string Message { get; set; }
-
-    // TODO: add issue message localizations
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CaseValidationIssue"/> class
