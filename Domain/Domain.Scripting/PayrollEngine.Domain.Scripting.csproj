@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.Compilers" Version="4.5.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Compilers" Version="4.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Client.Scripting" Version="0.5.0-pre-230526" />
+		<PackageReference Include="PayrollEngine.Client.Scripting" Version="0.5.0-pre-230527" />
 	</ItemGroup>
 
 </Project>

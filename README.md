@@ -12,21 +12,19 @@ Für den Betrieb des Backend-Servers muss der Webhoster die Ausführung von .NET
 <br/>
 
 ## Open API
-Die Payroll Engine API unterstützt die [Open API](https://www.openapis.org/) Spezifikation und beschreibt die Schnittstelle mit dem Tool [Swagger](https://swagger.io/).
-
-Das Dokument [REST Service Endpoints] beschreibt die vefügbaren Endpunkte.
+Die Payroll Engine API unterstützt die [Open API](https://www.openapis.org/) Spezifikation und beschreibt die Schnittstelle mit dem Tool [Swagger](https://swagger.io/). Das Dokument [REST Service Endpoints](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrollRestServicesEndpoints.pdf) beschreibt die vefügbaren Endpunkte.
 
 <br/>
 
 ## Configuration
-Die Server-Konfiguration *Server\appsetings.json* beinhaltet folgende Einstellungen:
-- Culture
-- Datenbankverbindung
-- Health Check
-- HTTP logs
-- Timeouts for webhooks, transactions and assembly-cache
-- Script compiler
-- Systemlog mit [Serilog](https://serilog.net/), andere Logging-Tools können integriert werden
+The server configuration *Server\appsetings.json* contains the following settings:
+- Application Culture
+- The database connection
+- Set timeouts for webhooks, transactions and assembly-cache
+- Control the script compiler behaviour
+- Systemlog with [Serilog](https://serilog.net/) (other loggers are supported)
+- Use REST HTTP logs
+- Use the API Health Check
 
 > It is recommended to save the server settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 <br/>
