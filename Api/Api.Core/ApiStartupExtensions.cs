@@ -6,6 +6,7 @@ using System.Linq;
 using PayrollEngine.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -32,6 +33,27 @@ public static class ApiStartupExtensions
         {
             throw new ArgumentNullException(nameof(specification));
         }
+
+        // IIS
+        services.Configure<IISServerOptions>(options =>
+        {
+            if (options.MaxRequestBodySize < int.MaxValue)
+            {
+                options.MaxRequestBodySize = int.MaxValue;
+                Log.Trace($"Increased IIS MaxRequestBodyBufferSize to {int.MaxValue}");
+            }
+        });
+
+        // Kestrel
+        services.Configure<KestrelServerOptions>(options =>
+        {
+            // if don't set default value is: 30 MB
+            if (options.Limits.MaxRequestBodySize < int.MaxValue)
+            {
+                options.Limits.MaxRequestBodySize = int.MaxValue;
+                Log.Trace($"Increased Kestrel MaxRequestBodySize to {int.MaxValue}");
+            }
+        });
 
         // server configuration
         var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
