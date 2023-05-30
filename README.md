@@ -4,9 +4,12 @@ Das Backend ist die zentrale Komponente des Lohnrechners, welches über eine RES
 
 <br />
 
-## Hosting
+## Backed Server Hosting
 Für den Betrieb des Backend-Servers muss der Webhoster die Ausführung von .NET Core Applikationen unterstützen. Für die lokale Entwicklung dient [IIS Express](https://learn.microsoft.com/en-us/iis/extensions/introduction-to-iis-express/iis-express-overview) als Host in zwei Ausführungsvarianten:
-- Console application using the batch ***PayrollEngine\Batches\Backend.Start.bat*** [CLI dotnet command](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet)
+- [CLI dotnet command](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the batch:
+```
+PayrollEngine\Batches\Backend.Server.Start.bat
+```
 - Visual Studio Solution ***PayrollEngine\PayrollEngine.Backend\PayrollEngine.Backend.sln*** using the debugger
 
 <br/>
