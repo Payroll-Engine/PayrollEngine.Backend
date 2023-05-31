@@ -11,6 +11,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("National case values")]
+[Route("api/tenants/{tenantId}/nationalcases")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.NationalCaseValue)]
 public class NationalCaseValueController : Api.Controller.NationalCaseValueController
 {
     /// <summary>

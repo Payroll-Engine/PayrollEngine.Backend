@@ -13,9 +13,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the reports
 /// </summary>
-[ApiControllerName("Reports")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/reports")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Report)]
 public abstract class ReportController : ScriptTrackChildObjectController<IRegulationService, IReportService,
     IRegulationRepository, IReportRepository,
     Tenant, Report, ReportAudit, ApiObject.Report>

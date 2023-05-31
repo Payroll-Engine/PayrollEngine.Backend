@@ -11,6 +11,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Payroll consolidated results")]
+[Route("api/tenants/{tenantId}/payrollresults/consolidated")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrollConsolidatedResult)]
 public class PayrollConsolidatedResultController : Api.Controller.PayrollConsolidatedResultController
 {
     /// <inheritdoc/>

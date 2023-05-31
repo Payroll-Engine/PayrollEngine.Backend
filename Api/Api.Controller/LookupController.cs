@@ -15,9 +15,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation lookups
 /// </summary>
-[ApiControllerName("Lookups")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/lookups")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Lookup)]
 public abstract class LookupController : RepositoryChildObjectController<IRegulationService, ILookupService,
     IRegulationRepository, ILookupRepository,
     DomainObject.Regulation, DomainObject.Lookup, ApiObject.Lookup>

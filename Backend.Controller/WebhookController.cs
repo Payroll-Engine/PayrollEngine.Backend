@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Webhooks")]
+[Route("api/tenants/{tenantId}/webhooks")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Webhook)]
 public class WebhookController : Api.Controller.WebhookController
 {
     /// <inheritdoc/>

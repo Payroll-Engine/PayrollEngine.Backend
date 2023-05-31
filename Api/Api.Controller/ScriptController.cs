@@ -12,9 +12,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation scripts
 /// </summary>
-[ApiControllerName("Scripts")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/scripts")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Script)]
 public abstract class ScriptController : RepositoryChildObjectController<IRegulationService, IScriptService,
     IRegulationRepository, IScriptRepository,
     DomainObject.Regulation, DomainObject.Script, ApiObject.Script>

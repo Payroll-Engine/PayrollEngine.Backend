@@ -7,7 +7,6 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 using PayrollEngine.Domain.Model;
 
@@ -16,9 +15,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll results
 /// </summary>
-[ApiControllerName("Payroll results")]
-[Route("api/tenants/{tenantId}/payrollresults")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrollResult)]
 public abstract class PayrollResultController : RepositoryChildObjectController<ITenantService, IPayrollResultService,
     ITenantRepository, IPayrollResultRepository,
     Tenant, PayrollResult, ApiObject.PayrollResult>

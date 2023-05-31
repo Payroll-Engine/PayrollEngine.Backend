@@ -7,6 +7,10 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Wage type audits")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/wagetypes/{wageTypeId}/audits")]
+// ReSharper restore StringLiteralTypo
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.WageTypeAudit)]
 public class WageTypeAuditController : Api.Controller.WageTypeAuditController
 {
     /// <inheritdoc/>

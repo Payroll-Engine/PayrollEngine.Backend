@@ -12,9 +12,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation case fields
 /// </summary>
-[ApiControllerName("Case fields")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/cases/{caseId}/fields")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.CaseField)]
 public abstract class CaseFieldController : RepositoryChildObjectController<ICaseService, ICaseFieldService,
     ICaseRepository, ICaseFieldRepository,
     DomainObject.Case, DomainObject.CaseField, ApiObject.CaseField>

@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Global case documents")]
+[Route("api/tenants/{tenantId}/globalcases/{caseValueId}/documents")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.GlobalCaseDocument)]
 public class GlobalCaseDocumentController : Api.Controller.GlobalCaseDocumentController
 {
     /// <inheritdoc/>

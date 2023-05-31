@@ -5,7 +5,6 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 using PayrollEngine.Domain.Model;
 
@@ -14,9 +13,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation lookup values
 /// </summary>
-[ApiControllerName("Lookup values")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/lookups/{lookupId}/values")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.LookupValue)]
 public abstract class LookupValueController : RepositoryChildObjectController<ILookupService, ILookupValueService,
     ILookupRepository, ILookupValueRepository,
     Lookup, LookupValue, ApiObject.LookupValue>

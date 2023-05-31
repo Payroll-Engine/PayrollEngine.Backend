@@ -12,9 +12,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation collectors
 /// </summary>
-[ApiControllerName("Collectors")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/collectors")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Collector)]
 public abstract class CollectorController : ScriptTrackChildObjectController<IRegulationService, ICollectorService,
     IRegulationRepository, ICollectorRepository,
     DomainObject.Regulation, DomainObject.Collector, DomainObject.CollectorAudit, ApiObject.Collector>

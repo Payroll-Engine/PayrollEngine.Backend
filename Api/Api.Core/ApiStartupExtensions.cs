@@ -115,6 +115,14 @@ public static class ApiStartupExtensions
             setupAction.IncludeXmlComments(combinedXmlCommentFileName);
         });
 
+        // API Version
+        services.AddApiVersioning(setupAction =>
+            {
+                setupAction.AssumeDefaultVersionWhenUnspecified = true;
+                setupAction.DefaultApiVersion = new(1, 0);
+                setupAction.ReportApiVersions = true;
+            });
+
         return services;
     }
 

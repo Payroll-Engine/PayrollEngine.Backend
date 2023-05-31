@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Lookup values")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/lookups/{lookupId}/values")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.LookupValue)]
 public class LookupValueController : Api.Controller.LookupValueController
 {
     /// <inheritdoc/>

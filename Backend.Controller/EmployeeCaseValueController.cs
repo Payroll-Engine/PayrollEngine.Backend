@@ -10,6 +10,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Employee case values")]
+[Route("api/tenants/{tenantId}/employees/{employeeId}/cases")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.EmployeeCaseValue)]
 public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueController
 {
     /// <inheritdoc/>

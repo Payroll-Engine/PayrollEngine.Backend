@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Report logs")]
+[Route("api/tenants/{tenantId}/reportlogs")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.ReportLog)]
 public class ReportLogController : Api.Controller.ReportLogController
 {
     /// <inheritdoc/>

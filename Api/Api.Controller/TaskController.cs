@@ -15,9 +15,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for tasks
 /// </summary>
-[ApiControllerName("Tasks")]
-[Route("api/tenants/{tenantId}/tasks")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Task)]
 public abstract class TaskController : RepositoryChildObjectController<ITenantService, ITaskService,
     ITenantRepository, ITaskRepository,
     Tenant, DomainObject.Task, ApiObject.Task>

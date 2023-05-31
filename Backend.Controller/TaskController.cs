@@ -8,6 +8,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Tasks")]
+[Route("api/tenants/{tenantId}/tasks")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Task)]
 public class TaskController : Api.Controller.TaskController
 {
     /// <inheritdoc/>

@@ -7,6 +7,11 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+// ReSharper disable StringLiteralTypo
+[ApiControllerName("Report parameter audits")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/reports/{reportId}/parameters/{parameterId}/audits")]
+// ReSharper restore StringLiteralTypo
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.ReportParameterAudit)]
 public class ReportParameterAuditController : Api.Controller.ReportParameterAuditController
 {
     /// <inheritdoc/>

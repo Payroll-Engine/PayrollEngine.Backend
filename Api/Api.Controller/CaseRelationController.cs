@@ -15,9 +15,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation case relations
 /// </summary>
-[ApiControllerName("Case relations")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/caserelations")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.CaseRelation)]
 public abstract class CaseRelationController : ScriptTrackChildObjectController<IRegulationService, ICaseRelationService,
     IRegulationRepository, ICaseRelationRepository, Regulation, CaseRelation, CaseRelationAudit, ApiObject.CaseRelation>
 {

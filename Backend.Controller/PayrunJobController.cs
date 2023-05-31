@@ -9,6 +9,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Payrun jobs")]
+[Route("api/tenants/{tenantId}/payruns/jobs")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrunJob)]
 public class PayrunJobController : Api.Controller.PayrunJobController
 {
     /// <inheritdoc/>

@@ -8,6 +8,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Regulation shares")]
+[Route("api/shares/regulations")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.RegulationShare)]
 public class RegulationShareController : Api.Controller.RegulationShareController
 {
     /// <summary>

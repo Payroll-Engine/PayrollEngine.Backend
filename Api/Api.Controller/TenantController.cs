@@ -15,9 +15,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll tenants
 /// </summary>
-[ApiControllerName("Tenants")]
-[Route("api/tenants")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Tenant)]
 public abstract class TenantController : RepositoryRootObjectController<ITenantService, ITenantRepository,
     Tenant, ApiObject.Tenant>
 {

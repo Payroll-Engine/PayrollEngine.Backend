@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Wage types")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/wagetypes")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.WageType)]
 public class WageTypeController : Api.Controller.WageTypeController
 {
     /// <inheritdoc/>

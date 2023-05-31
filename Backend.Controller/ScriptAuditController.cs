@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Script audits")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/scripts/{scriptId}/audits")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.ScriptAudit)]
 public class ScriptAuditController : Api.Controller.ScriptAuditController
 {
     /// <inheritdoc/>

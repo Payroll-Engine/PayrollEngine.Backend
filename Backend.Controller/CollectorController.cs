@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Collectors")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/collectors")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Collector)]
 public class CollectorController : Api.Controller.CollectorController
 {
     /// <inheritdoc/>

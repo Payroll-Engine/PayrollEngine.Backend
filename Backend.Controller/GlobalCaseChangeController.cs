@@ -8,6 +8,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Global case changes")]
+[Route("api/tenants/{tenantId}/globalcases/changes")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.GlobalCaseChange)]
 public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeController
 {
     /// <inheritdoc/>

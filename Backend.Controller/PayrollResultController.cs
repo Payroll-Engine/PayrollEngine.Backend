@@ -10,6 +10,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Payroll results")]
+[Route("api/tenants/{tenantId}/payrollresults")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrollResult)]
 public class PayrollResultController : Api.Controller.PayrollResultController
 {
     /// <summary>

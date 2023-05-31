@@ -6,7 +6,6 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 using PayrollEngine.Domain.Model;
 
@@ -15,9 +14,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for payroll regulations
 /// </summary>
-[ApiControllerName("Regulations")]
-[Route("api/tenants/{tenantId}/regulations")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Regulation)]
 public abstract class RegulationController : RepositoryChildObjectController<ITenantService, IRegulationService,
     ITenantRepository, IRegulationRepository,
     Tenant, Regulation, ApiObject.Regulation>

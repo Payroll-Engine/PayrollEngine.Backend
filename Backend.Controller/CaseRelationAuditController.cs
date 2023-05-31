@@ -7,6 +7,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Case relation audits")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/caserelations({relationId}/audits")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.CaseRelationAudit)]
 public class CaseRelationAuditController : Api.Controller.CaseRelationAuditController
 {
     /// <inheritdoc/>

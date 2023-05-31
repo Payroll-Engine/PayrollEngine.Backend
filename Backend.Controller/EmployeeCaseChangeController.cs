@@ -8,6 +8,9 @@ using ApiObject = PayrollEngine.Api.Model;
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
+[ApiControllerName("Employee case changes")]
+[Route("api/tenants/{tenantId}/employees/{employeeId}/cases/changes")]
+[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.EmployeeCaseChange)]
 public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeController
 {
     /// <inheritdoc/>

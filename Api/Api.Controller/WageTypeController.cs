@@ -12,9 +12,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation wageTypes
 /// </summary>
-[ApiControllerName("Wage types")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/wagetypes")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.WageType)]
 public abstract class WageTypeController : ScriptTrackChildObjectController<IRegulationService, IWageTypeService,
     IRegulationRepository, IWageTypeRepository,
     DomainObject.Regulation, DomainObject.WageType, DomainObject.WageTypeAudit, ApiObject.WageType>
