@@ -373,6 +373,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
 
             // response
+            query.Result ??= QueryResultType.Items;
             switch (query.Result)
             {
                 case QueryResultType.Items:

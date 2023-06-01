@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PayrollEngine.Domain.Model;
@@ -14,9 +15,10 @@ internal abstract class PayrollRepositoryCommandBase
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    protected static void ApplyOverrideFilter<TKey, TValue>(IEnumerable<IGrouping<TKey, TValue>> derivedItemsByKey,
-        IList<TValue> items, OverrideType overrideType)
-        where TValue : IDerivableObject
+
+    protected static void ApplyOverrideFilter<TKey, TBuild>(IEnumerable<IGrouping<TKey, TBuild>> derivedItemsByKey,
+        IList sourceItems, IList<TBuild> buildItems, OverrideType overrideType)
+        where TBuild : IDerivableObject
     {
         foreach (var derivedItem in derivedItemsByKey)
         {
@@ -28,7 +30,28 @@ internal abstract class PayrollRepositoryCommandBase
                 // remove all derived items
                 foreach (var item in derivedItem)
                 {
-                    items.Remove(item);
+                    sourceItems.Remove(item);
+                    buildItems.Remove(item);
+                }
+            }
+        }
+    }
+
+    protected static void ApplyOverrideFilter<TKey, TBuild>(IEnumerable<IGrouping<TKey, TBuild>> derivedItemsByKey,
+        IList<TBuild> buildItems, OverrideType overrideType)
+        where TBuild : IDerivableObject
+    {
+        foreach (var derivedItem in derivedItemsByKey)
+        {
+            var mostDerivedItem = derivedItem.First();
+
+            // mismatching override type
+            if (mostDerivedItem.OverrideType != overrideType)
+            {
+                // remove all derived items
+                foreach (var item in derivedItem)
+                {
+                    buildItems.Remove(item);
                 }
             }
         }

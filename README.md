@@ -30,10 +30,18 @@ The server configuration *Server\appsetings.json* contains the following setting
 - Use the API Health Check
 
 > It is recommended to save the server settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
+
 <br/>
 
-## Security
-*ToDo*
+## API Versioning
+In der ersten Version 1.0 der REST API ist im HTTP-Request keine Versions-Header notwendig.
+Bei zukünftigen Versionswechsel muss der HTTTP Header **X-Version** mit der Versionsnummer vorhanden sein.
+
+<br/>
+
+## API Conent Type
+Die Payroll REST API unterstützt HTTP-Requests im **JSON** Format.
+
 <br/>
 
 ## Script Compiler

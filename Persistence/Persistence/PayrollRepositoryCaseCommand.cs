@@ -53,9 +53,9 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
         var parameters = new DbParameterCollection();
         parameters.Add(DbSchema.ParameterGetDerivedCases.TenantId, query.TenantId);
         parameters.Add(DbSchema.ParameterGetDerivedCases.PayrollId, query.PayrollId);
-        if (caseType != null)
+        if (caseType.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetDerivedCases.CaseType, caseType);
+            parameters.Add(DbSchema.ParameterGetDerivedCases.CaseType, caseType.Value);
         }
         if (clusterSet != null)
         {
@@ -105,7 +105,7 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
         // override filter
         if (overrideType.HasValue)
         {
-            ApplyOverrideFilter(casesByKey, buildCases, overrideType.Value);
+            ApplyOverrideFilter(casesByKey, cases, buildCases, overrideType.Value);
             // update cases
             casesByKey = cases.GroupBy(x => x.Name).ToList();
         }

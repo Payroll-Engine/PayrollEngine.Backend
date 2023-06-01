@@ -14,10 +14,10 @@ public class Startup
 {
     private static readonly ApiSpecification apiSpecification = new(
         apiDocumentationName: "PayrollEngineBackendAPI",
-        apiDescription: "Payroll Engine API",
-        apiName: "Payroll Engine Backend API",
         apiDocumentationFileName: "BackendApi.xml",
-        apiVersion: "1");
+        apiName: BackendSpecification.ApiName,
+        apiDescription: BackendSpecification.ApiDescription,
+        apiVersion: BackendSpecification.CurrentApiVersion.ToString(1));
 
     /// <summary>
     /// Api startup constructor

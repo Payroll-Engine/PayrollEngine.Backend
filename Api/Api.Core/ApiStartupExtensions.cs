@@ -119,7 +119,8 @@ public static class ApiStartupExtensions
         services.AddApiVersioning(setupAction =>
             {
                 setupAction.AssumeDefaultVersionWhenUnspecified = true;
-                setupAction.DefaultApiVersion = new(1, 0);
+                var defaultVersion = BackendSpecification.DefaultApiVersion;
+                setupAction.DefaultApiVersion = new(defaultVersion.Major, defaultVersion.Minor);
                 setupAction.ReportApiVersions = true;
             });
 
