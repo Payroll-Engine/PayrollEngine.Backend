@@ -33,7 +33,7 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
     }
 
     public virtual async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
-        int tenantId, int regulationId, int reportId, ApiObject.ReportRequest reportRequest)
+        int tenantId, int regulationId, int reportId, ApiObject.ReportRequest reportRequest = null)
     {
         try
         {
@@ -51,7 +51,7 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
                 return BadRequest($"Unknown report with id {reportId}");
             }
 
-            // query
+            // query (request is optional)
             var domainResponse = await ReportSetService.GetReportAsync(tenant, report,
                 new ApiControllerContext(ControllerContext),
                 reportRequestMap.ToDomain(reportRequest));

@@ -180,7 +180,7 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [ApiOperationId("GetReportSet")]
     public override async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(int tenantId, int regulationId,
-        int reportId, [FromBody][Required] ApiObject.ReportRequest reportRequest)
+        int reportId, [FromBody] ApiObject.ReportRequest reportRequest = null)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
