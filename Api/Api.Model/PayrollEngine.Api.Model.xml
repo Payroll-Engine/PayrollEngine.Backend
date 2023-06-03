@@ -3709,9 +3709,9 @@
             The users language
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.User.Supervisor">
+        <member name="P:PayrollEngine.Api.Model.User.UserType">
             <summary>
-            Supervisor user
+            The user type
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.User.Attributes">

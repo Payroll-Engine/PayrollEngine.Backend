@@ -7952,9 +7952,9 @@
             The users language
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.User.Supervisor">
+        <member name="P:PayrollEngine.Domain.Model.User.UserType">
             <summary>
-            Supervisor user
+            The user type
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.User.Attributes">

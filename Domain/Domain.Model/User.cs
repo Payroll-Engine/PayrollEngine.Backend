@@ -44,9 +44,9 @@ public class User : DomainObjectBase, IIdentifiableObject, IDomainAttributeObjec
     public Language Language { get; set; }
 
     /// <summary>
-    /// Supervisor user
+    /// The user type
     /// </summary>
-    public bool Supervisor { get; set; }
+    public UserType UserType { get; set; }
 
     /// <summary>
     /// Custom attributes
