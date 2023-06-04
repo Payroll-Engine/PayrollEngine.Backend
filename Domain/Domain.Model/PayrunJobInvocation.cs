@@ -24,11 +24,6 @@ public class PayrunJobInvocation : IEquatable<PayrunJobInvocation>
     public int PayrunId { get; set; }
 
     /// <summary>
-    /// The payroll id (immutable)
-    /// </summary>
-    public int PayrollId { get; set; }
-
-    /// <summary>
     /// The user id (immutable)
     /// </summary>
     public int UserId { get; set; }

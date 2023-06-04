@@ -72,7 +72,7 @@ public class Payrun : ApiObjectBase
     public RetroTimeType RetroTimeType { get; set; }
 
     /// <summary>
-    /// The calendar
+    /// The payrun calendar, fallback is the tenant calendar
     /// </summary>
     public CalendarConfiguration Calendar { get; set; }
 

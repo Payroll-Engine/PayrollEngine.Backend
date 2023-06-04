@@ -104,13 +104,6 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
             return BadRequest($"Unknown user with id {jobInvocation.UserId}");
         }
 
-        // payroll
-        if (jobInvocation.PayrollId <= 0 || !await ServiceSettings.PayrollRepository.ExistsAsync(
-                Runtime.DbContext, tenantId, jobInvocation.PayrollId))
-        {
-            return BadRequest($"Unknown payroll with id {jobInvocation.PayrollId}");
-        }
-
         // payrun
         if (jobInvocation.PayrunId <= 0 || !await ServiceSettings.PayrunRepository.ExistsAsync(
                 Runtime.DbContext, tenantId, jobInvocation.PayrunId))
@@ -118,9 +111,16 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
             return BadRequest($"Unknown payrun with id {jobInvocation.PayrunId}");
         }
         var payrun = await ServiceSettings.PayrunRepository.GetAsync(Runtime.DbContext, tenantId, jobInvocation.PayrunId);
-        if (payrun.Status != ObjectStatus.Active)
+        if (payrun == null || payrun.Status != ObjectStatus.Active)
         {
             return BadRequest($"Inactive payrun with id {jobInvocation.PayrunId}");
+        }
+
+        // payroll
+        var payrollId = payrun.PayrollId;
+        if (!await ServiceSettings.PayrollRepository.ExistsAsync(Runtime.DbContext, tenantId, payrollId))
+        {
+            return BadRequest($"Unknown payroll with id {payrollId}");
         }
 
         // legal payrun jobs: check open draft jobs
@@ -130,7 +130,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
             var query = QueryFactory.NewEqualFilterQuery(new Dictionary<string, object>
             {
                 {nameof(ApiObject.PayrunJob.Status), (int)ObjectStatus.Active},
-                {nameof(ApiObject.PayrunJob.PayrollId), jobInvocation.PayrollId},
+                {nameof(ApiObject.PayrunJob.PayrollId), payrollId},
                 {nameof(ApiObject.PayrunJob.JobStatus), (int)PayrunJobStatus.Draft}
             });
             var openJobs = await ServiceSettings.PayrunJobRepository.QueryAsync(Runtime.DbContext, tenantId, query);

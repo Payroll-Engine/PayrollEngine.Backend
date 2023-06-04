@@ -102,4 +102,14 @@ internal sealed class PayrunProcessorRepositories
         }
         return payrunJob;
     }
+
+    internal async Task<Payrun> LoadPayrunAsync(int payrunId)
+    {
+        var payrun = await Settings.PayrunRepository.GetAsync(Settings.DbContext, Tenant.Id, payrunId);
+        if (payrun == null)
+        {
+            throw new PayrunException($"Unknown payrun with id {payrunId}");
+        }
+        return payrun;
+    }
 }

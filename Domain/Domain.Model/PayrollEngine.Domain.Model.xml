@@ -3958,7 +3958,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollLayer.Priority">
             <summary>
-            The layer priority
+            The layer priority (default: 1)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollLayer.RegulationName">
@@ -4468,7 +4468,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payrun.Calendar">
             <summary>
-            The calendar
+            The payrun calendar, fallback is the tenant calendar
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Payrun.#ctor">
@@ -4746,12 +4746,13 @@
             Factory for payrun jobs
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.CreatePayrunJob(PayrollEngine.Domain.Model.PayrunJobInvocation,System.Int32,PayrollEngine.Domain.Model.IPayrollCalculator,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.CreatePayrunJob(PayrollEngine.Domain.Model.PayrunJobInvocation,System.Int32,System.Int32,PayrollEngine.Domain.Model.IPayrollCalculator,System.String)">
             <summary>
             Create a new news payrun job
             </summary>
             <param name="jobInvocation">The job invocation</param>
             <param name="divisionId">The division id</param>
+            <param name="payrollId">The payroll id</param>
             <param name="payrollCalculator">The payroll calculator</param>
             <param name="culture">The culture</param>
         </member>
@@ -4773,11 +4774,6 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.PayrunId">
             <summary>
             The payrun id (immutable)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.PayrollId">
-            <summary>
-            The payroll id (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.UserId">
@@ -7862,7 +7858,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Tenant.Calendar">
             <summary>
-            The default/fallback calendar
+            The tenant calendar, fallback is the default calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Tenant.Attributes">

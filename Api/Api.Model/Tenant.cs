@@ -22,7 +22,7 @@ public class Tenant : ApiObjectBase
     public string Culture { get; set; }
 
     /// <summary>
-    /// The default/fallback calendar
+    /// The tenant calendar, fallback is the default calendar
     /// </summary>
     public CalendarConfiguration Calendar { get; set; }
 

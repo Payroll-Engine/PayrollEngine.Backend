@@ -16,12 +16,6 @@ public class PayrunJobInvocation : ApiObjectBase
     public int PayrunId { get; set; }
 
     /// <summary>
-    /// The payroll id (immutable)
-    /// </summary>
-    [Required]
-    public int PayrollId { get; set; }
-
-    /// <summary>
     /// The user id (immutable)
     /// </summary>
     [Required]

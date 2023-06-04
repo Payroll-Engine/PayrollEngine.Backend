@@ -12,16 +12,15 @@ namespace PayrollEngine.Api.Model;
 public class PayrollLayer : ApiObjectBase
 {
     /// <summary>
-    /// The layer level, used as primary sorting key (descending)
+    /// The layer level as primary sorting key (descending)
     /// </summary>
     [Required]
     public int Level { get; set; }
 
     /// <summary>
-    /// The layer priority, used as secondary sorting key (descending)
+    /// The layer priority as secondary sorting key (descending, default: 1)
     /// </summary>
-    [Required]
-    public int Priority { get; set; }
+    public int Priority { get; set; } = 1;
 
     /// <summary>
     /// The regulation name

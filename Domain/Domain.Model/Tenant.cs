@@ -19,9 +19,9 @@ public class Tenant : DomainObjectBase, IIdentifiableObject, IDomainAttributeObj
     public string Culture { get; set; }
 
     /// <summary>
-    /// The default/fallback calendar
+    /// The tenant calendar, fallback is the default calendar
     /// </summary>
-    public CalendarConfiguration Calendar { get; set; }
+    public CalendarConfiguration Calendar { get; set; } = CalendarConfiguration.DefaultConfiguration;
 
     /// <summary>
     /// Custom attributes

@@ -33,7 +33,7 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
     /// The payrun name (immutable)
     /// </summary>
     public string Name { get; set; }
-    
+
     /// <summary>
     /// The localized payrun name
     /// </summary>
@@ -85,7 +85,7 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
     public RetroTimeType RetroTimeType { get; set; }
 
     /// <summary>
-    /// The calendar
+    /// The payrun calendar, fallback is the tenant calendar
     /// </summary>
     public CalendarConfiguration Calendar { get; set; }
 

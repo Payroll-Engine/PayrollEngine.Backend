@@ -12,9 +12,10 @@ public static class PayrunJobFactory
     /// </summary>
     /// <param name="jobInvocation">The job invocation</param>
     /// <param name="divisionId">The division id</param>
+    /// <param name="payrollId">The payroll id</param>
     /// <param name="payrollCalculator">The payroll calculator</param>
     /// <param name="culture">The culture</param>
-    public static PayrunJob CreatePayrunJob(PayrunJobInvocation jobInvocation, int divisionId,
+    public static PayrunJob CreatePayrunJob(PayrunJobInvocation jobInvocation, int divisionId, int payrollId,
         IPayrollCalculator payrollCalculator, string culture)
     {
         // evaluation date: treat undefined as now
@@ -38,7 +39,7 @@ public static class PayrunJobFactory
         {
             // invocation
             PayrunId = jobInvocation.PayrunId,
-            PayrollId = jobInvocation.PayrollId,
+            PayrollId = payrollId,
             DivisionId = divisionId,
             CreatedUserId = jobInvocation.UserId,
             ParentJobId = jobInvocation.ParentJobId,

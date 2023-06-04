@@ -2172,12 +2172,12 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollLayer.Level">
             <summary>
-            The layer level, used as primary sorting key (descending)
+            The layer level as primary sorting key (descending)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollLayer.Priority">
             <summary>
-            The layer priority, used as secondary sorting key (descending)
+            The layer priority as secondary sorting key (descending, default: 1)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollLayer.RegulationName">
@@ -2521,7 +2521,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Payrun.Calendar">
             <summary>
-            The calendar
+            The payrun calendar, fallback is the tenant calendar
             </summary>
         </member>
         <member name="M:PayrollEngine.Api.Model.Payrun.ToString">
@@ -2740,11 +2740,6 @@
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrunId">
             <summary>
             The payrun id (immutable)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrollId">
-            <summary>
-            The payroll id (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.UserId">
@@ -3663,7 +3658,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Tenant.Calendar">
             <summary>
-            The default/fallback calendar
+            The tenant calendar, fallback is the default calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Tenant.Attributes">

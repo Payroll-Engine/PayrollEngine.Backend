@@ -14,9 +14,9 @@ public class PayrollLayer : DomainObjectBase, IDomainAttributeObject, IEquatable
     public int Level { get; set; }
 
     /// <summary>
-    /// The layer priority
+    /// The layer priority (default: 1)
     /// </summary>
-    public int Priority { get; set; }
+    public int Priority { get; set; } = 1;
 
     /// <summary>
     /// The regulation name

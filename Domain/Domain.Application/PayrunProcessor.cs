@@ -70,13 +70,17 @@ public class PayrunProcessor : FunctionToolBase
         // processor repositories
         var processorRepositories = new PayrunProcessorRepositories(Settings, Tenant);
 
+        // resolve payroll from payrun
+        var payrun = await processorRepositories.LoadPayrunAsync(jobInvocation.PayrunId);
+        var payrollId = payrun.PayrollId;
+
         // payrun context
         var context = new PayrunContext
         {
             // user
             User = await processorRepositories.LoadUserAsync(jobInvocation.UserId),
             // context payroll
-            Payroll = setup.Payroll ?? await processorRepositories.LoadPayrollAsync(jobInvocation.PayrollId),
+            Payroll = setup.Payroll ?? await processorRepositories.LoadPayrollAsync(payrollId),
             // retro pay
             RetroDate = await GetRetroDateAsync(jobInvocation)
         };
@@ -90,7 +94,8 @@ public class PayrunProcessor : FunctionToolBase
                              GetCalculator(Tenant.Id, context.User.Id, context.Payroll.CalendarCalculationMode, context.Culture);
 
         // create payrun job and retro payrun jobs
-        context.PayrunJob = PayrunJobFactory.CreatePayrunJob(jobInvocation, context.Division.Id, context.Calculator, context.Culture.Name);
+        context.PayrunJob = PayrunJobFactory.CreatePayrunJob(jobInvocation, context.Division.Id, payrollId,
+            context.Calculator, context.Culture.Name);
         if (context.PayrunJob.ParentJobId.HasValue)
         {
             context.ParentPayrunJob = await processorRepositories.LoadPayrunJobAsync(context.PayrunJob.ParentJobId.Value);
@@ -147,7 +152,7 @@ public class PayrunProcessor : FunctionToolBase
         // start payrun job
         context.PayrunJob.JobStart = Date.Now;
         context.PayrunJob.Message =
-            $"Started payrun calculation with payroll {jobInvocation.PayrollId} on period {context.PayrunJob.PeriodName} for cycle {context.PayrunJob.CycleName}";
+            $"Started payrun calculation with payroll {payrollId} on period {context.PayrunJob.PeriodName} for cycle {context.PayrunJob.CycleName}";
         Log.Debug(context.PayrunJob.Message);
         await Settings.PayrunJobRepository.CreateAsync(Settings.DbContext, Tenant.Id, context.PayrunJob);
 
@@ -389,7 +394,6 @@ public class PayrunProcessor : FunctionToolBase
                         {
                             ParentJobId = currentJob.Id,
                             PayrunId = currentJob.PayrunId,
-                            PayrollId = currentJob.PayrollId,
                             UserId = currentJob.CreatedUserId,
                             Name = currentJob.Name,
                             Owner = currentJob.Owner,
