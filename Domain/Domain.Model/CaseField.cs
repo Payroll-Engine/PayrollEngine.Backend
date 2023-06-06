@@ -50,6 +50,11 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
     public CaseFieldTimeUnit TimeUnit { get; set; }
 
     /// <summary>
+    /// The period aggregation type for <see cref="CaseFieldTimeType.Period"/>
+    /// </summary>
+    public CaseFieldAggregationType PeriodAggregation { get; set; }
+
+    /// <summary>
     /// The override type
     /// </summary>
     public OverrideType OverrideType { get; set; }

@@ -70,6 +70,7 @@ public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFie
         parameters.Add(nameof(caseField.ValueScope), caseField.ValueScope);
         parameters.Add(nameof(caseField.TimeType), caseField.TimeType);
         parameters.Add(nameof(caseField.TimeUnit), caseField.TimeUnit);
+        parameters.Add(nameof(caseField.PeriodAggregation), caseField.PeriodAggregation);
         parameters.Add(nameof(caseField.OverrideType), caseField.OverrideType);
         parameters.Add(nameof(caseField.CancellationMode), caseField.CancellationMode);
         parameters.Add(nameof(caseField.ValueCreationMode), caseField.ValueCreationMode);

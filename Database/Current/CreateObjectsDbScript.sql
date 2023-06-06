@@ -1,4 +1,4 @@
-/****** Object:  UserDefinedFunction [dbo].[BuildAttributeQuery]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[BuildAttributeQuery]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -98,7 +98,7 @@ BEGIN
 END
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetAttributeNames]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetAttributeNames]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -164,7 +164,7 @@ BEGIN
 END
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetDateAttributeValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetDateAttributeValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -195,7 +195,7 @@ BEGIN
 END
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetLocalizedValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetLocalizedValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -226,7 +226,7 @@ BEGIN
 END
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetNumericAttributeValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetNumericAttributeValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -257,7 +257,7 @@ BEGIN
 END
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetTextAttributeValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetTextAttributeValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -288,7 +288,7 @@ BEGIN
 END
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[IsMatchingCluster]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[IsMatchingCluster]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -393,7 +393,7 @@ BEGIN
 END
 GO
 
-/****** Object:  Table [dbo].[PayrollLayer]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[PayrollLayer]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -421,7 +421,7 @@ CREATE TABLE [dbo].[PayrollLayer] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Regulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Regulation]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -455,7 +455,7 @@ CREATE TABLE [dbo].[Regulation] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[GetDerivedRegulations]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetDerivedRegulations]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -513,7 +513,7 @@ RETURN (
     )
 GO
 
-/****** Object:  Table [dbo].[Case]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Case]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -563,7 +563,7 @@ CREATE TABLE [dbo].[Case] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CaseAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CaseAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -614,7 +614,7 @@ CREATE TABLE [dbo].[CaseAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CaseField]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CaseField]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -642,6 +642,7 @@ CREATE TABLE [dbo].[CaseField] (
   [LookupSettings] [nvarchar](max) NULL,
   [TimeType] [int] NOT NULL,
   [TimeUnit] [int] NOT NULL,
+  [PeriodAggregation] [int] NOT NULL,
   [OverrideType] [int] NOT NULL,
   [CancellationMode] [int] NOT NULL,
   [ValueCreationMode] [int] NOT NULL,
@@ -664,7 +665,7 @@ CREATE TABLE [dbo].[CaseField] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CaseFieldAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CaseFieldAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -692,6 +693,7 @@ CREATE TABLE [dbo].[CaseFieldAudit] (
   [LookupSettings] [nvarchar](max) NULL,
   [TimeType] [int] NOT NULL,
   [TimeUnit] [int] NOT NULL,
+  [PeriodAggregation] [int] NOT NULL,
   [OverrideType] [int] NOT NULL,
   [CancellationMode] [int] NOT NULL,
   [ValueCreationMode] [int] NOT NULL,
@@ -714,7 +716,7 @@ CREATE TABLE [dbo].[CaseFieldAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CaseRelation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CaseRelation]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -759,7 +761,7 @@ CREATE TABLE [dbo].[CaseRelation] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CaseRelationAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CaseRelationAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -804,7 +806,7 @@ CREATE TABLE [dbo].[CaseRelationAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Collector]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Collector]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -846,7 +848,7 @@ CREATE TABLE [dbo].[Collector] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CollectorAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CollectorAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -888,7 +890,7 @@ CREATE TABLE [dbo].[CollectorAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CollectorCustomResult]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CollectorCustomResult]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -923,7 +925,7 @@ CREATE TABLE [dbo].[CollectorCustomResult] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CollectorResult]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CollectorResult]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -959,7 +961,7 @@ CREATE TABLE [dbo].[CollectorResult] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CompanyCaseChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -991,7 +993,7 @@ CREATE TABLE [dbo].[CompanyCaseChange] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseDocument]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CompanyCaseDocument]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1018,7 +1020,7 @@ CREATE TABLE [dbo].[CompanyCaseDocument] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CompanyCaseValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1059,7 +1061,7 @@ CREATE TABLE [dbo].[CompanyCaseValue] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[CompanyCaseValueChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[CompanyCaseValueChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1084,7 +1086,7 @@ CREATE TABLE [dbo].[CompanyCaseValueChange] (
   ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Division]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Division]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1112,7 +1114,7 @@ CREATE TABLE [dbo].[Division] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Employee]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Employee]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1142,7 +1144,7 @@ CREATE TABLE [dbo].[Employee] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[EmployeeCaseChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1174,7 +1176,7 @@ CREATE TABLE [dbo].[EmployeeCaseChange] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseDocument]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[EmployeeCaseDocument]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1201,7 +1203,7 @@ CREATE TABLE [dbo].[EmployeeCaseDocument] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[EmployeeCaseValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1242,7 +1244,7 @@ CREATE TABLE [dbo].[EmployeeCaseValue] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[EmployeeCaseValueChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[EmployeeCaseValueChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1267,7 +1269,7 @@ CREATE TABLE [dbo].[EmployeeCaseValueChange] (
   ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[EmployeeDivision]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[EmployeeDivision]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1292,7 +1294,7 @@ CREATE TABLE [dbo].[EmployeeDivision] (
   ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[GlobalCaseChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1324,7 +1326,7 @@ CREATE TABLE [dbo].[GlobalCaseChange] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseDocument]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[GlobalCaseDocument]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1351,7 +1353,7 @@ CREATE TABLE [dbo].[GlobalCaseDocument] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[GlobalCaseValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1392,7 +1394,7 @@ CREATE TABLE [dbo].[GlobalCaseValue] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[GlobalCaseValueChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[GlobalCaseValueChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1417,7 +1419,7 @@ CREATE TABLE [dbo].[GlobalCaseValueChange] (
   ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Log]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Log]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1448,7 +1450,7 @@ CREATE TABLE [dbo].[Log] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Lookup]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Lookup]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1479,7 +1481,7 @@ CREATE TABLE [dbo].[Lookup] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[LookupAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[LookupAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1510,7 +1512,7 @@ CREATE TABLE [dbo].[LookupAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[LookupValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[LookupValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1541,7 +1543,7 @@ CREATE TABLE [dbo].[LookupValue] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[LookupValueAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[LookupValueAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1572,7 +1574,7 @@ CREATE TABLE [dbo].[LookupValueAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[NationalCaseChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1604,7 +1606,7 @@ CREATE TABLE [dbo].[NationalCaseChange] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseDocument]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[NationalCaseDocument]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1631,7 +1633,7 @@ CREATE TABLE [dbo].[NationalCaseDocument] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[NationalCaseValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1672,7 +1674,7 @@ CREATE TABLE [dbo].[NationalCaseValue] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[NationalCaseValueChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[NationalCaseValueChange]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1697,7 +1699,7 @@ CREATE TABLE [dbo].[NationalCaseValueChange] (
   ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Payroll]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Payroll]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1739,7 +1741,7 @@ CREATE TABLE [dbo].[Payroll] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[PayrollResult]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[PayrollResult]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1774,7 +1776,7 @@ CREATE TABLE [dbo].[PayrollResult] (
   ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Payrun]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Payrun]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1815,7 +1817,7 @@ CREATE TABLE [dbo].[Payrun] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[PayrunJob]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[PayrunJob]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1876,7 +1878,7 @@ CREATE TABLE [dbo].[PayrunJob] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[PayrunJobEmployee]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[PayrunJobEmployee]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1901,7 +1903,7 @@ CREATE TABLE [dbo].[PayrunJobEmployee] (
   ) ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[PayrunParameter]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[PayrunParameter]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1933,7 +1935,7 @@ CREATE TABLE [dbo].[PayrunParameter] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[PayrunResult]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[PayrunResult]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1969,7 +1971,7 @@ CREATE TABLE [dbo].[PayrunResult] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[PayrunTrace]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[PayrunTrace]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1995,7 +1997,7 @@ CREATE TABLE [dbo].[PayrunTrace] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[RegulationShare]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[RegulationShare]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2023,7 +2025,7 @@ CREATE TABLE [dbo].[RegulationShare] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Report]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Report]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2065,7 +2067,7 @@ CREATE TABLE [dbo].[Report] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[ReportAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[ReportAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2107,7 +2109,7 @@ CREATE TABLE [dbo].[ReportAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[ReportLog]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[ReportLog]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2136,7 +2138,7 @@ CREATE TABLE [dbo].[ReportLog] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[ReportParameter]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[ReportParameter]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2170,7 +2172,7 @@ CREATE TABLE [dbo].[ReportParameter] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[ReportParameterAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[ReportParameterAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2204,7 +2206,7 @@ CREATE TABLE [dbo].[ReportParameterAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[ReportTemplate]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[ReportTemplate]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2236,7 +2238,7 @@ CREATE TABLE [dbo].[ReportTemplate] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[ReportTemplateAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[ReportTemplateAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2268,7 +2270,7 @@ CREATE TABLE [dbo].[ReportTemplateAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Script]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Script]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2296,7 +2298,7 @@ CREATE TABLE [dbo].[Script] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[ScriptAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[ScriptAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2324,7 +2326,7 @@ CREATE TABLE [dbo].[ScriptAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Task]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Task]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2357,7 +2359,7 @@ CREATE TABLE [dbo].[Task] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Tenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Tenant]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2384,7 +2386,7 @@ CREATE TABLE [dbo].[Tenant] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[User]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[User]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2417,7 +2419,7 @@ CREATE TABLE [dbo].[User] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Version]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Version]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2443,7 +2445,7 @@ CREATE TABLE [dbo].[Version] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[WageType]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[WageType]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2485,7 +2487,7 @@ CREATE TABLE [dbo].[WageType] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[WageTypeAudit]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[WageTypeAudit]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2527,7 +2529,7 @@ CREATE TABLE [dbo].[WageTypeAudit] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[WageTypeCustomResult]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[WageTypeCustomResult]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2562,7 +2564,7 @@ CREATE TABLE [dbo].[WageTypeCustomResult] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[WageTypeResult]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[WageTypeResult]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2597,7 +2599,7 @@ CREATE TABLE [dbo].[WageTypeResult] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[Webhook]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[Webhook]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2625,7 +2627,7 @@ CREATE TABLE [dbo].[Webhook] (
   ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-/****** Object:  Table [dbo].[WebhookMessage]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Table [dbo].[WebhookMessage]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -2660,7 +2662,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Case.UniqueNamePerRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Case.UniqueNamePerRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Case.UniqueNamePerRegulation] ON [dbo].[Case] (
   [RegulationId] ASC,
   [Name] ASC
@@ -2680,7 +2682,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_CaseField.UniqueNamePerCase]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CaseField.UniqueNamePerCase]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_CaseField.UniqueNamePerCase] ON [dbo].[CaseField] (
   [Name] ASC,
   [CaseId] ASC
@@ -2697,7 +2699,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_CaseField.UniqueNamePerCase] ON [dbo].[Case
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_CaseField.ValueType]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CaseField.ValueType]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CaseField.ValueType] ON [dbo].[CaseField] ([ValueType] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2713,7 +2715,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_CaseRelation.SourceCaseName]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CaseRelation.SourceCaseName]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CaseRelation.SourceCaseName] ON [dbo].[CaseRelation] ([SourceCaseName] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2729,7 +2731,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_CaseRelation.TargetCaseName]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CaseRelation.TargetCaseName]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetCaseName] ON [dbo].[CaseRelation] ([TargetCaseName] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2745,7 +2747,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_CaseRelation.TargetSlot]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CaseRelation.TargetSlot]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetSlot] ON [dbo].[CaseRelation] ([TargetCaseSlot] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2758,7 +2760,7 @@ CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetSlot] ON [dbo].[CaseRelation] (
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_CaseRelation.UniqueRelationInRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CaseRelation.UniqueRelationInRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_CaseRelation.UniqueRelationInRegulation] ON [dbo].[CaseRelation] (
   [RegulationId] ASC,
   [RelationHash] ASC
@@ -2775,7 +2777,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_CaseRelation.UniqueRelationInRegulation] ON
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_Collector.CollectType]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Collector.CollectType]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_Collector.CollectType] ON [dbo].[Collector] ([CollectType] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2791,7 +2793,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Collector.UniqueNamePerRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Collector.UniqueNamePerRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Collector.UniqueNamePerRegulation] ON [dbo].[Collector] (
   [Name] ASC,
   [RegulationId] ASC
@@ -2808,7 +2810,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Collector.UniqueNamePerRegulation] ON [dbo]
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_CollectorCustomResult.CollectorNameHash]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CollectorCustomResult.CollectorNameHash]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CollectorCustomResult.CollectorNameHash] ON [dbo].[CollectorCustomResult] ([CollectorNameHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2821,7 +2823,7 @@ CREATE NONCLUSTERED INDEX [IX_CollectorCustomResult.CollectorNameHash] ON [dbo].
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_CollectorCustomResult.StartHash]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CollectorCustomResult.StartHash]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CollectorCustomResult.StartHash] ON [dbo].[CollectorCustomResult] ([StartHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2834,7 +2836,7 @@ CREATE NONCLUSTERED INDEX [IX_CollectorCustomResult.StartHash] ON [dbo].[Collect
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_CollectorResult.CollectorNameHash]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CollectorResult.CollectorNameHash]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CollectorResult.CollectorNameHash] ON [dbo].[CollectorResult] ([CollectorNameHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2847,7 +2849,7 @@ CREATE NONCLUSTERED INDEX [IX_CollectorResult.CollectorNameHash] ON [dbo].[Colle
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_CollectorResult.StartHash]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CollectorResult.StartHash]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CollectorResult.StartHash] ON [dbo].[CollectorResult] ([StartHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2863,7 +2865,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_CompanyCaseValue.CaseFieldName]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CompanyCaseValue.CaseFieldName]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CompanyCaseValue.CaseFieldName] ON [dbo].[CompanyCaseValue] ([CaseFieldName] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2879,7 +2881,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_CompanyCaseValue.Slot]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CompanyCaseValue.Slot]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_CompanyCaseValue.Slot] ON [dbo].[CompanyCaseValue] ([CaseSlot] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2895,7 +2897,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_CompanyCaseValue.UniqueCompanyCaseValuePerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CompanyCaseValue.UniqueCompanyCaseValuePerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_CompanyCaseValue.UniqueCompanyCaseValuePerTenant] ON [dbo].[CompanyCaseValue] (
   [TenantId] ASC,
   [DivisionId] ASC,
@@ -2915,7 +2917,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_CompanyCaseValue.UniqueCompanyCaseValuePerT
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_CompanyCaseValueChange.UniqueValuePerChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_CompanyCaseValueChange.UniqueValuePerChange]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_CompanyCaseValueChange.UniqueValuePerChange] ON [dbo].[CompanyCaseValueChange] (
   [CaseValueId] ASC,
   [CaseChangeId] ASC
@@ -2935,7 +2937,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Division.UniqueNamePerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Division.UniqueNamePerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Division.UniqueNamePerTenant] ON [dbo].[Division] (
   [Name] ASC,
   [TenantId] ASC
@@ -2955,7 +2957,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Employee.UniqueIdentifierPerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Employee.UniqueIdentifierPerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Employee.UniqueIdentifierPerTenant] ON [dbo].[Employee] (
   [Identifier] ASC,
   [TenantId] ASC
@@ -2975,7 +2977,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_EmployeeCaseValue.CaseFieldName]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_EmployeeCaseValue.CaseFieldName]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_EmployeeCaseValue.CaseFieldName] ON [dbo].[EmployeeCaseValue] ([CaseFieldName] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -2991,7 +2993,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_EmployeeCaseValue.Slot]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_EmployeeCaseValue.Slot]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_EmployeeCaseValue.Slot] ON [dbo].[EmployeeCaseValue] ([CaseSlot] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3007,7 +3009,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_EmployeeCaseValue.UniqueCaseValuePerEmployee]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_EmployeeCaseValue.UniqueCaseValuePerEmployee]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_EmployeeCaseValue.UniqueCaseValuePerEmployee] ON [dbo].[EmployeeCaseValue] (
   [EmployeeId] ASC,
   [DivisionId] ASC,
@@ -3027,7 +3029,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_EmployeeCaseValue.UniqueCaseValuePerEmploye
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_EmployeeCaseValueChange.UniqueValuePerChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_EmployeeCaseValueChange.UniqueValuePerChange]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_EmployeeCaseValueChange.UniqueValuePerChange] ON [dbo].[EmployeeCaseValueChange] (
   [CaseValueId] ASC,
   [CaseChangeId] ASC
@@ -3044,7 +3046,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_EmployeeCaseValueChange.UniqueValuePerChang
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_EmployeeDivision.UniqueEmployeePerDivision]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_EmployeeDivision.UniqueEmployeePerDivision]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_EmployeeDivision.UniqueEmployeePerDivision] ON [dbo].[EmployeeDivision] (
   [EmployeeId] ASC,
   [DivisionId] ASC
@@ -3064,7 +3066,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_GlobalCaseValue.CaseFieldName]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_GlobalCaseValue.CaseFieldName]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_GlobalCaseValue.CaseFieldName] ON [dbo].[GlobalCaseValue] ([CaseFieldName] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3080,7 +3082,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_GlobalCaseValue.Slot]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_GlobalCaseValue.Slot]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_GlobalCaseValue.Slot] ON [dbo].[GlobalCaseValue] ([CaseSlot] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3096,7 +3098,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_GlobalCaseValue.UniqueGlobalValuePerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_GlobalCaseValue.UniqueGlobalValuePerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_GlobalCaseValue.UniqueGlobalValuePerTenant] ON [dbo].[GlobalCaseValue] (
   [TenantId] ASC,
   [DivisionId] ASC,
@@ -3116,7 +3118,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_GlobalCaseValue.UniqueGlobalValuePerTenant]
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_GlobalCaseValueChange.UniqueValuePerChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_GlobalCaseValueChange.UniqueValuePerChange]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_GlobalCaseValueChange.UniqueValuePerChange] ON [dbo].[GlobalCaseValueChange] (
   [CaseValueId] ASC,
   [CaseChangeId] ASC
@@ -3136,7 +3138,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Lookup.UniqueNamePerRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Lookup.UniqueNamePerRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Lookup.UniqueNamePerRegulation] ON [dbo].[Lookup] (
   [Name] ASC,
   [RegulationId] ASC
@@ -3153,7 +3155,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Lookup.UniqueNamePerRegulation] ON [dbo].[L
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_LookupValue.Key]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_LookupValue.Key]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_LookupValue.Key] ON [dbo].[LookupValue] ([KeyHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3166,7 +3168,7 @@ CREATE NONCLUSTERED INDEX [IX_LookupValue.Key] ON [dbo].[LookupValue] ([KeyHash]
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_LookupValue.UniqueValueKeyPerLookup]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_LookupValue.UniqueValueKeyPerLookup]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_LookupValue.UniqueValueKeyPerLookup] ON [dbo].[LookupValue] (
   [LookupHash] ASC,
   [LookupId] ASC
@@ -3186,7 +3188,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_NationalCaseValue.CaseFieldName]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_NationalCaseValue.CaseFieldName]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_NationalCaseValue.CaseFieldName] ON [dbo].[NationalCaseValue] ([CaseFieldName] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3202,7 +3204,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_NationalCaseValue.Slot]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_NationalCaseValue.Slot]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_NationalCaseValue.Slot] ON [dbo].[NationalCaseValue] ([CaseSlot] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3218,7 +3220,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_NationalCaseValue.UniqueNationalValuePerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_NationalCaseValue.UniqueNationalValuePerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_NationalCaseValue.UniqueNationalValuePerTenant] ON [dbo].[NationalCaseValue] (
   [TenantId] ASC,
   [DivisionId] ASC,
@@ -3238,7 +3240,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_NationalCaseValue.UniqueNationalValuePerTen
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_NationalCaseValueChange.UniqueValuePerChange]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_NationalCaseValueChange.UniqueValuePerChange]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_NationalCaseValueChange.UniqueValuePerChange] ON [dbo].[NationalCaseValueChange] (
   [CaseValueId] ASC,
   [CaseChangeId] ASC
@@ -3258,7 +3260,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Payroll.UniqueNamePerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Payroll.UniqueNamePerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Payroll.UniqueNamePerTenant] ON [dbo].[Payroll] (
   [Name] ASC,
   [TenantId] ASC
@@ -3278,7 +3280,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Regulation.UniqueNamePerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Regulation.UniqueNamePerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueNamePerTenant] ON [dbo].[Payroll] (
   [Name] ASC,
   [TenantId] ASC
@@ -3295,7 +3297,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueNamePerTenant] ON [dbo].[P
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrollLayer.Priority]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrollLayer.Priority]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrollLayer.Priority] ON [dbo].[PayrollLayer] ([Priority] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3308,7 +3310,7 @@ CREATE NONCLUSTERED INDEX [IX_PayrollLayer.Priority] ON [dbo].[PayrollLayer] ([P
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrollLayer.UniqueLevelAndPriorityPerPayroll]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrollLayer.UniqueLevelAndPriorityPerPayroll]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_PayrollLayer.UniqueLevelAndPriorityPerPayroll] ON [dbo].[PayrollLayer] (
   [Level] ASC,
   [Priority] ASC,
@@ -3329,7 +3331,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_PayrollLayer.UniqueNamePerPayrollLayer]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrollLayer.UniqueNamePerPayrollLayer]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_PayrollLayer.UniqueNamePerPayrollLayer] ON [dbo].[PayrollLayer] (
   [RegulationName] ASC,
   [PayrollId] ASC
@@ -3346,7 +3348,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_PayrollLayer.UniqueNamePerPayrollLayer] ON 
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrollResult.PayrunId]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrollResult.PayrunId]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrollResult.PayrunId] ON [dbo].[PayrollResult] ([PayrunId] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3359,7 +3361,7 @@ CREATE NONCLUSTERED INDEX [IX_PayrollResult.PayrunId] ON [dbo].[PayrollResult] (
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrollResult.UniqueEmployeePerPayrunJob]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrollResult.UniqueEmployeePerPayrunJob]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_PayrollResult.UniqueEmployeePerPayrunJob] ON [dbo].[PayrollResult] (
   [EmployeeId] ASC,
   [PayrunJobId] ASC
@@ -3379,7 +3381,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Payrun.UniqueNamePerPayroll]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Payrun.UniqueNamePerPayroll]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Payrun.UniqueNamePerPayroll] ON [dbo].[Payrun] (
   [Name] ASC,
   [PayrollId] ASC
@@ -3396,7 +3398,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Payrun.UniqueNamePerPayroll] ON [dbo].[Payr
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrunJob.JobStatus]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrunJob.JobStatus]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrunJob.JobStatus] ON [dbo].[PayrunJob] ([JobStatus] DESC)
   WITH (
       PAD_INDEX = OFF,
@@ -3409,7 +3411,7 @@ CREATE NONCLUSTERED INDEX [IX_PayrunJob.JobStatus] ON [dbo].[PayrunJob] ([JobSta
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrunJob.ParentJob]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrunJob.ParentJob]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrunJob.ParentJob] ON [dbo].[PayrunJob] ([ParentJobId] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3422,7 +3424,7 @@ CREATE NONCLUSTERED INDEX [IX_PayrunJob.ParentJob] ON [dbo].[PayrunJob] ([Parent
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrunJob.PeriodStart]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrunJob.PeriodStart]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrunJob.PeriodStart] ON [dbo].[PayrunJob] ([PeriodStart] DESC)
   WITH (
       PAD_INDEX = OFF,
@@ -3435,7 +3437,7 @@ CREATE NONCLUSTERED INDEX [IX_PayrunJob.PeriodStart] ON [dbo].[PayrunJob] ([Peri
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrunJobEmployee.UniqueEmployeePerPayrunJob]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrunJobEmployee.UniqueEmployeePerPayrunJob]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_PayrunJobEmployee.UniqueEmployeePerPayrunJob] ON [dbo].[PayrunJobEmployee] (
   [EmployeeId] ASC,
   [PayrunJobId] ASC
@@ -3455,7 +3457,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_PayrunParameter.UniqueNamePerPayrun]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrunParameter.UniqueNamePerPayrun]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_PayrunParameter.UniqueNamePerPayrun] ON [dbo].[PayrunParameter] (
   [Name] ASC,
   [Id] ASC
@@ -3475,7 +3477,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_PayrunResult.Name]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrunResult.Name]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrunResult.Name] ON [dbo].[PayrunResult] ([Name] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3488,7 +3490,7 @@ CREATE NONCLUSTERED INDEX [IX_PayrunResult.Name] ON [dbo].[PayrunResult] ([Name]
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrunResult.StartHash]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_PayrunResult.StartHash]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrunResult.StartHash] ON [dbo].[PayrunResult] ([StartHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3504,7 +3506,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Regulation.UniqueValidFromeRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Regulation.UniqueValidFromeRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueValidFromeRegulation] ON [dbo].[Regulation] (
   [Name] ASC,
   [ValidFrom] ASC,
@@ -3522,7 +3524,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueValidFromeRegulation] ON [
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_RegulationShare.UniqueRegulationShare]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_RegulationShare.UniqueRegulationShare]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_RegulationShare.UniqueRegulationShare] ON [dbo].[RegulationShare] (
   [ProviderTenantId] ASC,
   [ProviderRegulationId] ASC,
@@ -3544,7 +3546,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Report.Category]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Report.Category]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_Report.Category] ON [dbo].[Report] ([Category] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3560,7 +3562,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Report.UniqueNamePerRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Report.UniqueNamePerRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Report.UniqueNamePerRegulation] ON [dbo].[Report] (
   [Name] ASC,
   [RegulationId] ASC
@@ -3580,7 +3582,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_ReportParameter.UniqueNamePerReport]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_ReportParameter.UniqueNamePerReport]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportParameter.UniqueNamePerReport] ON [dbo].[ReportParameter] (
   [Name] ASC,
   [ReportId] ASC
@@ -3597,7 +3599,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportParameter.UniqueNamePerReport] ON [db
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_ReportTemplate.UniqueLanguagePerReport]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_ReportTemplate.UniqueLanguagePerReport]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportTemplate.UniqueLanguagePerReport] ON [dbo].[ReportTemplate] (
   [ReportId] ASC,
   [Language] ASC
@@ -3617,7 +3619,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_ReportTemplate.UniqueTemplatePerPeport]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_ReportTemplate.UniqueTemplatePerPeport]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportTemplate.UniqueTemplatePerPeport] ON [dbo].[ReportTemplate] (
   [Name] ASC,
   [Id] ASC
@@ -3634,7 +3636,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportTemplate.UniqueTemplatePerPeport] ON 
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_Script.FunctionType]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Script.FunctionType]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_Script.FunctionType] ON [dbo].[Script] ([FunctionTypeMask] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3650,7 +3652,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Script.UniqueNamePerRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Script.UniqueNamePerRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Script.UniqueNamePerRegulation] ON [dbo].[Script] (
   [Name] ASC,
   [RegulationId] ASC
@@ -3670,7 +3672,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Tenant.UniqueIdentifier]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Tenant.UniqueIdentifier]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Tenant.UniqueIdentifier] ON [dbo].[Tenant] ([Identifier] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3687,7 +3689,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_User.UnqiueIdentifierPerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_User.UnqiueIdentifierPerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_User.UnqiueIdentifierPerTenant] ON [dbo].[User] (
   [Identifier] ASC,
   [TenantId] ASC
@@ -3707,7 +3709,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_WageType.UniqueNamePerRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_WageType.UniqueNamePerRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_WageType.UniqueNamePerRegulation] ON [dbo].[WageType] (
   [RegulationId] ASC,
   [Name] ASC
@@ -3724,7 +3726,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_WageType.UniqueNamePerRegulation] ON [dbo].
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_WageType.UniqueNumberPerRegulation]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_WageType.UniqueNumberPerRegulation]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_WageType.UniqueNumberPerRegulation] ON [dbo].[WageType] (
   [RegulationId] ASC,
   [WageTypeNumber] ASC
@@ -3741,7 +3743,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_WageType.UniqueNumberPerRegulation] ON [dbo
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_WageType.WageTypeNumber]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_WageType.WageTypeNumber]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_WageType.WageTypeNumber] ON [dbo].[WageType] ([WageTypeNumber] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3754,7 +3756,7 @@ CREATE NONCLUSTERED INDEX [IX_WageType.WageTypeNumber] ON [dbo].[WageType] ([Wag
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_WageTypeCustomResult.StartHash]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_WageTypeCustomResult.StartHash]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_WageTypeCustomResult.StartHash] ON [dbo].[WageTypeCustomResult] ([StartHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3767,7 +3769,7 @@ CREATE NONCLUSTERED INDEX [IX_WageTypeCustomResult.StartHash] ON [dbo].[WageType
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_WageTypeCustomResult.WageTypeNumber]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_WageTypeCustomResult.WageTypeNumber]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_WageTypeCustomResult.WageTypeNumber] ON [dbo].[WageTypeCustomResult] ([WageTypeNumber] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3780,7 +3782,7 @@ CREATE NONCLUSTERED INDEX [IX_WageTypeCustomResult.WageTypeNumber] ON [dbo].[Wag
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_WageTypeResult.StartHash]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_WageTypeResult.StartHash]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_WageTypeResult.StartHash] ON [dbo].[WageTypeResult] ([StartHash] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3793,7 +3795,7 @@ CREATE NONCLUSTERED INDEX [IX_WageTypeResult.StartHash] ON [dbo].[WageTypeResult
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_WageTypeResult.WageTypeNumber]]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_WageTypeResult.WageTypeNumber]]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE NONCLUSTERED INDEX [IX_WageTypeResult.WageTypeNumber]]] ON [dbo].[WageTypeResult] ([WageTypeNumber] ASC)
   WITH (
       PAD_INDEX = OFF,
@@ -3809,7 +3811,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Webhook.UniqueNamePerTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  Index [IX_Webhook.UniqueNamePerTenant]    Script Date: 06.06.2023 19:19:10 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Webhook.UniqueNamePerTenant] ON [dbo].[Webhook] (
   [Name] ASC,
   [TenantId] ASC
@@ -5291,7 +5293,7 @@ GO
 ALTER TABLE [dbo].[WebhookMessage] CHECK CONSTRAINT [FK_WebhookMessage_Webhook]
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -5318,7 +5320,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllCompanyCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllCompanyCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -5349,7 +5351,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllEmployeeCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllEmployeeCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -5380,7 +5382,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllGlobalCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllGlobalCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -5411,7 +5413,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteAllNationalCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAllNationalCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -5442,7 +5444,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeletePayrunJob]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[DeletePayrunJob]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -5550,7 +5552,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[DeleteTenant]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteTenant]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -5989,7 +5991,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCollectorCustomResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetCollectorCustomResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6145,7 +6147,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCollectorResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetCollectorResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6297,7 +6299,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCompanyCaseChangeValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetCompanyCaseChangeValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6411,7 +6413,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetCompanyCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetCompanyCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6475,7 +6477,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorCustomResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorCustomResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6636,7 +6638,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedCollectorResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6793,7 +6795,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedPayrunResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedPayrunResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6883,7 +6885,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeCustomResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeCustomResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7041,7 +7043,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7195,7 +7197,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFields]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFields]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7261,7 +7263,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFieldsOfCase]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCaseFieldsOfCase]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7327,7 +7329,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCaseRelations]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCaseRelations]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7419,7 +7421,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCases]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCases]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7519,7 +7521,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedCollectors]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedCollectors]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7605,7 +7607,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedLookups]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedLookups]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7656,7 +7658,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedLookupValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedLookupValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7719,7 +7721,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedPayrollRegulations]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedPayrollRegulations]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7753,7 +7755,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedReportParameters]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedReportParameters]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7806,7 +7808,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedReports]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedReports]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7891,7 +7893,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedReportTemplates]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedReportTemplates]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7950,7 +7952,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedScripts]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedScripts]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8009,7 +8011,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetDerivedWageTypes]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetDerivedWageTypes]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8095,7 +8097,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseChangeValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseChangeValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8211,7 +8213,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8275,7 +8277,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetGlobalCaseChangeValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetGlobalCaseChangeValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8389,7 +8391,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetGlobalCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetGlobalCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8453,7 +8455,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetLookupRangeValue]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetLookupRangeValue]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8521,7 +8523,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetNationalCaseChangeValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetNationalCaseChangeValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8635,7 +8637,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetNationalCaseValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetNationalCaseValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8699,7 +8701,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetPayrollResultValues]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetPayrollResultValues]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8969,7 +8971,7 @@ LEFT JOIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetWageTypeCustomResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetWageTypeCustomResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -9122,7 +9124,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetWageTypeResults]    Script Date: 05.06.2023 19:39:29 ******/
+/****** Object:  StoredProcedure [dbo].[GetWageTypeResults]    Script Date: 06.06.2023 19:19:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -9270,4 +9272,3 @@ BEGIN
   END
 END
 GO
-

@@ -765,6 +765,11 @@
             The date unit type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseField.PeriodAggregation">
+            <summary>
+            The period aggregation type for <see cref="F:PayrollEngine.CaseFieldTimeType.Period"/>
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CaseField.OverrideType">
             <summary>
             The override type
@@ -923,6 +928,11 @@
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.TimeUnit">
             <summary>
             The date unit type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.PeriodAggregation">
+            <summary>
+            The period aggregation type for <see cref="F:PayrollEngine.CaseFieldTimeType.Period"/>
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.OverrideType">

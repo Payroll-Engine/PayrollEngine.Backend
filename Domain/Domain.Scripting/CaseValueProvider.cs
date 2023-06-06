@@ -640,8 +640,8 @@ public sealed class CaseValueProvider
             if (periodStart.HasValue && periodStart > period.Start && periodStart < period.End &&
                 !valueMoments.Contains(periodStart.Value))
             {
-                var moment = periodStart.Value.IsLastMomentOfDay() ? 
-                    periodStart.Value.NextTick() : 
+                var moment = periodStart.Value.IsLastMomentOfDay() ?
+                    periodStart.Value.NextTick() :
                     periodStart.Value;
                 valueMoments.Add(moment);
             }
@@ -650,8 +650,8 @@ public sealed class CaseValueProvider
             if (periodEnd.HasValue && periodEnd.Value > period.Start && periodEnd.Value < period.End &&
                 !valueMoments.Contains(periodEnd.Value))
             {
-                var moment = periodEnd.Value.IsLastMomentOfDay() ? 
-                    periodEnd.Value.NextTick() : 
+                var moment = periodEnd.Value.IsLastMomentOfDay() ?
+                    periodEnd.Value.NextTick() :
                     periodEnd.Value;
                 valueMoments.Add(moment);
             }
@@ -802,77 +802,137 @@ public sealed class CaseValueProvider
             return values;
         }
 
-        var calcType = caseField.TimeType;
         // period values with split periods
-        switch (calcType)
+        switch (caseField.TimeType)
         {
-            case CaseFieldTimeType.Period:
-            /*
-            // only latest case value period values
-            var newest = caseValues.OrderByDescending(x => x.Created).First();
-            if (valuePeriods.ContainsKey(newest))
-            {
-                foreach (var datePeriod in valuePeriods[newest])
-                {
-                    values.Add(new()
-                    {
-                        CaseFieldName = caseFieldName,
-                        CaseFieldNameLocalizations = caseField.NameLocalizations,
-                        Created = newest.Created,
-                        Start = datePeriod.Start,
-                        End = datePeriod.End,
-                        ValueType = caseField.ValueType,
-                        Value = ValueConvert.ToJson(newest.GetValue())
-                    });
-                }
-            }
-            return values;
-            */
+            // moment: build summary
             case CaseFieldTimeType.Moment:
-                foreach (var valuePeriod in valuePeriods)
-                {
-                    foreach (var datePeriod in valuePeriod.Value)
-                    {
-                        var value = valuePeriod.Key.GetValue();
-                        values.Add(new()
-                        {
-                            CaseFieldName = caseFieldName,
-                            CaseFieldNameLocalizations = caseField.NameLocalizations,
-                            Created = valuePeriod.Key.Created,
-                            Start = datePeriod.Start,
-                            End = datePeriod.End,
-                            ValueType = caseField.ValueType,
-                            Value = ValueConvert.ToJson(value)
-                        });
-                    }
-                }
+                GetMomentCasePeriodValuesAsync(caseFieldName, caseField, valuePeriods, values);
+                return values;
+            case CaseFieldTimeType.Period:
+                // period: use the aggregation type
+                GetAggregationCasePeriodValuesAsync(caseFieldName, caseField, caseValues, valuePeriods, values);
                 return values;
             case CaseFieldTimeType.ScaledPeriod:
-                foreach (var valuePeriod in valuePeriods)
-                {
-                    foreach (var datePeriod in valuePeriod.Value)
-                    {
-                        var value = calculator.CalculateValue(caseField, valuePeriod.Key, datePeriod);
-                        values.Add(new()
-                        {
-                            CaseFieldName = caseFieldName,
-                            CaseFieldNameLocalizations = caseField.NameLocalizations,
-                            Created = valuePeriod.Key.Created,
-                            Start = datePeriod.Start,
-                            End = datePeriod.End.EnsureLastMomentOfDay(),
-                            ValueType = caseField.ValueType,
-                            Value = ValueConvert.ToJson(value)
-                        });
-                    }
-                }
-
-                // sort from old start date to new start date
-                values.Sort((x, y) => DateTime.Compare(x.Start ?? DateTime.MaxValue, y.Start ?? DateTime.MaxValue));
-
+                GetScaledPeriodCasePeriodValuesAsync(caseFieldName, caseField, calculator, valuePeriods, values);
                 return values;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    /// <summary>
+    /// Get period values from moment case field
+    /// </summary>
+    /// <param name="caseFieldName">The case field, may includes the slot name</param>
+    /// <param name="caseField">The case field</param>
+    /// <param name="valuePeriods">The value periods</param>
+    /// <param name="values">The values</param>
+    private static void GetMomentCasePeriodValuesAsync(string caseFieldName, CaseField caseField,
+        IDictionary<CaseValue, List<DatePeriod>> valuePeriods, List<CaseFieldValue> values)
+    {
+        foreach (var valuePeriod in valuePeriods)
+        {
+            foreach (var datePeriod in valuePeriod.Value)
+            {
+                var value = valuePeriod.Key.GetValue();
+                values.Add(new()
+                {
+                    CaseFieldName = caseFieldName,
+                    CaseFieldNameLocalizations = caseField.NameLocalizations,
+                    Created = valuePeriod.Key.Created,
+                    Start = datePeriod.Start,
+                    End = datePeriod.End,
+                    ValueType = caseField.ValueType,
+                    Value = ValueConvert.ToJson(value)
+                });
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get period values from moment case field
+    /// </summary>
+    /// <param name="caseFieldName">The case field, may includes the slot name</param>
+    /// <param name="caseField">The case field</param>
+    /// <param name="caseValues">The case values</param>
+    /// <param name="valuePeriods">The value periods</param>
+    /// <param name="values">The values</param>
+    private static void GetAggregationCasePeriodValuesAsync(string caseFieldName, CaseField caseField, List<CaseValue> caseValues,
+        IDictionary<CaseValue, List<DatePeriod>> valuePeriods, List<CaseFieldValue> values)
+    {
+        CaseValue singleValue;
+        switch (caseField.PeriodAggregation)
+        {
+            // first
+            case CaseFieldAggregationType.First:
+                singleValue = caseValues.OrderByDescending(x => x.Created).First();
+                break;
+
+            // last
+            case CaseFieldAggregationType.Last:
+                singleValue = caseValues.OrderByDescending(x => x.Created).Last();
+                break;
+
+            // summary as default
+            case CaseFieldAggregationType.Summary:
+            default:
+                GetMomentCasePeriodValuesAsync(caseFieldName, caseField, valuePeriods, values);
+                return;
+        }
+
+        // single value selection
+        if (valuePeriods.TryGetValue(singleValue, out var datePeriods))
+        {
+            foreach (var datePeriod in datePeriods)
+            {
+                values.Add(new()
+                {
+                    CaseFieldName = caseFieldName,
+                    CaseFieldNameLocalizations = caseField.NameLocalizations,
+                    Created = singleValue.Created,
+                    Start = datePeriod.Start,
+                    End = datePeriod.End,
+                    ValueType = caseField.ValueType,
+                    Value = ValueConvert.ToJson(singleValue.GetValue())
+                });
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get period values from moment case field
+    /// </summary>
+    /// <param name="caseFieldName">The case field, may includes the slot name</param>
+    /// <param name="caseField">The case field</param>
+    /// <param name="calculator">The case value calculator</param>
+    /// <param name="valuePeriods">The value periods</param>
+    /// <param name="values">The values</param>
+    private static void GetScaledPeriodCasePeriodValuesAsync(string caseFieldName, CaseField caseField,
+        CaseValueProviderCalculation calculator,
+        IDictionary<CaseValue, List<DatePeriod>> valuePeriods,
+        List<CaseFieldValue> values)
+    {
+        foreach (var valuePeriod in valuePeriods)
+        {
+            foreach (var datePeriod in valuePeriod.Value)
+            {
+                var value = calculator.CalculateValue(caseField, valuePeriod.Key, datePeriod);
+                values.Add(new()
+                {
+                    CaseFieldName = caseFieldName,
+                    CaseFieldNameLocalizations = caseField.NameLocalizations,
+                    Created = valuePeriod.Key.Created,
+                    Start = datePeriod.Start,
+                    End = datePeriod.End.EnsureLastMomentOfDay(),
+                    ValueType = caseField.ValueType,
+                    Value = ValueConvert.ToJson(value)
+                });
+            }
+        }
+
+        // sort from old start date to new start date
+        values.Sort((x, y) => DateTime.Compare(x.Start ?? DateTime.MaxValue, y.Start ?? DateTime.MaxValue));
     }
 
     #endregion

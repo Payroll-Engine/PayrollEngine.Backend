@@ -26,6 +26,7 @@ public class CaseFieldAuditRepository : AuditChildDomainRepository<CaseFieldAudi
         parameters.Add(nameof(audit.ValueScope), audit.ValueScope);
         parameters.Add(nameof(audit.TimeType), audit.TimeType);
         parameters.Add(nameof(audit.TimeUnit), audit.TimeUnit);
+        parameters.Add(nameof(audit.PeriodAggregation), audit.PeriodAggregation);
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.CancellationMode), audit.CancellationMode);
         parameters.Add(nameof(audit.ValueCreationMode), audit.ValueCreationMode);
