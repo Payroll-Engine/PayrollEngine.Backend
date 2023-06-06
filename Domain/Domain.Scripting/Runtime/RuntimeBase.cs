@@ -22,9 +22,10 @@ public abstract class RuntimeBase : IRuntime
     protected IFunctionHost FunctionHost => Settings.FunctionHost;
 
     /// <summary>
-    /// Function execution timeout <see cref="ScriptingSpecification.ScriptFunctionTimeout"/>/>
+    /// Function execution timeout <see cref="BackendScriptingSpecification.ScriptFunctionTimeout"/>/>
     /// </summary>
-    protected virtual TimeSpan Timeout => TimeSpan.FromMilliseconds(ScriptingSpecification.ScriptFunctionTimeout);
+    protected virtual TimeSpan Timeout => 
+        TimeSpan.FromMilliseconds(BackendScriptingSpecification.ScriptFunctionTimeout);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PayrollRuntime"/> class

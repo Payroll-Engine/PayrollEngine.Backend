@@ -26,7 +26,7 @@ internal sealed class PayrunProcessorRepositories
         return payroll;
     }
 
-    internal async System.Threading.Tasks.Task ValidatePayrollAsync(Payroll payroll, Division division,
+    internal async Task<string> ValidatePayrollAsync(Payroll payroll, Division division,
         DatePeriod period, DateTime evaluationDate)
     {
         // validate regulations
@@ -38,9 +38,9 @@ internal sealed class PayrunProcessorRepositories
                 RegulationDate = period.Start,
                 EvaluationDate = evaluationDate
             })).ToList();
-        if (regulations == null || !regulations.Any())
+        if (!regulations.Any())
         {
-            throw new PayrunException($"Missing regulations in payroll with id {payroll.Id}");
+            return $"Missing regulations for payroll {payroll.Name} (#{payroll.Id}): period={period}, evaluation={evaluationDate}";
         }
 
         // validate shared regulations
@@ -49,7 +49,7 @@ internal sealed class PayrunProcessorRepositories
             var regulationTenantId = await Settings.RegulationRepository.GetParentIdAsync(Settings.DbContext, regulation.Id);
             if (!regulationTenantId.HasValue)
             {
-                throw new PayrunException($"Unknown regulation {regulation.Name} with id {regulation.Id}");
+                return $"Unknown regulation {regulation.Name} with id {regulation.Id}";
             }
             // local regulation
             if (regulationTenantId == Tenant.Id)
@@ -60,7 +60,7 @@ internal sealed class PayrunProcessorRepositories
             // test regulation sharing state
             if (!regulation.SharedRegulation)
             {
-                throw new PayrunException($"Invalid access to regulation {regulation.Name} with id {regulation.Id}");
+                return $"Invalid access to regulation {regulation.Name} with id {regulation.Id}";
             }
 
             // test regulation shares
@@ -68,9 +68,12 @@ internal sealed class PayrunProcessorRepositories
                 Tenant.Id, division?.Id);
             if (shares == null)
             {
-                throw new PayrunException($"Access denied to regulation {regulation.Name} with id {regulation.Id}");
+                return $"Access denied to regulation {regulation.Name} with id {regulation.Id}";
             }
         }
+
+        // valid
+        return null;
     }
 
     internal async Task<Division> LoadDivisionAsync(int divisionId)

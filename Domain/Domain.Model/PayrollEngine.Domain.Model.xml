@@ -1192,6 +1192,11 @@
             <param name="compare">The object to compare with this</param>
             <returns>True for objects with the same data</returns>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseFieldValue.ToString">
+            <summary>
+            String representation
+            </summary>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.CaseRelation">
             <summary>
             A case field used in national, company and employee
@@ -4223,7 +4228,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.Created">
             <summary>
-            The result creation date
+            The creation date
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.ResultKind">
@@ -4239,6 +4244,11 @@
         <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.ResultParentId">
             <summary>
             The result parent id (e.g. wage typo on custom wage type)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.ResultCreated">
+            <summary>
+            The result creation date
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.ResultNumber">

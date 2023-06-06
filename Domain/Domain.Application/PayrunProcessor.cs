@@ -184,8 +184,12 @@ public class PayrunProcessor : FunctionToolBase
         try
         {
             // payroll validation
-            await processorRepositories.ValidatePayrollAsync(context.Payroll, context.Division,
+            var validation = await processorRepositories.ValidatePayrollAsync(context.Payroll, context.Division,
                 context.PayrunJob.GetEvaluationPeriod(), context.EvaluationDate);
+            if (validation != null)
+            {
+                return await AbortJobAsync(context.PayrunJob, $"Payrun validation error: {validation}");
+            }
 
             // performance measure
             System.Diagnostics.Stopwatch stopwatch = null;
@@ -992,9 +996,9 @@ public class PayrunProcessor : FunctionToolBase
         CultureInfo culture)
     {
         // cache
-        if (payrollCalculators.TryGetValue(calculationMode, out var calculator1))
+        if (payrollCalculators.TryGetValue(calculationMode, out var payrollCalculator))
         {
-            return calculator1;
+            return payrollCalculator;
         }
 
         // calendar: first on payrun and second on tenant, otherwise use the default calendar

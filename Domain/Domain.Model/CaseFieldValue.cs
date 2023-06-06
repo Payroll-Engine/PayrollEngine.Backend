@@ -63,4 +63,10 @@ public class CaseFieldValue : IEquatable<CaseFieldValue>
     /// <returns>True for objects with the same data</returns>
     public bool Equals(CaseFieldValue compare) =>
         CompareTool.EqualProperties(this, compare);
+
+    /// <summary>
+    /// String representation
+    /// </summary>
+    public override string ToString() =>
+        $"{Start?.ToCompactString()} - {End?.ToCompactString()}: {Value}";
 }

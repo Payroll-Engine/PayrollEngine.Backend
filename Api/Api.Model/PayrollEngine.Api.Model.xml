@@ -2291,7 +2291,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollResultValue.Created">
             <summary>
-            The result creation date
+            The creation date
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultKind">
@@ -2307,6 +2307,11 @@
         <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultParentId">
             <summary>
             The result parent id (e.g. wage typo on custom wage type)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultCreated">
+            <summary>
+            The result creation date
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultNumber">

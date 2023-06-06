@@ -42,8 +42,9 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
 
     #region Internal
 
-    /// <summary>Function execution timeout <see cref="ScriptingSpecification.PayrunScriptFunctionTimeout"/></summary>
-    protected override TimeSpan Timeout => TimeSpan.FromMilliseconds(ScriptingSpecification.PayrunScriptFunctionTimeout);
+    /// <summary>Function execution timeout <see cref="BackendScriptingSpecification.PayrunScriptFunctionTimeout"/></summary>
+    protected override TimeSpan Timeout => 
+        TimeSpan.FromMilliseconds(BackendScriptingSpecification.PayrunScriptFunctionTimeout);
 
     /// <summary>The log owner type</summary>
     protected override string LogOwner => PayrunName;

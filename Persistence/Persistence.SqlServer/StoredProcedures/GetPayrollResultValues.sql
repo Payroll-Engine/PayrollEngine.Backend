@@ -57,6 +57,7 @@ BEGIN
   [PayrollValue].[ResultParentId],
   [PayrollValue].[ResultNumber],
   [PayrollValue].[KindName],
+  [PayrollValue].[ResultCreated],
   [PayrollValue].[ResultStart],
   [PayrollValue].[ResultEnd],
   [PayrollValue].[ResultType],
@@ -104,6 +105,7 @@ FROM (
     [PayrollResultId] AS [ResultParentId],
     [CollectorName] AS [KindName],
     0 AS [ResultNumber], -- no custom result
+    [CollectorResult].[Created] AS [ResultCreated],
     [CollectorResult].[Start] AS [ResultStart],
     [CollectorResult].[End] AS [ResultEnd],
     [CollectorResult].[Tags] AS [ResultTags],
@@ -128,6 +130,7 @@ FROM (
     [CollectorResult].[Id] AS [ResultParentId],
     [CollectorCustomResult].[Source] AS [KindName],
     0 AS [ResultNumber], -- no custom result
+    [CollectorCustomResult].[Created] AS [ResultCreated],
     [CollectorCustomResult].[Start] AS [ResultStart],
     [CollectorCustomResult].[End] AS [ResultEnd],
     [CollectorCustomResult].[Tags] AS [ResultTags],
@@ -154,6 +157,7 @@ FROM (
     [PayrollResultId] AS [ResultParentId],
     [WageTypeName] AS [KindName],
     [WageTypeNumber] AS [ResultNumber],
+    [WageTypeResult].[Created] AS [ResultCreated],
     [WageTypeResult].[Start] AS [ResultStart],
     [WageTypeResult].[End] AS [ResultEnd],
     [WageTypeResult].[Tags] AS [ResultTags],
@@ -178,6 +182,7 @@ FROM (
     [WageTypeResult].[Id] AS [ResultParentId],
     [WageTypeCustomResult].[Source] AS [KindName],
     0 AS [ResultNumber], -- no custom result
+    [WageTypeCustomResult].[Created] AS [ResultCreated],
     [WageTypeCustomResult].[Start] AS [ResultStart],
     [WageTypeCustomResult].[End] AS [ResultEnd],
     [WageTypeCustomResult].[Tags] AS [ResultTags],
@@ -204,6 +209,7 @@ FROM (
     [PayrollResultId] AS [ResultParentId],
     [PayrunResult].[Name] AS [KindName],
     0 AS [ResultNumber], -- no custom results
+    [PayrunResult].[Created] AS [ResultCreated],
     [PayrunResult].[Start] AS [ResultStart],
     [PayrunResult].[End] AS [ResultEnd],
     [PayrunResult].[Tags] AS [ResultTags],

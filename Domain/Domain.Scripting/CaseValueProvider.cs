@@ -640,14 +640,20 @@ public sealed class CaseValueProvider
             if (periodStart.HasValue && periodStart > period.Start && periodStart < period.End &&
                 !valueMoments.Contains(periodStart.Value))
             {
-                valueMoments.Add(periodStart.Value);
+                var moment = periodStart.Value.IsLastMomentOfDay() ? 
+                    periodStart.Value.NextTick() : 
+                    periodStart.Value;
+                valueMoments.Add(moment);
             }
 
             var periodEnd = casePeriodValue.End;
             if (periodEnd.HasValue && periodEnd.Value > period.Start && periodEnd.Value < period.End &&
                 !valueMoments.Contains(periodEnd.Value))
             {
-                valueMoments.Add(periodEnd.Value);
+                var moment = periodEnd.Value.IsLastMomentOfDay() ? 
+                    periodEnd.Value.NextTick() : 
+                    periodEnd.Value;
+                valueMoments.Add(moment);
             }
         }
         // sort from oldest to newest

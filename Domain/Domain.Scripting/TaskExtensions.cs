@@ -27,6 +27,6 @@ public static class TaskExtensions
         {
             return scriptTask.Result;
         }
-        throw new TimeoutException($"The script function {scriptType.Name} has taken longer than the maximum time allowed ({(int)ScriptingSpecification.ScriptFunctionTimeout} ms)");
+        throw new TimeoutException($"The script function {scriptType.Name} has taken longer than the maximum time allowed ({(int)BackendScriptingSpecification.ScriptFunctionTimeout} ms)");
     }
 }

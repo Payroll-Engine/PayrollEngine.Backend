@@ -132,6 +132,17 @@ internal sealed class PayrollControllerCaseBuilder
                 {
                     foreach (var caseValue in caseSetup.Values)
                     {
+                        // start/end test
+                        if (!caseValue.Start.HasValue && caseValue.End.HasValue)
+                        {
+                            return ActionResultFactory.BadRequest($"Case field {caseValue.CaseFieldName} without start date");
+                        }
+                        if (caseValue.Start.HasValue && caseValue.End.HasValue &&
+                            caseValue.End < caseValue.Start)
+                        {
+                            return ActionResultFactory.BadRequest($"Case field {caseValue.CaseFieldName} period end date before start date");
+                        }
+
                         // case field available test
                         var caseField = (await GetDerivedCaseFieldAsync(context, tenantId, payrollId, caseValue.CaseFieldName)).FirstOrDefault();
                         if (caseField == null)

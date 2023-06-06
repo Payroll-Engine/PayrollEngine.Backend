@@ -28,6 +28,17 @@ public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<T
 
     protected override void GetCreateData(int parentId, TDomain caseValue, DbParameterCollection parameters)
     {
+        // test value period
+        if (!caseValue.Start.HasValue && caseValue.End.HasValue)
+        {
+            throw new PayrollException("Case value period without start date");
+        }
+        if (caseValue.Start.HasValue && caseValue.End.HasValue &&
+            caseValue.End < caseValue.Start)
+        {
+            throw new PayrollException("Case value period end date before start date");
+        }
+
         // parent field
         parameters.Add(ParentFieldName, parentId);
 
