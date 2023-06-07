@@ -18,7 +18,7 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>, IWageTyp
     #region Value
 
     /// <inheritdoc />
-    public Tuple<decimal?, List<RetroPayrunJob>,bool> GetValue(CaseFieldProvider caseFieldProvider,
+    public Tuple<decimal?, List<RetroPayrunJob>,bool> GetValue(ICaseFieldProvider caseFieldProvider,
         WageTypeRuntimeSettings settings, bool autoPeriodResults)
     {
         LogStopwatch.Start(nameof(WageTypeValueRuntime));

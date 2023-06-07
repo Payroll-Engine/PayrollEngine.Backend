@@ -23,7 +23,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
     protected CaseProvider CaseProvider => Settings.CaseProvider;
 
     /// <summary>The case field provider</summary>
-    protected CaseFieldProvider CaseFieldProvider => CaseValueProvider.CaseFieldProvider;
+    protected ICaseFieldProvider CaseFieldProvider => CaseValueProvider.CaseFieldProvider;
 
     /// <summary>Initializes a new instance of the <see cref="CaseChangeRuntime"/> class</summary>
     /// <param name="settings">The runtime settings</param>

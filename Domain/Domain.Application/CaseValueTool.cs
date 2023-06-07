@@ -10,7 +10,7 @@ namespace PayrollEngine.Domain.Application;
 
 public class CaseValueTool : FunctionToolBase
 {
-    private CaseFieldProvider CaseFieldProvider { get; }
+    private ICaseFieldProvider CaseFieldProvider { get; }
     private CaseValueProvider CaseValueProvider { get; }
 
     public DateTime ValueDate { get; }
@@ -159,7 +159,7 @@ public class CaseValueTool : FunctionToolBase
         ValueDate = settings.ValueDate;
         EvaluationDate = settings.EvaluationDate;
 
-        CaseFieldProvider = new(
+        CaseFieldProvider = new CaseFieldProvider(
             new CaseFieldProxyRepository(PayrollRepository, Tenant.Id, Payroll.Id, ValueDate, EvaluationDate));
         CaseRepository = settings.CaseRepository ?? throw new ArgumentNullException(nameof(CaseRepository));
     }

@@ -11,7 +11,7 @@ public class CaseValueProviderSettings
     public Tenant Tenant { get; set; }
     public ICaseRepository CaseRepository { get; set; }
     public IPayrollCalculator Calculator { get; set; }
-    public CaseFieldProvider CaseFieldProvider { get; set; }
+    public ICaseFieldProvider CaseFieldProvider { get; set; }
     public IRegulationLookupProvider RegulationLookupProvider { get; set; }
     public DatePeriod EvaluationPeriod { get; set; }
     public DateTime EvaluationDate { get; set; }

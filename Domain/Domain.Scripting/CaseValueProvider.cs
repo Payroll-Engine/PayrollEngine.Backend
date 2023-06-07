@@ -26,7 +26,7 @@ public sealed class CaseValueProvider
     /// <summary>
     /// The case field provider
     /// </summary>
-    public CaseFieldProvider CaseFieldProvider => Settings.CaseFieldProvider;
+    public ICaseFieldProvider CaseFieldProvider => Settings.CaseFieldProvider;
 
     /// <summary>
     /// The evaluation date
@@ -308,7 +308,7 @@ public sealed class CaseValueProvider
         {
             throw new ArgumentException("Value date must be UTC", nameof(valueDate));
         }
-        var caseFields = (await CaseFieldProvider.CaseFieldRepository.GetDerivedCaseFieldsAsync(Settings.DbContext, caseType)).ToList();
+        var caseFields = (await CaseFieldProvider.GetDerivedCaseFieldsAsync(Settings.DbContext, caseType)).ToList();
         if (!caseFields.Any())
         {
             return new();

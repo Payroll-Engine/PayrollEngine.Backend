@@ -17,10 +17,10 @@ public class WageTypeValueRuntime : WageTypeRuntime, IWageTypeValueRuntime
     /// <summary>
     /// Provider for case fields
     /// </summary>
-    protected CaseFieldProvider CaseFieldProvider { get; }
+    protected ICaseFieldProvider CaseFieldProvider { get; }
 
     /// <inheritdoc />
-    internal WageTypeValueRuntime(CaseFieldProvider caseFieldProvider, WageTypeRuntimeSettings settings) :
+    internal WageTypeValueRuntime(ICaseFieldProvider caseFieldProvider, WageTypeRuntimeSettings settings) :
         base(settings)
     {
         CaseFieldProvider = caseFieldProvider ?? throw new ArgumentNullException(nameof(caseFieldProvider));

@@ -16,7 +16,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
     // providers
     protected CaseProvider CaseProvider { get; }
-    protected CaseFieldProvider CaseFieldProvider { get; }
+    protected ICaseFieldProvider CaseFieldProvider { get; }
     protected CaseValueProvider CaseValueProvider { get; }
 
     /// <summary>
@@ -228,7 +228,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
             ? settings.EvaluationDate
             : throw new ArgumentException("Evaluation date must be UTC", nameof(settings.EvaluationDate));
         CaseProvider = new(Tenant, settings.PayrollRepository, RegulationDate, EvaluationDate);
-        CaseFieldProvider = new(
+        CaseFieldProvider = new CaseFieldProvider(
             new CaseFieldProxyRepository(settings.PayrollRepository, Tenant.Id, Payroll.Id, RegulationDate, EvaluationDate, ClusterSet));
 
         // repositories

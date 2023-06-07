@@ -2946,6 +2946,44 @@
             <param name="divisionName">The name of the division</param>
             <returns>True if the employee is associated with the division, otherwise false</returns>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.ICaseFieldProvider">
+            <summary>
+            Provides a case field
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseFieldProvider.GetCaseTypeAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
+            <summary>
+            Get case type of a case field
+            </summary>
+            <param name="context">The database context</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case type</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseFieldProvider.GetCaseFieldAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
+            <summary>
+            Determine the case field
+            If no case filed has a value expression, it returns the nm ost derived case field
+            </summary>
+            <param name="context">The database context</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case value at a given time, null if no value is available</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseFieldProvider.GetValueCaseFieldAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
+            <summary>
+            Determine the case field containing a value expression.
+            If no case filed has a value expression, it returns the nm ost derived case field
+            </summary>
+            <param name="context">The database context</param>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case value at a given time, null if no value is available</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseFieldProvider.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.CaseType)">
+            <summary>
+            The available case fields by case type
+            </summary>
+            <param name="context">The database context</param>
+            <param name="caseType">The case type</param>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.ICaseValueCache">
             <summary>
             Cache for case values for a specific evaluation date and period

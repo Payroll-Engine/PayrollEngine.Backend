@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -9,16 +10,15 @@ namespace PayrollEngine.Domain.Scripting;
 /// <summary>
 /// Provides a case field
 /// </summary>
-// TODO ICaseFieldProvider
-public sealed class CaseFieldProvider
+public sealed class CaseFieldProvider : ICaseFieldProvider
 {
     /// <summary>
     /// The case field repository
     /// </summary>
-    public ICaseFieldProxyRepository CaseFieldRepository { get; }
+    private ICaseFieldProxyRepository CaseFieldRepository { get; }
 
     /// <summary>
-    /// 
+    /// Constructor
     /// </summary>
     /// <param name="caseFieldRepository"></param>
     public CaseFieldProvider(ICaseFieldProxyRepository caseFieldRepository)
@@ -26,31 +26,11 @@ public sealed class CaseFieldProvider
         CaseFieldRepository = caseFieldRepository ?? throw new ArgumentNullException(nameof(caseFieldRepository));
     }
 
-    /// <summary>
-    /// Get case type of a case field
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <returns>The case type</returns>
+    /// <inheritdoc />
     public async Task<CaseType?> GetCaseTypeAsync(IDbContext context, string caseFieldName) =>
         await CaseFieldRepository.GetCaseTypeAsync(context, caseFieldName);
 
-    /// <summary>
-    /// Get id of the parent case
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="caseFieldId">The case field object id</param>
-    /// <returns>The id of the parent case</returns>
-    public async Task<int?> GetParentCaseIdAsync(IDbContext context, int caseFieldId) =>
-        await CaseFieldRepository.GetParentCaseIdAsync(context, caseFieldId);
-
-    /// <summary>
-    /// Determine the case field
-    /// If no case filed has a value expression, it returns the nm ost derived case field
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <returns>The case value at a given time, null if no value is available</returns>
+    /// <inheritdoc />
     public async Task<CaseField> GetCaseFieldAsync(IDbContext context, string caseFieldName)
     {
         // derived case fields (ignore case fields created after the evaluation date)
@@ -63,13 +43,7 @@ public sealed class CaseFieldProvider
         return derivedCaseFields.First();
     }
 
-    /// <summary>
-    /// Determine the case field containing a value expression.
-    /// If no case filed has a value expression, it returns the nm ost derived case field
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <returns>The case value at a given time, null if no value is available</returns>
+    /// <inheritdoc />
     public async Task<CaseField> GetValueCaseFieldAsync(IDbContext context, string caseFieldName)
     {
         // derived case fields (ignore case fields created after the evaluation date)
@@ -91,4 +65,7 @@ public sealed class CaseFieldProvider
         return caseFieldLookup.GetNewestObject(CaseFieldRepository.EvaluationDate);
     }
 
+    /// <inheritdoc />
+    public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(IDbContext context, CaseType caseType) =>
+        await CaseFieldRepository.GetDerivedCaseFieldsAsync(context, caseType);
 }

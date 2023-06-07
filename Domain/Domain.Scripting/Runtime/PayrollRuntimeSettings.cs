@@ -7,7 +7,7 @@ public class PayrollRuntimeSettings : RuntimeSettings
     /// <summary>
     /// The payroll
     /// </summary>
-    public Model.Payroll Payroll { get; set; }
+    public Payroll Payroll { get; set; }
 
     /// <summary>
     /// The case value provider

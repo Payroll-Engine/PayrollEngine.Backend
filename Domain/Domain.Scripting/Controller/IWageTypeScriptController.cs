@@ -17,7 +17,7 @@ public interface IWageTypeScriptController : IScriptController<WageType>
     /// <param name="settings">The runtime settings</param>
     /// <param name="autoPeriodResults">Create custom period results of used wage type case values</param>
     /// <returns>The wage type value, scheduled retro jobs and the execution restart request</returns>
-    Tuple<decimal?, List<RetroPayrunJob>, bool> GetValue(CaseFieldProvider caseFieldProvider,
+    Tuple<decimal?, List<RetroPayrunJob>, bool> GetValue(ICaseFieldProvider caseFieldProvider,
         WageTypeRuntimeSettings settings, bool autoPeriodResults);
 
     /// <summary>

@@ -114,7 +114,7 @@ public class PayrunProcessor : FunctionToolBase
         {
             caseFieldClusterSet = context.Payroll.ClusterSets.FirstOrDefault(x => string.Equals(context.Payroll.ClusterSetCaseField, x.Name));
         }
-        context.CaseFieldProvider = new(
+        context.CaseFieldProvider = new CaseFieldProvider(
             new CaseFieldProxyRepository(Settings.PayrollRepository, Tenant.Id, Payrun.PayrollId,
                 context.PayrunJob.PeriodEnd, context.EvaluationDate, caseFieldClusterSet));
 

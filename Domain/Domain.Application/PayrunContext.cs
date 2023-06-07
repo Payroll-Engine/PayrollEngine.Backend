@@ -26,7 +26,7 @@ internal sealed class PayrunContext
     internal CultureInfo Culture { get; set; }
 
     internal IPayrollCalculator Calculator { get; set; }
-    internal CaseFieldProvider CaseFieldProvider { get; set; }
+    internal ICaseFieldProvider CaseFieldProvider { get; set; }
 
     internal DateTime EvaluationDate { get; set; }
     internal DateTime? RetroDate { get; set; }
