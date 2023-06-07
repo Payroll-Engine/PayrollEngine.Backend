@@ -36,7 +36,7 @@ public class CaseValueTool : FunctionToolBase
         : this(settings)
     {
         // value provider
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
@@ -63,7 +63,7 @@ public class CaseValueTool : FunctionToolBase
         : this(settings)
     {
         // value provider
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -92,7 +92,7 @@ public class CaseValueTool : FunctionToolBase
         : this(settings)
     {
         // value provider
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -125,7 +125,7 @@ public class CaseValueTool : FunctionToolBase
         Employee = employee ?? throw new ArgumentNullException(nameof(employee));
 
         // value provider
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
         CaseValueProvider = new(Employee,
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),

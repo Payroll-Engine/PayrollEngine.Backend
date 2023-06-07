@@ -239,6 +239,7 @@ public static class ProviderStartupExtensions
             ctx.GetRequiredService<IRegulationService>(),
             ctx.GetRequiredService<IRegulationShareService>(),
             ctx.GetRequiredService<IReportService>(),
+            ctx.GetRequiredService<IPayrollCalculatorProvider>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 
         // user controllers

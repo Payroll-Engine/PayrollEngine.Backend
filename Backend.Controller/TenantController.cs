@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Data;
 using PayrollEngine.Domain.Application.Service;
+using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 
 namespace PayrollEngine.Backend.Controller;
@@ -18,8 +19,9 @@ public class TenantController : Api.Controller.TenantController
 {
     /// <inheritdoc/>
     public TenantController(ITenantService tenantService, IRegulationService regulationService,
-        IRegulationShareService regulationShareService, IReportService reportService, IControllerRuntime runtime) :
-        base(tenantService, regulationService, regulationShareService, reportService, runtime)
+        IRegulationShareService regulationShareService, IReportService reportService, 
+        DomainObject.IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime) :
+        base(tenantService, regulationService, regulationShareService, reportService, payrollCalculatorProvider, runtime)
     {
     }
 

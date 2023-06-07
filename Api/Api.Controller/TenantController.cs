@@ -21,15 +21,17 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
     protected IRegulationService RegulationService { get; }
     protected IRegulationShareService RegulationShareService { get; }
     protected IReportService ReportService { get; }
+    protected IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
 
     protected TenantController(ITenantService tenantService, IRegulationService regulationService,
-        IRegulationShareService regulationShareService,
-        IReportService reportService, IControllerRuntime runtime) :
+        IRegulationShareService regulationShareService, IReportService reportService,
+        IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime) :
         base(tenantService, runtime, new TenantMap())
     {
         RegulationService = regulationService ?? throw new ArgumentNullException(nameof(regulationService));
         RegulationShareService = regulationShareService ?? throw new ArgumentNullException(nameof(regulationShareService));
         ReportService = reportService ?? throw new ArgumentNullException(nameof(reportService));
+        PayrollCalculatorProvider = payrollCalculatorProvider ?? throw new ArgumentNullException(nameof(payrollCalculatorProvider));
     }
 
     public virtual async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(
@@ -176,7 +178,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             }
 
             // calculator
-            var calculator = PayrollCalculatorFactory.CreateCalculator(
+            var calculator = PayrollCalculatorProvider.CreateCalculator(
                 calculationMode: calculationMode,
                 calendar: calendar,
                 tenantId: tenantId,
@@ -229,7 +231,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             }
 
             // calculator
-            var calculator = PayrollCalculatorFactory.CreateCalculator(
+            var calculator = PayrollCalculatorProvider.CreateCalculator(
                 calculationMode: calculationMode,
                 tenantId: tenantId,
                 calendar: calendar,
@@ -283,7 +285,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             }
 
             // calculator
-            var calculator = PayrollCalculatorFactory.CreateCalculator(
+            var calculator = PayrollCalculatorProvider.CreateCalculator(
                 calculationMode: calculationMode,
                 tenantId: tenantId,
                 calendar: calendar,

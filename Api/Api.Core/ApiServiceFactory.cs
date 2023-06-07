@@ -225,7 +225,8 @@ internal static class ApiServiceFactory
                 EmployeeService = serviceProvider.GetRequiredService<IEmployeeService>(),
                 EmployeeChangeService = serviceProvider.GetRequiredService<IEmployeeCaseChangeService>(),
                 EmployeeCaseValueService = serviceProvider.GetRequiredService<IEmployeeCaseValueService>(),
-                WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>()
+                WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>(),
+                PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>()
             };
 
         private static IPayrollLayerService NewPayrollLayerService(IServiceProvider serviceProvider) =>
@@ -370,7 +371,8 @@ internal static class ApiServiceFactory
                 PayrollRepository = serviceProvider.GetRequiredService<IPayrollRepository>(),
                 PayrollResultRepository = serviceProvider.GetRequiredService<IPayrollResultRepository>(),
                 PayrollConsolidatedResultRepository = serviceProvider.GetRequiredService<IPayrollConsolidatedResultRepository>(),
-                PayrollResultSetRepository = serviceProvider.GetRequiredService<IPayrollResultSetRepository>()
+                PayrollResultSetRepository = serviceProvider.GetRequiredService<IPayrollResultSetRepository>(),
+                PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>()
             });
 
         private static IPayrollResultService NewPayrollResultService(IServiceProvider serviceProvider) =>

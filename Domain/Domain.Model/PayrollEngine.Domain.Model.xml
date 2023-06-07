@@ -2666,6 +2666,19 @@
             Copy constructor
             </summary>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.DefaultPayrollCalculatorProvider">
+            <summary>
+            Default provider for payroll calculators
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DefaultPayrollCalculatorProvider.DefaultCalendar">
+            <summary>
+            Default calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DefaultPayrollCalculatorProvider.CreateCalculator(PayrollEngine.CalendarCalculationMode,System.Int32,System.Nullable{System.Int32},PayrollEngine.CalendarConfiguration,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
         <member name="T:PayrollEngine.Domain.Model.Division">
             <summary>
             A division
@@ -3134,6 +3147,22 @@
             </summary>
             <param name="calculation">The calculation</param>
             <returns>The case period value</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.IPayrollCalculatorProvider">
+            <summary>
+            Provider for payroll calculators
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculatorProvider.CreateCalculator(PayrollEngine.CalendarCalculationMode,System.Int32,System.Nullable{System.Int32},PayrollEngine.CalendarConfiguration,System.Globalization.CultureInfo)">
+            <summary>
+            Create a case value calculator bases on the calculation mode
+            </summary>
+            <param name="calculationMode">The calendar calculation mode</param>
+            <param name="tenantId">The tenant id</param>
+            <param name="userId">The user id</param>
+            <param name="culture">The culture to use</param>
+            <param name="calendar">The calendar configuration</param>
+            <returns>The case value calculator</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IScriptObject">
             <summary>
@@ -3904,27 +3933,6 @@
             <summary>Custom value calculation</summary>
             <param name="calculation">The calculation</param>
             <returns>The case period value</returns>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.PayrollCalculatorFactory">
-            <summary>
-            Factory for payroll calculators
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrollCalculatorFactory.DefaultCalendar">
-            <summary>
-            Default calendar
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculatorFactory.CreateCalculator(PayrollEngine.CalendarCalculationMode,System.Int32,System.Nullable{System.Int32},PayrollEngine.CalendarConfiguration,System.Globalization.CultureInfo)">
-            <summary>
-            Create a case value calculator bases on the calculation mode
-            </summary>
-            <param name="calculationMode">The calendar calculation mode</param>
-            <param name="tenantId">The tenant id</param>
-            <param name="userId">The user id</param>
-            <param name="culture">The culture to use</param>
-            <param name="calendar">The calendar configuration</param>
-            <returns>The case value calculator</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrollCaseChangeQuery">
             <summary>

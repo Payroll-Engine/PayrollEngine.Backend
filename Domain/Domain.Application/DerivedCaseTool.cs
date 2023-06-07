@@ -71,7 +71,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                                     throw new ArgumentNullException(nameof(globalCaseValueRepository));
 
         // local
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
@@ -104,7 +104,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                                       throw new ArgumentNullException(nameof(nationalCaseValueRepository));
 
         // local
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -141,7 +141,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                                      throw new ArgumentNullException(nameof(companyCaseValueRepository));
 
         // local
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -184,7 +184,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                                       throw new ArgumentNullException(nameof(employeeCaseValueRepository));
 
         // local
-        var calculator = PayrollCalculatorFactory.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
         CaseValueProvider = new(Employee,
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),

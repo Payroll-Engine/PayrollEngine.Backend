@@ -174,6 +174,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
                     PayrollResultRepository = ServiceSettings.PayrollResultRepository,
                     PayrollConsolidatedResultRepository = ServiceSettings.PayrollConsolidatedResultRepository,
                     PayrollResultSetRepository = ServiceSettings.PayrollResultSetRepository,
+                    PayrollCalculatorProvider = ServiceSettings.PayrollCalculatorProvider,
                     WebhookDispatchService = WebhookDispatcher,
                     FunctionLogTimeout = serverConfiguration.FunctionLogTimeout,
                     AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout,

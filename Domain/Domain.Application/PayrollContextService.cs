@@ -1,5 +1,5 @@
-﻿
-using PayrollEngine.Domain.Application.Service;
+﻿using PayrollEngine.Domain.Application.Service;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -24,5 +24,6 @@ public class PayrollContextService : IPayrollContextService
     public IEmployeeService EmployeeService { get; set; }
     public IEmployeeCaseChangeService EmployeeChangeService { get; set; }
     public IEmployeeCaseValueService EmployeeCaseValueService { get; set; }
-    public Model.IWebhookDispatchService WebhookDispatchService { get; set; }
+    public IWebhookDispatchService WebhookDispatchService { get; set; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
 }

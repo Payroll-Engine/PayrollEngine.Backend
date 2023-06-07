@@ -29,6 +29,7 @@ public class PayrunProcessorSettings : FunctionToolSettings
     public IPayrollResultRepository PayrollResultRepository { get; set; }
     public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; set; }
     public IPayrollResultSetRepository PayrollResultSetRepository { get; set; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
 
     /// <summary>Function log timeout</summary>
     public TimeSpan FunctionLogTimeout { get; set; }

@@ -10,6 +10,7 @@ namespace PayrollEngine.Domain.Scripting;
 /// <summary>
 /// Provides a lookup
 /// </summary>
+// TODO add IRegulationLookupProvider
 public sealed class RegulationLookupProvider
 {
     /// <summary>

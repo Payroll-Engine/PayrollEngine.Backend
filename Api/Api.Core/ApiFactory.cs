@@ -24,6 +24,8 @@ internal static class ApiFactory
         services.AddScoped<IControllerRuntime, ControllerRuntime>();
         // api query service: singleton to reduce assembly reflection on each query
         services.AddSingleton<IQueryService, QueryService>();
+        // hot spot for custom payroll calculators
+        services.AddSingleton<IPayrollCalculatorProvider, DefaultPayrollCalculatorProvider>();
 
         // repositories
         ApiRepositoryFactory.SetupApiServices(services);

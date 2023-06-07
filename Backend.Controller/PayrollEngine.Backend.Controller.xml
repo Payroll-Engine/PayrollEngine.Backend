@@ -2585,7 +2585,7 @@
         <member name="T:PayrollEngine.Backend.Controller.TenantController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IRegulationShareService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IRegulationShareService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Model.IPayrollCalculatorProvider,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TenantController.QueryTenantsAsync(PayrollEngine.Query)">

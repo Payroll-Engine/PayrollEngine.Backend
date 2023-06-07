@@ -17,4 +17,5 @@ public class CaseValueToolSettings : FunctionToolSettings
     public IPayrollRepository PayrollRepository { get; set; }
     public ICaseRepository CaseRepository { get; set; }
     public RegulationLookupProvider RegulationLookupProvider { get; set; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
 }

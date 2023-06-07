@@ -23,6 +23,7 @@ public class DerivedCaseToolSettings : FunctionToolSettings
     public ILookupSetRepository LookupSetRepository { get; set; }
     public IWebhookDispatchService WebhookDispatchService { get; set; }
     public RegulationLookupProvider RegulationLookupProvider { get; set; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
     public string ClusterSetName { get; set; }
     public CultureInfo Culture { get; set; }
 }

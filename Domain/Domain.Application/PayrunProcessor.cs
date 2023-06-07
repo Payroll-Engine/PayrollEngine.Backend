@@ -1005,7 +1005,7 @@ public class PayrunProcessor : FunctionToolBase
         var calendar = Payrun.Calendar ?? Tenant.Calendar;
 
         // new calculator based on the tenant calendar configuration
-        var calculator = PayrollCalculatorFactory.CreateCalculator(
+        var calculator = Settings.PayrollCalculatorProvider.CreateCalculator(
             calculationMode: calculationMode,
             tenantId: tenantId,
             userId: userId,

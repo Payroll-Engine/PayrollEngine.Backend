@@ -1,4 +1,5 @@
-﻿using PayrollEngine.Domain.Model.Repository;
+﻿using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
@@ -28,4 +29,5 @@ public class PayrunJobServiceSettings
     public IPayrollResultRepository PayrollResultRepository { get; set; }
     public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; set; }
     public IPayrollResultSetRepository PayrollResultSetRepository { get; set; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
 }
