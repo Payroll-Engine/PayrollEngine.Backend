@@ -103,47 +103,6 @@ internal sealed class CaseValueProviderCalculation
     }
 
     /// <summary>
-    /// Calculate the period value using a time period calculator
-    /// </summary>
-    internal object CalculateTimePeriodValue(CaseField caseField, List<CaseValue> caseValues)
-    {
-        if (!caseField.ValueType.IsDecimal())
-        {
-            throw new ArgumentException("Period case value is only available for decimal types");
-        }
-
-        // get the value periods
-        var valuePeriods = SplitCaseValuePeriods(caseValues);
-        if (!valuePeriods.Any())
-        {
-            // no value available for this period
-            return null;
-        }
-
-        decimal? value = null;
-        foreach (var valuePeriod in valuePeriods)
-        {
-            foreach (var datePeriod in valuePeriod.Value)
-            {
-                var periodValue = CalculateValue(caseField, valuePeriod.Key, datePeriod);
-                if (periodValue is decimal decimalPeriodValue)
-                {
-                    if (value.HasValue)
-                    {
-                        value += decimalPeriodValue;
-                    }
-                    else
-                    {
-                        value = decimalPeriodValue;
-                    }
-                }
-            }
-        }
-
-        return value;
-    }
-
-    /// <summary>
     /// Calculates for any case value the value periods
     /// </summary>
     /// <param name="caseValues">The case values</param>
