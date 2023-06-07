@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>PayrollEngine.Domain.Application</AssemblyName>
-    <RootNamespace>PayrollEngine.Domain.Application</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Domain.Application</AssemblyName>
+		<RootNamespace>PayrollEngine.Domain.Application</RootNamespace>
+		<Description>Payroll Engine Domain Application</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Domain.Scripting\PayrollEngine.Domain.Scripting.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Domain.Scripting\PayrollEngine.Domain.Scripting.csproj" />
+	</ItemGroup>
 
 </Project>

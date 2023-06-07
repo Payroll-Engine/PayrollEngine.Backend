@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Persistence</AssemblyName>
 		<RootNamespace>PayrollEngine.Persistence</RootNamespace>
+		<Description>Payroll Engine Persistence</Description>
 	</PropertyGroup>
 
 	<ItemGroup>

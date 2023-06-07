@@ -6,11 +6,7 @@
 		<UserSecretsId>Backend</UserSecretsId>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-		<Authors>Jani Giannoudis</Authors>
-		<Company>Software Consulting Giannoudis</Company>
-		<Copyright>2023 Software Consulting Giannoudis</Copyright>
-		<Product>Payroll Backend API</Product>
-		<Description>Payroll Engine REST API services</Description>
+		<Description>Payroll Engine Backend Server</Description>
 	</PropertyGroup>
 
 	<!-- help file generation -->
@@ -30,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Serilog" Version="0.5.0-pre-230606-3" />
+		<PackageReference Include="PayrollEngine.Serilog" Version="0.5.0-pre-230606-4" />
 		<PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />

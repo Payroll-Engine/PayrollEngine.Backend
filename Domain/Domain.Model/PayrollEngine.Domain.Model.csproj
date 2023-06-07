@@ -1,17 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>PayrollEngine.Domain.Model</AssemblyName>
-    <RootNamespace>PayrollEngine.Domain.Model</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Domain.Model</AssemblyName>
+		<RootNamespace>PayrollEngine.Domain.Model</RootNamespace>
+		<Description>Payroll Engine Domain Model</Description>
+	</PropertyGroup>
 
-  <!-- help file generation -->
-  <PropertyGroup>
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<!-- help file generation -->
+	<PropertyGroup>
+		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="PayrollEngine.Core" Version="0.5.0-pre-230606-3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="PayrollEngine.Core" Version="0.5.0-pre-230606-4" />
+	</ItemGroup>
 
 </Project>

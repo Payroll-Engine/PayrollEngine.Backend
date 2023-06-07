@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Backend.Controller</AssemblyName>
 		<RootNamespace>PayrollEngine.Backend.Controller</RootNamespace>
+		<Description>Payroll Engine Backend Controller</Description>
 	</PropertyGroup>
 
 	<!-- help file generation -->

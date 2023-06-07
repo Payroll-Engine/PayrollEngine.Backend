@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>PayrollEngine.Api.Controller</AssemblyName>
-    <RootNamespace>PayrollEngine.Api.Controller</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Api.Controller</AssemblyName>
+		<RootNamespace>PayrollEngine.Api.Controller</RootNamespace>
+		<Description>Payroll Engine Api Controller</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="IPayrollControllerServices.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="IPayrollControllerServices.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="IPayrollControllerServices.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="IPayrollControllerServices.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Api.Map\PayrollEngine.Api.Map.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Api.Map\PayrollEngine.Api.Map.csproj" />
+	</ItemGroup>
 
 </Project>

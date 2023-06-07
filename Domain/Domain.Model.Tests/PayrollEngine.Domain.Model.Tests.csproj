@@ -4,6 +4,7 @@
 		<IsPackable>false</IsPackable>
 		<AssemblyName>PayrollEngine.Domain.Model.Tests</AssemblyName>
 		<RootNamespace>PayrollEngine.Domain.Model.Tests</RootNamespace>
+		<Description>Payroll Engine Domain Model Tests</Description>
 	</PropertyGroup>
 
 	<ItemGroup>

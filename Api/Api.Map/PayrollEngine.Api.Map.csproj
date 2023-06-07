@@ -1,17 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>PayrollEngine.Api.Map</AssemblyName>
-    <RootNamespace>PayrollEngine.Api.Map</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Api.Map</AssemblyName>
+		<RootNamespace>PayrollEngine.Api.Map</RootNamespace>
+		<Description>Payroll Engine Api Map</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Domain\Domain.Model\PayrollEngine.Domain.Model.csproj" />
-    <ProjectReference Include="..\Api.Core\PayrollEngine.Api.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Domain\Domain.Model\PayrollEngine.Domain.Model.csproj" />
+		<ProjectReference Include="..\Api.Core\PayrollEngine.Api.Core.csproj" />
+	</ItemGroup>
 
 </Project>

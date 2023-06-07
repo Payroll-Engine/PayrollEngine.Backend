@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Api.Model</AssemblyName>
 		<RootNamespace>PayrollEngine.Api.Model</RootNamespace>
+		<Description>Payroll Engine Api Model</Description>
 	</PropertyGroup>
 
 	<!-- help file generation -->
@@ -11,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Core" Version="0.5.0-pre-230606-3" />
+		<PackageReference Include="PayrollEngine.Core" Version="0.5.0-pre-230606-4" />
 	</ItemGroup>
 
 </Project>

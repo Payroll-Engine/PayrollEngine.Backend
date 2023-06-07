@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Domain.Scripting</AssemblyName>
 		<RootNamespace>PayrollEngine.Domain.Scripting</RootNamespace>
+		<Description>Payroll Engine Domain Scripting</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -14,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Client.Scripting" Version="0.5.0-pre-230606-3" />
+		<PackageReference Include="PayrollEngine.Client.Scripting" Version="0.5.0-pre-230606-4" />
 	</ItemGroup>
 
 </Project>
