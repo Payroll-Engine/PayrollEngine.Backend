@@ -10,8 +10,7 @@ namespace PayrollEngine.Domain.Scripting;
 /// <summary>
 /// Provides a lookup
 /// </summary>
-// TODO add IRegulationLookupProvider
-public sealed class RegulationLookupProvider
+public sealed class RegulationLookupProvider : IRegulationLookupProvider
 {
     /// <summary>
     /// The derived lookup
@@ -116,7 +115,7 @@ public sealed class RegulationLookupProvider
     /// <param name="lookupKey">The lookup key</param>
     /// <param name="language">The value language</param>
     /// <returns>The lookup value</returns>
-    public async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context, 
+    public async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
         string lookupName, decimal rangeValue, string lookupKey = null, Language? language = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))

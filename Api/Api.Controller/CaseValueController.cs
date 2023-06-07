@@ -38,7 +38,7 @@ public abstract class CaseValueController<TParentService, TParentRepo, TRepo, TP
     protected async Task<IEnumerable<string>> GetCaseValueSlotsAsync(int parentId, string caseFieldName) =>
         await Service.GetCaseValueSlotsAsync(Runtime.DbContext, parentId, caseFieldName);
 
-    protected async Task<Domain.Scripting.RegulationLookupProvider> NewLookupProviderAsync(DomainObject.Tenant tenant,
+    protected async Task<DomainObject.IRegulationLookupProvider> NewLookupProviderAsync(DomainObject.Tenant tenant,
         DomainObject.Payroll payroll, DateTime? regulationDate = null, DateTime? evaluationDate = null)
     {
         var currentEvaluationDate = CurrentEvaluationDate;
@@ -57,6 +57,6 @@ public abstract class CaseValueController<TParentService, TParentRepo, TRepo, TP
             overrideType: OverrideType.Active)).ToList();
 
         // new lookup provider
-        return new(lookups, RegulationService.Repository, LookupSetService.Repository);
+        return new Domain.Scripting.RegulationLookupProvider(lookups, RegulationService.Repository, LookupSetService.Repository);
     }
 }

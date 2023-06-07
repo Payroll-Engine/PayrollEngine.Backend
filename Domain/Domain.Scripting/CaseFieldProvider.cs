@@ -9,6 +9,7 @@ namespace PayrollEngine.Domain.Scripting;
 /// <summary>
 /// Provides a case field
 /// </summary>
+// TODO ICaseFieldProvider
 public sealed class CaseFieldProvider
 {
     /// <summary>

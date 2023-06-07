@@ -30,7 +30,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
     /// <summary>
     /// Provider for regulation lookups
     /// </summary>
-    protected RegulationLookupProvider RegulationLookupProvider => Settings.RegulationLookupProvider;
+    protected IRegulationLookupProvider RegulationLookupProvider => Settings.RegulationLookupProvider;
 
     /// <summary>
     /// Maximum period count

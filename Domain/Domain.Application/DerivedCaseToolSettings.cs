@@ -2,7 +2,6 @@
 using System.Globalization;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -22,7 +21,7 @@ public class DerivedCaseToolSettings : FunctionToolSettings
     public IRegulationRepository RegulationRepository { get; set; }
     public ILookupSetRepository LookupSetRepository { get; set; }
     public IWebhookDispatchService WebhookDispatchService { get; set; }
-    public RegulationLookupProvider RegulationLookupProvider { get; set; }
+    public IRegulationLookupProvider RegulationLookupProvider { get; set; }
     public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
     public string ClusterSetName { get; set; }
     public CultureInfo Culture { get; set; }

@@ -12,7 +12,7 @@ public class CaseValueProviderSettings
     public ICaseRepository CaseRepository { get; set; }
     public IPayrollCalculator Calculator { get; set; }
     public CaseFieldProvider CaseFieldProvider { get; set; }
-    public RegulationLookupProvider RegulationLookupProvider { get; set; }
+    public IRegulationLookupProvider RegulationLookupProvider { get; set; }
     public DatePeriod EvaluationPeriod { get; set; }
     public DateTime EvaluationDate { get; set; }
     public DateTime? RetroDate { get; set; }

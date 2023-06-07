@@ -1,4 +1,5 @@
-﻿
+﻿using PayrollEngine.Domain.Model;
+
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
 public class PayrollRuntimeSettings : RuntimeSettings
@@ -16,5 +17,5 @@ public class PayrollRuntimeSettings : RuntimeSettings
     /// <summary>
     /// Provider for regulation lookups
     /// </summary>
-    public RegulationLookupProvider RegulationLookupProvider { get; set; }
+    public IRegulationLookupProvider RegulationLookupProvider { get; set; }
 }

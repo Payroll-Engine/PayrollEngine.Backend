@@ -195,7 +195,7 @@ internal static class PayrollControllerExtensions
         }
     }
 
-    internal static async Task<RegulationLookupProvider> NewRegulationLookupProviderAsync(this PayrollController controller,
+    internal static async Task<IRegulationLookupProvider> NewRegulationLookupProviderAsync(this PayrollController controller,
         IDbContext context, Tenant tenant, Payroll payroll, DateTime? regulationDate = null, DateTime? evaluationDate = null)
     {
         var currentEvaluationDate = controller.CurrentEvaluationDate;
@@ -214,6 +214,6 @@ internal static class PayrollControllerExtensions
             overrideType: OverrideType.Active)).ToList();
 
         // new lookup provider
-        return new(lookups, controller.RegulationService.Repository, controller.RegulationLookupSetService.Repository);
+        return new RegulationLookupProvider(lookups, controller.RegulationService.Repository, controller.RegulationLookupSetService.Repository);
     }
 }

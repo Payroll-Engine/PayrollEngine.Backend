@@ -3164,6 +3164,32 @@
             <param name="calendar">The calendar configuration</param>
             <returns>The case value calculator</returns>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.IRegulationLookupProvider">
+            <summary>
+            Provides a lookup
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IRegulationLookupProvider.GetLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.String,System.Nullable{PayrollEngine.Language})">
+            <summary>
+            Get a derived lookup value
+            </summary>
+            <param name="context">The database context</param>
+            <param name="lookupName">The name of the lookup</param>
+            <param name="lookupKey">The lookup value key</param>
+            <param name="language">The value language</param>
+            <returns>The lookup value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IRegulationLookupProvider.GetRangeLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.Decimal,System.String,System.Nullable{PayrollEngine.Language})">
+            <summary>
+            Get a derived range lookup value
+            </summary>
+            <param name="context">The database context</param>
+            <param name="lookupName">The name of the lookup</param>
+            <param name="rangeValue">The range value</param>
+            <param name="lookupKey">The lookup key</param>
+            <param name="language">The value language</param>
+            <returns>The lookup value</returns>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.IScriptObject">
             <summary>
             Represents a scripting domain object

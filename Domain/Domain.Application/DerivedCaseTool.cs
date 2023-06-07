@@ -242,7 +242,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
         WebhookDispatchService = settings.WebhookDispatchService ?? throw new ArgumentNullException(nameof(settings.WebhookDispatchService));
     }
 
-    protected virtual async Task<RegulationLookupProvider> NewRegulationLookupProviderAsync()
+    protected virtual async Task<IRegulationLookupProvider> NewRegulationLookupProviderAsync()
     {
         var lookups = (await PayrollRepository.GetDerivedLookupsAsync(Settings.DbContext,
             new()
@@ -253,7 +253,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                 EvaluationDate = EvaluationDate
             },
             overrideType: OverrideType.Active)).ToList();
-        return new(lookups, RegulationRepository, RegulationLookupSetRepository);
+        return new RegulationLookupProvider(lookups, RegulationRepository, RegulationLookupSetRepository);
     }
 
     /// <summary>
