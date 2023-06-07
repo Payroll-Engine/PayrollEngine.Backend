@@ -11,52 +11,46 @@ namespace PayrollEngine.Domain.Scripting;
 /// <summary>
 /// Provides a case value
 /// </summary>
-public sealed class CaseValueProvider
+public sealed class CaseValueProvider : ICaseValueProvider
 {
     /// <summary>
     /// The runtime settings
     /// </summary>
-    public CaseValueProviderSettings Settings { get; }
+    private CaseValueProviderSettings Settings { get; }
 
-    /// <summary>
-    /// The employee
-    /// </summary>
+    /// <inheritdoc />
     public Employee Employee { get; }
 
-    /// <summary>
-    /// The case field provider
-    /// </summary>
+    /// <inheritdoc />
     public ICaseFieldProvider CaseFieldProvider => Settings.CaseFieldProvider;
 
-    /// <summary>
-    /// The evaluation date
-    /// </summary>
+    /// <inheritdoc />
     public DateTime EvaluationDate => Settings.EvaluationDate;
 
     /// <summary>
     /// The retro date
     /// </summary>
-    public DateTime? RetroDate => Settings.RetroDate;
+    private DateTime? RetroDate => Settings.RetroDate;
 
     /// <summary>
     /// The global case value repository
     /// </summary>
-    public ICaseValueCache GlobalCaseValueRepository { get; }
+    private ICaseValueCache GlobalCaseValueRepository { get; }
 
     /// <summary>
     /// The national case value repository
     /// </summary>
-    public ICaseValueCache NationalCaseValueRepository { get; }
+    private ICaseValueCache NationalCaseValueRepository { get; }
 
     /// <summary>
     /// The company case value repository
     /// </summary>
-    public ICaseValueCache CompanyCaseValueRepository { get; }
+    private ICaseValueCache CompanyCaseValueRepository { get; }
 
     /// <summary>
     /// The employee case value repository
     /// </summary>
-    public ICaseValueCache EmployeeCaseValueRepository { get; }
+    private ICaseValueCache EmployeeCaseValueRepository { get; }
 
     #region ctor
 
@@ -146,22 +140,14 @@ public sealed class CaseValueProvider
 
     private readonly Stack<IPayrollCalculator> payrollCalculators = new();
 
-    /// <summary>
-    /// The current payroll calculator
-    /// </summary>
+    /// <inheritdoc />
     public IPayrollCalculator PayrollCalculator => payrollCalculators.Peek();
 
-    /// <summary>
-    /// Push the current payroll calculator
-    /// </summary>
-    /// <param name="payrollCalculator">The new payroll calculator</param>
+    /// <inheritdoc />
     public void PushCalculator(IPayrollCalculator payrollCalculator) =>
         payrollCalculators.Push(payrollCalculator);
 
-    /// <summary>
-    /// Pop the current payroll calculator
-    /// </summary>
-    /// <param name="payrollCalculator">The new payroll calculator</param>
+    /// <inheritdoc />
     public void PopCalculator(IPayrollCalculator payrollCalculator)
     {
         if (payrollCalculator == null)
@@ -182,49 +168,12 @@ public sealed class CaseValueProvider
 
     #region Periods
 
-    /// <summary>
-    /// Get offset period
-    /// </summary>
-    /// <param name="moment">A moment within the payrun period</param>
-    /// <param name="offset">The period offset count</param>
-    /// <returns>The offset period</returns>
-    public DatePeriod GetOffsetCycle(DateTime moment, int offset)
-    {
-        if (!moment.IsUtc())
-        {
-            throw new ArgumentException("Value date must be UTC", nameof(moment));
-        }
-        var payrollPeriod = PayrollCalculator.GetPayrunCycle(moment);
-        return payrollPeriod.GetOffsetDatePeriod(offset);
-    }
-
-    /// <summary>
-    /// Get offset period
-    /// </summary>
-    /// <param name="moment">A moment within the payrun period</param>
-    /// <param name="offset">The period offset count</param>
-    /// <returns>The offset period</returns>
-    public DatePeriod GetOffsetPeriod(DateTime moment, int offset)
-    {
-        if (!moment.IsUtc())
-        {
-            throw new ArgumentException("Value date must be UTC", nameof(moment));
-        }
-        var payrollPeriod = PayrollCalculator.GetPayrunPeriod(moment);
-        return payrollPeriod.GetOffsetDatePeriod(offset);
-    }
-
     private readonly Stack<DatePeriod> evaluationPeriods = new();
 
-    /// <summary>
-    /// The current evaluation period
-    /// </summary>
+    /// <inheritdoc />
     public DatePeriod EvaluationPeriod => evaluationPeriods.Peek();
 
-    /// <summary>
-    /// Push the current evaluation period
-    /// </summary>
-    /// <param name="evaluationPeriod">The new evaluation period</param>
+    /// <inheritdoc />
     public void PushEvaluationPeriod(DatePeriod evaluationPeriod)
     {
         //Log.Warning($"Push on count {evaluationPeriods.Count}: {evaluationPeriod}");
@@ -239,10 +188,7 @@ public sealed class CaseValueProvider
         evaluationPeriods.Push(evaluationPeriod);
     }
 
-    /// <summary>
-    /// Pop the current evaluation period
-    /// </summary>
-    /// <param name="evaluationPeriod">The new evaluation period</param>
+    /// <inheritdoc />
     public void PopEvaluationPeriod(DatePeriod evaluationPeriod)
     {
         //Log.Warning($"Pop on count {evaluationPeriods.Count}: {evaluationPeriod}");
@@ -272,11 +218,7 @@ public sealed class CaseValueProvider
 
     #region Case Value
 
-    /// <summary>
-    /// Get all case slots from a specific case field
-    /// </summary>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <returns>The case values</returns>
+    /// <inheritdoc />
     public async Task<IEnumerable<string>> GetCaseValueSlotsAsync(string caseFieldName)
     {
         if (string.IsNullOrWhiteSpace(caseFieldName))
@@ -296,12 +238,7 @@ public sealed class CaseValueProvider
         return await caseValueRepository.GetCaseValueSlotsAsync(caseFieldName);
     }
 
-    /// <summary>
-    /// Get all case values (only active objects) by case type
-    /// </summary>
-    /// <param name="valueDate">The value date</param>
-    /// <param name="caseType">The case type</param>
-    /// <returns>The case value at a given time, null if no value is available</returns>
+    /// <inheritdoc />
     public async Task<List<CaseValue>> GetTimeCaseValuesAsync(DateTime valueDate, CaseType caseType)
     {
         if (!valueDate.IsUtc())
@@ -316,13 +253,7 @@ public sealed class CaseValueProvider
         return await GetTimeCaseValuesAsync(valueDate, caseType, caseFields.Select(x => x.Name));
     }
 
-    /// <summary>
-    /// Get case values (only active objects) from a specific time
-    /// </summary>
-    /// <param name="valueDate">The value date</param>
-    /// <param name="caseType">The case type</param>
-    /// <param name="caseFieldNames">The case field names</param>
-    /// <returns>The case value at a given time, null if no value is available</returns>
+    /// <inheritdoc />
     public async Task<List<CaseValue>> GetTimeCaseValuesAsync(DateTime valueDate, CaseType caseType,
         IEnumerable<string> caseFieldNames)
     {
@@ -391,13 +322,7 @@ public sealed class CaseValueProvider
         return caseValues;
     }
 
-    /// <summary>
-    /// Get case values (only active objects)
-    /// </summary>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <param name="evaluationPeriod">The evaluation period</param>
-    /// <param name="caseSlot">The case slot</param>
-    /// <returns>The case value periods for a time period</returns>
+    /// <inheritdoc />
     public async Task<List<CaseFieldValue>> GetCaseValuesAsync(string caseFieldName, DatePeriod evaluationPeriod,
         string caseSlot = null)
     {
@@ -464,13 +389,7 @@ public sealed class CaseValueProvider
         return caseFieldValues;
     }
 
-    /// <summary>
-    /// Get case value by split periods
-    /// </summary>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <param name="caseType">The case type</param>
-    /// <param name="caseSlot">The case slot</param>
-    /// <returns>case values with value periods</returns>
+    /// <inheritdoc />
     public async Task<IDictionary<CaseValue, List<DatePeriod>>> GetCaseValueSplitPeriodsAsync(
         string caseFieldName, CaseType caseType, string caseSlot = null)
     {
@@ -485,112 +404,11 @@ public sealed class CaseValueProvider
         return new Dictionary<CaseValue, List<DatePeriod>>();
     }
 
-    private async Task<CaseValue> GetMomentCaseValueAsync(string caseFieldName, CaseField caseField,
-        ICaseValueCache caseValueRepository, DateTime moment, string caseSlot = null)
-    {
-        if (caseField == null)
-        {
-            throw new ArgumentNullException(nameof(caseField));
-        }
-        if (!moment.IsUtc())
-        {
-            throw new ArgumentException("Value date must be UTC", nameof(moment));
-        }
-
-        // case values (anytime)
-        var caseValues = (await caseValueRepository.GetCaseValuesAsync(
-            CaseValueReference.ToReference(caseFieldName, caseSlot))).ToList();
-        if (!caseValues.Any())
-        {
-            return null;
-        }
-
-        // timeless value
-        if (caseField.TimeType == CaseFieldTimeType.Timeless)
-        {
-            return CalculateTimelessCaseValue(caseValues);
-        }
-
-        // moment value
-        return await CalculateMomentCaseValueAsync(caseValueRepository, caseField.Name, caseValues, moment);
-    }
-
-    private async Task<object> GetMomentValueAsync(string caseFieldName, CaseField caseField,
-        ICaseValueCache caseValueRepository, DateTime moment, string caseSlot = null)
-    {
-        // case value
-        var caseValue = await GetMomentCaseValueAsync(caseFieldName, caseField, caseValueRepository, moment, caseSlot);
-        return caseValue?.GetValue();
-    }
-
-    /// <summary>
-    /// Get case field period value
-    /// </summary>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <param name="caseType">The case type</param>
-    /// <param name="caseSlot">The case slot</param>
-    /// <returns>The case value</returns>
-    public async Task<object> GetPeriodValueAsync(string caseFieldName, CaseType? caseType, string caseSlot = null)
-    {
-        if (string.IsNullOrWhiteSpace(caseFieldName))
-        {
-            throw new ArgumentException(nameof(caseFieldName));
-        }
-        caseType ??= await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
-
-        // ReSharper disable once PossibleInvalidOperationException
-        var caseValueRepository = GetCaseValueRepository(caseType.Value);
-
-        // case field
-        var caseField = await CaseFieldProvider.GetValueCaseFieldAsync(Settings.DbContext, caseFieldName);
-        if (caseField == null)
-        {
-            throw new PayrollException($"Unknown case field {caseFieldName}");
-        }
-
-        // timeless case field
-        if (caseField.TimeType == CaseFieldTimeType.Timeless)
-        {
-            return await GetMomentValueAsync(caseFieldName, caseField, caseValueRepository, EvaluationDate, caseSlot);
-        }
-
-        // case values
-        var caseValues = (await CalculatePeriodCaseValuesAsync(caseValueRepository, caseField.Name)).ToList();
-        if (!caseValues.Any())
-        {
-            return null;
-        }
-
-        // value calculation
-        object value;
-        var calculator = new CaseValueProviderCalculation(PayrollCalculator, EvaluationDate, EvaluationPeriod);
-        switch (caseField.TimeType)
-        {
-            // timeless is handled before
-            case CaseFieldTimeType.Moment:
-                value = calculator.CalculatePeriodValue(caseField, caseValues);
-                break;
-            case CaseFieldTimeType.Period:
-            case CaseFieldTimeType.ScaledPeriod:
-                value = calculator.CalculateTimePeriodValue(caseField, caseValues);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException($"Unknown case value time type {caseField.TimeType}");
-        }
-
-        return value;
-    }
-
     #endregion
 
     #region Period Values
 
-    /// <summary>
-    /// Get case period values by date period and the case field names
-    /// </summary>
-    /// <param name="period">The date period</param>
-    /// <param name="caseFieldNames">The case field names</param>
-    /// <returns>The case values for all case fields</returns>
+    /// <inheritdoc />
     public async Task<IList<CaseFieldValue>> GetCasePeriodValuesAsync(
         DatePeriod period, IEnumerable<string> caseFieldNames)
     {
@@ -725,7 +543,7 @@ public sealed class CaseValueProvider
     /// </summary>
     /// <param name="caseFieldName">The name of the case field</param>
     /// <returns>The case field period values</returns>
-    public async Task<IList<CaseFieldValue>> GetCasePeriodValuesAsync(string caseFieldName)
+    private async Task<IList<CaseFieldValue>> GetCasePeriodValuesAsync(string caseFieldName)
     {
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
@@ -968,20 +786,6 @@ public sealed class CaseValueProvider
     }
 
     /// <summary>
-    /// Determine the case value at a specific time
-    /// </summary>
-    private async Task<CaseValue> CalculateMomentCaseValueAsync(ICaseValueCache caseValueRepository,
-        string caseFieldName, IEnumerable<CaseValue> caseValues, DateTime moment)
-    {
-        var caseValue = caseValues
-            // values created before the moment and moment is within the evaluation period
-            .Where(cv => cv.Created <= moment && cv.IsWithing(moment)).MaxBy(cv => cv.Created);
-
-        await UpdateRetroCaseValue(caseValueRepository, caseFieldName);
-        return caseValue;
-    }
-
-    /// <summary>
     /// Tet the case period values
     /// </summary>
     private async Task<IEnumerable<CaseValue>> CalculatePeriodCaseValuesAsync(ICaseValueCache caseValueRepository,
@@ -996,14 +800,10 @@ public sealed class CaseValueProvider
 
     #region Retro
 
-    /// <summary>
-    /// Gets the retro case value
-    /// </summary>
+    /// <inheritdoc />
     public CaseValue RetroCaseValue { get; private set; }
 
-    /// <summary>
-    /// Resets the retro case value
-    /// </summary>
+    /// <inheritdoc />
     public void ResetRetroCaseValue() => RetroCaseValue = null;
 
     private async Task UpdateRetroCaseValue(ICaseValueCache caseValueRepository, string caseFieldName)

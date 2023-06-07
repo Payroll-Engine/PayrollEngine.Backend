@@ -15,13 +15,13 @@ internal sealed class PayrunProcessorRegulation
 {
     private IFunctionHost FunctionHost { get; }
     private PayrunProcessorSettings Settings { get; }
-    private ResultProvider ResultProvider { get; }
+    private IResultProvider ResultProvider { get; }
     private Tenant Tenant { get; }
     private Payroll Payroll { get; }
     private Payrun Payrun { get; }
 
     internal PayrunProcessorRegulation(IFunctionHost functionHost, PayrunProcessorSettings settings,
-        ResultProvider resultProvider, Tenant tenant, Payroll payroll, Payrun payrun)
+        IResultProvider resultProvider, Tenant tenant, Payroll payroll, Payrun payrun)
     {
         FunctionHost = functionHost ?? throw new ArgumentNullException(nameof(functionHost));
         ResultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
@@ -81,7 +81,8 @@ internal sealed class PayrunProcessorRegulation
 
     #region Wage Type
 
-    internal bool IsWageTypeAvailable(PayrunContext context, IGrouping<decimal, WageType> derivedWageType, CaseValueProvider caseValueProvider)
+    internal bool IsWageTypeAvailable(PayrunContext context, IGrouping<decimal, WageType> derivedWageType,
+        ICaseValueProvider caseValueProvider)
     {
         Log.Trace($"checking availability of wage type {derivedWageType.Key}");
 
@@ -117,7 +118,7 @@ internal sealed class PayrunProcessorRegulation
     }
 
     internal Tuple<WageTypeResultSet, List<RetroPayrunJob>, List<string>, bool> CalculateWageTypeValue(PayrunContext context, IGrouping<decimal, WageType> derivedWageType,
-        PayrollResultSet currentPayrollResult, CaseValueProvider caseValueProvider, int executionCount)
+        PayrollResultSet currentPayrollResult, ICaseValueProvider caseValueProvider, int executionCount)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
 
@@ -278,7 +279,7 @@ internal sealed class PayrunProcessorRegulation
     }
 
     internal List<RetroPayrunJob> CollectorStart(PayrunContext context, IGrouping<string, Collector> derivedCollector,
-        CaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult, CollectorResultSet collectorResult)
+        ICaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult, CollectorResultSet collectorResult)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
 
@@ -323,7 +324,7 @@ internal sealed class PayrunProcessorRegulation
     }
 
     internal Tuple<decimal, List<RetroPayrunJob>> CollectorApply(PayrunContext context, IGrouping<string, Collector> derivedCollector,
-        CaseValueProvider caseValueProvider, WageTypeResult wageTypeResult,
+        ICaseValueProvider caseValueProvider, WageTypeResult wageTypeResult,
         PayrollResultSet currentPayrollResult, CollectorResultSet collectorResult)
     {
         // value
@@ -384,7 +385,7 @@ internal sealed class PayrunProcessorRegulation
     }
 
     internal List<RetroPayrunJob> CollectorEnd(PayrunContext context, IGrouping<string, Collector> derivedCollector,
-        CaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult,
+        ICaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult,
         CollectorResultSet collectorResult)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
@@ -430,7 +431,7 @@ internal sealed class PayrunProcessorRegulation
     }
 
     internal async Task<List<PayrunResult>> GetCaseValuePayrunResultsAsync(Payroll payroll,
-        PayrunJob payrunJob, CaseValueProvider caseValueProvider, bool expandCaseSlots)
+        PayrunJob payrunJob, ICaseValueProvider caseValueProvider, bool expandCaseSlots)
     {
         var payrunResults = new List<PayrunResult>();
 
@@ -520,7 +521,7 @@ internal sealed class PayrunProcessorRegulation
         return payrunResults;
     }
 
-    private static async Task<List<PayrunResult>> GetCaseValuePayrunResultsAsync(CaseValueProvider caseValueProvider, ChildCaseField caseField,
+    private static async Task<List<PayrunResult>> GetCaseValuePayrunResultsAsync(ICaseValueProvider caseValueProvider, ChildCaseField caseField,
         DateTime periodEnd, string caseSlot = null)
     {
         var results = new List<PayrunResult>();

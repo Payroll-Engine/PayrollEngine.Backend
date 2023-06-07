@@ -13,12 +13,12 @@ public class PayrunRuntimeSettings : PayrollRuntimeSettings
     /// <summary>
     /// Provider for employee results
     /// </summary>
-    public ResultProvider ResultProvider { get; set; }
+    public IResultProvider ResultProvider { get; set; }
 
     /// <summary>
     /// Provider for runtime values
     /// </summary>
-    public RuntimeValueProvider RuntimeValueProvider { get; set; }
+    public IRuntimeValueProvider RuntimeValueProvider { get; set; }
 
     /// <summary>The Payrun job</summary>
     public PayrunJob PayrunJob { get; set; }

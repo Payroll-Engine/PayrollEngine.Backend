@@ -1,19 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using PayrollEngine.Domain.Model;
+using System.Collections.Generic;
 
 namespace PayrollEngine.Domain.Scripting;
 
 /// <summary>
 /// Provides payrun runtime values
 /// </summary>
-public sealed class RuntimeValueProvider
+public sealed class RuntimeValueProvider : IRuntimeValueProvider
 {
-    /// <summary>
-    /// Payrun runtime values
-    /// </summary>
+    /// <inheritdoc />
     public Dictionary<string, string> PayrunValues { get; } = new();
 
-    /// <summary>
-    /// Employees runtime values, key is the employee identifier
-    /// </summary>
+    /// <inheritdoc />
     public Dictionary<string, Dictionary<string, string>> EmployeeValues { get; } = new();
 }

@@ -12,7 +12,7 @@ public class PayrollRuntimeSettings : RuntimeSettings
     /// <summary>
     /// The case value provider
     /// </summary>
-    public CaseValueProvider CaseValueProvider { get; set; }
+    public ICaseValueProvider CaseValueProvider { get; set; }
 
     /// <summary>
     /// Provider for regulation lookups

@@ -16,6 +16,6 @@ public interface IPayrollCalculatorProvider
     /// <param name="culture">The culture to use</param>
     /// <param name="calendar">The calendar configuration</param>
     /// <returns>The case value calculator</returns>
-    public IPayrollCalculator CreateCalculator(CalendarCalculationMode calculationMode,
+    IPayrollCalculator CreateCalculator(CalendarCalculationMode calculationMode,
         int tenantId, int? userId = null, CalendarConfiguration calendar = null, CultureInfo culture = null);
 }

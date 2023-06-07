@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Application;
 public class CaseValueTool : FunctionToolBase
 {
     private ICaseFieldProvider CaseFieldProvider { get; }
-    private CaseValueProvider CaseValueProvider { get; }
+    private ICaseValueProvider CaseValueProvider { get; }
 
     public DateTime ValueDate { get; }
     public DateTime EvaluationDate { get; }
@@ -37,7 +37,7 @@ public class CaseValueTool : FunctionToolBase
     {
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
-        CaseValueProvider = new(
+        CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
@@ -64,7 +64,7 @@ public class CaseValueTool : FunctionToolBase
     {
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
-        CaseValueProvider = new(
+        CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
@@ -93,7 +93,7 @@ public class CaseValueTool : FunctionToolBase
     {
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
-        CaseValueProvider = new(
+        CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -126,7 +126,7 @@ public class CaseValueTool : FunctionToolBase
 
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
-        CaseValueProvider = new(Employee,
+        CaseValueProvider = new CaseValueProvider(Employee,
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),

@@ -15,17 +15,17 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
     /// <summary>
     /// The derived lookup
     /// </summary>
-    public ILookup<string, Lookup> DerivedLookups { get; }
+    private ILookup<string, Lookup> DerivedLookups { get; }
 
     /// <summary>
     /// The regulation repository
     /// </summary>
-    public IRegulationRepository RegulationRepository { get; }
+    private IRegulationRepository RegulationRepository { get; }
 
     /// <summary>
     /// The lookup repository
     /// </summary>
-    public ILookupSetRepository LookupSetRepository { get; }
+    private ILookupSetRepository LookupSetRepository { get; }
 
     /// <summary>
     /// Constructor for national time value provider

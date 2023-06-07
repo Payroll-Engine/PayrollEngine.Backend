@@ -20,7 +20,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
     protected new CaseSet Case => (CaseSet)base.Case;
 
     /// <summary>The case provider</summary>
-    protected CaseProvider CaseProvider => Settings.CaseProvider;
+    protected ICaseProvider CaseProvider => Settings.CaseProvider;
 
     /// <summary>The case field provider</summary>
     protected ICaseFieldProvider CaseFieldProvider => CaseValueProvider.CaseFieldProvider;

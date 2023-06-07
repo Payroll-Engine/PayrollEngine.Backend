@@ -25,7 +25,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
     /// <summary>
     /// The case value provider
     /// </summary>
-    protected CaseValueProvider CaseValueProvider => Settings.CaseValueProvider;
+    protected ICaseValueProvider CaseValueProvider => Settings.CaseValueProvider;
 
     /// <summary>
     /// Provider for regulation lookups

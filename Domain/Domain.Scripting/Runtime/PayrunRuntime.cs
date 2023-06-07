@@ -27,12 +27,12 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
     /// <summary>
     /// Provider for employee results
     /// </summary>
-    protected ResultProvider ResultProvider => Settings.ResultProvider;
+    protected IResultProvider ResultProvider => Settings.ResultProvider;
 
     /// <summary>
     /// Provider for runtime values
     /// </summary>
-    protected RuntimeValueProvider RuntimeValueProvider => Settings.RuntimeValueProvider;
+    protected IRuntimeValueProvider RuntimeValueProvider => Settings.RuntimeValueProvider;
 
     /// <inheritdoc />
     protected PayrunRuntime(PayrunRuntimeSettings settings) :

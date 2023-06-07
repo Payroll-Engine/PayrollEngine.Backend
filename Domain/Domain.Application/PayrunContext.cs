@@ -39,8 +39,8 @@ internal sealed class PayrunContext
     internal ILookup<string, Collector> DerivedCollectors { get; set; }
     internal ILookup<decimal, WageType> DerivedWageTypes { get; set; }
 
-    internal RegulationLookupProvider RegulationLookupProvider { get; set; }
-    internal RuntimeValueProvider RuntimeValueProvider { get; } = new();
+    internal IRegulationLookupProvider RegulationLookupProvider { get; set; }
+    internal IRuntimeValueProvider RuntimeValueProvider { get; } = new RuntimeValueProvider();
 
     /// <summary>
     /// Collected errors

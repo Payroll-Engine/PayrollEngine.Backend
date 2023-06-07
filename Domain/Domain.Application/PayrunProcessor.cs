@@ -35,7 +35,7 @@ public class PayrunProcessor : FunctionToolBase
 
     // internal
     protected new PayrunProcessorSettings Settings => base.Settings as PayrunProcessorSettings;
-    private ResultProvider ResultProvider { get; }
+    private IResultProvider ResultProvider { get; }
     private bool LogWatch { get; }
 
     public PayrunProcessor(Tenant tenant, Payrun payrun,
@@ -47,7 +47,7 @@ public class PayrunProcessor : FunctionToolBase
         Payrun = payrun ?? throw new ArgumentNullException(nameof(payrun));
 
         // internal
-        ResultProvider = new(Settings.PayrollResultRepository, Settings.PayrollConsolidatedResultRepository);
+        ResultProvider = new ResultProvider(Settings.PayrollResultRepository, Settings.PayrollConsolidatedResultRepository);
         LogWatch = Settings.FunctionLogTimeout != TimeSpan.Zero;
     }
 
@@ -134,7 +134,7 @@ public class PayrunProcessor : FunctionToolBase
 
         // context derived lookups by lookup name
         var derivedLookups = await processorRegulation.GetDerivedLookupsAsync(context.PayrunJob);
-        context.RegulationLookupProvider = new(derivedLookups,
+        context.RegulationLookupProvider = new RegulationLookupProvider(derivedLookups,
             Settings.RegulationRepository, Settings.RegulationLookupSetRepository);
 
         // employees
@@ -536,7 +536,7 @@ public class PayrunProcessor : FunctionToolBase
     /// <param name="executionPhase">The job execution phase</param>
     /// <returns>The payroll results: the retro payrun jobs and the retro case value</returns>
     private async Task<Tuple<PayrollResultSet, List<RetroPayrunJob>, CaseValue>> CalculateEmployeeAsync(PayrunProcessorRegulation processorRegulation,
-        Employee employee, CaseValueProvider caseValueProvider, PayrunContext context, PayrunExecutionPhase executionPhase)
+        Employee employee, ICaseValueProvider caseValueProvider, PayrunContext context, PayrunExecutionPhase executionPhase)
     {
         // context
         context.ExecutionPhase = executionPhase;
@@ -726,8 +726,8 @@ public class PayrunProcessor : FunctionToolBase
         stopwatch?.Restart();
 
         // case values as payrun results (with enabled slots)
-        payrollResult.PayrunResults.AddRange(await processorRegulation.GetCaseValuePayrunResultsAsync(context.Payroll,
-            context.PayrunJob, caseValueProvider, true));
+        payrollResult.PayrunResults.AddRange(
+            await processorRegulation.GetCaseValuePayrunResultsAsync(context.Payroll, context.PayrunJob, caseValueProvider, true));
 
         if (stopwatch != null)
         {

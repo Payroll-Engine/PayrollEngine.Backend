@@ -15,9 +15,9 @@ public abstract class DerivedCaseTool : FunctionToolBase
     protected new DerivedCaseToolSettings Settings => base.Settings as DerivedCaseToolSettings;
 
     // providers
-    protected CaseProvider CaseProvider { get; }
+    protected ICaseProvider CaseProvider { get; }
     protected ICaseFieldProvider CaseFieldProvider { get; }
-    protected CaseValueProvider CaseValueProvider { get; }
+    protected ICaseValueProvider CaseValueProvider { get; }
 
     /// <summary>
     /// The webhook dispatcher
@@ -72,7 +72,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
-        CaseValueProvider = new(
+        CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
             {
@@ -105,7 +105,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
-        CaseValueProvider = new(
+        CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
@@ -142,7 +142,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
-        CaseValueProvider = new(
+        CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -185,7 +185,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id, User.Id);
-        CaseValueProvider = new(Employee,
+        CaseValueProvider = new CaseValueProvider(Employee,
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -227,7 +227,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
         EvaluationDate = settings.EvaluationDate.IsUtc()
             ? settings.EvaluationDate
             : throw new ArgumentException("Evaluation date must be UTC", nameof(settings.EvaluationDate));
-        CaseProvider = new(Tenant, settings.PayrollRepository, RegulationDate, EvaluationDate);
+        CaseProvider = new CaseProvider(Tenant, settings.PayrollRepository, RegulationDate, EvaluationDate);
         CaseFieldProvider = new CaseFieldProvider(
             new CaseFieldProxyRepository(settings.PayrollRepository, Tenant.Id, Payroll.Id, RegulationDate, EvaluationDate, ClusterSet));
 

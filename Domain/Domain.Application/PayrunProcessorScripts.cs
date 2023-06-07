@@ -9,12 +9,12 @@ internal sealed class PayrunProcessorScripts
 {
     private IFunctionHost FunctionHost { get; }
     private PayrunProcessorSettings Settings { get; }
-    private ResultProvider ResultProvider { get; }
+    private IResultProvider ResultProvider { get; }
     private Tenant Tenant { get; }
     private Payrun Payrun { get; }
 
     internal PayrunProcessorScripts(IFunctionHost functionHost, PayrunProcessorSettings settings,
-        ResultProvider resultProvider, Tenant tenant, Payrun payrun)
+        IResultProvider resultProvider, Tenant tenant, Payrun payrun)
     {
         FunctionHost = functionHost ?? throw new ArgumentNullException(nameof(functionHost));
         ResultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
@@ -120,7 +120,7 @@ internal sealed class PayrunProcessorScripts
         });
     }
 
-    internal bool EmployeeStart(CaseValueProvider caseValueProvider, PayrunContext context)
+    internal bool EmployeeStart(ICaseValueProvider caseValueProvider, PayrunContext context)
     {
         if (caseValueProvider.Employee == null)
         {
@@ -155,7 +155,7 @@ internal sealed class PayrunProcessorScripts
         return start ?? true;
     }
 
-    internal void EmployeeEnd(CaseValueProvider caseValueProvider, PayrunContext context)
+    internal void EmployeeEnd(ICaseValueProvider caseValueProvider, PayrunContext context)
     {
         if (caseValueProvider.Employee == null)
         {

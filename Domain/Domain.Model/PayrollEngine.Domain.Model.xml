@@ -2984,6 +2984,22 @@
             <param name="context">The database context</param>
             <param name="caseType">The case type</param>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.ICaseProvider">
+            <summary>
+            Provides a case
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseProvider.GetCaseAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String,System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+            <summary>
+            Get payroll case
+            </summary>
+            <param name="context">The database context</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseName">The case name</param>
+            <param name="overrideType">The override type filter (default: active)</param>
+            <param name="clusterSet">The cluster set</param>
+            <returns>The case matching the name at a given time</returns>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.ICaseValueCache">
             <summary>
             Cache for case values for a specific evaluation date and period
@@ -3017,6 +3033,120 @@
             <param name="caseFieldName">The case field name</param>
             <param name="period">The date period</param>
             <returns>The retro case value</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.ICaseValueProvider">
+            <summary>
+            Provides a case value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ICaseValueProvider.Employee">
+            <summary>
+            The employee
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ICaseValueProvider.CaseFieldProvider">
+            <summary>
+            The case field provider
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ICaseValueProvider.EvaluationDate">
+            <summary>
+            The evaluation date
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ICaseValueProvider.PayrollCalculator">
+            <summary>
+            The current payroll calculator
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.PushCalculator(PayrollEngine.Domain.Model.IPayrollCalculator)">
+            <summary>
+            Push the current payroll calculator
+            </summary>
+            <param name="payrollCalculator">The new payroll calculator</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.PopCalculator(PayrollEngine.Domain.Model.IPayrollCalculator)">
+            <summary>
+            Pop the current payroll calculator
+            </summary>
+            <param name="payrollCalculator">The new payroll calculator</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ICaseValueProvider.EvaluationPeriod">
+            <summary>
+            The current evaluation period
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.PushEvaluationPeriod(PayrollEngine.DatePeriod)">
+            <summary>
+            Push the current evaluation period
+            </summary>
+            <param name="evaluationPeriod">The new evaluation period</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.PopEvaluationPeriod(PayrollEngine.DatePeriod)">
+            <summary>
+            Pop the current evaluation period
+            </summary>
+            <param name="evaluationPeriod">The new evaluation period</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.GetCaseValueSlotsAsync(System.String)">
+            <summary>
+            Get all case slots from a specific case field
+            </summary>
+            <param name="caseFieldName">The case field name</param>
+            <returns>The case values</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.GetTimeCaseValuesAsync(System.DateTime,PayrollEngine.CaseType)">
+            <summary>
+            Get all case values (only active objects) by case type
+            </summary>
+            <param name="valueDate">The value date</param>
+            <param name="caseType">The case type</param>
+            <returns>The case value at a given time, null if no value is available</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.GetTimeCaseValuesAsync(System.DateTime,PayrollEngine.CaseType,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Get case values (only active objects) from a specific time
+            </summary>
+            <param name="valueDate">The value date</param>
+            <param name="caseType">The case type</param>
+            <param name="caseFieldNames">The case field names</param>
+            <returns>The case value at a given time, null if no value is available</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.GetCaseValuesAsync(System.String,PayrollEngine.DatePeriod,System.String)">
+            <summary>
+            Get case values (only active objects)
+            </summary>
+            <param name="caseFieldName">The case field name</param>
+            <param name="evaluationPeriod">The evaluation period</param>
+            <param name="caseSlot">The case slot</param>
+            <returns>The case value periods for a time period</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.GetCaseValueSplitPeriodsAsync(System.String,PayrollEngine.CaseType,System.String)">
+            <summary>
+            Get case value by split periods
+            </summary>
+            <param name="caseFieldName">The case field name</param>
+            <param name="caseType">The case type</param>
+            <param name="caseSlot">The case slot</param>
+            <returns>case values with value periods</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.GetCasePeriodValuesAsync(PayrollEngine.DatePeriod,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Get case period values by date period and the case field names
+            </summary>
+            <param name="period">The date period</param>
+            <param name="caseFieldNames">The case field names</param>
+            <returns>The case values for all case fields</returns>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ICaseValueProvider.RetroCaseValue">
+            <summary>
+            Gets the retro case value
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.ResetRetroCaseValue">
+            <summary>
+            Resets the retro case value
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IClusterObject">
             <summary>
@@ -3227,6 +3357,98 @@
             <param name="lookupKey">The lookup key</param>
             <param name="language">The value language</param>
             <returns>The lookup value</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.IResultProvider">
+            <summary>
+            Provides payroll results
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetWageTypeResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.WageTypeResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Query employee wage type values from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The wage type result query</param>
+            <param name="payrunJobId">The payrun job id</param>
+            <param name="parentPayrunJobId">The parent payrun job id</param>
+            <returns>Employee wage type values</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetWageTypeCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.WageTypeResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Query employee wage type custom results from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The wage type result query</param>
+            <param name="payrunJobId">The payrun job id</param>
+            <param name="parentPayrunJobId">The parent payrun job id</param>
+            <returns>Employee wage type custom results</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetCollectorResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.CollectorResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Query employee collector results from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The wage type result query</param>
+            <param name="payrunJobId">The payrun job id</param>
+            <param name="parentPayrunJobId">The parent payrun job id</param>
+            <returns>Employee collector results</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetCollectorCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.CollectorResultQuery,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Query employee collector custom results from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The collector result query</param>
+            <param name="payrunJobId">The payrun job id</param>
+            <param name="parentPayrunJobId">The parent payrun job id</param>
+            <returns>Employee collector custom results</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetConsolidatedWageTypeResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery)">
+            <summary>
+            Query consolidated employee wage type results from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The wage type result query</param>
+            <returns>Employee wage type results</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetConsolidatedWageTypeCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery)">
+            <summary>
+            Query consolidated employee wage type custom results from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The wage type result query</param>
+            <returns>Employee wage type custom results</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetConsolidatedCollectorResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery)">
+            <summary>
+            Query consolidated employee collector results from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The wage type result query</param>
+            <returns>Employee collector results</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IResultProvider.GetConsolidatedCollectorCustomResultsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery)">
+            <summary>
+            Query consolidated employee collector custom results from a time period
+            </summary>
+            <param name="context">The database context</param>
+            <param name="query">The collector result query</param>
+            <returns>Employee collector custom results</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.IRuntimeValueProvider">
+            <summary>
+            Provides payrun runtime values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IRuntimeValueProvider.PayrunValues">
+            <summary>
+            Payrun runtime values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IRuntimeValueProvider.EmployeeValues">
+            <summary>
+            Employees runtime values, key is the employee identifier
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IScriptObject">
             <summary>
