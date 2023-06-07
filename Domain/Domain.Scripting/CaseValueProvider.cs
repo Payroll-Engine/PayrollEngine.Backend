@@ -866,12 +866,12 @@ public sealed class CaseValueProvider
         {
             // first
             case CaseFieldAggregationType.First:
-                singleValue = caseValues.OrderByDescending(x => x.Created).First();
+                singleValue = caseValues.OrderBy(x => x.Created).First();
                 break;
 
             // last
             case CaseFieldAggregationType.Last:
-                singleValue = caseValues.OrderByDescending(x => x.Created).Last();
+                singleValue = caseValues.OrderBy(x => x.Created).Last();
                 break;
 
             // summary as default
