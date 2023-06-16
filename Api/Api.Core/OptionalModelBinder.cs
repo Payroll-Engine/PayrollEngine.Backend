@@ -26,7 +26,7 @@ public class OptionalModelBinder<T> : IModelBinder where T : class
             PropertyNameCaseInsensitive = true,
         };
 
-        T result = string.IsNullOrWhiteSpace(body) ?
+        var result = string.IsNullOrWhiteSpace(body) ?
             default :
             JsonSerializer.Deserialize<T>(body, options);
 

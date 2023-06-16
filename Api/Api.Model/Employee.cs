@@ -44,6 +44,11 @@ public class Employee : ApiObjectBase
     /// </summary>
     [StringLength(128)]
     public string Culture { get; set; }
+    
+    /// <summary>
+    /// The employee calendar, fallback is the division calendar
+    /// </summary>
+    public string Calendar { get; set; }
 
     /// <summary>
     /// Custom attributes

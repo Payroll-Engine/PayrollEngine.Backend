@@ -393,7 +393,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
     public async Task<IDictionary<CaseValue, List<DatePeriod>>> GetCaseValueSplitPeriodsAsync(
         string caseFieldName, CaseType caseType, string caseSlot = null)
     {
-        ICaseValueCache caseValueRepository = GetCaseValueRepository(caseType);
+        var caseValueRepository = GetCaseValueRepository(caseType);
         var caseValues = (await caseValueRepository.GetCaseValuesAsync(
             CaseValueReference.ToReference(caseFieldName, caseSlot))).ToList();
         if (caseValues.Any())
@@ -555,7 +555,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
             throw new PayrollException($"Unknown case field {caseFieldName}");
         }
         // ReSharper disable once PossibleInvalidOperationException
-        ICaseValueCache caseValueRepository = GetCaseValueRepository(caseType.Value);
+        var caseValueRepository = GetCaseValueRepository(caseType.Value);
         if (caseValueRepository == null)
         {
             throw new ArgumentNullException(nameof(caseValueRepository));

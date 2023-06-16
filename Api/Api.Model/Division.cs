@@ -28,6 +28,11 @@ public class Division : ApiObjectBase
     public string Culture { get; set; }
 
     /// <summary>
+    /// The division calendar, fallback is the tenant calendar
+    /// </summary>
+    public string Calendar { get; set; }
+
+    /// <summary>
     /// Custom attributes
     /// </summary>
     public Dictionary<string, object> Attributes { get; set; }

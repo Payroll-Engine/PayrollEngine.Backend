@@ -71,9 +71,9 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
     }
 
     /// <summary>
-    /// The calendar calculation mode (default: tenant value)
+    /// The wage type calendar
     /// </summary>
-    public CalendarCalculationMode? CalendarCalculationMode { get; set; }
+    public string Calendar { get; set; }
 
     /// <summary>
     /// Associated collectors
@@ -138,7 +138,7 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
             Description = Description,
             OverrideType = OverrideType,
             ValueType = ValueType,
-            CalendarCalculationMode = CalendarCalculationMode,
+            Calendar = Calendar,
             Collectors = Collectors,
             CollectorGroups = CollectorGroups,
             ValueExpression = ValueExpression,
@@ -163,7 +163,7 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
         Description = audit.Description;
         OverrideType = audit.OverrideType;
         ValueType = audit.ValueType;
-        CalendarCalculationMode = audit.CalendarCalculationMode;
+        Calendar = audit.Calendar;
         Collectors = audit.Collectors;
         CollectorGroups = audit.CollectorGroups;
         ValueExpression = audit.ValueExpression;

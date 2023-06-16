@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Api.Model;
 
@@ -39,12 +37,6 @@ public class Payroll : ApiObjectBase
     /// </summary>
     [Required]
     public int DivisionId { get; set; }
-
-    /// <summary>
-    /// The calendar calculation mode (default: tenant value)
-    /// </summary>
-    [JsonConverter(typeof(StringNullableEnumConverter<CalendarCalculationMode>))]
-    public CalendarCalculationMode CalendarCalculationMode { get; set; }
 
     /// <summary>
     /// The ISO 3166-1 country code, 0 for undefined

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Api.Model;
 
@@ -47,12 +45,6 @@ public class WageTypeAudit : ApiObjectBase
     /// The override type
     /// </summary>
     public OverrideType OverrideType { get; set; }
-
-    /// <summary>
-    /// The calendar calculation mode (default: tenant value)
-    /// </summary>
-    [JsonConverter(typeof(StringNullableEnumConverter<CalendarCalculationMode?>))]
-    public CalendarCalculationMode? CalendarCalculationMode { get; set; }
 
     /// <summary>
     /// Associated collectors

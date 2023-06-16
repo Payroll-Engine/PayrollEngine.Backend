@@ -38,14 +38,14 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit> : ChildDomainR
     protected override async Task OnCreatedAsync(IDbContext context, int parentId, TDomain item)
     {
         // create audit record after a new track item has been created
-        TAudit audit = CreateAuditObject(item);
+        var audit = CreateAuditObject(item);
         await AuditRepository.CreateAsync(context, item.Id, audit);
     }
 
     protected override async Task OnUpdatedAsync(IDbContext context, int parentId, TDomain item)
     {
         // create audit object after updating the tracked item
-        TAudit audit = CreateAuditObject(item);
+        var audit = CreateAuditObject(item);
         await AuditRepository.CreateAsync(context, item.Id, audit);
     }
 

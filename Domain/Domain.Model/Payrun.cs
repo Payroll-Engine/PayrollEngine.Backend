@@ -84,11 +84,6 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
     /// </summary>
     public RetroTimeType RetroTimeType { get; set; }
 
-    /// <summary>
-    /// The payrun calendar, fallback is the tenant calendar
-    /// </summary>
-    public CalendarConfiguration Calendar { get; set; }
-
     /// <inheritdoc/>
     public Payrun()
     {

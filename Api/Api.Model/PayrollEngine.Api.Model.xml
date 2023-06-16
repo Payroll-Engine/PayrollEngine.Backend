@@ -99,6 +99,68 @@
         <member name="M:PayrollEngine.Api.Model.ApiObjectBase.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Api.Model.Calendar">
+            <summary>
+            The division API object
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.Name">
+            <summary>The division name</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.NameLocalizations">
+            <summary>The localized division names</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.CycleTimeUnit">
+            <summary>The cycle time unit</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.PeriodTimeUnit">
+            <summary>The period time unit</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.TimeMap">
+            <summary>The time map</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.FirstMonthOfYear">
+            <summary>The first month of a year</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.MonthDayCount">
+            <summary>Override the effective month day count</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.YearWeekRule">
+            <summary>Override the calendar year start week rule</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.FirstDayOfWeek">
+            <summary>Override the calendar first day of week</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WeekMode">
+            <summary>The week mode (default: week)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WorkMonday">
+            <summary>Work on monday</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WorkTuesday">
+            <summary>Work on tuesday</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WorkWednesday">
+            <summary>Work on wednesday</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WorkThursday">
+            <summary>Work on thursday</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WorkFriday">
+            <summary>Work on friday</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WorkSaturday">
+            <summary>Work on saturday</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.WorkSunday">
+            <summary>Work on sunday</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.Attributes">
+            <summary>Custom attributes</summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.Calendar.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:PayrollEngine.Api.Model.Case">
             <summary>
             The regulation case API object
@@ -1732,6 +1794,11 @@
             The culture including the calendar, fallback of employee culture
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Division.Calendar">
+            <summary>
+            The division calendar, fallback is the tenant calendar
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Division.Attributes">
             <summary>
             Custom attributes
@@ -1773,6 +1840,11 @@
         <member name="P:PayrollEngine.Api.Model.Employee.Culture">
             <summary>
             The culture including the calendar, fallback is the division culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Employee.Calendar">
+            <summary>
+            The employee calendar, fallback is the division calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Employee.Attributes">
@@ -2107,11 +2179,6 @@
         <member name="P:PayrollEngine.Api.Model.Payroll.DivisionId">
             <summary>
             The division id (immutable)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.CalendarCalculationMode">
-            <summary>
-            The calendar calculation mode (default: tenant value)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Payroll.Country">
@@ -2534,11 +2601,6 @@
             The payrun retro time type
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.Payrun.Calendar">
-            <summary>
-            The payrun calendar, fallback is the tenant calendar
-            </summary>
-        </member>
         <member name="M:PayrollEngine.Api.Model.Payrun.ToString">
             <inheritdoc/>
         </member>
@@ -2795,11 +2857,6 @@
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Forecast">
             <summary>
             The forecast name (immutable)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.ExecutionMode">
-            <summary>
-            The payrun job execution mode (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.RetroPayMode">
@@ -3673,7 +3730,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Tenant.Calendar">
             <summary>
-            The tenant calendar, fallback is the default calendar
+            The tenant calendar, fallback is the system calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Tenant.Attributes">
@@ -3772,11 +3829,6 @@
             The value type, default is value type money
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.WageType.CalendarCalculationMode">
-            <summary>
-            The calendar calculation mode (default: tenant value)
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.WageType.Collectors">
             <summary>
             Associated collectors
@@ -3848,11 +3900,6 @@
         <member name="P:PayrollEngine.Api.Model.WageTypeAudit.OverrideType">
             <summary>
             The override type
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.CalendarCalculationMode">
-            <summary>
-            The calendar calculation mode (default: tenant value)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Collectors">

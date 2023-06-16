@@ -35,7 +35,7 @@ public static class DbQueryFactory
         }
 
         // build query including OData support
-        SqlKata.Query dbQuery = queryBuilder.BuildQuery(tableName, query, queryMode);
+        var dbQuery = queryBuilder.BuildQuery(tableName, query, queryMode);
 
         // object status
         if (query?.Status != null)

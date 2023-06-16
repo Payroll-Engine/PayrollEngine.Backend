@@ -144,7 +144,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
     /// <inheritdoc />
     public void InitStart(string caseFieldName, DateTime? start)
     {
-        CaseFieldSet caseFieldSet = GetCaseFieldSet(caseFieldName, true);
+        var caseFieldSet = GetCaseFieldSet(caseFieldName, true);
         caseFieldSet.Start ??= start;
     }
 
@@ -163,7 +163,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
     /// <inheritdoc />
     public void InitEnd(string caseFieldName, DateTime? end)
     {
-        CaseFieldSet caseFieldSet = GetCaseFieldSet(caseFieldName, true);
+        var caseFieldSet = GetCaseFieldSet(caseFieldName, true);
         caseFieldSet.End ??= end;
     }
 
@@ -186,7 +186,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
     /// <inheritdoc />
     public virtual void InitValue(string caseFieldName, object value)
     {
-        CaseFieldSet caseFieldSet = GetCaseFieldSet(caseFieldName, true);
+        var caseFieldSet = GetCaseFieldSet(caseFieldName, true);
         if (caseFieldSet.Value == null)
         {
             caseFieldSet.SetValue(value);
@@ -201,7 +201,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
             throw new ArgumentException(nameof(tag));
         }
 
-        CaseFieldSet caseFieldSet = GetCaseFieldSet(caseFieldName);
+        var caseFieldSet = GetCaseFieldSet(caseFieldName);
         if (caseFieldSet == null)
         {
             return false;
@@ -222,7 +222,7 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
             throw new ArgumentException(nameof(tag));
         }
 
-        CaseFieldSet caseFieldSet = GetCaseFieldSet(caseFieldName);
+        var caseFieldSet = GetCaseFieldSet(caseFieldName);
         if (caseFieldSet?.Tags == null || !caseFieldSet.Tags.Contains(tag))
         {
             return false;

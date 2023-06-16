@@ -95,7 +95,7 @@ public static class SwaggerTool
             else
             {
                 var combinedXml = XElement.Load(fileName);
-                foreach (XElement ele in combinedXml.Descendants())
+                foreach (var ele in combinedXml.Descendants())
                 {
                     xml.Add(ele);
                 }

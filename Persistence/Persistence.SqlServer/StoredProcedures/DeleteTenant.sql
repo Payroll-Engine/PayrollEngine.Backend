@@ -422,6 +422,11 @@ BEGIN
     FROM [dbo].[Division]
     WHERE [TenantId] = @tenantId
 
+    -- calendar
+    DELETE
+    FROM [dbo].[Calendar]
+    WHERE [TenantId] = @tenantId
+
     -- tenant
     DELETE
     FROM [dbo].[Tenant]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
@@ -35,8 +36,13 @@ public class CaseValueTool : FunctionToolBase
         CaseValueToolSettings settings)
         : this(settings)
     {
+        // culture
+        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
+                CultureInfo.CurrentCulture :
+                 new CultureInfo(Tenant.Culture);
+
         // value provider
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, culture: culture, calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
@@ -62,8 +68,13 @@ public class CaseValueTool : FunctionToolBase
         CaseValueToolSettings settings)
         : this(settings)
     {
+        // culture
+        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
+            CultureInfo.CurrentCulture :
+            new CultureInfo(Tenant.Culture);
+
         // value provider
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, culture: culture, calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -91,8 +102,13 @@ public class CaseValueTool : FunctionToolBase
         CaseValueToolSettings settings)
         : this(settings)
     {
+        // culture
+        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
+            CultureInfo.CurrentCulture :
+            new CultureInfo(Tenant.Culture);
+
         // value provider
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, culture: culture, calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -124,8 +140,13 @@ public class CaseValueTool : FunctionToolBase
     {
         Employee = employee ?? throw new ArgumentNullException(nameof(employee));
 
+        // culture
+        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
+            CultureInfo.CurrentCulture :
+            new CultureInfo(Tenant.Culture);
+
         // value provider
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Payroll.CalendarCalculationMode, Tenant.Id);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, culture: culture, calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(Employee,
             new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),

@@ -35,11 +35,6 @@ public class Payroll : DomainObjectBase, INamedObject, IDomainAttributeObject, I
     public int DivisionId { get; set; }
 
     /// <summary>
-    /// The calendar calculation mode
-    /// </summary>
-    public CalendarCalculationMode CalendarCalculationMode { get; set; }
-
-    /// <summary>
     /// The ISO 3166-1 country code, 0 for undefined
     /// <remarks>See <see cref="Country"/></remarks>
     /// </summary>

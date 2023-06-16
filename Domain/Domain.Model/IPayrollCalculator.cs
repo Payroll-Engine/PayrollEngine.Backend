@@ -8,18 +8,18 @@ namespace PayrollEngine.Domain.Model;
 public interface IPayrollCalculator
 {
     /// <summary>
-    /// Get payrun period from a specific moment
-    /// </summary>
-    /// <param name="periodMoment">The moment within the payrun period</param>
-    /// <returns>The payroll period</returns>
-    IPayrollPeriod GetPayrunPeriod(DateTime periodMoment);
-
-    /// <summary>
     /// Get payrun cycle from a specific moment
     /// </summary>
     /// <param name="cycleMoment">The moment within the payrun cycle</param>
     /// <returns>The payroll cycle</returns>
     IPayrollPeriod GetPayrunCycle(DateTime cycleMoment);
+
+    /// <summary>
+    /// Get payrun period from a specific moment
+    /// </summary>
+    /// <param name="periodMoment">The moment within the payrun period</param>
+    /// <returns>The payroll period</returns>
+    IPayrollPeriod GetPayrunPeriod(DateTime periodMoment);
 
     /// <summary>
     /// Calculate the case period value over a time period

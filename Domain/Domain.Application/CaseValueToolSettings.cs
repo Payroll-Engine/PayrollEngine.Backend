@@ -10,6 +10,7 @@ namespace PayrollEngine.Domain.Application;
 public class CaseValueToolSettings : FunctionToolSettings
 {
     public Tenant Tenant { get; set; }
+    public Calendar Calendar { get; set; }
     public Payroll Payroll { get; set; }
     public DateTime ValueDate { get; set; }
     public DateTime EvaluationDate { get; set; }

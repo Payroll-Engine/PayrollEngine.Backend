@@ -21,17 +21,15 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
     protected IRegulationService RegulationService { get; }
     protected IRegulationShareService RegulationShareService { get; }
     protected IReportService ReportService { get; }
-    protected IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
 
     protected TenantController(ITenantService tenantService, IRegulationService regulationService,
         IRegulationShareService regulationShareService, IReportService reportService,
-        IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime) :
+        IControllerRuntime runtime) :
         base(tenantService, runtime, new TenantMap())
     {
         RegulationService = regulationService ?? throw new ArgumentNullException(nameof(regulationService));
         RegulationShareService = regulationShareService ?? throw new ArgumentNullException(nameof(regulationShareService));
         ReportService = reportService ?? throw new ArgumentNullException(nameof(reportService));
-        PayrollCalculatorProvider = payrollCalculatorProvider ?? throw new ArgumentNullException(nameof(payrollCalculatorProvider));
     }
 
     public virtual async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(
@@ -64,7 +62,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             var regulations = new List<ApiObject.Regulation>();
             foreach (var permission in permissions)
             {
-                var regulation = await RegulationService.GetAsync(Runtime.DbContext,permission.ProviderTenantId, permission.ProviderRegulationId);
+                var regulation = await RegulationService.GetAsync(Runtime.DbContext, permission.ProviderTenantId, permission.ProviderRegulationId);
                 if (regulation != null)
                 {
                     regulations.Add(map.ToApi(regulation));
@@ -128,186 +126,6 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
         }
         catch (Exception exception)
         {
-            return InternalServerError(exception);
-        }
-    }
-
-    /// <summary>
-    /// Get tenant calendar period
-    /// </summary>
-    /// <param name="tenantId">The tenant id</param>
-    /// <param name="calculationMode">The calculation mode</param>
-    /// <param name="periodMoment">The period evaluation date</param>
-    /// <param name="calendar">The calendar configuration</param>
-    /// <param name="culture">The culture to use</param>
-    /// <param name="offset">The offset:<br />
-    /// less than zero: past<br />
-    /// zero: current<br />
-    /// greater than zero: future<br /></param>
-    /// <returns>The calendar period</returns>
-    protected virtual async Task<ActionResult<DatePeriod>> GetCalendarPeriod(int tenantId,
-        CalendarCalculationMode calculationMode,
-        DateTime? periodMoment = null, CalendarConfiguration calendar = null, string culture = null, int? offset = null)
-    {
-        try
-        {
-            // tenant specific values
-            if (calendar == null || string.IsNullOrWhiteSpace(culture))
-            {
-                var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
-                // tenant culture
-                if (string.IsNullOrWhiteSpace(culture))
-                {
-                    culture = tenant.Culture;
-                }
-                // tenant calendar
-                calendar ??= tenant.Calendar;
-            }
-
-            // culture
-            var cultureInfo = NewCultureInfo(culture);
-            if (cultureInfo == null)
-            {
-                return BadRequest($"Unknown culture: {culture}");
-            }
-
-            // calendar
-            if (calendar == null)
-            {
-                return BadRequest("Missing calendar");
-            }
-
-            // calculator
-            var calculator = PayrollCalculatorProvider.CreateCalculator(
-                calculationMode: calculationMode,
-                calendar: calendar,
-                tenantId: tenantId,
-                culture: cultureInfo);
-            periodMoment ??= CurrentEvaluationDate;
-            var period = calculator.GetPayrunPeriod(periodMoment.Value);
-
-            // offset period
-            offset ??= 0;
-            period = period.GetPayrollPeriod(period.Start, offset.Value);
-            return new DatePeriod(period.Start, period.End);
-        }
-        catch (Exception exception)
-        {
-            Log.Error(exception, exception.GetBaseMessage());
-            return InternalServerError(exception);
-        }
-    }
-
-    protected virtual async Task<ActionResult<DatePeriod>> GetCalendarCycle(
-        int tenantId, CalendarCalculationMode calculationMode,
-        DateTime? cycleMoment = null, CalendarConfiguration calendar = null, string culture = null, int? offset = null)
-    {
-        try
-        {
-            // tenant specific values
-            if (calendar == null || string.IsNullOrWhiteSpace(culture))
-            {
-                var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
-                // tenant culture
-                if (string.IsNullOrWhiteSpace(culture))
-                {
-                    culture = tenant.Culture;
-                }
-                // tenant calendar
-                calendar ??= tenant.Calendar;
-            }
-
-            // culture
-            var cultureInfo = NewCultureInfo(culture);
-            if (cultureInfo == null)
-            {
-                return BadRequest($"Unknown culture: {culture}");
-            }
-
-            // calendar
-            if (calendar == null)
-            {
-                return BadRequest("Missing calendar");
-            }
-
-            // calculator
-            var calculator = PayrollCalculatorProvider.CreateCalculator(
-                calculationMode: calculationMode,
-                tenantId: tenantId,
-                calendar: calendar,
-                culture: cultureInfo);
-            cycleMoment ??= CurrentEvaluationDate;
-            var period = calculator.GetPayrunCycle(cycleMoment.Value);
-
-            // offset period
-            offset ??= 0;
-            period = period.GetPayrollPeriod(period.Start, offset.Value);
-            return new DatePeriod(period.Start, period.End);
-        }
-        catch (Exception exception)
-        {
-            Log.Error(exception, exception.GetBaseMessage());
-            return InternalServerError(exception);
-        }
-    }
-
-    protected virtual async Task<ActionResult<decimal?>> CalculateCalendarValue(
-        int tenantId, CalendarCalculationMode calculationMode,
-        decimal value, DateTime? evaluationDate = null, DateTime? evaluationPeriodDate = null,
-        CalendarConfiguration calendar = null, string culture = null)
-    {
-        try
-        {
-            // tenant specific values
-            if (calendar == null || string.IsNullOrWhiteSpace(culture))
-            {
-                var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
-                // tenant culture
-                if (string.IsNullOrWhiteSpace(culture))
-                {
-                    culture = tenant.Culture;
-                }
-                // tenant calendar
-                calendar ??= tenant.Calendar;
-            }
-
-            // culture
-            var cultureInfo = NewCultureInfo(culture);
-            if (cultureInfo == null)
-            {
-                return BadRequest($"Unknown culture: {culture}");
-            }
-
-            // calendar
-            if (calendar == null)
-            {
-                return BadRequest("Missing calendar");
-            }
-
-            // calculator
-            var calculator = PayrollCalculatorProvider.CreateCalculator(
-                calculationMode: calculationMode,
-                tenantId: tenantId,
-                calendar: calendar,
-                culture: cultureInfo);
-            evaluationDate ??= CurrentEvaluationDate;
-            evaluationPeriodDate ??= evaluationDate;
-            var evaluationPayrollPeriod = calculator.GetPayrunPeriod(evaluationPeriodDate.Value);
-            var evaluationPeriod = new DatePeriod(evaluationPayrollPeriod.Start, evaluationPayrollPeriod.End);
-
-            var calculation = new CaseValueCalculation
-            {
-                EvaluationDate = evaluationDate.Value,
-                EvaluationPeriod = evaluationPeriod,
-                // currently no custom case value period supported
-                CaseValuePeriod = evaluationPeriod,
-                CaseValue = value
-            };
-            return calculator.CalculateCasePeriodValue(calculation);
-        }
-        catch (Exception exception)
-        {
-            Log.Error(exception, exception.GetBaseMessage());
             return InternalServerError(exception);
         }
     }

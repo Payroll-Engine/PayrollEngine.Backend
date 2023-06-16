@@ -110,6 +110,248 @@
         <member name="M:PayrollEngine.Domain.Model.AuditDomainObject.#ctor(PayrollEngine.Domain.Model.AuditDomainObject)">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.BiMonthPayrollPeriod">
+            <summary>Payroll two month payroll period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.Culture">
+            <summary>
+            The culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.Calendar">
+            <summary>
+            The date calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32)">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.BiMonthPayrollPeriod"/> class</summary>
+            <param name="culture">The culture</param>
+            <param name="calendar">The calendar</param>
+            <param name="year">The year</param>
+            <param name="month">The month</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.Start">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.End">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiMonthPayrollPeriod.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.BiWeekPayrollPeriod">
+            <summary>
+            Payroll week period
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.Culture">
+            <summary>
+            The culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.Calendar">
+            <summary>
+            The date calendar
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.StartWeekOfYear">
+            <summary>
+            Gets the first week of year
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.EndWeekOfYear">
+            <summary>
+            Gets the first week of year
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.BiWeekPayrollPeriod"/> class
+            </summary>
+            <param name="culture">The culture</param>
+            <param name="calendar">The calendar</param>
+            <param name="moment">The moment</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.Start">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.End">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Calendar">
+            <summary>
+            Payroll calendar
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.Name">
+            <summary>
+            The division name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.NameLocalizations">
+            <summary>
+            The localized division names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.CycleTimeUnit">
+            <summary>
+            The cycle time unit (default: year)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.PeriodTimeUnit">
+            <summary>
+            The period time unit (default: calendar month)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.TimeMap">
+            <summary>
+            The time map (default: period)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.FirstMonthOfYear">
+            <summary>The first month of a year  (default: january)</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.MonthDayCount">
+            <summary>Override the effective month day count</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.YearWeekRule">
+            <summary>Override the calendar year start week rule</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.FirstDayOfWeek">
+            <summary>Override the calendar first day of week</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WeekMode">
+            <summary>
+            The week mode (default: week)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WorkMonday">
+            <summary>Work on monday (default: true), used by <see cref="F:PayrollEngine.CalendarWeekMode.WorkWeek"/> </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WorkTuesday">
+            <summary>Work on tuesday (default: true), used by <see cref="F:PayrollEngine.CalendarWeekMode.WorkWeek"/> </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WorkWednesday">
+            <summary>Work on wednesday (default: true), used by <see cref="F:PayrollEngine.CalendarWeekMode.WorkWeek"/> </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WorkThursday">
+            <summary>Work on thursday (default: true), used by <see cref="F:PayrollEngine.CalendarWeekMode.WorkWeek"/> </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WorkFriday">
+            <summary>Work on friday (default: true), used by <see cref="F:PayrollEngine.CalendarWeekMode.WorkWeek"/> </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WorkSaturday">
+            <summary>Work on saturday (default: false), used by <see cref="F:PayrollEngine.CalendarWeekMode.WorkWeek"/> </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.WorkSunday">
+            <summary>Work on sunday (default: false), used by <see cref="F:PayrollEngine.CalendarWeekMode.WorkWeek"/> </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Calendar.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Calendar.#ctor(PayrollEngine.Domain.Model.Calendar)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Calendar.Equals(PayrollEngine.Domain.Model.Calendar)">
+            <summary>Compare two objects</summary>
+            <param name="compare">The object to compare with this</param>
+            <returns>True for objects with the same data</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Calendar.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.CalendarExtensions">
+            <summary>
+            Extension methods for the <see cref="T:PayrollEngine.Domain.Model.Calendar"/>
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWeekOfYear(PayrollEngine.Domain.Model.Calendar,System.Globalization.CultureInfo,System.DateTime)">
+            <summary>Returns the week of year for the specified DateTime</summary>
+            <param name="calendar">The payroll calendar</param>
+            <param name="culture">The culture</param>
+            <param name="moment">The moment of the week</param>
+            <returns>The returned value is an integer between 1 and 53</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.HasWorkDay(PayrollEngine.Domain.Model.Calendar,PayrollEngine.DayOfWeek)">
+            <summary>Test for working days</summary>
+            <param name="calendar">The payroll calendar</param>
+            <param name="workDay">The work day</param>
+            <returns>Returns true for valid time units</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWorkDays(PayrollEngine.Domain.Model.Calendar)">
+            <summary>Get work day list</summary>
+            <param name="calendar">The payroll calendar</param>
+            <returns>Returns true for valid time units</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.ValidTimeUnits(PayrollEngine.Domain.Model.Calendar)">
+            <summary>Test for valid time units</summary>
+            <param name="calendar">The payroll calendar</param>
+            <returns>Returns true for valid time units</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod">
+            <summary>Payroll calendar month payroll period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.Culture">
+            <summary>
+            The culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.Calendar">
+            <summary>
+            The date calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32)">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod"/> class</summary>
+            <param name="culture">The culture</param>
+            <param name="calendar">The calendar</param>
+            <param name="year">The year</param>
+            <param name="month">The month</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.Start">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.End">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod.ToString">
+            <inheritdoc />
+        </member>
         <member name="T:PayrollEngine.Domain.Model.Case">
             <summary>
             A national, company and employee case
@@ -2676,7 +2918,7 @@
             Default calendar
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.DefaultPayrollCalculatorProvider.CreateCalculator(PayrollEngine.CalendarCalculationMode,System.Int32,System.Nullable{System.Int32},PayrollEngine.CalendarConfiguration,System.Globalization.CultureInfo)">
+        <member name="M:PayrollEngine.Domain.Model.DefaultPayrollCalculatorProvider.CreateCalculator(System.Int32,System.Nullable{System.Int32},System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar)">
             <inheritdoc />
         </member>
         <member name="T:PayrollEngine.Domain.Model.Division">
@@ -2696,7 +2938,12 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Division.Culture">
             <summary>
-            The culture including the calendar, fallback for employee culture
+            The division culture, fallback for tenant culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Division.Calendar">
+            <summary>
+            The division calendar, fallback for tenant calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Division.Attributes">
@@ -2882,7 +3129,12 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Employee.Culture">
             <summary>
-            The culture including the calendar, fallback is the division culture
+            The employee culture, fallback is the division culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Employee.Calendar">
+            <summary>
+            The employee calendar, fallback is the division calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Employee.Attributes">
@@ -3295,19 +3547,19 @@
             Represents a calculator for case values
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetPayrunPeriod(System.DateTime)">
-            <summary>
-            Get payrun period from a specific moment
-            </summary>
-            <param name="periodMoment">The moment within the payrun period</param>
-            <returns>The payroll period</returns>
-        </member>
         <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetPayrunCycle(System.DateTime)">
             <summary>
             Get payrun cycle from a specific moment
             </summary>
             <param name="cycleMoment">The moment within the payrun cycle</param>
             <returns>The payroll cycle</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetPayrunPeriod(System.DateTime)">
+            <summary>
+            Get payrun period from a specific moment
+            </summary>
+            <param name="periodMoment">The moment within the payrun period</param>
+            <returns>The payroll period</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.CalculateCasePeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <summary>
@@ -3321,16 +3573,15 @@
             Provider for payroll calculators
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculatorProvider.CreateCalculator(PayrollEngine.CalendarCalculationMode,System.Int32,System.Nullable{System.Int32},PayrollEngine.CalendarConfiguration,System.Globalization.CultureInfo)">
+        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculatorProvider.CreateCalculator(System.Int32,System.Nullable{System.Int32},System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar)">
             <summary>
-            Create a case value calculator bases on the calculation mode
+            Create a payroll value calculator
             </summary>
-            <param name="calculationMode">The calendar calculation mode</param>
             <param name="tenantId">The tenant id</param>
             <param name="userId">The user id</param>
             <param name="culture">The culture to use</param>
-            <param name="calendar">The calendar configuration</param>
-            <returns>The case value calculator</returns>
+            <param name="calendar">The payroll calendar</param>
+            <returns>The payroll calculator</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IRegulationLookupProvider">
             <summary>
@@ -3965,117 +4216,44 @@
         <member name="M:PayrollEngine.Domain.Model.LookupValueData.ToString">
             <inheritdoc/>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthAverageDayPayrollCalculator">
-            <summary>Case value calculator by month average days (e.g. 30 days)</summary>
+        <member name="T:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod">
+            <summary>Payroll lunisolar month payroll period</summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.MonthAverageDayPayrollCalculator.AverageMonthDays">
-            <summary>Average month days</summary>
+        <member name="P:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.Culture">
+            <summary>
+            The culture
+            </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthAverageDayPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
+        <member name="P:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.Calendar">
+            <summary>
+            The date calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthAverageDayPayrollCalculator.CalculateValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthAverageWorkDayPayrollCalculator">
-            <summary>Case value calculator by average working days</summary>
-            TODO: check case when month average is 30 days and two periods with total 31 days -> create 100%+ values
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.MonthAverageWorkDayPayrollCalculator.AverageWorkDays">
-            <summary>Average work days</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthAverageWorkDayPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthAverageWorkDayPayrollCalculator.CalculateValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthCalendarDayPayrollCalculator">
-            <summary>Case value calculator by month calendar days</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthCalendarDayPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthCalendarDayPayrollCalculator.CalculateValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthDayPayrollCalculator">
-            <summary>Case value calculator by month calendar days</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthDayPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthDayPayrollCalculator.CalculatePeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
-            <summary>Calculate period value by days in month</summary>
-            <param name="calculation">The calculation</param>
-            <param name="daysInMonth">The number of days in the month</param>
-            <returns>The period value</returns>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthEffectiveWorkDayPayrollCalculator">
-            <summary>Case value calculator by effective month working day</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthEffectiveWorkDayPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthEffectiveWorkDayPayrollCalculator.CalculateValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthPayrollCalculator">
-            <summary>Case value calculator by month calendar days</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthPayrollCalculator.GetPayrunPeriod(System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthPayrollCalculator.GetPayrunCycle(System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthPayrollPeriod">
-            <summary>Payroll month period</summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.MonthPayrollPeriod.Calendar">
-            <summary>The payroll calendar</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthPayrollPeriod.#ctor(PayrollEngine.IPayrollCalendar,System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthPayrollPeriod.#ctor(PayrollEngine.IPayrollCalendar,System.Int32,System.Int32)">
-            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.MonthPayrollPeriod"/> class</summary>
+        <member name="M:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod"/> class
+            </summary>
+            <param name="culture">The culture</param>
             <param name="calendar">The calendar</param>
-            <param name="year">The year</param>
-            <param name="month">The month</param>
+            <param name="moment">The moment</param>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.MonthPayrollPeriod.Start">
+        <member name="P:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.Start">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.Domain.Model.MonthPayrollPeriod.End">
+        <member name="P:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.End">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.Domain.Model.MonthPayrollPeriod.Name">
+        <member name="P:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.Name">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthPayrollPeriod.ToString">
+        <member name="M:PayrollEngine.Domain.Model.LunisoralMonthPayrollPeriod.ToString">
             <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.MonthWorkDayPayrollCalculator">
-            <summary>Case value calculator by month calendar days</summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.MonthWorkDayPayrollCalculator.WorkingDays">
-            <summary>List of working days</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthWorkDayPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.MonthWorkDayPayrollCalculator.CalculatePeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
-            <summary>Calculate period value by days in month</summary>
-            <param name="calculation">The calculation</param>
-            <param name="daysInMonth">The number of days in the month</param>
-            <returns>The period value</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Payroll">
             <summary>
@@ -4105,11 +4283,6 @@
         <member name="P:PayrollEngine.Domain.Model.Payroll.DivisionId">
             <summary>
             The division id (immutable)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.Payroll.CalendarCalculationMode">
-            <summary>
-            The calendar calculation mode
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.Country">
@@ -4196,29 +4369,115 @@
         <member name="M:PayrollEngine.Domain.Model.Payroll.ToString">
             <inheritdoc/>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.PayrollCalculatorBase">
+        <member name="T:PayrollEngine.Domain.Model.PayrollCalculator">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrollCalculatorBase.Calendar">
+        <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.Culture">
+            <summary>The culture</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.Calendar">
             <summary>The payroll calendar</summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculatorBase.#ctor(PayrollEngine.IPayrollCalendar)">
-            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.PayrollCalculatorBase"/> class</summary>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.PayrollCalculator"/> class, using the current culture and default calendar</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar)">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.PayrollCalculator"/> class</summary>
+            <param name="culture">The culture</param>
             <param name="calendar">The payroll calendar</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculatorBase.GetPayrunPeriod(System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayrunCycle(System.DateTime)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculatorBase.GetPayrunCycle(System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayrunPeriod(System.DateTime)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculatorBase.CalculateCasePeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateCasePeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculatorBase.CalculateValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
-            <summary>Custom value calculation</summary>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateYearValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the year period value
+            </summary>
             <param name="calculation">The calculation</param>
-            <returns>The case period value</returns>
+            <returns>The case year period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateSemiYearValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the semi year period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case semi year period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateQuarterValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the quarter period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case quarter period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateBiMonthValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the bi month period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case bi month period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateCalendarMonthValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the calendar month period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case calendar month period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateLunisoralMonthValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the semi month period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case semi month period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateSemiMonthValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the semi month period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case semi month period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateBiWeekValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the bi week period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case bi week period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateWeekValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
+            <summary>
+            Calculate the week period value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <returns>The case week period value</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPeriodWeekDayCount(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
+            <summary>
+            Get the week day count form the case value period
+            </summary>
+            <param name="calculation">The calculation</param>
+            <param name="weekCount">The week mode day count</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPeriodDayCount(PayrollEngine.DatePeriod)">
+            <summary>
+            Get the period day count
+            </summary>
+            <param name="period">The period to count</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetScaledPeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
+            <summary>
+            Scale the period case value
+            </summary>
+            <param name="calculation">The calculation</param>
+            <param name="cycleFactor">The cycle factor</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrollCaseChangeQuery">
             <summary>
@@ -4780,11 +5039,6 @@
             The payrun retro time type
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Payrun.Calendar">
-            <summary>
-            The payrun calendar, fallback is the tenant calendar
-            </summary>
-        </member>
         <member name="M:PayrollEngine.Domain.Model.Payrun.#ctor">
             <inheritdoc/>
         </member>
@@ -4897,11 +5151,6 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.JobResult">
             <summary>
             The payrun job result
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrunJob.Culture">
-            <summary>
-            The culture including the calendar (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.CycleName">
@@ -5060,7 +5309,7 @@
             Factory for payrun jobs
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.CreatePayrunJob(PayrollEngine.Domain.Model.PayrunJobInvocation,System.Int32,System.Int32,PayrollEngine.Domain.Model.IPayrollCalculator,System.String)">
+        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.CreatePayrunJob(PayrollEngine.Domain.Model.PayrunJobInvocation,System.Int32,System.Int32,PayrollEngine.Domain.Model.IPayrollCalculator)">
             <summary>
             Create a new news payrun job
             </summary>
@@ -5068,7 +5317,6 @@
             <param name="divisionId">The division id</param>
             <param name="payrollId">The payroll id</param>
             <param name="payrollCalculator">The payroll calculator</param>
-            <param name="culture">The culture</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrunJobInvocation">
             <summary>
@@ -5118,11 +5366,6 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.Forecast">
             <summary>
             The forecast name (immutable)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.ExecutionMode">
-            <summary>
-            The payrun job execution mode (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.RetroPayMode">
@@ -5352,6 +5595,44 @@
             <summary>
             Copy constructor
             </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.QuarterPayrollPeriod">
+            <summary>Payroll quarter payroll period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.QuarterPayrollPeriod.Culture">
+            <summary>
+            The culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.QuarterPayrollPeriod.Calendar">
+            <summary>
+            The date calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.QuarterPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.QuarterPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32)">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.QuarterPayrollPeriod"/> class</summary>
+            <param name="culture">The culture</param>
+            <param name="calendar">The calendar</param>
+            <param name="year">The year</param>
+            <param name="month">The month</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.QuarterPayrollPeriod.Start">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.QuarterPayrollPeriod.End">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.QuarterPayrollPeriod.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.QuarterPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.QuarterPayrollPeriod.ToString">
+            <inheritdoc />
         </member>
         <member name="T:PayrollEngine.Domain.Model.Regulation">
             <summary>
@@ -6411,6 +6692,20 @@
             <returns>The domain object at a given time.
             For future dates the latest modified object will be used.
             A null result indicates that the object was not existing at the given time</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.ICalendarRepository">
+            <summary>
+            Repository for calendars
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICalendarRepository.GetByNameAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.String)">
+            <summary>
+            Get calendar by name
+            </summary>
+            <param name="context">The database context</param>
+            <param name="tenantId">The tenant id</param>
+            <param name="name">The calendar name</param>
+            <returns>The calendar matching the name</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseAuditRepository">
             <summary>
@@ -8011,6 +8306,80 @@
             </summary>
             <returns>A new audit object instance</returns>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod">
+            <summary>Payroll semi month payroll period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.Culture">
+            <summary>
+            The culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.Calendar">
+            <summary>
+            The date calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod"/> class</summary>
+            <param name="culture">The culture</param>
+            <param name="calendar">The calendar</param>
+            <param name="moment">The moment within the semi mont period</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.Start">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.End">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.SemiYearPayrollPeriod">
+            <summary>Payroll semi year payroll period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.Culture">
+            <summary>
+            The culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.Calendar">
+            <summary>
+            The date calendar
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.SemiYearPayrollPeriod"/> class
+            </summary>
+            <param name="culture">The culture</param>
+            <param name="calendar">The calendar</param>
+            <param name="year">The year</param>
+            <param name="month">The month</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.Start">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.End">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SemiYearPayrollPeriod.ToString">
+            <inheritdoc />
+        </member>
         <member name="T:PayrollEngine.Domain.Model.StringExtensions">
             <summary>
             Extension methods for <see cref="T:System.String"/>
@@ -8090,6 +8459,21 @@
             </summary>
             <param name="script">The script</param>
             <returns>True if the script is sealed</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.SystemCalendarExtensions">
+            <summary>
+            Calendar Tool
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.SystemCalendarExtensions.GetOffsetDate(System.Globalization.Calendar,System.Int32,System.Int32,System.Int32,System.DateTimeKind)">
+            <summary>
+            Get offset year
+            </summary>
+            <param name="year">The gregorian year</param>
+            <param name="month">The gregorian month</param>
+            <param name="offsetMonths">The offset months</param>
+            <param name="calendar">The culture</param>
+            <param name="dateTimeKind">The date time kind</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Task">
             <summary>
@@ -8172,7 +8556,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Tenant.Calendar">
             <summary>
-            The tenant calendar, fallback is the default calendar
+            The tenant calendar, fallback is the system default
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Tenant.Attributes">
@@ -8334,9 +8718,9 @@
             The value type, default is value type money
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.WageType.CalendarCalculationMode">
+        <member name="P:PayrollEngine.Domain.Model.WageType.Calendar">
             <summary>
-            The calendar calculation mode (default: tenant value)
+            The wage type calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageType.Collectors">
@@ -8449,9 +8833,9 @@
             The value type
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.CalendarCalculationMode">
+        <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.Calendar">
             <summary>
-            The calendar calculation mode (default: tenant value)
+            The wage type calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.Collectors">
@@ -8878,27 +9262,14 @@
         <member name="M:PayrollEngine.Domain.Model.WebhookRuntimeMessage.ToString">
             <inheritdoc/>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.WeekDayPayrollCalculator">
-            <summary>Case value calculator by week calendar days</summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.WeekDayPayrollCalculator.WorkingDays">
-            <summary>List of working days</summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekDayPayrollCalculator.#ctor(PayrollEngine.IPayrollCalendar)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekDayPayrollCalculator.GetPayrunPeriod(System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekDayPayrollCalculator.GetPayrunCycle(System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekDayPayrollCalculator.CalculateValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
-            <inheritdoc />
-        </member>
         <member name="T:PayrollEngine.Domain.Model.WeekPayrollPeriod">
             <summary>
             Payroll week period
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WeekPayrollPeriod.Culture">
+            <summary>
+            The culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WeekPayrollPeriod.Calendar">
@@ -8911,13 +9282,14 @@
             Gets the week of year
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekPayrollPeriod.#ctor(PayrollEngine.IPayrollCalendar,System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.WeekPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.WeekPayrollPeriod.#ctor(PayrollEngine.IPayrollCalendar,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.WeekPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
             <summary>
             Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.WeekPayrollPeriod"/> class
             </summary>
+            <param name="culture">The culture</param>
             <param name="calendar">The calendar</param>
             <param name="moment">The moment</param>
         </member>
@@ -8936,40 +9308,44 @@
         <member name="M:PayrollEngine.Domain.Model.WeekPayrollPeriod.ToString">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.Domain.Model.YearPayrollCycle">
+        <member name="T:PayrollEngine.Domain.Model.YearPayrollPeriod">
+            <summary>Payroll year payroll period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.YearPayrollPeriod.Culture">
             <summary>
-            Payroll year cycle
+            The culture
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.YearPayrollCycle.Calendar">
+        <member name="P:PayrollEngine.Domain.Model.YearPayrollPeriod.Calendar">
             <summary>
             The date calendar
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.YearPayrollCycle.#ctor(PayrollEngine.IPayrollCalendar,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.YearPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.DateTime)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.YearPayrollCycle.#ctor(PayrollEngine.IPayrollCalendar,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.YearPayrollPeriod.#ctor(System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar,System.Int32,System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.YearPayrollCycle"/> class
+            Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.YearPayrollPeriod"/> class
             </summary>
+            <param name="culture">The culture</param>
             <param name="calendar">The calendar</param>
             <param name="year">The year</param>
             <param name="month">The month</param>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.YearPayrollCycle.Start">
+        <member name="P:PayrollEngine.Domain.Model.YearPayrollPeriod.Start">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.Domain.Model.YearPayrollCycle.End">
+        <member name="P:PayrollEngine.Domain.Model.YearPayrollPeriod.End">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.Domain.Model.YearPayrollCycle.Name">
+        <member name="P:PayrollEngine.Domain.Model.YearPayrollPeriod.Name">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.YearPayrollCycle.GetPayrollPeriod(System.DateTime,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.YearPayrollPeriod.GetPayrollPeriod(System.DateTime,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.YearPayrollCycle.ToString">
+        <member name="M:PayrollEngine.Domain.Model.YearPayrollPeriod.ToString">
             <inheritdoc />
         </member>
     </members>

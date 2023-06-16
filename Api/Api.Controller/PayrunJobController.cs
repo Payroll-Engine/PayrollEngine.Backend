@@ -153,6 +153,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
                 new()
                 {
                     DbContext = Runtime.DbContext,
+                    CalendarRepository = ServiceSettings.CalendarRepository,
                     UserRepository = ServiceSettings.UserRepository,
                     DivisionRepository = ServiceSettings.DivisionRepository,
                     TaskRepository = ServiceSettings.TaskRepository,

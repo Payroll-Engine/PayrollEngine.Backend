@@ -16,8 +16,6 @@ public static class DapperTypes
         // type handlers
         // date time
         SqlMapper.AddTypeMap(typeof(DateTime), DbType.DateTime2);
-        // calendar configuration
-        SqlMapper.AddTypeHandler(new JsonObjectTypeHandler<CalendarConfiguration>());
         // lookup settings
         SqlMapper.AddTypeHandler(new JsonObjectTypeHandler<LookupSettings>());
         // case relation reference

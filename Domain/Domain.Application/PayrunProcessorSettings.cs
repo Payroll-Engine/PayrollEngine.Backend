@@ -10,6 +10,7 @@ namespace PayrollEngine.Domain.Application;
 public class PayrunProcessorSettings : FunctionToolSettings
 {
     // repositories
+    public ICalendarRepository CalendarRepository { get; set; }
     public IUserRepository UserRepository { get; set; }
     public IDivisionRepository DivisionRepository { get; set; }
     public IEmployeeRepository EmployeeRepository { get; set; }

@@ -34,9 +34,14 @@ public class Employee : DomainObjectBase, IIdentifiableObject, IDomainAttributeO
     public List<string> Divisions { get; set; }
 
     /// <summary>
-    /// The culture including the calendar, fallback is the division culture
+    /// The employee culture, fallback is the division culture
     /// </summary>
     public string Culture { get; set; }
+
+    /// <summary>
+    /// The employee calendar, fallback is the division calendar
+    /// </summary>
+    public string Calendar { get; set; }
 
     /// <summary>
     /// Custom attributes

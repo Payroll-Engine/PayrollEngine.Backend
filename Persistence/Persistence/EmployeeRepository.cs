@@ -31,6 +31,7 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
         parameters.Add(nameof(employee.LastName), employee.LastName);
         parameters.Add(nameof(employee.Language), employee.Language);
         parameters.Add(nameof(employee.Culture), employee.Culture);
+        parameters.Add(nameof(employee.Calendar), employee.Calendar);
         parameters.Add(nameof(employee.Attributes), JsonSerializer.SerializeNamedDictionary(employee.Attributes));
         base.GetObjectData(employee, parameters);
     }

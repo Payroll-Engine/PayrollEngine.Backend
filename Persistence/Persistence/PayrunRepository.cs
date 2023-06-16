@@ -72,7 +72,6 @@ public class PayrunRepository : ScriptChildDomainRepository<Payrun, Payrun>, IPa
         parameters.Add(nameof(payrun.WageTypeAvailableExpression), payrun.WageTypeAvailableExpression);
         parameters.Add(nameof(payrun.EndExpression), payrun.EndExpression);
         parameters.Add(nameof(payrun.RetroTimeType), payrun.RetroTimeType);
-        parameters.Add(nameof(payrun.Calendar), payrun.Calendar);
         parameters.Add(nameof(payrun.Script), payrun.Script);
         parameters.Add(nameof(payrun.ScriptVersion), payrun.ScriptVersion);
         parameters.Add(nameof(payrun.Binary), payrun.Binary, DbType.Binary);

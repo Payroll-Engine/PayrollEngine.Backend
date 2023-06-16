@@ -177,7 +177,7 @@ internal sealed class PayrollControllerCaseBuilder
                 }
 
                 // case change
-                CaseChange caseChange = await GetCancellationCaseChangeAsync(
+                var caseChange = await GetCancellationCaseChangeAsync(
                     context, tenantId, caseType.Value, domainCaseChangeSetup);
                 if (caseChange == null)
                 {

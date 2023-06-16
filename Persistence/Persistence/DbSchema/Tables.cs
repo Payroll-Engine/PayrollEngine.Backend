@@ -12,6 +12,7 @@ public static class Tables
     #region Tenant
 
     public static readonly string Tenant = "Tenant";
+    public static readonly string Calendar = "Calendar";
     public static readonly string Webhook = "Webhook";
     public static readonly string WebhookMessage = "WebhookMessage";
     public static readonly string User = "User";

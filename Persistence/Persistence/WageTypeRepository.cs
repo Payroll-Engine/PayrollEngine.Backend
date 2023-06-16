@@ -29,7 +29,7 @@ public class WageTypeRepository : ScriptTrackChildDomainRepository<WageType, Wag
         parameters.Add(nameof(wageType.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(wageType.DescriptionLocalizations));
         parameters.Add(nameof(wageType.OverrideType), wageType.OverrideType);
         parameters.Add(nameof(wageType.ValueType), wageType.ValueType);
-        parameters.Add(nameof(wageType.CalendarCalculationMode), wageType.CalendarCalculationMode);
+        parameters.Add(nameof(wageType.Calendar), wageType.Calendar);
         parameters.Add(nameof(wageType.Collectors), JsonSerializer.SerializeList(wageType.Collectors));
         parameters.Add(nameof(wageType.CollectorGroups), JsonSerializer.SerializeList(wageType.CollectorGroups));
         parameters.Add(nameof(wageType.ValueExpression), wageType.ValueExpression);

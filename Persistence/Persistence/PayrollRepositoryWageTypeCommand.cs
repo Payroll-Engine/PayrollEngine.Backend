@@ -117,7 +117,7 @@ internal sealed class PayrollRepositoryWageTypeCommand : PayrollRepositoryComman
                 derivedWageType.Description = CollectDerivedValue(derivedWageTypes, x => x.Description);
                 derivedWageType.DescriptionLocalizations = CollectDerivedValue(derivedWageTypes, x => x.DescriptionLocalizations);
                 derivedWageType.ValueType = CollectDerivedValue(derivedWageTypes, x => x.ValueType);
-                derivedWageType.CalendarCalculationMode = CollectDerivedValue(derivedWageTypes, x => x.CalendarCalculationMode);
+                derivedWageType.Calendar = CollectDerivedValue(derivedWageTypes, x => x.Calendar);
                 derivedWageType.Collectors = CollectDerivedList(derivedWageTypes, x => x.Collectors);
                 derivedWageType.CollectorGroups = CollectDerivedList(derivedWageTypes, x => x.CollectorGroups);
                 derivedWageType.Attributes = CollectDerivedAttributes(derivedWageTypes);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -11,37 +10,10 @@ public class DefaultPayrollCalculatorProvider : IPayrollCalculatorProvider
     /// <summary>
     /// Default calendar
     /// </summary>
-    public static CalendarConfiguration DefaultCalendar => new()
-    {
-        FirstMonthOfYear = Month.January, // calendar year
-        AverageMonthDays = 30M, // switzerland
-        AverageWorkDays = 21.75M, // switzerland
-        WorkingDays = new[]
-        {
-            DayOfWeek.Monday,
-            DayOfWeek.Tuesday,
-            DayOfWeek.Wednesday,
-            DayOfWeek.Thursday,
-            DayOfWeek.Friday,
-        }
-    };
+    public static Calendar DefaultCalendar => new();
 
     /// <inheritdoc />
-    public IPayrollCalculator CreateCalculator(CalendarCalculationMode calculationMode,
-        int tenantId, int? userId = null, CalendarConfiguration calendar = null, CultureInfo culture = null)
-    {
-        culture ??= CultureInfo.CurrentCulture;
-        calendar ??= DefaultCalendar;
-
-        var payrollCalendar = new PayrollCalendar(calendar, tenantId, userId, culture);
-        return calculationMode switch
-        {
-            CalendarCalculationMode.MonthCalendarDay => new MonthCalendarDayPayrollCalculator(payrollCalendar),
-            CalendarCalculationMode.MonthAverageDay => new MonthAverageDayPayrollCalculator(payrollCalendar),
-            CalendarCalculationMode.MonthEffectiveWorkDay => new MonthEffectiveWorkDayPayrollCalculator(payrollCalendar),
-            CalendarCalculationMode.MonthAverageWorkDay => new MonthAverageWorkDayPayrollCalculator(payrollCalendar),
-            CalendarCalculationMode.WeekCalendarDay => new WeekDayPayrollCalculator(payrollCalendar),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
+    public virtual IPayrollCalculator CreateCalculator(int tenantId, int? userId = null,
+        CultureInfo culture = null, Calendar calendar = null) =>
+        new PayrollCalculator(culture, calendar);
 }

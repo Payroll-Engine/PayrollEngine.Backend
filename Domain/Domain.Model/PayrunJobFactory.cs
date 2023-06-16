@@ -14,9 +14,8 @@ public static class PayrunJobFactory
     /// <param name="divisionId">The division id</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="payrollCalculator">The payroll calculator</param>
-    /// <param name="culture">The culture</param>
     public static PayrunJob CreatePayrunJob(PayrunJobInvocation jobInvocation, int divisionId, int payrollId,
-        IPayrollCalculator payrollCalculator, string culture)
+        IPayrollCalculator payrollCalculator)
     {
         // evaluation date: treat undefined as now
         if (!jobInvocation.EvaluationDate.HasValue || jobInvocation.EvaluationDate.Value == Date.MinValue)
@@ -50,8 +49,6 @@ public static class PayrunJobFactory
             RetroPayMode = jobInvocation.RetroPayMode,
             JobResult = jobInvocation.JobResult,
             Attributes = jobInvocation.Attributes,
-
-            Culture = culture,
 
             CycleName = evaluationCycle.Name,
             CycleStart = evaluationCycle.Start,

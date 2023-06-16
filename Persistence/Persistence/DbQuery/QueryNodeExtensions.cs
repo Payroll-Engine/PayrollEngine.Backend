@@ -137,9 +137,9 @@ internal static class QueryNodeExtensions
     /// <returns>True for a valid input date time</returns>
     private static bool ConvertToDateTimeUtc(this string dateTimeString, out DateTime? dateTime)
     {
-        DateTimeStyles DateTimeStyle = DateTimeStyles.AssumeUniversal |
-                                       DateTimeStyles.AdjustToUniversal |
-                                       DateTimeStyles.AllowWhiteSpaces;
+        var DateTimeStyle = DateTimeStyles.AssumeUniversal |
+                            DateTimeStyles.AdjustToUniversal |
+                            DateTimeStyles.AllowWhiteSpaces;
         if (DateTime.TryParse(dateTimeString, CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyle, out var dateTimeValue))
         {
             dateTime = dateTimeValue;

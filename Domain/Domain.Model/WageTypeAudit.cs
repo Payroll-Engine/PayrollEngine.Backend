@@ -49,9 +49,9 @@ public class WageTypeAudit : ScriptAuditDomainObject, IDomainAttributeObject
     public ValueType ValueType { get; set; }
 
     /// <summary>
-    /// The calendar calculation mode (default: tenant value)
+    /// The wage type calendar
     /// </summary>
-    public CalendarCalculationMode? CalendarCalculationMode { get; set; }
+    public string Calendar { get; set; }
 
     /// <summary>
     /// Associated collectors

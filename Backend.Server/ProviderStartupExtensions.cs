@@ -239,6 +239,12 @@ public static class ProviderStartupExtensions
             ctx.GetRequiredService<IRegulationService>(),
             ctx.GetRequiredService<IRegulationShareService>(),
             ctx.GetRequiredService<IReportService>(),
+            ctx.GetRequiredService<IControllerRuntime>()));
+
+        // calendar controllers
+        services.AddTransient(ctx => new CalendarController(
+            ctx.GetRequiredService<ITenantService>(),
+            ctx.GetRequiredService<ICalendarService>(),
             ctx.GetRequiredService<IPayrollCalculatorProvider>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 

@@ -20,6 +20,7 @@ public class DivisionRepository : ChildDomainRepository<Division>, IDivisionRepo
         parameters.Add(nameof(division.Name), division.Name);
         parameters.Add(nameof(division.NameLocalizations), JsonSerializer.SerializeNamedDictionary(division.NameLocalizations));
         parameters.Add(nameof(division.Culture), division.Culture);
+        parameters.Add(nameof(division.Calendar), division.Calendar);
         parameters.Add(nameof(division.Attributes), JsonSerializer.SerializeNamedDictionary(division.Attributes));
         base.GetObjectData(division, parameters);
     }

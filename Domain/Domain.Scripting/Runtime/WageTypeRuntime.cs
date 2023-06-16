@@ -28,6 +28,9 @@ public abstract class WageTypeRuntime : PayrunRuntime, IWageTypeRuntime
     public string WageTypeDescription => WageType.Description;
 
     /// <inheritdoc />
+    public string WageTypeCalendar => WageType.Calendar;
+
+    /// <inheritdoc />
     public string[] Collectors => WageType.Collectors?.ToArray();
 
     /// <inheritdoc />

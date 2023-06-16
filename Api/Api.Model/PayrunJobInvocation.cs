@@ -58,11 +58,6 @@ public class PayrunJobInvocation : ApiObjectBase
     public string Forecast { get; set; }
 
     /// <summary>
-    /// The payrun job execution mode (immutable)
-    /// </summary>
-    public PayrunJobExecutionMode ExecutionMode { get; set; }
-
-    /// <summary>
     /// The payrun retro pay mode (immutable)
     /// </summary>
     public RetroPayMode RetroPayMode { get; set; }

@@ -53,7 +53,7 @@ public static class PayrollPeriodExtensions
         IPayrollPeriod ContinuePeriod(IPayrollPeriod source) =>
             previous ? source.GetPayrollPeriod(source.Start, -1) : source.GetPayrollPeriod(source.Start, 1);
 
-        IPayrollPeriod period = payrollPeriod;
+        var period = payrollPeriod;
         while (true)
         {
             period = ContinuePeriod(period);

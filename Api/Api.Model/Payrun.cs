@@ -71,11 +71,6 @@ public class Payrun : ApiObjectBase
     /// </summary>
     public RetroTimeType RetroTimeType { get; set; }
 
-    /// <summary>
-    /// The payrun calendar, fallback is the tenant calendar
-    /// </summary>
-    public CalendarConfiguration Calendar { get; set; }
-
     /// <inheritdoc/>
     public override string ToString() =>
         $"{Name} {base.ToString()}";

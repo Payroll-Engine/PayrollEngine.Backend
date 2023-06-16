@@ -55,7 +55,7 @@ BEGIN
     dbo.[WageType].[Description],
     dbo.[WageType].[DescriptionLocalizations],
     dbo.[WageType].[OverrideType],
-    dbo.[WageType].[CalendarCalculationMode],
+    dbo.[WageType].[Calendar],
     dbo.[WageType].[Collectors],
     dbo.[WageType].[CollectorGroups],
     dbo.[WageType].[ValueExpression],

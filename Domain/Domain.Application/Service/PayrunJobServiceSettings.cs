@@ -6,6 +6,7 @@ namespace PayrollEngine.Domain.Application.Service;
 public class PayrunJobServiceSettings
 {
     public ILookupSetRepository RegulationLookupSetRepository { get; set; }
+    public ICalendarRepository CalendarRepository { get; set; }
     public IUserRepository UserRepository { get; set; }
     public ITaskRepository TaskRepository { get; set; }
     public ILogRepository LogRepository { get; set; }

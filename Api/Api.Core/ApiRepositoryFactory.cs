@@ -34,6 +34,7 @@ internal static class ApiRepositoryFactory
         internal static void SetupRepositories(IServiceCollection services)
         {
             services.AddScoped(_ => NewTenantRepository());
+            services.AddScoped(_ => NewCalendarRepository());
             services.AddScoped(_ => NewWebhookRepository());
             services.AddScoped(_ => NewWebhookMessageRepository());
             services.AddScoped(_ => NewUserRepository());
@@ -47,6 +48,9 @@ internal static class ApiRepositoryFactory
 
         private static ITenantRepository NewTenantRepository() =>
             new TenantRepository();
+
+        private static ICalendarRepository NewCalendarRepository() =>
+            new CalendarRepository();
 
         private static IWebhookRepository NewWebhookRepository() =>
             new WebhookRepository();

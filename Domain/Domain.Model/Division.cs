@@ -19,9 +19,14 @@ public class Division : DomainObjectBase, INamedObject, IDomainAttributeObject, 
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The culture including the calendar, fallback for employee culture
+    /// The division culture, fallback for tenant culture
     /// </summary>
     public string Culture { get; set; }
+
+    /// <summary>
+    /// The division calendar, fallback for tenant calendar
+    /// </summary>
+    public string Calendar { get; set; }
     
     /// <summary>
     /// Custom attributes

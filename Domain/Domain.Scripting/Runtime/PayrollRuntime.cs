@@ -60,6 +60,12 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
     public string EmployeeIdentifier => Employee?.Identifier;
 
     /// <inheritdoc />
+    public string EmployeeCulture => Employee?.Culture;
+
+    /// <inheritdoc />
+    public string EmployeeCalendar => Employee?.Calendar;
+
+    /// <inheritdoc />
     public object GetEmployeeAttribute(string attributeName) =>
         Employee?.Attributes?.GetValue<object>(attributeName);
 

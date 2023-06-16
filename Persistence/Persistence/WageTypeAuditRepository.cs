@@ -22,7 +22,7 @@ public class WageTypeAuditRepository : AuditChildDomainRepository<WageTypeAudit>
         parameters.Add(nameof(audit.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(audit.DescriptionLocalizations));
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.ValueType), audit.ValueType);
-        parameters.Add(nameof(audit.CalendarCalculationMode), audit.CalendarCalculationMode);
+        parameters.Add(nameof(audit.Calendar), audit.Calendar);
         parameters.Add(nameof(audit.Collectors), JsonSerializer.SerializeList(audit.Collectors));
         parameters.Add(nameof(audit.CollectorGroups), JsonSerializer.SerializeList(audit.CollectorGroups));
         parameters.Add(nameof(audit.ValueExpression), audit.ValueExpression);

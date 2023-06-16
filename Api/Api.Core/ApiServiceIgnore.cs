@@ -28,6 +28,7 @@ public static class ApiServiceIgnore
 
     // tenant
     public const bool Tenant = Ignore;
+    public const bool Calendar = Ignore;
     public const bool User = Ignore;
     public const bool Division = Ignore;
     public const bool Task = Ignore;

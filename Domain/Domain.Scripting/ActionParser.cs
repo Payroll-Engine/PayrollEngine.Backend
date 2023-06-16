@@ -265,7 +265,7 @@ public static class ActionParser
     private static Tuple<string, FunctionType> ParseActionProvider(ClassDeclarationSyntax syntax)
     {
         // provider attribute
-        AttributeSyntax attribute = FindAttribute(syntax.AttributeLists, nameof(ClientScripting.ActionProviderAttribute));
+        var attribute = FindAttribute(syntax.AttributeLists, nameof(ClientScripting.ActionProviderAttribute));
         if (attribute == null)
         {
             return null;

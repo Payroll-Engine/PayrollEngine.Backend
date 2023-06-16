@@ -34,6 +34,92 @@
             </summary>
             <returns>List of web method names</returns>
         </member>
+        <member name="T:PayrollEngine.Backend.Controller.CalendarController">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICalendarService,PayrollEngine.Domain.Model.IPayrollCalculatorProvider,PayrollEngine.Api.Core.IControllerRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.QueryCalendarsAsync(System.Int32,PayrollEngine.Query)">
+            <summary>
+            Query calendars
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="query">Query parameters</param>
+            <returns>The tenant calendars</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.GetCalendarAsync(System.Int32,System.Int32)">
+            <summary>
+            Get a calendar
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="calendarId">The id of the calendar</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.CreateCalendarAsync(System.Int32,PayrollEngine.Api.Model.Calendar)">
+            <summary>
+            Add a new calendar
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="calendar">The calendar to add</param>
+            <returns>The newly created calendar</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.UpdateCalendarAsync(System.Int32,PayrollEngine.Api.Model.Calendar)">
+            <summary>
+            Update a calendar
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="calendar">The calendar with updated values</param>
+            <returns>The modified calendar</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.DeleteCalendarAsync(System.Int32,System.Int32)">
+            <summary>
+            Delete a calendar
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="calendarId">The id of the calendar</param>
+            <returns></returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.GetCalendarPeriodAsync(System.Int32,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get calendar period
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="cultureName">The culture to use (default: tenant culture)</param>
+            <param name="calendarName">The calendar name</param>
+            <param name="periodMoment">The moment within the payrun period (default: now)</param>
+            <param name="offset">The offset:<br />
+            less than zero: past<br />
+            zero: current (default)<br />
+            greater than zero: future<br /></param>
+            <returns>The calendar period</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.GetCalendarCycleAsync(System.Int32,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get calendar cycle
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="cultureName">The culture to use (default: tenant culture)</param>
+            <param name="calendarName">The calendar configuration (default: tenant calendar)</param>
+            <param name="cycleMoment">The moment within the payrun cycle (default: now)</param>
+            <param name="offset">The offset:<br />
+            less than zero: past<br />
+            zero: current (default)<br />
+            greater than zero: future<br /></param>
+            <returns>The calendar cycle</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.CalculateCalendarValueAsync(System.Int32,System.Decimal,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Calculate calendar value
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="value">The value to calculate</param>
+            <param name="cultureName">The culture to use (default: tenant culture)</param>
+            <param name="calendarName">The calendar configuration (default: tenant calendar)</param>
+            <param name="evaluationDate">The evaluation period date (default: all)</param>
+            <param name="evaluationPeriodDate">The date within the evaluation period (default: evaluation date)</param>
+            <returns>The calendar value</returns>
+        </member>
         <member name="T:PayrollEngine.Backend.Controller.CaseAuditController">
             <inheritdoc/>
         </member>
@@ -2585,7 +2671,7 @@
         <member name="T:PayrollEngine.Backend.Controller.TenantController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IRegulationShareService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Model.IPayrollCalculatorProvider,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IRegulationShareService,PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TenantController.QueryTenantsAsync(PayrollEngine.Query)">
@@ -2653,61 +2739,6 @@
             <param name="language">The data language</param>
             <param name="parameters">The query parameters</param>
             <returns>The resulting data table</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetCalendarPeriodAsync(System.Int32,PayrollEngine.CalendarCalculationMode,System.Nullable{System.DateTime},PayrollEngine.CalendarConfiguration,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Get tenant calendar period
-            </summary>
-            <remarks>
-            Request body contains array of case values (optional)
-            Without the request body, this would be a GET method
-            </remarks>
-            <param name="tenantId">The tenant id</param>
-            <param name="calculationMode">The calendar calculation mode</param>
-            <param name="periodMoment">The moment within the payrun period (default: now)</param>
-            <param name="calendar">The calendar configuration (default: tenant calendar)</param>
-            <param name="culture">The culture to use (default: tenant culture)</param>
-            <param name="offset">The offset:<br />
-            less than zero: past<br />
-            zero: current (default)<br />
-            greater than zero: future<br /></param>
-            <returns>The calendar period</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetCalendarCycleAsync(System.Int32,PayrollEngine.CalendarCalculationMode,System.Nullable{System.DateTime},PayrollEngine.CalendarConfiguration,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Get tenant calendar cycle
-            </summary>
-            <remarks>
-            Request body contains array of case values (optional)
-            Without the request body, this would be a GET method
-            </remarks>
-            <param name="tenantId">The tenant id</param>
-            <param name="calculationMode">The calendar calculation mode</param>
-            <param name="cycleMoment">The moment within the payrun cycle (default: now)</param>
-            <param name="calendar">The calendar configuration (default: tenant calendar)</param>
-            <param name="culture">The culture to use (default: tenant culture)</param>
-            <param name="offset">The offset:<br />
-            less than zero: past<br />
-            zero: current (default)<br />
-            greater than zero: future<br /></param>
-            <returns>The calendar cycle</returns>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.CalculateCalendarValueAsync(System.Int32,PayrollEngine.CalendarCalculationMode,System.Decimal,System.Nullable{System.DateTime},System.Nullable{System.DateTime},PayrollEngine.CalendarConfiguration,System.String)">
-            <summary>
-            Calculate calendar value
-            </summary>
-            <remarks>
-            Request body contains array of case values (optional)
-            Without the request body, this would be a GET method
-            </remarks>
-            <param name="tenantId">The tenant id</param>
-            <param name="calculationMode">The calendar calculation mode</param>
-            <param name="value">The value to calculate</param>
-            <param name="evaluationDate">The evaluation period date (default: all)</param>
-            <param name="evaluationPeriodDate">The date within the evaluation period (default: evaluation date)</param>
-            <param name="calendar">The calendar configuration (default: tenant calendar)</param>
-            <param name="culture">The culture to use (default: tenant culture)</param>
-            <returns>The calendar value</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TenantController.GetTenantAttributeAsync(System.Int32,System.String)">
             <summary>

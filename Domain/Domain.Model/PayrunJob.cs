@@ -91,11 +91,6 @@ public class PayrunJob : DomainObjectBase, INamedObject, IDomainAttributeObject,
     public PayrunJobResult JobResult { get; set; }
 
     /// <summary>
-    /// The culture including the calendar (immutable)
-    /// </summary>
-    public string Culture { get; set; }
-
-    /// <summary>
     /// The cycle name (immutable)
     /// </summary>
     public string CycleName { get; set; }

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Api.Model;
 
@@ -49,12 +47,6 @@ public class WageType : ApiObjectBase
     /// The value type, default is value type money
     /// </summary>
     public ValueType ValueType { get; set; }
-
-    /// <summary>
-    /// The calendar calculation mode (default: tenant value)
-    /// </summary>
-    [JsonConverter(typeof(StringNullableEnumConverter<CalendarCalculationMode?>))]
-    public CalendarCalculationMode? CalendarCalculationMode { get; set; }
 
     /// <summary>
     /// Associated collectors

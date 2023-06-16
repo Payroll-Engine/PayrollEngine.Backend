@@ -270,7 +270,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
             // case set
             query.Language ??= default;
-            DomainObject.CaseSet caseSet = @case.CaseType switch
+            var caseSet = @case.CaseType switch
             {
                 CaseType.Global => await builder.BuildGlobalCaseAsync(query.CaseName, domainCaseSetup, query.Language.Value),
                 CaseType.National =>
@@ -556,7 +556,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 }
 
                 // case
-                DomainObject.Case @case = await CaseService.GetAsync(Runtime.DbContext, regulationId.Value, caseId.Value);
+                var @case = await CaseService.GetAsync(Runtime.DbContext, regulationId.Value, caseId.Value);
                 if (@case == null)
                 {
                     return BadRequest($"Unknown regulation case with id {caseId.Value}");
@@ -687,7 +687,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 }
 
                 // case
-                DomainObject.Case @case = await CaseService.GetAsync(Runtime.DbContext, regulationId.Value, caseId.Value);
+                var @case = await CaseService.GetAsync(Runtime.DbContext, regulationId.Value, caseId.Value);
                 if (@case == null)
                 {
                     return BadRequest($"Unknown regulation case with id {caseId.Value}");

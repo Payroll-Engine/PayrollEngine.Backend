@@ -23,6 +23,7 @@ internal sealed class PayrunContext
     internal List<RetroPayrunJob> RetroPayrunJobs { get; set; }
     internal PayrunExecutionPhase ExecutionPhase { get; set; }
 
+    internal string CalendarName { get; set; }
     internal CultureInfo Culture { get; set; }
 
     internal IPayrollCalculator Calculator { get; set; }

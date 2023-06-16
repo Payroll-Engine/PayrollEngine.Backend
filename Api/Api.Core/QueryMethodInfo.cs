@@ -25,7 +25,7 @@ internal sealed class QueryMethodInfo
         var values = new Dictionary<ParameterInfo, object>();
 
         // properties
-        foreach (ParameterInfo parameter in MethodInfo.GetParameters())
+        foreach (var parameter in MethodInfo.GetParameters())
         {
             if (IsParameterValue(parameter.ParameterType))
             {
@@ -49,7 +49,7 @@ internal sealed class QueryMethodInfo
         var values = new Dictionary<ParameterInfo, object>();
 
         // properties
-        foreach (ParameterInfo parameter in MethodInfo.GetParameters())
+        foreach (var parameter in MethodInfo.GetParameters())
         {
             if (IsParameterValue(parameter.ParameterType))
             {

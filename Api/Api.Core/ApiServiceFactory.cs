@@ -44,6 +44,7 @@ internal static class ApiServiceFactory
             WebhookDispatchService.Timeout = GetWebhookTimeout();
 
             services.AddScoped(NewTenantService);
+            services.AddScoped(NewCalendarService);
             services.AddScoped(NewWebhookService);
             services.AddScoped(NewWebhookMessageService);
             services.AddScoped(NewWebhookDispatchService);
@@ -58,6 +59,10 @@ internal static class ApiServiceFactory
         private static ITenantService NewTenantService(IServiceProvider serviceProvider) =>
             new TenantService(
                 serviceProvider.GetRequiredService<ITenantRepository>());
+
+        private static ICalendarService NewCalendarService(IServiceProvider serviceProvider) =>
+            new CalendarService(
+                serviceProvider.GetRequiredService<ICalendarRepository>());
 
         private static IWebhookService NewWebhookService(IServiceProvider serviceProvider) =>
             new WebhookService(serviceProvider.GetRequiredService<IWebhookRepository>());
@@ -349,6 +354,7 @@ internal static class ApiServiceFactory
             new PayrunJobService(new()
             {
                 RegulationLookupSetRepository = serviceProvider.GetRequiredService<ILookupSetRepository>(),
+                CalendarRepository = serviceProvider.GetRequiredService<ICalendarRepository>(),
                 UserRepository = serviceProvider.GetRequiredService<IUserRepository>(),
                 TaskRepository = serviceProvider.GetRequiredService<ITaskRepository>(),
                 LogRepository = serviceProvider.GetRequiredService<ILogRepository>(),

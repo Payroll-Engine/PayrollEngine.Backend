@@ -36,7 +36,6 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         parameters.Add(nameof(payrunJob.Forecast), payrunJob.Forecast);
         parameters.Add(nameof(payrunJob.RetroPayMode), payrunJob.RetroPayMode);
         parameters.Add(nameof(payrunJob.JobResult), payrunJob.JobResult);
-        parameters.Add(nameof(payrunJob.Culture), payrunJob.Culture);
         parameters.Add(nameof(payrunJob.CycleName), payrunJob.CycleName);
         parameters.Add(nameof(payrunJob.CycleStart), payrunJob.CycleStart);
         parameters.Add(nameof(payrunJob.CycleEnd), payrunJob.CycleEnd);

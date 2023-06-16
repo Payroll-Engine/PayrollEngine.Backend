@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 
@@ -10,7 +9,10 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 public class DerivedCaseToolSettings : FunctionToolSettings
 {
+    public string ClusterSetName { get; set; }
+    public System.Globalization.CultureInfo Culture { get; set; }
     public Tenant Tenant { get; set; }
+    public Calendar Calendar { get; set; }
     public User User { get; set; }
     public Payroll Payroll { get; set; }
     public DateTime RegulationDate { get; set; }
@@ -23,6 +25,4 @@ public class DerivedCaseToolSettings : FunctionToolSettings
     public IWebhookDispatchService WebhookDispatchService { get; set; }
     public IRegulationLookupProvider RegulationLookupProvider { get; set; }
     public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
-    public string ClusterSetName { get; set; }
-    public CultureInfo Culture { get; set; }
 }

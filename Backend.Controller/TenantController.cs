@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Data;
 using PayrollEngine.Domain.Application.Service;
-using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 
 namespace PayrollEngine.Backend.Controller;
@@ -18,10 +15,10 @@ namespace PayrollEngine.Backend.Controller;
 public class TenantController : Api.Controller.TenantController
 {
     /// <inheritdoc/>
-    public TenantController(ITenantService tenantService, IRegulationService regulationService,
-        IRegulationShareService regulationShareService, IReportService reportService, 
-        DomainObject.IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime) :
-        base(tenantService, regulationService, regulationShareService, reportService, payrollCalculatorProvider, runtime)
+    public TenantController(ITenantService tenantService,
+        IRegulationService regulationService, IRegulationShareService regulationShareService, IReportService reportService,
+        IControllerRuntime runtime) :
+        base(tenantService, regulationService, regulationShareService, reportService, runtime)
     {
     }
 
@@ -90,7 +87,7 @@ public class TenantController : Api.Controller.TenantController
     public async Task<IActionResult> DeleteTenantAsync(int tenantId) =>
         await DeleteAsync(tenantId);
 
-        /// <summary>
+    /// <summary>
     /// Get a tenant
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
@@ -175,121 +172,6 @@ public class TenantController : Api.Controller.TenantController
         }
         return await base.ExecuteReportQueryAsync(tenantId, methodName, language, parameters);
     }
-
-    #region Calendar
-
-    /// <summary>
-    /// Get tenant calendar period
-    /// </summary>
-    /// <remarks>
-    /// Request body contains array of case values (optional)
-    /// Without the request body, this would be a GET method
-    /// </remarks>
-    /// <param name="tenantId">The tenant id</param>
-    /// <param name="calculationMode">The calendar calculation mode</param>
-    /// <param name="periodMoment">The moment within the payrun period (default: now)</param>
-    /// <param name="calendar">The calendar configuration (default: tenant calendar)</param>
-    /// <param name="culture">The culture to use (default: tenant culture)</param>
-    /// <param name="offset">The offset:<br />
-    /// less than zero: past<br />
-    /// zero: current (default)<br />
-    /// greater than zero: future<br /></param>
-    /// <returns>The calendar period</returns>
-    [HttpPost("{tenantId}/calendar/periods")]
-    [OkResponse]
-    [NotFoundResponse]
-    [UnprocessableEntityResponse]
-    [ApiOperationId("GetCalendarPeriod")]
-    public async Task<ActionResult<DatePeriod>> GetCalendarPeriodAsync(int tenantId,
-        [FromQuery][Required] CalendarCalculationMode calculationMode, [FromQuery] DateTime? periodMoment,
-        [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<CalendarConfiguration>))] CalendarConfiguration calendar,
-        [FromQuery] string culture, [FromQuery] int? offset)
-    {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
-        {
-            return tenantResult;
-        }
-        return await Task.Run(() =>
-            GetCalendarPeriod(tenantId, calculationMode, periodMoment, calendar, culture, offset));
-    }
-
-    /// <summary>
-    /// Get tenant calendar cycle
-    /// </summary>
-    /// <remarks>
-    /// Request body contains array of case values (optional)
-    /// Without the request body, this would be a GET method
-    /// </remarks>
-    /// <param name="tenantId">The tenant id</param>
-    /// <param name="calculationMode">The calendar calculation mode</param>
-    /// <param name="cycleMoment">The moment within the payrun cycle (default: now)</param>
-    /// <param name="calendar">The calendar configuration (default: tenant calendar)</param>
-    /// <param name="culture">The culture to use (default: tenant culture)</param>
-    /// <param name="offset">The offset:<br />
-    /// less than zero: past<br />
-    /// zero: current (default)<br />
-    /// greater than zero: future<br /></param>
-    /// <returns>The calendar cycle</returns>
-    [HttpPost("{tenantId}/calendar/cycles")]
-    [OkResponse]
-    [NotFoundResponse]
-    [UnprocessableEntityResponse]
-    [ApiOperationId("GetCalendarCycle")]
-    public async Task<ActionResult<DatePeriod>> GetCalendarCycleAsync(int tenantId,
-        [FromQuery][Required] CalendarCalculationMode calculationMode, [FromQuery] DateTime? cycleMoment,
-        [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<CalendarConfiguration>))] CalendarConfiguration calendar,
-        [FromQuery] string culture, [FromQuery] int? offset)
-    {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
-        {
-            return tenantResult;
-        }
-        return await Task.Run(() =>
-            GetCalendarCycle(tenantId, calculationMode, cycleMoment, calendar, culture, offset));
-    }
-
-    /// <summary>
-    /// Calculate calendar value
-    /// </summary>
-    /// <remarks>
-    /// Request body contains array of case values (optional)
-    /// Without the request body, this would be a GET method
-    /// </remarks>
-    /// <param name="tenantId">The tenant id</param>
-    /// <param name="calculationMode">The calendar calculation mode</param>
-    /// <param name="value">The value to calculate</param>
-    /// <param name="evaluationDate">The evaluation period date (default: all)</param>
-    /// <param name="evaluationPeriodDate">The date within the evaluation period (default: evaluation date)</param>
-    /// <param name="calendar">The calendar configuration (default: tenant calendar)</param>
-    /// <param name="culture">The culture to use (default: tenant culture)</param>
-    /// <returns>The calendar value</returns>
-    [HttpPost("{tenantId}/calendar/values")]
-    [OkResponse]
-    [NotFoundResponse]
-    [UnprocessableEntityResponse]
-    [ApiOperationId("CalculateCalendarValue")]
-    [QueryIgnore]
-    public async Task<ActionResult<decimal?>> CalculateCalendarValueAsync(int tenantId,
-        [FromQuery][Required] CalendarCalculationMode calculationMode, [FromQuery][Required] decimal value,
-        [FromQuery] DateTime? evaluationDate, [FromQuery] DateTime? evaluationPeriodDate,
-        [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<CalendarConfiguration>))] CalendarConfiguration calendar,
-        [FromQuery] string culture)
-    {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
-        {
-            return tenantResult;
-        }
-        return await Task.Run(() =>
-            CalculateCalendarValue(tenantId, calculationMode, value, evaluationDate, evaluationPeriodDate, calendar, culture));
-    }
-
-    #endregion
 
     #region Attributes
 

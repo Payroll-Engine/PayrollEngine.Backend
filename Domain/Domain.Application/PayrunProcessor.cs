@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
 using PayrollEngine.Domain.Scripting.Controller;
+using Calendar = PayrollEngine.Domain.Model.Calendar;
 using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
@@ -21,8 +21,6 @@ public class PayrunProcessor : FunctionToolBase
         internal Payroll Payroll { get; init; }
         internal Division Division { get; init; }
         internal List<Employee> Employees { get; init; }
-        internal CultureInfo Culture { get; init; }
-        internal IPayrollCalculator Calculator { get; init; }
         internal CaseValueCache GlobalCaseValues { get; init; }
         internal CaseValueCache NationalCaseValues { get; init; }
         internal CaseValueCache CompanyCaseValues { get; init; }
@@ -88,14 +86,19 @@ public class PayrunProcessor : FunctionToolBase
         // context division
         context.Division = setup.Division ?? await processorRepositories.LoadDivisionAsync(context.Payroll.DivisionId);
 
-        // context payroll calculator and payrun job
-        context.Culture = setup.Culture ?? new CultureInfo(context.Division.Culture);
-        context.Calculator = setup.Calculator ??
-                             GetCalculator(Tenant.Id, context.User.Id, context.Payroll.CalendarCalculationMode, context.Culture);
+        // culture
+        var cultureName = context.Division.Culture ?? Tenant.Culture ?? System.Globalization.CultureInfo.CurrentCulture.Name;
+        context.Culture = new System.Globalization.CultureInfo(cultureName);
+
+        // calendar
+        var calendarName = context.Division.Calendar ?? Tenant.Calendar;
+        context.CalendarName = calendarName;
+
+        // calculator
+        context.Calculator = await GetCalculatorAsync(Tenant.Id, context.User.Id, context.Culture, context.CalendarName);
 
         // create payrun job and retro payrun jobs
-        context.PayrunJob = PayrunJobFactory.CreatePayrunJob(jobInvocation, context.Division.Id, payrollId,
-            context.Calculator, context.Culture.Name);
+        context.PayrunJob = PayrunJobFactory.CreatePayrunJob(jobInvocation, context.Division.Id, payrollId, context.Calculator);
         if (context.PayrunJob.ParentJobId.HasValue)
         {
             context.ParentPayrunJob = await processorRepositories.LoadPayrunJobAsync(context.PayrunJob.ParentJobId.Value);
@@ -163,14 +166,6 @@ public class PayrunProcessor : FunctionToolBase
         if (!string.IsNullOrWhiteSpace(validation))
         {
             return await AbortJobAsync(context.PayrunJob, $"Payroll validation error: {validation}");
-        }
-
-        // async job
-        if (jobInvocation.ExecutionMode == PayrunJobExecutionMode.Asynchronous)
-        {
-            // TODO implement payrun background job (hosted service?)
-            //await Task.Run(() => ProcessAllEmployeesAsync(setup, context));
-            //return context.PayrunJob;
         }
 
         // job processing
@@ -425,8 +420,6 @@ public class PayrunProcessor : FunctionToolBase
                             Payroll = context.Payroll,
                             Division = context.Division,
                             Employees = new() { employee },
-                            Culture = context.Culture,
-                            Calculator = context.Calculator,
                             GlobalCaseValues = context.GlobalCaseValues,
                             NationalCaseValues = context.NationalCaseValues,
                             CompanyCaseValues = context.CompanyCaseValues,
@@ -538,8 +531,26 @@ public class PayrunProcessor : FunctionToolBase
     private async Task<Tuple<PayrollResultSet, List<RetroPayrunJob>, CaseValue>> CalculateEmployeeAsync(PayrunProcessorRegulation processorRegulation,
         Employee employee, ICaseValueProvider caseValueProvider, PayrunContext context, PayrunExecutionPhase executionPhase)
     {
-        // context
+        // context execution
         context.ExecutionPhase = executionPhase;
+
+        // culture by priority: employee > division > tenant
+        var cultureName = employee.Culture ??
+                          context.Division.Culture ??
+                          Tenant.Culture;
+        context.Culture = new System.Globalization.CultureInfo(cultureName);
+
+        // calendar by priority: employee > division > tenant
+        var calendarName = employee.Calendar ??
+                          context.Division.Calendar ??
+                          Tenant.Calendar;
+        context.CalendarName = calendarName;
+
+        // payroll calculator based on the employee culture and calendar
+        var employeeCalculator = await GetCalculatorAsync(Tenant.Id, context.User.Id, context.Culture, context.CalendarName);
+        var prevCalculator = context.Calculator;
+        context.Calculator = employeeCalculator;
+        caseValueProvider.PushCalculator(employeeCalculator);
 
         // payroll results per employee and division
         var payrollResult = new PayrollResultSet
@@ -567,7 +578,7 @@ public class PayrunProcessor : FunctionToolBase
         foreach (var derivedCollector in context.DerivedCollectors)
         {
             Log.Trace($"Starting collector {derivedCollector}");
-            CollectorResultSet collectorResult =
+            var collectorResult =
                 payrollResult.CollectorResults.First(x => string.Equals(x.CollectorName, derivedCollector.Key));
             var retroJobs = processorRegulation.CollectorStart(context, derivedCollector, caseValueProvider, payrollResult, collectorResult);
             collectorResult.Value = derivedCollector.First().Result;
@@ -606,15 +617,18 @@ public class PayrunProcessor : FunctionToolBase
                 Log.Trace($"Payrun processing wage type {derivedWageType.Key} on employee {employee}");
 
                 IPayrollCalculator wageTypeCalculator = null;
+                var prevWageTypeCalculator = context.Calculator;
                 try
                 {
                     // activate optional wage type calculator
                     var mostDerivedWageType = derivedWageType.First();
-                    if (mostDerivedWageType.CalendarCalculationMode.HasValue)
+                    if (!string.IsNullOrWhiteSpace(mostDerivedWageType.Calendar) &&
+                        !string.Equals(mostDerivedWageType.Calendar, context.CalendarName))
                     {
-                        wageTypeCalculator = GetCalculator(Tenant.Id, context.User.Id,
-                            mostDerivedWageType.CalendarCalculationMode.Value, context.Culture);
+                        wageTypeCalculator = await GetCalculatorAsync(Tenant.Id, context.User.Id,
+                            context.Culture, mostDerivedWageType.Calendar);
                         caseValueProvider.PushCalculator(wageTypeCalculator);
+                        context.Calculator = wageTypeCalculator;
                     }
 
                     // payrun wage type available
@@ -686,6 +700,7 @@ public class PayrunProcessor : FunctionToolBase
                     if (wageTypeCalculator != null)
                     {
                         caseValueProvider.PopCalculator(wageTypeCalculator);
+                        context.Calculator = prevWageTypeCalculator;
                     }
                 }
 
@@ -740,6 +755,10 @@ public class PayrunProcessor : FunctionToolBase
         {
             await RemoveUnchangedResultsAsync(Tenant.Id, payrollResult, context.EvaluationDate);
         }
+
+        // remove employee calculator
+        caseValueProvider.PopCalculator(employeeCalculator);
+        context.Calculator = prevCalculator;
 
         // set results creation date
         payrollResult.SetResultDate(context.EvaluationDate);
@@ -989,29 +1008,43 @@ public class PayrunProcessor : FunctionToolBase
 
     #region Payroll Calculator
 
-    private readonly Dictionary<CalendarCalculationMode, IPayrollCalculator> payrollCalculators =
+    // calculator is stored by calendar name
+    private readonly Dictionary<string, IPayrollCalculator> payrollCalculators =
         new();
 
-    private IPayrollCalculator GetCalculator(int tenantId, int userId, CalendarCalculationMode calculationMode,
-        CultureInfo culture)
+    private readonly Calendar defaultCalendar = new();
+
+    private async Task<IPayrollCalculator> GetCalculatorAsync(int tenantId, int userId,
+        System.Globalization.CultureInfo culture = null, string calendarName = null)
     {
+        // calendar: first on payrun and second on tenant, otherwise use the default calendar
+        var calendar = defaultCalendar;
+        if (!string.IsNullOrWhiteSpace(calendarName))
+        {
+            calendar = await Settings.CalendarRepository.GetByNameAsync(Settings.DbContext, tenantId, calendarName);
+            if (calendar == null)
+            {
+                throw new PayrollException($"Unknown calendar {calendarName}");
+            }
+        }
+        else
+        {
+            calendarName = ".default";
+        }
+
         // cache
-        if (payrollCalculators.TryGetValue(calculationMode, out var payrollCalculator))
+        if (payrollCalculators.TryGetValue(calendarName, out var payrollCalculator))
         {
             return payrollCalculator;
         }
 
-        // calendar: first on payrun and second on tenant, otherwise use the default calendar
-        var calendar = Payrun.Calendar ?? Tenant.Calendar;
-
         // new calculator based on the tenant calendar configuration
         var calculator = Settings.PayrollCalculatorProvider.CreateCalculator(
-            calculationMode: calculationMode,
             tenantId: tenantId,
             userId: userId,
-            calendar: calendar,
-            culture: culture);
-        payrollCalculators.Add(calculationMode, calculator);
+            culture: culture,
+            calendar: calendar);
+        payrollCalculators.Add(calendarName, calculator);
         return calculator;
     }
 
