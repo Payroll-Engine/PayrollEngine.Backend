@@ -30,9 +30,9 @@ internal static class ApiRepositoryFactory
 
     private static class TenantRepositoryFactory
     {
-        // repositories setup
         internal static void SetupRepositories(IServiceCollection services)
         {
+            // repositories setup
             services.AddScoped(_ => NewTenantRepository());
             services.AddScoped(_ => NewCalendarRepository());
             services.AddScoped(_ => NewWebhookRepository());
@@ -41,7 +41,9 @@ internal static class ApiRepositoryFactory
             services.AddScoped(_ => NewDivisionRepository());
             services.AddScoped(_ => NewTaskRepository());
             services.AddScoped(_ => NewLogRepository());
+            // report repositories
             services.AddScoped(_ => NewReportLogRepository());
+            // employee repositories
             services.AddScoped(_ => NewEmployeeDivisionRepository());
             services.AddScoped(_ => NewEmployeeRepository());
         }
