@@ -28,6 +28,12 @@ public class PayrollCalculator : IPayrollCalculator
     }
 
     /// <inheritdoc />
+    public CalendarTimeUnit CycleTimeUnit => Calendar.CycleTimeUnit;
+
+    /// <inheritdoc />
+    public CalendarTimeUnit PeriodTimeUnit => Calendar.PeriodTimeUnit;
+
+    /// <inheritdoc />
     public virtual IPayrollPeriod GetPayrunCycle(DateTime cycleMoment) =>
         GetPayrunPeriod(cycleMoment, Calendar.CycleTimeUnit);
 
@@ -418,4 +424,10 @@ public class PayrollCalculator : IPayrollCalculator
         };
         return caseValue;
     }
+
+    /// <summary>
+    /// The string representation
+    /// </summary>
+    public override string ToString() =>
+        $"{Culture?.Name} {Calendar?.Name}";
 }

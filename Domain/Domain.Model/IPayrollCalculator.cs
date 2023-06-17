@@ -8,6 +8,16 @@ namespace PayrollEngine.Domain.Model;
 public interface IPayrollCalculator
 {
     /// <summary>
+    /// The cycle time unit
+    /// </summary>
+    CalendarTimeUnit CycleTimeUnit { get; }
+
+    /// <summary>
+    /// The period time unit
+    /// </summary>
+    CalendarTimeUnit PeriodTimeUnit { get; }
+
+    /// <summary>
     /// Get payrun cycle from a specific moment
     /// </summary>
     /// <param name="cycleMoment">The moment within the payrun cycle</param>

@@ -144,8 +144,34 @@ public sealed class CaseValueProvider : ICaseValueProvider
     public IPayrollCalculator PayrollCalculator => payrollCalculators.Peek();
 
     /// <inheritdoc />
-    public void PushCalculator(IPayrollCalculator payrollCalculator) =>
+    public void PushCalculator(IPayrollCalculator payrollCalculator)
+    {
+        if (payrollCalculator == null)
+        {
+            throw new ArgumentNullException(nameof(payrollCalculator));
+        }
+
+        if (payrollCalculators.Any())
+        {
+            // test cycle compatibility
+            var curCycleTimeUnit = payrollCalculators.Peek().CycleTimeUnit;
+            var newCycleTimeUnit = payrollCalculator.CycleTimeUnit;
+            if (!curCycleTimeUnit.IsValidTimeUnit(newCycleTimeUnit))
+            {
+                throw new PayrollException($"Mismatching cycle time type {newCycleTimeUnit}, must be compatible with {curCycleTimeUnit}");
+            }
+
+            // test period compatibility
+            var curPeriodTimeUnit = payrollCalculators.Peek().PeriodTimeUnit;
+            var newPeriodTimeUnit = payrollCalculator.PeriodTimeUnit;
+            if (!curPeriodTimeUnit.IsValidTimeUnit(newPeriodTimeUnit))
+            {
+                throw new PayrollException($"Mismatching period time type {newPeriodTimeUnit}, must be compatible with {curPeriodTimeUnit}");
+            }
+        }
+
         payrollCalculators.Push(payrollCalculator);
+    }
 
     /// <inheritdoc />
     public void PopCalculator(IPayrollCalculator payrollCalculator)

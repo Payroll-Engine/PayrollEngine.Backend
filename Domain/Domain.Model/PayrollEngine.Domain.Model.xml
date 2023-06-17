@@ -3547,6 +3547,16 @@
             Represents a calculator for case values
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.IPayrollCalculator.CycleTimeUnit">
+            <summary>
+            The cycle time unit
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IPayrollCalculator.PeriodTimeUnit">
+            <summary>
+            The period time unit
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetPayrunCycle(System.DateTime)">
             <summary>
             Get payrun cycle from a specific moment
@@ -4386,6 +4396,12 @@
             <param name="culture">The culture</param>
             <param name="calendar">The payroll calendar</param>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.CycleTimeUnit">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.PeriodTimeUnit">
+            <inheritdoc />
+        </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayrunCycle(System.DateTime)">
             <inheritdoc />
         </member>
@@ -4478,6 +4494,11 @@
             </summary>
             <param name="calculation">The calculation</param>
             <param name="cycleFactor">The cycle factor</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.ToString">
+            <summary>
+            The string representation
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrollCaseChangeQuery">
             <summary>
