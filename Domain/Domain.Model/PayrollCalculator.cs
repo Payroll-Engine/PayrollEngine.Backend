@@ -145,7 +145,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.SemiYearsInYear);
+        var caseValue = MapPeriodValue(calculation, Date.SemiYearsInYear);
 
         // semi year value: scale base value with the day factor
         var semiYearValue = caseValue / semiYearTotalDayCount * semiYearDayCount;
@@ -178,7 +178,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.QuartersInYear);
+        var caseValue = MapPeriodValue(calculation, Date.QuartersInYear);
 
         // quarter value: scale base value with the day factor
         var quarterValue = caseValue / quarterTotalDayCount * quarterDayCount;
@@ -211,7 +211,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.BiMonthsInYear);
+        var caseValue = MapPeriodValue(calculation, Date.BiMonthsInYear);
 
         // bi month value: scale base value with the day factor
         var biMonthValue = caseValue / biMonthTotalDayCount * biMonthDayCount;
@@ -254,7 +254,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.MonthsInYear);
+        var caseValue = MapPeriodValue(calculation, Date.MonthsInYear);
 
         // calendar month value: scale base value with the day factor
         var monthValue = caseValue / monthTotalDayCount * monthDayCount;
@@ -280,7 +280,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.LunisolarMonthsInYear);
+        var caseValue = MapPeriodValue(calculation, Date.LunisolarMonthsInYear);
 
         // lunisolar month value: scale base value with the day factor
         var monthValue = caseValue / Date.DaysInLunisolarMonth * monthDayCount;
@@ -320,7 +320,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.SemiMonthsInYear);
+        var caseValue = MapPeriodValue(calculation, Date.SemiMonthsInYear);
 
         // semi month value: scale base value with the day factor
         var monthValue = caseValue / semiMonthTotalDayCount * semiMonthDayCount;
@@ -342,7 +342,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.BiWeeksInYear);
+        var caseValue = MapPeriodValue(calculation, Date.BiWeeksInYear);
 
         // bi week value: scale base value with the day factor
         var biWeekValue = caseValue / Date.DaysInBiWeek * biWeekDayCount;
@@ -364,7 +364,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // case value
-        var caseValue = GetScaledPeriodValue(calculation, Date.WeeksInYear);
+        var caseValue = MapPeriodValue(calculation, Date.WeeksInYear);
 
         // week value: scale base value with the day factor
         var weekValue = caseValue / Date.DaysInWeek * weekDayCount;
@@ -414,7 +414,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <param name="cycleFactor">The cycle factor</param>
-    protected virtual decimal GetScaledPeriodValue(CaseValueCalculation calculation, decimal cycleFactor)
+    protected virtual decimal MapPeriodValue(CaseValueCalculation calculation, decimal cycleFactor)
     {
         var caseValue = Calendar.TimeMap switch
         {

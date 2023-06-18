@@ -4488,7 +4488,7 @@
             <param name="period">The period to count</param>
             <returns></returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetScaledPeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.MapPeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
             <summary>
             Scale the period case value
             </summary>

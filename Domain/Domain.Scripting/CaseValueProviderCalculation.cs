@@ -36,8 +36,8 @@ internal sealed class CaseValueProviderCalculation
             // value
             value = ValueConvert.ToValue(caseValue.Value, caseValue.ValueType);
 
-            // time scaling
-            if (caseField.ValueType.IsDecimal() && caseField.TimeType.IsScalable() && value != null)
+            // calendar scaling
+            if (caseField.ValueType.IsDecimal() && caseField.TimeType.IsCalendarPeriod() && value != null)
             {
                 var context = new CaseValueCalculation
                 {

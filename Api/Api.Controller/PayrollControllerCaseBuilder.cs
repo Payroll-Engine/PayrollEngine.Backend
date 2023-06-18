@@ -456,7 +456,7 @@ internal sealed class PayrollControllerCaseBuilder
             {
                 case CaseFieldTimeType.Timeless:
                 case CaseFieldTimeType.Period:
-                case CaseFieldTimeType.ScaledPeriod:
+                case CaseFieldTimeType.CalendarPeriod:
                     cancellationMode = CaseFieldCancellationMode.Previous;
                     break;
                 case CaseFieldTimeType.Moment:

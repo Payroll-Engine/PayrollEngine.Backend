@@ -334,7 +334,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
                     caseValue = caseFieldValues.Where(x => x.Start.HasValue && x.Start < valueDate).MaxBy(x => x.Start);
                     break;
                 case CaseFieldTimeType.Period:
-                case CaseFieldTimeType.ScaledPeriod:
+                case CaseFieldTimeType.CalendarPeriod:
                     // the last created case value period including the value date
                     caseValue = caseFieldValues.Where(x => x.GetPeriod().IsWithin(valueDate)).MaxBy(x => x.Created);
                     break;
@@ -657,8 +657,8 @@ public sealed class CaseValueProvider : ICaseValueProvider
                 // period: use the aggregation type
                 GetAggregationCasePeriodValuesAsync(caseFieldName, caseField, caseValues, valuePeriods, values);
                 return values;
-            case CaseFieldTimeType.ScaledPeriod:
-                GetScaledPeriodCasePeriodValuesAsync(caseFieldName, caseField, calculator, valuePeriods, values);
+            case CaseFieldTimeType.CalendarPeriod:
+                GetCalendarPeriodCasePeriodValuesAsync(caseFieldName, caseField, calculator, valuePeriods, values);
                 return values;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -745,14 +745,14 @@ public sealed class CaseValueProvider : ICaseValueProvider
     }
 
     /// <summary>
-    /// Get period values from moment case field
+    /// Get calendar period values from moment case field
     /// </summary>
     /// <param name="caseFieldName">The case field, may includes the slot name</param>
     /// <param name="caseField">The case field</param>
     /// <param name="calculator">The case value calculator</param>
     /// <param name="valuePeriods">The value periods</param>
     /// <param name="values">The values</param>
-    private static void GetScaledPeriodCasePeriodValuesAsync(string caseFieldName, CaseField caseField,
+    private static void GetCalendarPeriodCasePeriodValuesAsync(string caseFieldName, CaseField caseField,
         CaseValueProviderCalculation calculator,
         IDictionary<CaseValue, List<DatePeriod>> valuePeriods,
         List<CaseFieldValue> values)
