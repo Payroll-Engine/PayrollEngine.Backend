@@ -80,12 +80,12 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
     }
 
     /// <summary>
-    /// Add a new payrun jobs
+    /// Start a new payrun job
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="jobInvocation">The payrun jobs to add</param>
-    /// <returns>The newly created payrun jobs</returns>
-    protected virtual async Task<ActionResult<ApiObject.PayrunJob>> ExecutePayrunAsync(int tenantId, ApiObject.PayrunJobInvocation jobInvocation)
+    /// <returns>The started payrun job</returns>
+    public virtual async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunJobAsync(int tenantId, ApiObject.PayrunJobInvocation jobInvocation)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();

@@ -88,17 +88,17 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     }
 
     /// <summary>
-    /// Start a payrun job, if the payroll has no previous draft payrun
+    /// Start a new payrun job
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="jobInvocation">The payrun job invocation</param>
-    /// <returns>The newly created payrun job</returns>
+    /// <returns>The started payrun job</returns>
     [HttpPost]
     [CreatedResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
-    [ApiOperationId("StartPayrun")]
-    public async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunAsync(int tenantId,
+    [ApiOperationId("StartPayrunJob")]
+    public override async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunJobAsync(int tenantId,
         ApiObject.PayrunJobInvocation jobInvocation)
     {
         // tenant check
@@ -107,7 +107,7 @@ public class PayrunJobController : Api.Controller.PayrunJobController
         {
             return tenantResult;
         }
-        return await ExecutePayrunAsync(tenantId, jobInvocation);
+        return await base.StartPayrunJobAsync(tenantId, jobInvocation);
     }
 
     /// <summary>

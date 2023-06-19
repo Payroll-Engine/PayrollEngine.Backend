@@ -1900,13 +1900,13 @@
             <param name="payrunJobId">The id of the payrun job</param>
             <returns>The payrun job</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.StartPayrunAsync(System.Int32,PayrollEngine.Api.Model.PayrunJobInvocation)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.StartPayrunJobAsync(System.Int32,PayrollEngine.Api.Model.PayrunJobInvocation)">
             <summary>
-            Start a payrun job, if the payroll has no previous draft payrun
+            Start a new payrun job
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="jobInvocation">The payrun job invocation</param>
-            <returns>The newly created payrun job</returns>
+            <returns>The started payrun job</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.GetPayrunJobStatusAsync(System.Int32,System.Int32)">
             <summary>
