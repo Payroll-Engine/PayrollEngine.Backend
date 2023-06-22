@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Backend.Server</AssemblyName>
 		<RootNamespace>PayrollEngine.Backend.Server</RootNamespace>
-		<UserSecretsId>Backend</UserSecretsId>
+		<UserSecretsId>PayrollEngine.Backend.Server</UserSecretsId>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<Description>Payroll Engine Backend Server</Description>
@@ -39,6 +39,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Backend.Controller\PayrollEngine.Backend.Controller.csproj" />
 		<ProjectReference Include="..\Persistence\Persistence.SqlServer\PayrollEngine.Persistence.SqlServer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\swagger-ui\" />
 	</ItemGroup>
 
 </Project>

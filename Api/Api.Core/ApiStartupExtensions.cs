@@ -151,6 +151,15 @@ public static class ApiStartupExtensions
             throw new ArgumentNullException(nameof(specification));
         }
 
+        // configuration
+        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
+
+        // static files used by swagger dark theme css
+        if (serverConfiguration.DarkTheme)
+        {
+            appBuilder.UseStaticFiles();
+        }
+
         // dev support
         if (environment.IsDevelopment())
         {
@@ -158,7 +167,6 @@ public static class ApiStartupExtensions
         }
 
         // logs
-        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
         appLifetime.UseLog(appBuilder, environment, serverConfiguration.LogHttpRequests);
 
         // https
@@ -166,7 +174,7 @@ public static class ApiStartupExtensions
 
         // swagger
         appBuilder.UseSwagger(specification.ApiDocumentationName, specification.ApiName,
-            specification.ApiVersion);
+            specification.ApiVersion, serverConfiguration.DarkTheme);
 
         // database
         if (serverConfiguration.TransactionTimeout > TimeSpan.Zero)

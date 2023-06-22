@@ -5,6 +5,9 @@ namespace PayrollEngine.Api.Core;
 /// <summary>The Payroll API server configuration</summary>
 public class PayrollServerConfiguration
 {
+    /// <summary>Use swagger dark theme</summary>
+    public bool DarkTheme { get; set; }
+
     /// <summary>Culture at start (default: os working culture)</summary>
     public string StartupCulture { get; set; }
 
