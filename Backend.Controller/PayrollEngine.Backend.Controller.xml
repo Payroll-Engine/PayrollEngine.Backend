@@ -1544,7 +1544,7 @@
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Get payroll reports
+            Get payroll report sets
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>

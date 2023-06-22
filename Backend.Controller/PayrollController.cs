@@ -735,7 +735,7 @@ public class PayrollController : Api.Controller.PayrollController
     }
 
     /// <summary>
-    /// Get payroll reports
+    /// Get payroll report sets
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
@@ -749,7 +749,7 @@ public class PayrollController : Api.Controller.PayrollController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollReports")]
-    public async Task<ActionResult<ApiObject.Report[]>> GetPayrollReportsAsync(int tenantId, int payrollId,
+    public async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(int tenantId, int payrollId,
         [FromQuery] string[] reportNames, [FromQuery] OverrideType? overrideType, [FromQuery] string clusterSetName,
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {

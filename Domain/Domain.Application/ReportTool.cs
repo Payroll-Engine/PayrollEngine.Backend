@@ -331,7 +331,7 @@ public abstract class ReportTool : FunctionToolBase
             return parameterValue;
         }
 
-        // parameter type
+        // system parameter types
         foreach (var parameterType in Enum.GetValues(typeof(ReportParameterType)))
         {
             var variableTypeName = Enum.GetName(typeof(ReportParameterType), parameterType);
@@ -370,6 +370,18 @@ public abstract class ReportTool : FunctionToolBase
                 return parameterValue.Replace(variableName, variableValue);
             }
         }
+
+        // dynamic parameter names
+        foreach (var reportParameter in reportParameters)
+        {
+            var variableName = $"{VariableStartMarker}{reportParameter.Name}{VariableEndMarker}";
+            if (parameterValue.Contains(variableName))
+            {
+                // apply parameter value
+                return parameterValue.Replace(variableName, reportParameter.Value);
+            }
+        }
+
         return parameterValue;
     }
 

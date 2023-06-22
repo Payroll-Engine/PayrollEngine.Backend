@@ -24,7 +24,7 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
     /// <param name="overrideType">The override type</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>The derived reports, ordered by derivation level</returns>
-    internal async Task<IEnumerable<Report>> GetDerivedReportsAsync(
+    internal async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(
         IReportSetRepository reportRepository,
         PayrollQuery query, IEnumerable<string> reportNames = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null)
@@ -94,7 +94,20 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
 
         BuildDerivedReports(reports, overrideType);
 
-        return reports;
+        // build report sets
+        var reportSets = new List<ReportSet>();
+        foreach (var report in reports)
+        {
+            var regulationId = await reportRepository.GetParentIdAsync(DbContext, report.Id);
+            if (!regulationId.HasValue)
+            {
+                throw new PayrollException($"Unknown regulation of report {report.Name} with id {report.Id}");
+            }
+            var reportSet = await reportRepository.GetAsync(DbContext, regulationId.Value, report.Id);
+            reportSets.Add(reportSet);
+        }
+
+        return reportSets;
     }
 
     private static void BuildDerivedReports(List<DerivedReport> reports, OverrideType? overrideType = null)

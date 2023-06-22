@@ -74,7 +74,7 @@ public class PayrollService : ChildApplicationService<IPayrollRepository, Payrol
         await Repository.GetDerivedLookupValuesAsync(context, query, lookupNames, lookupKeys, overrideType);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<Report>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
+    public virtual async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> reportNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await Repository.GetDerivedReportsAsync(context, query, reportNames, overrideType);
 

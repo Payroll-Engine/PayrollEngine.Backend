@@ -131,7 +131,7 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>The derived reports</returns>
-    Task<IEnumerable<Report>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
+    Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> reportNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null);
 
     /// <summary>

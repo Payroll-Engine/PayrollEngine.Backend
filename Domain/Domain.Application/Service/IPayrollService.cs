@@ -118,7 +118,7 @@ public interface IPayrollService : IChildApplicationService<IPayrollRepository, 
         IEnumerable<string> lookupNames = null, IEnumerable<string> lookupKeys = null, OverrideType? overrideType = null);
 
     /// <summary>
-    /// Get all active reports, considering derived regulations
+    /// Get all active report sets, considering derived regulations
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="query">The payroll query</param>
@@ -126,7 +126,7 @@ public interface IPayrollService : IChildApplicationService<IPayrollRepository, 
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>The derived reports</returns>
-    Task<IEnumerable<Report>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
+    Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> reportNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null);
 
     /// <summary>

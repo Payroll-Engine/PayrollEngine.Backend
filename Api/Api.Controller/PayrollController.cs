@@ -1379,7 +1379,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         return new LookupValueDataMap().ToApi(valueData);
     }
 
-    protected virtual async Task<ActionResult<ApiObject.Report[]>> GetPayrollReportsAsync(
+    protected virtual async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(
         DomainObject.PayrollQuery query,
         string[] reportNames, OverrideType? overrideType, string clusterSetName)
     {
@@ -1418,7 +1418,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 overrideType: overrideType,
                 clusterSet: querySetup.ClusterSet);
 
-            return new ReportMap().ToApi(reports);
+            return new ReportSetMap().ToApi(reports);
         }
         catch (Exception exception)
         {

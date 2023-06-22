@@ -114,7 +114,7 @@ public class PayrollRepository : ChildDomainRepository<Payroll>, IPayrollReposit
         await new PayrollRepositoryLookupValuesCommand(context).GetDerivedLookupValuesAsync(query, lookupNames, lookupKeys, overrideType);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<Report>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
+    public virtual async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> reportNames = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryReportCommand(context).GetDerivedReportsAsync(ReportRepository,
