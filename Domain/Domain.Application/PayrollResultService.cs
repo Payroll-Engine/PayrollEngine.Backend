@@ -55,10 +55,10 @@ public class PayrollResultService : ChildApplicationService<IPayrollResultReposi
         int? payrunJobId = null, int? parentPayrunJobId = null) =>
         await Repository.GetCollectorCustomResultsAsync(context, query, payrunJobId, parentPayrunJobId);
 
-    public virtual async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context,int tenantId, int employeeId, Query query = null) =>
+    public virtual async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context,int tenantId, int? employeeId = null, Query query = null) =>
         await Repository.QueryResultValuesAsync(context, tenantId, employeeId, query);
 
-    public virtual async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null) =>
+    public virtual async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, Query query = null) =>
         await Repository.QueryResultValueCountAsync(context, tenantId, employeeId, query);
 
     public virtual async Task<IEnumerable<PayrollResultSet>> QueryResultSetsAsync(IDbContext context, int tenantId, Query query = null) =>

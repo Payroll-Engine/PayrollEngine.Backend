@@ -19,7 +19,7 @@ public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPa
 
     /// <inheritdoc />
     public virtual async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context,
-        int tenantId, int employeeId, Query query = null)
+        int tenantId, int? employeeId = null, Query query = null)
     {
         if (tenantId <= 0)
         {
@@ -50,7 +50,7 @@ public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPa
     }
 
     /// <inheritdoc />
-    public virtual async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null)
+    public virtual async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, Query query = null)
     {
         if (tenantId <= 0)
         {

@@ -32,7 +32,7 @@ public abstract class PayrollResultController : RepositoryChildObjectController<
     /// <param name="employeeId">The employee id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The payroll result values, count or both</returns>
-    public virtual async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId, int employeeId,
+    public virtual async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId, int? employeeId,
         Query query)
     {
         try
@@ -75,7 +75,7 @@ public abstract class PayrollResultController : RepositoryChildObjectController<
     /// <param name="employeeId">The employee id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>List of requested Api objects</returns>
-    private async Task<ActionResult<ApiObject.PayrollResultValue[]>> QueryResultValuesAsync(int tenantId, int employeeId, Query query = null)
+    private async Task<ActionResult<ApiObject.PayrollResultValue[]>> QueryResultValuesAsync(int tenantId, int? employeeId = null, Query query = null)
     {
         try
         {
@@ -106,7 +106,7 @@ public abstract class PayrollResultController : RepositoryChildObjectController<
     /// <param name="employeeId">The employee id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>Count of requested Api objects</returns>
-    private async Task<ActionResult<long>> QueryResultValueCountAsync(int tenantId, int employeeId, Query query = null)
+    private async Task<ActionResult<long>> QueryResultValueCountAsync(int tenantId, int? employeeId = null, Query query = null)
     {
         try
         {

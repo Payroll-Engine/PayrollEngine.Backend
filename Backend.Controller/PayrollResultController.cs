@@ -221,14 +221,14 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     /// Query payroll result values
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="employeeId">The employee id</param>
+    /// <param name="employeeId">The employee id (default: all)</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The payroll result values</returns>
     [HttpGet("values")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryPayrollResultValues")]
-    public override async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId, [Required] int employeeId,
+    public override async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId, [FromQuery] int? employeeId,
         [FromQuery] Query query)
     {
         // tenant check

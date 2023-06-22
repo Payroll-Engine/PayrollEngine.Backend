@@ -7614,7 +7614,7 @@
             Repository for payroll result infos
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValuesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValuesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Nullable{System.Int32},PayrollEngine.Query)">
             <summary>
             Get all result values
             </summary>
@@ -7624,7 +7624,7 @@
             <param name="query">The query parameters</param>
             <returns>A list of payroll result values, matching the parameters and conditions</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValueCountAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollResultRepository.QueryResultValueCountAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Nullable{System.Int32},PayrollEngine.Query)">
             <summary>
             Count query payroll result values
             </summary>

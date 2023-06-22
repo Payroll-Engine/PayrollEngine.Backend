@@ -253,7 +253,7 @@ LEFT JOIN
   -- user
   [dbo].[User]
   ON [PayrunJob].[CreatedUserId] = [User].Id ' +
-  IIF(@employeeId = NULL, N'', N'WHERE [dbo].[Employee].[Id] = ' +  cast(@employeeId as varchar(10))) +
+  IIF(@employeeId IS NULL, N'', N'WHERE [dbo].[Employee].[Id] = ' +  cast(@employeeId as varchar(10))) +
   N') AS PCV';
 
   -- debug help

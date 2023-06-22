@@ -1791,12 +1791,12 @@
             <param name="query">Query parameters</param>
             <returns>The payroll payrun results</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryPayrollResultValuesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryPayrollResultValuesAsync(System.Int32,System.Nullable{System.Int32},PayrollEngine.Query)">
             <summary>
             Query payroll result values
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="employeeId">The employee id</param>
+            <param name="employeeId">The employee id (default: all)</param>
             <param name="query">Query parameters</param>
             <returns>The payroll result values</returns>
         </member>
