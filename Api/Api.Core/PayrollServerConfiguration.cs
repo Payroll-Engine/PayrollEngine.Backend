@@ -21,7 +21,7 @@ public class PayrollServerConfiguration
     public bool UseHealthCheck { get; set; }
 
     /// <summary>Webhook timeout</summary>
-    public TimeSpan WebhookTimeout { get; set; }
+    public TimeSpan WebhookTimeout { get; set; } = TimeSpan.FromMinutes(1);
 
     /// <summary>Function log timeout</summary>
     public TimeSpan FunctionLogTimeout { get; set; }
