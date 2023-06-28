@@ -85,8 +85,8 @@ public class PayrollService : ChildApplicationService<IPayrollRepository, Payrol
 
     /// <inheritdoc />
     public virtual async Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplateAsync(IDbContext context, PayrollQuery query,
-        IEnumerable<string> reportNames = null, Language? language = null, OverrideType? overrideType = null) =>
-        await Repository.GetDerivedReportTemplatesAsync(context, query, reportNames, language, overrideType);
+        IEnumerable<string> reportNames = null, string culture = null, OverrideType? overrideType = null) =>
+        await Repository.GetDerivedReportTemplatesAsync(context, query, reportNames, culture, overrideType);
 
     /// <inheritdoc />
     public virtual async Task<IEnumerable<Script>> GetDerivedScriptsAsync(IDbContext context, PayrollQuery query,

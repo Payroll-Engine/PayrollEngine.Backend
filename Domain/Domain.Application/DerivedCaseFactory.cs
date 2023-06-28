@@ -6,7 +6,7 @@ namespace PayrollEngine.Domain.Application;
 
 public static class DerivedCaseFactory
 {
-    public static CaseSet BuildCase(IList<Case> cases, string caseSlot, Language language)
+    public static CaseSet BuildCase(IList<Case> cases, string caseSlot, string culture)
     {
         // validation
         cases.ValidateDerivedTypes();
@@ -20,13 +20,12 @@ public static class DerivedCaseFactory
             Attributes = cases.CollectDerivedAttributes(@case => @case.Attributes)
         };
 
-        var languageCode = language.LanguageCode();
-
         // display name
         derivedCase.DisplayName = derivedCase.Name;
         foreach (var @case in cases)
         {
-            if (@case.NameLocalizations != null && @case.NameLocalizations.TryGetValue(languageCode, out var localization))
+            if (culture != null && @case.NameLocalizations != null &&
+                @case.NameLocalizations.TryGetValue(culture, out var localization))
             {
                 derivedCase.DisplayName = localization;
                 break;
@@ -36,7 +35,8 @@ public static class DerivedCaseFactory
         // description
         foreach (var @case in cases)
         {
-            if (@case.DescriptionLocalizations != null && @case.DescriptionLocalizations.TryGetValue(languageCode, out var localization))
+            if (culture != null && @case.DescriptionLocalizations != null &&
+                @case.DescriptionLocalizations.TryGetValue(culture, out var localization))
             {
                 derivedCase.Description = localization;
                 break;
@@ -51,7 +51,8 @@ public static class DerivedCaseFactory
         // default reason
         foreach (var @case in cases)
         {
-            if (@case.DefaultReasonLocalizations != null && @case.DefaultReasonLocalizations.TryGetValue(languageCode, out var localization))
+            if (culture != null && @case.DefaultReasonLocalizations != null &&
+                @case.DefaultReasonLocalizations.TryGetValue(culture, out var localization))
             {
                 derivedCase.DefaultReason = localization;
                 break;
@@ -66,7 +67,7 @@ public static class DerivedCaseFactory
         return derivedCase;
     }
 
-    public static CaseFieldSet BuildCaseField(IGrouping<string, CaseField> caseFields, Language language)
+    public static CaseFieldSet BuildCaseField(IGrouping<string, CaseField> caseFields, string culture)
     {
         var caseFieldList = caseFields.ToList();
 
@@ -82,15 +83,14 @@ public static class DerivedCaseFactory
             ValueAttributes = caseFieldList.CollectDerivedAttributes(caseField => caseField.ValueAttributes)
         };
 
-        var languageCode = language.LanguageCode();
-
         // name: most derived localized
         derivedCaseField.DisplayName = derivedCaseField.Name;
         derivedCaseField.CaseSlot = derivedCaseField.CaseSlot;
         derivedCaseField.CaseSlotLocalizations = derivedCaseField.CaseSlotLocalizations;
         foreach (var caseField in caseFieldList)
         {
-            if (caseField.NameLocalizations != null && caseField.NameLocalizations.TryGetValue(languageCode, out var localization))
+            if (culture != null && caseField.NameLocalizations != null &&
+                caseField.NameLocalizations.TryGetValue(culture, out var localization))
             {
                 derivedCaseField.DisplayName = localization;
                 break;
@@ -100,7 +100,8 @@ public static class DerivedCaseFactory
         // description: most derived localized or most derived
         foreach (var caseField in caseFieldList)
         {
-            if (caseField.DescriptionLocalizations != null && caseField.DescriptionLocalizations.TryGetValue(languageCode, out var localization))
+            if (culture != null && caseField.DescriptionLocalizations != null &&
+                caseField.DescriptionLocalizations.TryGetValue(culture, out var localization))
             {
                 derivedCaseField.Description = localization;
                 break;

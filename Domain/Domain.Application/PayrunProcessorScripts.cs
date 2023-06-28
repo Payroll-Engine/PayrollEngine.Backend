@@ -55,6 +55,7 @@ internal sealed class PayrunProcessorScripts
         var start = new PayrunScriptController().Start(new()
         {
             DbContext = Settings.DbContext,
+            Culture = context.Culture,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -104,6 +105,7 @@ internal sealed class PayrunProcessorScripts
         new PayrunScriptController().End(new()
         {
             DbContext = Settings.DbContext,
+            Culture = context.Culture,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -138,6 +140,7 @@ internal sealed class PayrunProcessorScripts
         var start = new PayrunScriptController().EmployeeStart(new()
         {
             DbContext = Settings.DbContext,
+            Culture = context.Culture,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -173,6 +176,7 @@ internal sealed class PayrunProcessorScripts
         new PayrunScriptController().EmployeeEnd(new()
         {
             DbContext = Settings.DbContext,
+            Culture = context.Culture,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,

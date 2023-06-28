@@ -14,7 +14,7 @@ public class ReportTemplateAuditRepository : AuditChildDomainRepository<ReportTe
     protected override void GetObjectCreateData(ReportTemplateAudit audit, DbParameterCollection parameters)
     {
         parameters.Add(nameof(audit.Name), audit.Name);
-        parameters.Add(nameof(audit.Language), audit.Language);
+        parameters.Add(nameof(audit.Culture), audit.Culture);
         parameters.Add(nameof(audit.Content), audit.Content);
         parameters.Add(nameof(audit.ContentType), audit.ContentType);
         parameters.Add(nameof(audit.Schema), audit.Schema);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Api.Core;
@@ -31,6 +32,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     internal ILogService LogService { get; }
     internal IPayrollService PayrollService => Service;
     internal ICaseService CaseService { get; }
+    internal IDivisionService DivisionService { get; }
     internal ICaseFieldService CaseFieldService { get; }
     internal ICaseRelationService CaseRelationService { get; }
     internal IGlobalCaseChangeService GlobalChangeService { get; }
@@ -50,6 +52,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         Context = context;
         RegulationService = context.RegulationService ?? throw new ArgumentNullException(nameof(context.RegulationService));
         RegulationLookupSetService = context.RegulationLookupSetService ?? throw new ArgumentNullException(nameof(context.RegulationLookupSetService));
+        DivisionService = context.DivisionService ?? throw new ArgumentNullException(nameof(context.DivisionService));
         CaseService = context.CaseService ?? throw new ArgumentNullException(nameof(context.CaseService));
         CaseFieldService = context.CaseFieldService ?? throw new ArgumentNullException(nameof(context.CaseFieldService));
         UserService = context.UserService ?? throw new ArgumentNullException(nameof(context.UserService));
@@ -130,6 +133,19 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 return BadRequest($"Unknown cluster set {query.ClusterSetName}");
             }
 
+            // division
+            var division = await DivisionService.GetAsync(Runtime.DbContext, query.TenantId, payroll.DivisionId);
+            if (division == null)
+            {
+                return BadRequest($"Unknown payroll division with id {payroll.DivisionId}");
+            }
+
+            // cluster
+            if (!string.IsNullOrWhiteSpace(query.ClusterSetName) && !payroll.ClusterSetExists(query.ClusterSetName))
+            {
+                return BadRequest($"Unknown cluster set {query.ClusterSetName}");
+            }
+
             // employee
             DomainObject.Employee employee = null;
             if (query.CaseType == CaseType.Employee)
@@ -154,6 +170,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 CaseType = query.CaseType,
                 Tenant = tenant,
                 Payroll = payroll,
+                Division = division,
                 User = user,
                 RegulationLookupProvider = lookupProvider,
                 PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
@@ -164,13 +181,13 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             });
 
             // cases
-            query.Language ??= default;
+            query.Culture ??= CultureInfo.CurrentCulture.Name;
             var cases = query.CaseType switch
             {
-                CaseType.Global => await collector.GetAvailableGlobalCasesAsync(query.Language.Value, query.CaseNames),
-                CaseType.National => await collector.GetAvailableNationalCasesAsync(query.Language.Value, query.CaseNames),
-                CaseType.Company => await collector.GetAvailableCompanyCasesAsync(query.Language.Value, query.CaseNames),
-                CaseType.Employee => await collector.GetAvailableEmployeeCasesAsync(query.Language.Value, query.CaseNames),
+                CaseType.Global => await collector.GetAvailableGlobalCasesAsync(query.Culture, query.CaseNames),
+                CaseType.National => await collector.GetAvailableNationalCasesAsync(query.Culture, query.CaseNames),
+                CaseType.Company => await collector.GetAvailableCompanyCasesAsync(query.Culture, query.CaseNames),
+                CaseType.Employee => await collector.GetAvailableEmployeeCasesAsync(query.Culture, query.CaseNames),
                 _ => throw new ArgumentOutOfRangeException(nameof(query.CaseType), query.CaseType, null)
             };
             return new CaseMap().ToApi(cases);
@@ -259,6 +276,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 CaseType = @case.CaseType,
                 Tenant = querySetup.Tenant,
                 Payroll = querySetup.Payroll,
+                Division = querySetup.Division,
                 User = querySetup.User,
                 RegulationLookupProvider = lookupProvider,
                 PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
@@ -269,15 +287,15 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             });
 
             // case set
-            query.Language ??= default;
+            query.Culture ??= CultureInfo.CurrentCulture.Name;
             var caseSet = @case.CaseType switch
             {
-                CaseType.Global => await builder.BuildGlobalCaseAsync(query.CaseName, domainCaseSetup, query.Language.Value),
+                CaseType.Global => await builder.BuildGlobalCaseAsync(query.CaseName, domainCaseSetup, query.Culture),
                 CaseType.National =>
-                    await builder.BuildNationalCaseAsync(query.CaseName, domainCaseSetup, query.Language.Value),
-                CaseType.Company => await builder.BuildCompanyCaseAsync(query.CaseName, domainCaseSetup, query.Language.Value),
+                    await builder.BuildNationalCaseAsync(query.CaseName, domainCaseSetup, query.Culture),
+                CaseType.Company => await builder.BuildCompanyCaseAsync(query.CaseName, domainCaseSetup, query.Culture),
                 CaseType.Employee =>
-                    await builder.BuildEmployeeCaseAsync(query.CaseName, domainCaseSetup, query.Language.Value),
+                    await builder.BuildEmployeeCaseAsync(query.CaseName, domainCaseSetup, query.Culture),
                 _ => throw new ArgumentOutOfRangeException()
             };
             return new CaseSetMap().ToApi(caseSet);
@@ -591,6 +609,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 CaseType = caseType,
                 Tenant = querySetup.Tenant,
                 Payroll = querySetup.Payroll,
+                Division = querySetup.Division,
                 User = querySetup.User,
                 RegulationLookupProvider = lookupProvider,
                 PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
@@ -829,6 +848,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             CaseType = settings.CaseType,
             Tenant = settings.Tenant,
             Payroll = settings.Payroll,
+            Division = settings.Division,
             User = settings.User,
             RegulationLookupProvider = regulationLookupProvider,
             PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
@@ -1244,7 +1264,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     }
 
     protected virtual async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupDataAsync(
-        DomainObject.PayrollQuery query, string[] lookupNames, Language? language)
+        DomainObject.PayrollQuery query, string[] lookupNames, string culture)
     {
         if (lookupNames == null || !lookupNames.Any())
         {
@@ -1303,7 +1323,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                     }
 
                     var currentLookupData = await RegulationLookupSetService.Repository.GetLookupDataAsync(
-                        Runtime.DbContext, query.TenantId, regulationId.Value, lookup.Id, language);
+                        Runtime.DbContext, query.TenantId, regulationId.Value, lookup.Id, culture);
 
                     // first/base regulation
                     if (lookupData == null)
@@ -1339,7 +1359,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
     protected virtual async Task<ActionResult<ApiObject.LookupValueData>> GetPayrollLookupValueDataAsync(
         DomainObject.PayrollQuery query,
-        string lookupName, string lookupKey, decimal? rangeValue, Language? language)
+        string lookupName, string lookupKey, decimal? rangeValue, string culture)
     {
         // verify tenant
         var tenantResult = VerifyTenant(query.TenantId);
@@ -1370,12 +1390,12 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         if (rangeValue.HasValue)
         {
             var rangeValueData = await lookupProvider.
-                GetRangeLookupValueDataAsync(Runtime.DbContext, lookupName, rangeValue.Value, lookupKey, language);
+                GetRangeLookupValueDataAsync(Runtime.DbContext, lookupName, rangeValue.Value, lookupKey, culture);
             return new LookupValueDataMap().ToApi(rangeValueData);
         }
 
         // simple value request
-        var valueData = await lookupProvider.GetLookupValueDataAsync(Runtime.DbContext, lookupName, lookupKey, language);
+        var valueData = await lookupProvider.GetLookupValueDataAsync(Runtime.DbContext, lookupName, lookupKey, culture);
         return new LookupValueDataMap().ToApi(valueData);
     }
 
@@ -1469,7 +1489,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     }
 
     protected virtual async Task<ActionResult<ApiObject.ReportTemplate[]>> GetPayrollReportTemplatesAsync(
-        DomainObject.PayrollQuery query, string[] reportNames = null, Language? language = null)
+        DomainObject.PayrollQuery query, string[] reportNames = null, string culture = null)
     {
         try
         {
@@ -1501,7 +1521,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                     EvaluationDate = query.EvaluationDate.Value.ToUtc()
                 },
                 reportNames: reportNames,
-                language: language);
+                culture: culture);
 
             return new ReportTemplateMap().ToApi(reportTemplate);
         }
@@ -1616,6 +1636,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     {
         internal DomainObject.Tenant Tenant { get; set; }
         internal DomainObject.Payroll Payroll { get; set; }
+        internal DomainObject.Division Division { get; set; }
         internal DomainObject.User User { get; set; }
         internal DomainObject.ClusterSet ClusterSet { get; set; }
     }
@@ -1653,6 +1674,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 return new(querySetup, BadRequest($"Unknown payroll with id {query.PayrollId}"));
             }
             querySetup.Payroll = payroll;
+
+            // division (mandatory)
+            var division = await DivisionService.GetAsync(Runtime.DbContext, query.TenantId, payroll.DivisionId);
+            if (division == null)
+            {
+                return new(querySetup, BadRequest($"Unknown payroll payroll division id: {payroll.DivisionId}"));
+            }
+            querySetup.Division = division;
 
             // user (optional)
             if (userId.HasValue)

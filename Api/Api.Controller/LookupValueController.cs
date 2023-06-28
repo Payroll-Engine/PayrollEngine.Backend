@@ -23,7 +23,7 @@ public abstract class LookupValueController : RepositoryChildObjectController<IL
     }
 
     public virtual async Task<ActionResult<ApiObject.LookupValueData[]>> GetLookupValuesDataAsync(
-        int tenantId, int regulationId, int lookupId, Language? language)
+        int tenantId, int regulationId, int lookupId, string culture)
     {
         var lookupValues = (await QueryAsync(lookupId)).Value;
         if (lookupValues == null)
@@ -34,8 +34,8 @@ public abstract class LookupValueController : RepositoryChildObjectController<IL
         var result = lookupValues.Select(x => new ApiObject.LookupValueData
         {
             Key = x.Key,
-            Value = language.HasValue ?
-                language.Value.GetLocalization(x.ValueLocalizations, x.Value) :
+            Value = !string.IsNullOrWhiteSpace(culture) ?
+                culture.GetLocalization(x.ValueLocalizations, x.Value) :
                 x.Value,
             RangeValue = x.RangeValue
         });

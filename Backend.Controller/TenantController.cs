@@ -153,7 +153,7 @@ public class TenantController : Api.Controller.TenantController
     /// </remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="methodName">The query method</param>
-    /// <param name="language">The data language</param>
+    /// <param name="culture">The data culture</param>
     /// <param name="parameters">The query parameters</param>
     /// <returns>The resulting data table</returns>
     [HttpPost("{tenantId}/queries")]
@@ -162,7 +162,7 @@ public class TenantController : Api.Controller.TenantController
     [ApiOperationId("ExecuteReportQuery")]
     [QueryIgnore]
     public override async Task<ActionResult<DataTable>> ExecuteReportQueryAsync(int tenantId,
-        [FromQuery] string methodName, [FromQuery] Language? language, [FromBody] Dictionary<string, string> parameters = null)
+        [FromQuery] string methodName, [FromQuery] string culture, [FromBody] Dictionary<string, string> parameters = null)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -170,7 +170,7 @@ public class TenantController : Api.Controller.TenantController
         {
             return tenantResult;
         }
-        return await base.ExecuteReportQueryAsync(tenantId, methodName, language, parameters);
+        return await base.ExecuteReportQueryAsync(tenantId, methodName, culture, parameters);
     }
 
     #region Attributes

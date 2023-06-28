@@ -32,7 +32,7 @@ public class PayrollCaseQuery : PayrollQuery
     public string ClusterSetName { get; set; }
 
     /// <summary>
-    /// The language (optional)
+    /// The culture (optional)
     /// </summary>
-    public Language? Language { get; set; }
+    public string Culture { get; set; }
 }

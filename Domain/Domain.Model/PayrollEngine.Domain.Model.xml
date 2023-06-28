@@ -799,9 +799,9 @@
             The division id
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseChangeQuery.Language">
+        <member name="P:PayrollEngine.Domain.Model.CaseChangeQuery.Culture">
             <summary>
-            The language
+            The culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseChangeQuery.ExcludeGlobal">
@@ -3122,11 +3122,6 @@
             The last name of the user
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Employee.Language">
-            <summary>
-            The employees language
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Domain.Model.Employee.Divisions">
             <summary>
             Employee division names
@@ -3603,17 +3598,17 @@
             Provides a lookup
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IRegulationLookupProvider.GetLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.String,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.IRegulationLookupProvider.GetLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.String,System.String)">
             <summary>
             Get a derived lookup value
             </summary>
             <param name="context">The database context</param>
             <param name="lookupName">The name of the lookup</param>
             <param name="lookupKey">The lookup value key</param>
-            <param name="language">The value language</param>
+            <param name="culture">The value culture</param>
             <returns>The lookup value</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IRegulationLookupProvider.GetRangeLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.Decimal,System.String,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.IRegulationLookupProvider.GetRangeLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.Decimal,System.String,System.String)">
             <summary>
             Get a derived range lookup value
             </summary>
@@ -3621,7 +3616,7 @@
             <param name="lookupName">The name of the lookup</param>
             <param name="rangeValue">The range value</param>
             <param name="lookupKey">The lookup key</param>
-            <param name="language">The value language</param>
+            <param name="culture">The value culture</param>
             <returns>The lookup value</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IResultProvider">
@@ -3987,9 +3982,9 @@
             The lookup name
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.LookupData.Language">
+        <member name="P:PayrollEngine.Domain.Model.LookupData.Culture">
             <summary>
-            The language of the values
+            The culture of the values
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.LookupData.Values">
@@ -6314,9 +6309,9 @@
             A payroll report request
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.ReportRequest.Language">
+        <member name="P:PayrollEngine.Domain.Model.ReportRequest.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportRequest.UserId">
@@ -6370,9 +6365,9 @@
             The report name
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.ReportResponse.Language">
+        <member name="P:PayrollEngine.Domain.Model.ReportResponse.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportResponse.User">
@@ -6442,9 +6437,9 @@
             The report template name
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.ReportTemplate.Language">
+        <member name="P:PayrollEngine.Domain.Model.ReportTemplate.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportTemplate.Content">
@@ -6517,9 +6512,9 @@
             The report template name
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.Language">
+        <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportTemplateAudit.Content">
@@ -6568,9 +6563,9 @@
             Report templates query
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.ReportTemplateQuery.Language">
+        <member name="P:PayrollEngine.Domain.Model.ReportTemplateQuery.Culture">
             <summary>
-            Report language
+            Report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportTemplateQuery.ExcludeContent">
@@ -7335,7 +7330,7 @@
             <param name="lookupId">The lookup id</param>
             <returns>The lookup set</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,System.String)">
             <summary>
             Get lookup values in a specific language
             </summary>
@@ -7343,9 +7338,9 @@
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
-            <param name="language">The content language</param>
+            <param name="culture">The content culture</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.String,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.String,System.String)">
             <summary>
             Get lookup values in a specific language
             </summary>
@@ -7353,9 +7348,9 @@
             <param name="tenantId">The tenant id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="lookupKey">The lookup key</param>
-            <param name="language">The content language</param>
+            <param name="culture">The content culture</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetRangeLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Decimal,System.String,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.ILookupSetRepository.GetRangeLookupValueDataAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Decimal,System.String,System.String)">
             <summary>
             Get lookup values in a specific language
             </summary>
@@ -7364,7 +7359,7 @@
             <param name="lookupId">The id of the lookup</param>
             <param name="rangeValue">The range value</param>
             <param name="lookupKey">The lookup key</param>
-            <param name="language">The content language</param>
+            <param name="culture">The content culture</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ILookupValueAuditRepository">
             <summary>
@@ -7593,14 +7588,14 @@
             <param name="overrideType">The override type filter (default: active)</param>
             <returns>The derived report parameters</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportTemplatesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.Language},System.Nullable{PayrollEngine.OverrideType})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportTemplatesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.String,System.Nullable{PayrollEngine.OverrideType})">
             <summary>
             Get all active report templates, considering derived regulations
             </summary>
             <param name="context">The database context</param>
             <param name="query">The payroll query</param>
             <param name="reportNames">The report names filter (default: all)</param>
-            <param name="language">The report language</param>
+            <param name="culture">The report culture (default: current)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <returns>The derived report templates</returns>
         </member>
@@ -8665,11 +8660,6 @@
         <member name="P:PayrollEngine.Domain.Model.User.Culture">
             <summary>
             The users culture
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.User.Language">
-            <summary>
-            The users language
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.User.UserType">

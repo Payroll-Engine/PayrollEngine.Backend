@@ -21,11 +21,11 @@ public interface IQueryService
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="methodName">Name of the web method</param>
-    /// <param name="language">The query language</param>
+    /// <param name="culture">The query culture</param>
     /// <param name="parameters">The query parameters</param>
     /// <param name="controllerContext">The controller context</param>
     /// <returns>The query result data table</returns>
-    DataTable ExecuteQuery(int tenantId, string methodName, Language? language, Dictionary<string, string> parameters,
+    DataTable ExecuteQuery(int tenantId, string methodName, string culture, Dictionary<string, string> parameters,
         IApiControllerContext controllerContext);
 
     /// <summary>
@@ -33,11 +33,11 @@ public interface IQueryService
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="methodName">Name of the web method</param>
-    /// <param name="language">The query language</param>
+    /// <param name="culture">The query culture</param>
     /// <param name="parameters">The query parameters</param>
     /// <param name="controllerContext">The controller context</param>
     /// <returns>The query result data table</returns>
-    Task<DataTable> ExecuteQueryAsync(int tenantId, string methodName, Language? language, Dictionary<string, string> parameters,
+    Task<DataTable> ExecuteQueryAsync(int tenantId, string methodName, string culture, Dictionary<string, string> parameters,
         IApiControllerContext controllerContext);
 
     /// <summary>
@@ -46,12 +46,12 @@ public interface IQueryService
     /// <param name="tenantId">The tenant id</param>
     /// <param name="queryName">The query name</param>
     /// <param name="methodName">Name of the web method</param>
-    /// <param name="language">The query language</param>
+    /// <param name="culture">The query culture</param>
     /// <param name="requestParameters">The request parameters</param>
     /// <param name="reportParameters">The report parameters</param>
     /// <param name="controllerContext">The controller context</param>
     /// <returns>The query result data table</returns>
-    Task<DataTable> ExecuteQueryAsync(int tenantId, string queryName, string methodName, Language? language,
+    Task<DataTable> ExecuteQueryAsync(int tenantId, string queryName, string methodName, string culture,
         Dictionary<string, string> requestParameters, Dictionary<string, string> reportParameters,
         IApiControllerContext controllerContext);
 }

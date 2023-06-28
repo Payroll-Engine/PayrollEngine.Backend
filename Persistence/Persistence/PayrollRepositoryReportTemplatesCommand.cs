@@ -15,7 +15,7 @@ internal sealed class PayrollRepositoryReportTemplatesCommand : PayrollRepositor
     }
 
     internal async Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(PayrollQuery query,
-        IEnumerable<string> reportNames = null, Language? language= null, OverrideType? overrideType = null)
+        IEnumerable<string> reportNames = null, string culture = null, OverrideType? overrideType = null)
     {
         // query check
         if (query == null)
@@ -57,7 +57,11 @@ internal sealed class PayrollRepositoryReportTemplatesCommand : PayrollRepositor
             parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.ReportNames,
                 System.Text.Json.JsonSerializer.Serialize(names));
         }
-        parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.Language, (int?)language);
+        // culture
+        if (!String.IsNullOrWhiteSpace(culture))
+        {
+            parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.Culture, culture);
+        }
 
         // retrieve all derived report templates (stored procedure)
         var reportTemplates = (await DbContext.QueryAsync<DerivedReportTemplate>(DbSchema.Procedures.GetDerivedReportTemplates,

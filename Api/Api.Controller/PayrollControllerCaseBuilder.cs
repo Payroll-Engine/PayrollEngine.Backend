@@ -47,6 +47,13 @@ internal sealed class PayrollControllerCaseBuilder
                 return ActionResultFactory.BadRequest($"Unknown payroll with id {payrollId}");
             }
 
+            // division
+            var division = await Context.DivisionService.GetAsync(context, tenantId, payroll.DivisionId);
+            if (division == null)
+            {
+                return ActionResultFactory.BadRequest($"Unknown payroll division with id {payroll.DivisionId}");
+            }
+
             // user
             if (caseChangeSetup.UserId <= 0)
             {
@@ -254,6 +261,7 @@ internal sealed class PayrollControllerCaseBuilder
                     {
                         Tenant = tenant,
                         Payroll = payroll,
+                        Division = division,
                         User = user,
                         Employee = employee,
                         ValidationCase = validationCase,
@@ -302,6 +310,7 @@ internal sealed class PayrollControllerCaseBuilder
                     {
                         Tenant = tenant,
                         Payroll = payroll,
+                        Division = division,
                         User = user,
                         Employee = employee,
                         ValidationCase = validationCase,

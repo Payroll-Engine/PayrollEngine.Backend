@@ -38,7 +38,7 @@ public class CompanyCaseChangeRepository : CaseChangeRepository<CaseChange>, ICo
                 StoredProcedure = DbSchema.Procedures.GetCompanyCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
-                Language = caseChangeQuery?.Language
+                Culture = caseChangeQuery?.Culture
             })).ToList();
         return items;
     }
@@ -67,7 +67,7 @@ public class CompanyCaseChangeRepository : CaseChangeRepository<CaseChange>, ICo
                 StoredProcedure = DbSchema.Procedures.GetCompanyCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
-                Language = caseChangeQuery?.Language
+                Culture = caseChangeQuery?.Culture
             });
         return count;
     }

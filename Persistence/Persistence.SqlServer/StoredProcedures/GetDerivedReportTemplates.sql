@@ -29,8 +29,8 @@ CREATE PROCEDURE dbo.[GetDerivedReportTemplates]
   @createdBefore AS DATETIME2(7),
   -- the report names: JSON array of VARCHAR(128)
   @reportNames AS VARCHAR(MAX) = NULL,
-  -- the report language
-  @language AS INT = NULL
+  -- the report culture
+  @culture AS  VARCHAR(128) = NULL
 AS
 BEGIN
   -- SET NOCOUNT ON added to prevent extra result sets from
@@ -58,8 +58,8 @@ BEGIN
         )
       )
     AND (
-      @language IS NULL
-      OR dbo.[ReportTemplate].[Language] = @language
+      @culture IS NULL
+      OR dbo.[ReportTemplate].[Culture] = @culture
       )
   -- derived order by sort order
   ORDER BY [Level] DESC,

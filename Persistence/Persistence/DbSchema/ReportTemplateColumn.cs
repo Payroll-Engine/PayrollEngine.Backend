@@ -3,5 +3,5 @@
 public static class ReportTemplateColumn
 {
     public static readonly string ReportId = "ReportId";
-    public static readonly string Language = "Language";
+    public static readonly string Culture = "Culture";
 }

@@ -13,10 +13,10 @@ public interface IRegulationLookupProvider
     /// <param name="context">The database context</param>
     /// <param name="lookupName">The name of the lookup</param>
     /// <param name="lookupKey">The lookup value key</param>
-    /// <param name="language">The value language</param>
+    /// <param name="culture">The value culture</param>
     /// <returns>The lookup value</returns>
     Task<LookupValueData> GetLookupValueDataAsync(IDbContext context, string lookupName, string lookupKey,
-        Language? language = null);
+        string culture = null);
 
     /// <summary>
     /// Get a derived range lookup value
@@ -25,8 +25,8 @@ public interface IRegulationLookupProvider
     /// <param name="lookupName">The name of the lookup</param>
     /// <param name="rangeValue">The range value</param>
     /// <param name="lookupKey">The lookup key</param>
-    /// <param name="language">The value language</param>
+    /// <param name="culture">The value culture</param>
     /// <returns>The lookup value</returns>
     Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
-        string lookupName, decimal rangeValue, string lookupKey = null, Language? language = null);
+        string lookupName, decimal rangeValue, string lookupKey = null, string culture = null);
 }

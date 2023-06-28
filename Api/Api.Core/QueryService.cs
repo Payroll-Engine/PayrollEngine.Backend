@@ -32,7 +32,7 @@ public class QueryService : IQueryService
         Queries.ContainsKey(methodName);
 
     /// <inheritdoc />
-    public virtual DataTable ExecuteQuery(int tenantId, string methodName, Language? language,
+    public virtual DataTable ExecuteQuery(int tenantId, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext)
     {
         if (string.IsNullOrWhiteSpace(methodName))
@@ -77,7 +77,7 @@ public class QueryService : IQueryService
         }
 
         // localizations
-        ApplyLocalizations(result, language);
+        ApplyLocalizations(result, culture);
 
         // result table
         var resultTable = GetResultTable(methodName, result, methodParameters);
@@ -93,7 +93,7 @@ public class QueryService : IQueryService
         }
     }
 
-    public virtual async Task<DataTable> ExecuteQueryAsync(int tenantId, string methodName, Language? language,
+    public virtual async Task<DataTable> ExecuteQueryAsync(int tenantId, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext)
     {
         if (string.IsNullOrWhiteSpace(methodName))
@@ -137,7 +137,7 @@ public class QueryService : IQueryService
         }
 
         // localizations
-        ApplyLocalizations(result, language);
+        ApplyLocalizations(result, culture);
 
         // result table
         var resultTable = GetResultTable(methodName, result, methodParameters);
@@ -145,7 +145,7 @@ public class QueryService : IQueryService
     }
 
     /// <inheritdoc />
-    public virtual async Task<DataTable> ExecuteQueryAsync(int tenantId, string queryName, string methodName, Language? language,
+    public virtual async Task<DataTable> ExecuteQueryAsync(int tenantId, string queryName, string methodName, string culture,
         Dictionary<string, string> requestParameters, Dictionary<string, string> reportParameters,
         IApiControllerContext controllerContext)
     {
@@ -196,7 +196,7 @@ public class QueryService : IQueryService
             }
 
             // localizations
-            ApplyLocalizations(result, language);
+            ApplyLocalizations(result, culture);
 
             // result table
             var resultTable = GetResultTable(queryName, result, methodParameters);
@@ -336,15 +336,14 @@ public class QueryService : IQueryService
         return null;
     }
 
-    private void ApplyLocalizations(IList<object> items, Language? language)
+    private void ApplyLocalizations(IList<object> items, string culture)
     {
-        if (items == null || !language.HasValue)
+        if (items == null || string.IsNullOrWhiteSpace(culture))
         {
             return;
         }
 
         // language
-        var languageCode = language.Value.LanguageCode();
         Dictionary<PropertyInfo, PropertyInfo> localizationProperties = null;
         foreach (var item in items)
         {
@@ -370,9 +369,9 @@ public class QueryService : IQueryService
             foreach (var localizationProperty in localizationProperties)
             {
                 if (localizationProperty.Key.GetValue(item) is Dictionary<string, string> localizationValues &&
-                    localizationValues.TryGetValue(languageCode, out var value))
+                    localizationValues.TryGetValue(culture, out var value))
                 {
-                        // apply localization property
+                    // apply localization property
                     localizationProperty.Value.SetValue(item, value);
                 }
             }

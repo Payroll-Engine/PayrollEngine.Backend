@@ -9,9 +9,9 @@ namespace PayrollEngine.Domain.Model;
 public class ReportRequest : IEquatable<ReportRequest>
 {
     /// <summary>
-    /// The report language
+    /// The report culture
     /// </summary>
-    public Language Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// The report user

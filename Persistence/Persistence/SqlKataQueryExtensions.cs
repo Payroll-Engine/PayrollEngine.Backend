@@ -125,9 +125,9 @@ public static class SqlKataQueryExtensions
         }
 
         // language
-        if (query.Language.HasValue)
+        if (!string.IsNullOrWhiteSpace(query.Culture))
         {
-            sqlQuery.Where(DbSchema.ReportTemplateColumn.Language, (int)query.Language.Value);
+            sqlQuery.Where(DbSchema.ReportTemplateColumn.Culture, query.Culture);
         }
     }
 }

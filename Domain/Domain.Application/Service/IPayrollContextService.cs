@@ -7,6 +7,7 @@ public interface IPayrollContextService
     ITenantService TenantService { get; set; }
     ILookupSetService RegulationLookupSetService { get; set; }
     IPayrollService PayrollService { get; set; }
+    IDivisionService DivisionService { get; set; }
     IRegulationService RegulationService { get; set; }
     ICaseService CaseService { get; set; }
     ICaseFieldService CaseFieldService { get; set; }

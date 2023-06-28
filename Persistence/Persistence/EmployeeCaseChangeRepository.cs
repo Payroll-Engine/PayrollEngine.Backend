@@ -50,7 +50,7 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
                 StoredProcedure = DbSchema.Procedures.GetEmployeeCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
-                Language = caseChangeQuery?.Language
+                Culture = caseChangeQuery?.Culture
             })).ToList();
         return items;
     }
@@ -79,7 +79,7 @@ public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IE
                 StoredProcedure = DbSchema.Procedures.GetEmployeeCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
-                Language = caseChangeQuery?.Language
+                Culture = caseChangeQuery?.Culture
             });
         return count;
     }

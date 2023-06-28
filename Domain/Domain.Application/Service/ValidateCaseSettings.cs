@@ -6,6 +6,7 @@ public class ValidateCaseSettings
 {
     public Model.Tenant Tenant { get; set; }
     public Model.Payroll Payroll { get; set; }
+    public Model.Division Division { get; set; }
     public Model.User User { get; set; }
     public Model.Employee Employee { get; set; }
     public Model.Case ValidationCase { get; set; }

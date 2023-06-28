@@ -54,10 +54,10 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
     /// <param name="context">The database context</param>
     /// <param name="lookupName">The name of the lookup</param>
     /// <param name="lookupKey">The lookup value key</param>
-    /// <param name="language">The value language</param>
+    /// <param name="culture">The value culture</param>
     /// <returns>The lookup value</returns>
     public async Task<LookupValueData> GetLookupValueDataAsync(IDbContext context, string lookupName, string lookupKey,
-        Language? language = null)
+        string culture = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))
         {
@@ -96,7 +96,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             }
 
             // lookup value
-            var value = await LookupSetRepository.GetLookupValueDataAsync(context, tenantId.Value, lookup.Id, lookupKey, language);
+            var value = await LookupSetRepository.GetLookupValueDataAsync(context, tenantId.Value, lookup.Id, lookupKey, culture);
             if (value != null)
             {
                 return value;
@@ -113,10 +113,10 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
     /// <param name="lookupName">The name of the lookup</param>
     /// <param name="rangeValue">The range value</param>
     /// <param name="lookupKey">The lookup key</param>
-    /// <param name="language">The value language</param>
+    /// <param name="culture">The value culture</param>
     /// <returns>The lookup value</returns>
     public async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
-        string lookupName, decimal rangeValue, string lookupKey = null, Language? language = null)
+        string lookupName, decimal rangeValue, string lookupKey = null, string culture = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))
         {
@@ -151,7 +151,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             }
 
             // lookup value
-            var value = await LookupSetRepository.GetRangeLookupValueDataAsync(context, tenantId.Value, lookup.Id, rangeValue, lookupKey, language);
+            var value = await LookupSetRepository.GetRangeLookupValueDataAsync(context, tenantId.Value, lookup.Id, rangeValue, lookupKey, culture);
             if (value != null)
             {
                 return value;

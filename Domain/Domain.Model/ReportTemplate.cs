@@ -15,9 +15,9 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
     public string Name { get; set; }
 
     /// <summary>
-    /// The report language
+    /// The report culture
     /// </summary>
-    public Language Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// The report content (client owned)
@@ -82,7 +82,7 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
         {
             ReportTemplateId = Id,
             Name = Name,
-            Language = Language,
+            Culture = Culture,
             Content = Content,
             ContentType = ContentType,
             Schema = Schema,
@@ -99,7 +99,7 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
 
         Id = audit.ReportTemplateId;
         Name = audit.Name;
-        Language = audit.Language;
+        Culture = audit.Culture;
         Content = audit.Content;
         ContentType = audit.ContentType;
         Schema = audit.Schema;
@@ -110,5 +110,5 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
 
     /// <inheritdoc/>
     public override string ToString() =>
-        $"{Name} ({Language}) {base.ToString()}";
+        $"{Name} ({Culture}) {base.ToString()}";
 }

@@ -48,14 +48,14 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
-    /// <param name="language">The language</param>
+    /// <param name="culture">The culture</param>
     /// <returns>The lookup value data</returns>
     [HttpGet("data")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetLookupValuesData")]
     public override async Task<ActionResult<ApiObject.LookupValueData[]>> GetLookupValuesDataAsync(int tenantId, int regulationId,
-        int lookupId, [FromQuery] Language? language)
+        int lookupId, [FromQuery] string culture)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -63,7 +63,7 @@ public class LookupValueController : Api.Controller.LookupValueController
         {
             return tenantResult;
         }
-        return await base.GetLookupValuesDataAsync(tenantId, regulationId, lookupId, language);
+        return await base.GetLookupValuesDataAsync(tenantId, regulationId, lookupId, culture);
     }
 
     /// <summary>

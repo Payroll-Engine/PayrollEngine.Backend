@@ -8,6 +8,6 @@ namespace PayrollEngine.Domain.Application.Service;
 
 public interface IReportService : IScriptTrackChildApplicationService<IReportRepository, Report, ReportAudit>
 {
-    Task<DataTable> ExecuteQueryAsync(Tenant tenant, string methodName, Language? language,
+    Task<DataTable> ExecuteQueryAsync(Tenant tenant, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext);
 }

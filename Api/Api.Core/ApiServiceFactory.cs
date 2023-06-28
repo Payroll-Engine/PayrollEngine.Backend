@@ -214,6 +214,7 @@ internal static class ApiServiceFactory
                 TenantService = serviceProvider.GetRequiredService<ITenantService>(),
                 RegulationLookupSetService = serviceProvider.GetRequiredService<ILookupSetService>(),
                 PayrollService = serviceProvider.GetRequiredService<IPayrollService>(),
+                DivisionService = serviceProvider.GetRequiredService<IDivisionService>(),
                 RegulationService = serviceProvider.GetRequiredService<IRegulationService>(),
                 CaseService = serviceProvider.GetRequiredService<ICaseService>(),
                 CaseFieldService = serviceProvider.GetRequiredService<ICaseFieldService>(),

@@ -9,5 +9,5 @@ internal sealed class CaseValueQuery
     internal string StoredProcedure { get; set; }
     internal string Query { get; set; }
     internal ICollection<string> QueryAttributes { get; set; }
-    internal Language? Language { get; set; }
+    internal string Culture { get; set; }
 }

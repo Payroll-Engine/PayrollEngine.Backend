@@ -30,11 +30,6 @@ public class Employee : ApiObjectBase
     public string LastName { get; set; }
 
     /// <summary>
-    /// The employees language
-    /// </summary>
-    public Language Language { get; set; }
-
-    /// <summary>
     /// Employee division names
     /// </summary>
     public List<string> Divisions { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using PayrollEngine.Client.Scripting.Runtime;
 using PayrollEngine.Domain.Model;
@@ -315,7 +316,7 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
     #region Regulation Lookup
 
     /// <inheritdoc />
-    public virtual string GetLookup(string lookupName, string lookupKey, int? languageCode = null)
+    public virtual string GetLookup(string lookupName, string lookupKey, string culture = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))
         {
@@ -326,42 +327,26 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
             throw new ArgumentException(nameof(lookupKey));
         }
 
-        // language
-        Language? language = null;
-        if (languageCode.HasValue)
-        {
-            if (!Enum.IsDefined(typeof(Language), languageCode.Value))
-            {
-                throw new PayrollException($"Unknown language with code {languageCode.Value}");
-            }
-            language = (Language)languageCode.Value;
-        }
+        // culture
+        culture ??= CultureInfo.CurrentCulture.Name;
 
         var result = Task.Run(() =>
-                RegulationLookupProvider.GetLookupValueDataAsync(Settings.DbContext, lookupName, lookupKey, language)).Result?.Value;
+                RegulationLookupProvider.GetLookupValueDataAsync(Settings.DbContext, lookupName, lookupKey, culture)).Result?.Value;
         return result;
     }
 
     /// <inheritdoc />
-    public virtual string GetRangeLookup(string lookupName, decimal rangeValue, string lookupKey = null, int? languageCode = null)
+    public virtual string GetRangeLookup(string lookupName, decimal rangeValue, string lookupKey = null, string culture = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))
         {
             throw new ArgumentException(nameof(lookupName));
         }
 
-        // language
-        Language? language = null;
-        if (languageCode.HasValue)
-        {
-            if (!Enum.IsDefined(typeof(Language), languageCode.Value))
-            {
-                throw new PayrollException($"Unknown language with code {languageCode.Value}");
-            }
-            language = (Language)languageCode.Value;
-        }
+        // culture
+        culture ??= CultureInfo.CurrentCulture.Name;
 
-        return Task.Run(() => RegulationLookupProvider.GetRangeLookupValueDataAsync(Settings.DbContext, lookupName, rangeValue, lookupKey, language)).
+        return Task.Run(() => RegulationLookupProvider.GetRangeLookupValueDataAsync(Settings.DbContext, lookupName, rangeValue, lookupKey, culture)).
             Result?.Value;
     }
 

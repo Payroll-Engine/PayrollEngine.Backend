@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Scripting;
@@ -56,9 +57,12 @@ public class ReportBuilder : ReportTool
 
     private bool? ReportBuildScript(User user, ReportSet report, ReportRequest request, IApiControllerContext controllerContext)
     {
+        // culture by priority: tenant > system
+        var culture = Tenant.Culture ?? CultureInfo.CurrentCulture.Name;
         return new ReportScriptController<ReportSet>().Build(new()
         {
             DbContext = Settings.DbContext,
+            Culture = culture,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = user,

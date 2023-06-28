@@ -22,10 +22,10 @@ public class ReportTemplateAudit : ApiObjectBase
     public int ReportTemplateId { get; set; }
 
     /// <summary>
-    /// The report language
+    /// The report culture
     /// </summary>
     [Required]
-    public Language Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// The report content
@@ -62,5 +62,5 @@ public class ReportTemplateAudit : ApiObjectBase
 
     /// <inheritdoc/>
     public override string ToString() =>
-        $"{Language} {base.ToString()}";
+        $"{Culture} {base.ToString()}";
 }

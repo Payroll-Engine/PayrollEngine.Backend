@@ -95,7 +95,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
     }
 
     public virtual async Task<LookupData> GetLookupDataAsync(IDbContext context,
-        int tenantId, int regulationId, int lookupId, Language? language = null)
+        int tenantId, int regulationId, int lookupId, string culture = null)
     {
         var lookupData = new LookupData();
 
@@ -107,15 +107,15 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         }
         lookupData.Name = lookupSet.Name;
         lookupData.RangeSize = lookupSet.RangeSize;
-        lookupData.Language = language;
+        lookupData.Culture = culture;
 
         // lookup value localizations
         foreach (var value in lookupSet.Values)
         {
             var dataValue = value.Value;
-            if (language.HasValue)
+            if (!string.IsNullOrWhiteSpace(culture))
             {
-                dataValue = language.Value.GetLocalization(value.ValueLocalizations, value.Value);
+                dataValue = culture.GetLocalization(value.ValueLocalizations, value.Value);
             }
 
             lookupData.Values ??= new();
@@ -132,7 +132,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
     }
 
     public async Task<LookupValueData> GetLookupValueDataAsync(IDbContext context,
-        int tenantId, int lookupId, string lookupKey, Language? language = null)
+        int tenantId, int lookupId, string lookupKey, string culture = null)
     {
         if (lookupId <= 0)
         {
@@ -157,9 +157,9 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
 
         // lookup value localizations
         var dataValue = lookupValue.Value;
-        if (language.HasValue)
+        if (!string.IsNullOrWhiteSpace(culture))
         {
-            dataValue = language.Value.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
+            dataValue = culture.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
         }
 
         return new()
@@ -171,7 +171,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
     }
 
     public virtual async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
-        int tenantId, int lookupId, decimal rangeValue, string lookupKey = null, Language? language = null)
+        int tenantId, int lookupId, decimal rangeValue, string lookupKey = null, string culture = null)
     {
         if (lookupId <= 0)
         {
@@ -197,9 +197,9 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
 
         // lookup value localizations
         var dataValue = lookupValue.Value;
-        if (language.HasValue)
+        if (!string.IsNullOrWhiteSpace(culture))
         {
-            dataValue = language.Value.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
+            dataValue = culture.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
         }
 
         return new()

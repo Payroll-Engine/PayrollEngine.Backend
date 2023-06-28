@@ -21,8 +21,8 @@ GO
 CREATE FUNCTION [dbo].[GetLocalizedValue] (
   -- the localizations
   @localizations AS NVARCHAR(MAX),
-  -- the ISO 639-1 language code
-  @language AS NVARCHAR(3),
+  -- the cultue
+  @culture AS NVARCHAR(128),
   -- the fallback value
   @fallback AS NVARCHAR(MAX)
   )
@@ -33,7 +33,7 @@ BEGIN
 
   SELECT @value = value
   FROM OPENJSON(@localizations)
-  WHERE [key] = @language;
+  WHERE [key] = @culture;
 
   RETURN IIF(@value IS NULL, @fallback, @value);
 END

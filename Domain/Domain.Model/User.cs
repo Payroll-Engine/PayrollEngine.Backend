@@ -39,11 +39,6 @@ public class User : DomainObjectBase, IIdentifiableObject, IDomainAttributeObjec
     public string Culture { get; set; }
 
     /// <summary>
-    /// The users language
-    /// </summary>
-    public Language Language { get; set; }
-
-    /// <summary>
     /// The user type
     /// </summary>
     public UserType UserType { get; set; }

@@ -43,9 +43,9 @@ internal sealed class CaseValueResultCommand : DomainRepositoryCommandBase
             parameters.Add(DbSchema.ParameterCaseValueQuery.Attributes,
                 System.Text.Json.JsonSerializer.Serialize(query.QueryAttributes));
         }
-        if (query.Language.HasValue)
+        if (!string.IsNullOrWhiteSpace(query.Culture))
         {
-            parameters.Add(DbSchema.ParameterCaseValueQuery.Language, query.Language.Value.LanguageCode());
+            parameters.Add(DbSchema.ParameterCaseValueQuery.Culture, query.Culture);
         }
 
         return await context.QueryAsync<TItem>(query.StoredProcedure, parameters,

@@ -36,6 +36,13 @@ public abstract class RuntimeBase : IRuntime
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
     }
 
+    #region Culture
+
+    /// <inheritdoc />
+    public virtual string Culture => Settings.Culture;
+
+    #endregion
+
     #region Tenant
 
     /// <summary>
@@ -64,9 +71,6 @@ public abstract class RuntimeBase : IRuntime
 
     /// <inheritdoc />
     public int UserId => User.Id;
-
-    /// <inheritdoc />
-    public int UserLanguage => (int)User.Language;
 
     /// <inheritdoc />
     public string UserIdentifier => User.Identifier;

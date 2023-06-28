@@ -127,9 +127,9 @@ public class PayrollRepository : ChildDomainRepository<Payroll>, IPayrollReposit
 
     /// <inheritdoc/>
     public virtual async Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(IDbContext context, PayrollQuery query,
-       IEnumerable<string> reportNames = null,  Language? language = null, OverrideType? overrideType = null) =>
+       IEnumerable<string> reportNames = null,  string culture = null, OverrideType? overrideType = null) =>
         await new PayrollRepositoryReportTemplatesCommand(context).GetDerivedReportTemplatesAsync(
-            query, reportNames, language, overrideType);
+            query, reportNames, culture, overrideType);
 
     public virtual async Task<IEnumerable<Script>> GetDerivedScriptsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> scriptNames = null, OverrideType? overrideType = null) =>

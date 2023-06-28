@@ -1069,14 +1069,14 @@
             <param name="query">Query parameters</param>
             <returns>The regulation lookup values</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.GetLookupValuesDataAsync(System.Int32,System.Int32,System.Int32,System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.GetLookupValuesDataAsync(System.Int32,System.Int32,System.Int32,System.String)">
             <summary>
             Get lookup values data
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The lookup id</param>
-            <param name="language">The language</param>
+            <param name="culture">The culture</param>
             <returns>The lookup value data</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.LookupValueController.GetLookupValueAsync(System.Int32,System.Int32,System.Int32)">
@@ -1516,7 +1516,7 @@
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>Payroll lookup values</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupDataAsync(System.Int32,System.Int32,System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupDataAsync(System.Int32,System.Int32,System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Get payroll lookup data
             </summary>
@@ -1525,10 +1525,10 @@
             <param name="lookupNames">The lookup names (case-insensitive)</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
-            <param name="language">The content language</param>
+            <param name="culture">The content culture</param>
             <returns>The lookup data</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupValueDataAsync(System.Int32,System.Int32,System.String,System.String,System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{PayrollEngine.Language})">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupValueDataAsync(System.Int32,System.Int32,System.String,System.String,System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Get payroll lookup value data
             </summary>
@@ -1539,7 +1539,7 @@
             <param name="rangeValue">The lookup range value</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
-            <param name="language">The language</param>
+            <param name="culture">The content culture</param>
             <returns>The lookup value data</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
@@ -1566,14 +1566,14 @@
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>Payroll report parameters</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportTemplatesAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.Language},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportTemplatesAsync(System.Int32,System.Int32,System.String[],System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
             Get payroll report templates
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
             <param name="reportNames">The report names (case-insensitive, default is all)</param>
-            <param name="language">The report language (default is all)</param>
+            <param name="culture">The report culture (default is all)</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>Payroll report templates</returns>
@@ -2726,7 +2726,7 @@
             <param name="functionType">The function type</param>
             <returns>List of system actions</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.ExecuteReportQueryAsync(System.Int32,System.String,System.Nullable{PayrollEngine.Language},System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.ExecuteReportQueryAsync(System.Int32,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Execute a report query
             </summary>
@@ -2736,7 +2736,7 @@
             </remarks>
             <param name="tenantId">The tenant id</param>
             <param name="methodName">The query method</param>
-            <param name="language">The data language</param>
+            <param name="culture">The data culture</param>
             <param name="parameters">The query parameters</param>
             <returns>The resulting data table</returns>
         </member>

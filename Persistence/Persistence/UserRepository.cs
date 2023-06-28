@@ -27,7 +27,6 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
         parameters.Add(nameof(user.FirstName), user.FirstName);
         parameters.Add(nameof(user.LastName), user.LastName);
         parameters.Add(nameof(user.Culture), user.Culture);
-        parameters.Add(nameof(user.Language), user.Language);
         parameters.Add(nameof(user.UserType), user.UserType);
         parameters.Add(nameof(user.Attributes), JsonSerializer.SerializeNamedDictionary(user.Attributes));
         base.GetObjectCreateData(user, parameters);

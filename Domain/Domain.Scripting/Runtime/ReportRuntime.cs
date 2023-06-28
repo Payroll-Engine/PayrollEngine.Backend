@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using PayrollEngine.Client.QueryExpression;
-using PayrollEngine.Client.Scripting;
 using PayrollEngine.Client.Scripting.Runtime;
 using PayrollEngine.Domain.Model;
 
@@ -45,7 +45,9 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
     /// <inheritdoc />
     public string ReportName => Report.Name;
 
-    public Client.Scripting.Language Language => (Client.Scripting.Language)ReportRequest.Language;
+    /// <inheritdoc />
+    public override string Culture => 
+        ReportRequest.Culture ?? base.Culture;
 
     /// <inheritdoc />
     public object GetReportAttribute(string attributeName) =>
@@ -142,7 +144,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
     #region Execute Query
 
     /// <inheritdoc />
-    public virtual DataTable ExecuteQuery(string tableName, string methodName, int language, Dictionary<string, string> parameters)
+    public virtual DataTable ExecuteQuery(string tableName, string methodName, string culture, Dictionary<string, string> parameters)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {
@@ -153,19 +155,15 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
             throw new ArgumentException(nameof(methodName));
         }
 
-        // language
-        if (!Enum.IsDefined((Language)language))
-        {
-            throw new PayrollException($"Invalid language code: {language}");
-        }
+        // culture
+        culture ??= CultureInfo.CurrentCulture.Name;
 
         try
         {
             // report query
             var stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            var resultTable = QueryService.ExecuteQuery(TenantId, methodName,
-                (Language)language, parameters, ControllerContext);
+            var resultTable = QueryService.ExecuteQuery(TenantId, methodName, culture, parameters, ControllerContext);
             if (resultTable == null)
             {
                 return null;
@@ -217,7 +215,7 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         foreach (var lookupValue in lookupValues)
         {
             // localized lookup json value
-            var value = Language.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
+            var value = Culture.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
             if (string.IsNullOrWhiteSpace(value))
             {
                 continue;
@@ -274,12 +272,12 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         var query = QueryValuesToQuery(queryValues);
         if (string.IsNullOrWhiteSpace(query.OrderBy))
         {
-            query.OrderBy = nameof(Model.CaseValue.Start);
+            query.OrderBy = nameof(CaseValue.Start);
         }
         return query;
     }
 
-    private static DataTable BuildCaseValueTable(string tableName, IEnumerable<Model.CaseValue> caseValues)
+    private static DataTable BuildCaseValueTable(string tableName, IEnumerable<CaseValue> caseValues)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {
@@ -289,73 +287,73 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
         var dataTable = new DataTable(tableName);
 
         // setup columns
-        dataTable.Columns.Add(nameof(Model.CaseValue.Id), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CaseValue.DivisionId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CaseValue.EmployeeId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CaseValue.Status), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CaseValue.Created), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CaseValue.Updated), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CaseValue.CaseName), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CaseValue.CaseNameLocalizations), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CaseValue.CaseFieldName), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CaseValue.CaseFieldNameLocalizations), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CaseValue.CaseSlot), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CaseValue.Forecast), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CaseValue.Start), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CaseValue.End), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CaseValue.CancellationDate), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CaseValue.ValueType), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CaseValue.Value), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CaseValue.NumericValue), typeof(decimal));
-        dataTable.Columns.Add(nameof(Model.CaseValue.Attributes), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.Id), typeof(int));
+        dataTable.Columns.Add(nameof(CaseValue.DivisionId), typeof(int));
+        dataTable.Columns.Add(nameof(CaseValue.EmployeeId), typeof(int));
+        dataTable.Columns.Add(nameof(CaseValue.Status), typeof(int));
+        dataTable.Columns.Add(nameof(CaseValue.Created), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CaseValue.Updated), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CaseValue.CaseName), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.CaseNameLocalizations), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.CaseFieldName), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.CaseFieldNameLocalizations), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.CaseSlot), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.Forecast), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.Start), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CaseValue.End), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CaseValue.CancellationDate), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CaseValue.ValueType), typeof(int));
+        dataTable.Columns.Add(nameof(CaseValue.Value), typeof(string));
+        dataTable.Columns.Add(nameof(CaseValue.NumericValue), typeof(decimal));
+        dataTable.Columns.Add(nameof(CaseValue.Attributes), typeof(string));
 
         // setup rows
         foreach (var caseValue in caseValues)
         {
             var row = dataTable.NewRow();
-            row[nameof(Model.CaseValue.Id)] = caseValue.Id;
+            row[nameof(CaseValue.Id)] = caseValue.Id;
             // division
             if (caseValue.DivisionId.HasValue)
             {
-                row[nameof(Model.CaseValue.DivisionId)] = caseValue.DivisionId;
+                row[nameof(CaseValue.DivisionId)] = caseValue.DivisionId;
             }
             // employee
             if (caseValue.EmployeeId.HasValue)
             {
-                row[nameof(Model.CaseValue.EmployeeId)] = caseValue.EmployeeId;
+                row[nameof(CaseValue.EmployeeId)] = caseValue.EmployeeId;
             }
-            row[nameof(Model.CaseValue.Status)] = (int)caseValue.Status;
-            row[nameof(Model.CaseValue.Created)] = caseValue.Created;
-            row[nameof(Model.CaseValue.Updated)] = caseValue.Updated;
+            row[nameof(CaseValue.Status)] = (int)caseValue.Status;
+            row[nameof(CaseValue.Created)] = caseValue.Created;
+            row[nameof(CaseValue.Updated)] = caseValue.Updated;
             // case
-            row[nameof(Model.CaseValue.CaseName)] = caseValue.CaseName;
-            row[nameof(Model.CaseValue.CaseNameLocalizations)] = JsonSerializer.Serialize(caseValue.CaseNameLocalizations);
+            row[nameof(CaseValue.CaseName)] = caseValue.CaseName;
+            row[nameof(CaseValue.CaseNameLocalizations)] = JsonSerializer.Serialize(caseValue.CaseNameLocalizations);
             // cse field
-            row[nameof(Model.CaseValue.CaseFieldName)] = caseValue.CaseFieldName;
-            row[nameof(Model.CaseValue.CaseFieldNameLocalizations)] = JsonSerializer.Serialize(caseValue.CaseFieldNameLocalizations);
+            row[nameof(CaseValue.CaseFieldName)] = caseValue.CaseFieldName;
+            row[nameof(CaseValue.CaseFieldNameLocalizations)] = JsonSerializer.Serialize(caseValue.CaseFieldNameLocalizations);
             // case slot
-            row[nameof(Model.CaseValue.CaseSlot)] = caseValue.CaseSlot;
-            row[nameof(Model.CaseValue.Forecast)] = caseValue.Forecast;
+            row[nameof(CaseValue.CaseSlot)] = caseValue.CaseSlot;
+            row[nameof(CaseValue.Forecast)] = caseValue.Forecast;
             if (caseValue.Start.HasValue)
             {
-                row[nameof(Model.CaseValue.Start)] = caseValue.Start;
+                row[nameof(CaseValue.Start)] = caseValue.Start;
             }
             if (caseValue.End.HasValue)
             {
-                row[nameof(Model.CaseValue.End)] = caseValue.End;
+                row[nameof(CaseValue.End)] = caseValue.End;
             }
             if (caseValue.CancellationDate.HasValue)
             {
-                row[nameof(Model.CaseValue.CancellationDate)] = caseValue.CancellationDate;
+                row[nameof(CaseValue.CancellationDate)] = caseValue.CancellationDate;
             }
             // value
-            row[nameof(Model.CaseValue.ValueType)] = (int)caseValue.ValueType;
-            row[nameof(Model.CaseValue.Value)] = caseValue.Value;
+            row[nameof(CaseValue.ValueType)] = (int)caseValue.ValueType;
+            row[nameof(CaseValue.Value)] = caseValue.Value;
             if (caseValue.NumericValue.HasValue)
             {
-                row[nameof(Model.CaseValue.NumericValue)] = caseValue.NumericValue;
+                row[nameof(CaseValue.NumericValue)] = caseValue.NumericValue;
             }
-            row[nameof(Model.CaseValue.Attributes)] = JsonSerializer.Serialize(caseValue.Attributes);
+            row[nameof(CaseValue.Attributes)] = JsonSerializer.Serialize(caseValue.Attributes);
             dataTable.Rows.Add(row);
         }
         dataTable.AcceptChanges();
@@ -488,41 +486,41 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
 
         // setup columns
         var dataTable = new DataTable(tableName);
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Id), typeof(int));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Status), typeof(ObjectStatus));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Created), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Updated), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.PayrollResultId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.WageTypeId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.WageTypeNumber), typeof(decimal));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.WageTypeName), typeof(string));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.WageTypeNameLocalizations), typeof(string));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.ValueType), typeof(ValueType));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Value), typeof(decimal));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Start), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.End), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Tags), typeof(string));
-        dataTable.Columns.Add(nameof(Model.WageTypeResult.Attributes), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeResult.Id), typeof(int));
+        dataTable.Columns.Add(nameof(WageTypeResult.Status), typeof(ObjectStatus));
+        dataTable.Columns.Add(nameof(WageTypeResult.Created), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeResult.Updated), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeResult.PayrollResultId), typeof(int));
+        dataTable.Columns.Add(nameof(WageTypeResult.WageTypeId), typeof(int));
+        dataTable.Columns.Add(nameof(WageTypeResult.WageTypeNumber), typeof(decimal));
+        dataTable.Columns.Add(nameof(WageTypeResult.WageTypeName), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeResult.WageTypeNameLocalizations), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeResult.ValueType), typeof(ValueType));
+        dataTable.Columns.Add(nameof(WageTypeResult.Value), typeof(decimal));
+        dataTable.Columns.Add(nameof(WageTypeResult.Start), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeResult.End), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeResult.Tags), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeResult.Attributes), typeof(string));
 
         // setup rows
         foreach (var result in results)
         {
             var row = dataTable.NewRow();
-            row[nameof(Model.WageTypeResult.Id)] = result.Id;
-            row[nameof(Model.WageTypeResult.Status)] = result.Status;
-            row[nameof(Model.WageTypeResult.Created)] = result.Created;
-            row[nameof(Model.WageTypeResult.Updated)] = result.Updated;
-            row[nameof(Model.WageTypeResult.PayrollResultId)] = result.PayrollResultId;
-            row[nameof(Model.WageTypeResult.WageTypeId)] = result.WageTypeId;
-            row[nameof(Model.WageTypeResult.WageTypeNumber)] = result.WageTypeNumber;
-            row[nameof(Model.WageTypeResult.WageTypeName)] = result.WageTypeName;
-            row[nameof(Model.WageTypeResult.WageTypeNameLocalizations)] = JsonSerializer.Serialize(result.WageTypeNameLocalizations ?? new());
-            row[nameof(Model.WageTypeResult.ValueType)] = result.ValueType;
-            row[nameof(Model.WageTypeResult.Value)] = result.Value;
-            row[nameof(Model.WageTypeResult.Start)] = result.Start;
-            row[nameof(Model.WageTypeResult.End)] = result.End;
-            row[nameof(Model.WageTypeResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
-            row[nameof(Model.WageTypeResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
+            row[nameof(WageTypeResult.Id)] = result.Id;
+            row[nameof(WageTypeResult.Status)] = result.Status;
+            row[nameof(WageTypeResult.Created)] = result.Created;
+            row[nameof(WageTypeResult.Updated)] = result.Updated;
+            row[nameof(WageTypeResult.PayrollResultId)] = result.PayrollResultId;
+            row[nameof(WageTypeResult.WageTypeId)] = result.WageTypeId;
+            row[nameof(WageTypeResult.WageTypeNumber)] = result.WageTypeNumber;
+            row[nameof(WageTypeResult.WageTypeName)] = result.WageTypeName;
+            row[nameof(WageTypeResult.WageTypeNameLocalizations)] = JsonSerializer.Serialize(result.WageTypeNameLocalizations ?? new());
+            row[nameof(WageTypeResult.ValueType)] = result.ValueType;
+            row[nameof(WageTypeResult.Value)] = result.Value;
+            row[nameof(WageTypeResult.Start)] = result.Start;
+            row[nameof(WageTypeResult.End)] = result.End;
+            row[nameof(WageTypeResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(WageTypeResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
 
@@ -546,41 +544,41 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
 
         // setup columns
         var dataTable = new DataTable(tableName);
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Id), typeof(int));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Status), typeof(ObjectStatus));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Created), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Updated), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.WageTypeResultId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.WageTypeNumber), typeof(decimal));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.WageTypeName), typeof(string));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.WageTypeNameLocalizations), typeof(string));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Source), typeof(string));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.ValueType), typeof(ValueType));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Value), typeof(decimal));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Start), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.End), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Tags), typeof(string));
-        dataTable.Columns.Add(nameof(Model.WageTypeCustomResult.Attributes), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Id), typeof(int));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Status), typeof(ObjectStatus));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Created), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Updated), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.WageTypeResultId), typeof(int));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.WageTypeNumber), typeof(decimal));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.WageTypeName), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.WageTypeNameLocalizations), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Source), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.ValueType), typeof(ValueType));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Value), typeof(decimal));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Start), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.End), typeof(DateTime));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Tags), typeof(string));
+        dataTable.Columns.Add(nameof(WageTypeCustomResult.Attributes), typeof(string));
 
         // setup rows
         foreach (var result in results)
         {
             var row = dataTable.NewRow();
-            row[nameof(Model.WageTypeCustomResult.Id)] = result.Id;
-            row[nameof(Model.WageTypeCustomResult.Status)] = result.Status;
-            row[nameof(Model.WageTypeCustomResult.Created)] = result.Created;
-            row[nameof(Model.WageTypeCustomResult.Updated)] = result.Updated;
-            row[nameof(Model.WageTypeCustomResult.WageTypeResultId)] = result.WageTypeResultId;
-            row[nameof(Model.WageTypeCustomResult.WageTypeNumber)] = result.WageTypeNumber;
-            row[nameof(Model.WageTypeCustomResult.WageTypeName)] = result.WageTypeName;
-            row[nameof(Model.WageTypeCustomResult.WageTypeNameLocalizations)] = JsonSerializer.Serialize(result.WageTypeNameLocalizations ?? new());
-            row[nameof(Model.WageTypeCustomResult.Source)] = result.Source;
-            row[nameof(Model.WageTypeCustomResult.ValueType)] = result.ValueType;
-            row[nameof(Model.WageTypeCustomResult.Value)] = result.Value;
-            row[nameof(Model.WageTypeCustomResult.Start)] = result.Start;
-            row[nameof(Model.WageTypeCustomResult.End)] = result.End;
-            row[nameof(Model.WageTypeCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
-            row[nameof(Model.WageTypeCustomResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
+            row[nameof(WageTypeCustomResult.Id)] = result.Id;
+            row[nameof(WageTypeCustomResult.Status)] = result.Status;
+            row[nameof(WageTypeCustomResult.Created)] = result.Created;
+            row[nameof(WageTypeCustomResult.Updated)] = result.Updated;
+            row[nameof(WageTypeCustomResult.WageTypeResultId)] = result.WageTypeResultId;
+            row[nameof(WageTypeCustomResult.WageTypeNumber)] = result.WageTypeNumber;
+            row[nameof(WageTypeCustomResult.WageTypeName)] = result.WageTypeName;
+            row[nameof(WageTypeCustomResult.WageTypeNameLocalizations)] = JsonSerializer.Serialize(result.WageTypeNameLocalizations ?? new());
+            row[nameof(WageTypeCustomResult.Source)] = result.Source;
+            row[nameof(WageTypeCustomResult.ValueType)] = result.ValueType;
+            row[nameof(WageTypeCustomResult.Value)] = result.Value;
+            row[nameof(WageTypeCustomResult.Start)] = result.Start;
+            row[nameof(WageTypeCustomResult.End)] = result.End;
+            row[nameof(WageTypeCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(WageTypeCustomResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
 
@@ -604,41 +602,41 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
 
         // setup columns
         var dataTable = new DataTable(tableName);
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Id), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Status), typeof(ObjectStatus));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Created), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Updated), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.PayrollResultId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.CollectorId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.CollectorName), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.CollectorNameLocalizations), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.CollectType), typeof(CollectType));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.ValueType), typeof(ValueType));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Value), typeof(decimal));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Start), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.End), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Tags), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CollectorResult.Attributes), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorResult.Id), typeof(int));
+        dataTable.Columns.Add(nameof(CollectorResult.Status), typeof(ObjectStatus));
+        dataTable.Columns.Add(nameof(CollectorResult.Created), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorResult.Updated), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorResult.PayrollResultId), typeof(int));
+        dataTable.Columns.Add(nameof(CollectorResult.CollectorId), typeof(int));
+        dataTable.Columns.Add(nameof(CollectorResult.CollectorName), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorResult.CollectorNameLocalizations), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorResult.CollectType), typeof(CollectType));
+        dataTable.Columns.Add(nameof(CollectorResult.ValueType), typeof(ValueType));
+        dataTable.Columns.Add(nameof(CollectorResult.Value), typeof(decimal));
+        dataTable.Columns.Add(nameof(CollectorResult.Start), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorResult.End), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorResult.Tags), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorResult.Attributes), typeof(string));
 
         // setup rows
         foreach (var result in results)
         {
             var row = dataTable.NewRow();
-            row[nameof(Model.CollectorResult.Id)] = result.Id;
-            row[nameof(Model.CollectorResult.Status)] = result.Status;
-            row[nameof(Model.CollectorResult.Created)] = result.Created;
-            row[nameof(Model.CollectorResult.Updated)] = result.Updated;
-            row[nameof(Model.CollectorResult.PayrollResultId)] = result.PayrollResultId;
-            row[nameof(Model.CollectorResult.CollectorId)] = result.CollectorId;
-            row[nameof(Model.CollectorResult.CollectorName)] = result.CollectorName;
-            row[nameof(Model.CollectorResult.CollectorNameLocalizations)] = JsonSerializer.Serialize(result.CollectorNameLocalizations ?? new());
-            row[nameof(Model.CollectorResult.CollectType)] = result.CollectType;
-            row[nameof(Model.CollectorResult.ValueType)] = result.ValueType;
-            row[nameof(Model.CollectorResult.Value)] = result.Value;
-            row[nameof(Model.CollectorResult.Start)] = result.Start;
-            row[nameof(Model.CollectorResult.End)] = result.End;
-            row[nameof(Model.CollectorResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
-            row[nameof(Model.CollectorResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
+            row[nameof(CollectorResult.Id)] = result.Id;
+            row[nameof(CollectorResult.Status)] = result.Status;
+            row[nameof(CollectorResult.Created)] = result.Created;
+            row[nameof(CollectorResult.Updated)] = result.Updated;
+            row[nameof(CollectorResult.PayrollResultId)] = result.PayrollResultId;
+            row[nameof(CollectorResult.CollectorId)] = result.CollectorId;
+            row[nameof(CollectorResult.CollectorName)] = result.CollectorName;
+            row[nameof(CollectorResult.CollectorNameLocalizations)] = JsonSerializer.Serialize(result.CollectorNameLocalizations ?? new());
+            row[nameof(CollectorResult.CollectType)] = result.CollectType;
+            row[nameof(CollectorResult.ValueType)] = result.ValueType;
+            row[nameof(CollectorResult.Value)] = result.Value;
+            row[nameof(CollectorResult.Start)] = result.Start;
+            row[nameof(CollectorResult.End)] = result.End;
+            row[nameof(CollectorResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(CollectorResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
 
@@ -662,37 +660,37 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
 
         // setup columns
         var dataTable = new DataTable(tableName);
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Id), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Status), typeof(ObjectStatus));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Created), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Updated), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.CollectorResultId), typeof(int));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.CollectorName), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.CollectorNameLocalizations), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.ValueType), typeof(ValueType));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Value), typeof(decimal));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Start), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.End), typeof(DateTime));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Tags), typeof(string));
-        dataTable.Columns.Add(nameof(Model.CollectorCustomResult.Attributes), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Id), typeof(int));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Status), typeof(ObjectStatus));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Created), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Updated), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.CollectorResultId), typeof(int));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.CollectorName), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.CollectorNameLocalizations), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.ValueType), typeof(ValueType));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Value), typeof(decimal));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Start), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.End), typeof(DateTime));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Tags), typeof(string));
+        dataTable.Columns.Add(nameof(CollectorCustomResult.Attributes), typeof(string));
 
         // setup rows
         foreach (var result in results)
         {
             var row = dataTable.NewRow();
-            row[nameof(Model.CollectorCustomResult.Id)] = result.Id;
-            row[nameof(Model.CollectorCustomResult.Status)] = result.Status;
-            row[nameof(Model.CollectorCustomResult.Created)] = result.Created;
-            row[nameof(Model.CollectorCustomResult.Updated)] = result.Updated;
-            row[nameof(Model.CollectorCustomResult.CollectorResultId)] = result.CollectorResultId;
-            row[nameof(Model.CollectorCustomResult.CollectorName)] = result.CollectorName;
-            row[nameof(Model.CollectorCustomResult.CollectorNameLocalizations)] = JsonSerializer.Serialize(result.CollectorNameLocalizations ?? new());
-            row[nameof(Model.CollectorCustomResult.ValueType)] = result.ValueType;
-            row[nameof(Model.CollectorCustomResult.Value)] = result.Value;
-            row[nameof(Model.CollectorCustomResult.Start)] = result.Start;
-            row[nameof(Model.CollectorCustomResult.End)] = result.End;
-            row[nameof(Model.CollectorCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
-            row[nameof(Model.CollectorCustomResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
+            row[nameof(CollectorCustomResult.Id)] = result.Id;
+            row[nameof(CollectorCustomResult.Status)] = result.Status;
+            row[nameof(CollectorCustomResult.Created)] = result.Created;
+            row[nameof(CollectorCustomResult.Updated)] = result.Updated;
+            row[nameof(CollectorCustomResult.CollectorResultId)] = result.CollectorResultId;
+            row[nameof(CollectorCustomResult.CollectorName)] = result.CollectorName;
+            row[nameof(CollectorCustomResult.CollectorNameLocalizations)] = JsonSerializer.Serialize(result.CollectorNameLocalizations ?? new());
+            row[nameof(CollectorCustomResult.ValueType)] = result.ValueType;
+            row[nameof(CollectorCustomResult.Value)] = result.Value;
+            row[nameof(CollectorCustomResult.Start)] = result.Start;
+            row[nameof(CollectorCustomResult.End)] = result.End;
+            row[nameof(CollectorCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(CollectorCustomResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
 

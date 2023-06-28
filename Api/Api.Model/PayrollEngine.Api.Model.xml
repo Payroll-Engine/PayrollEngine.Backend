@@ -1832,11 +1832,6 @@
             The last name of the employee
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.Employee.Language">
-            <summary>
-            The employees language
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.Employee.Divisions">
             <summary>
             Employee division names
@@ -2016,9 +2011,9 @@
             The lookup name
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.LookupData.Language">
+        <member name="P:PayrollEngine.Api.Model.LookupData.Culture">
             <summary>
-            The language of the values
+            The values culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.LookupData.Values">
@@ -3420,9 +3415,9 @@
             The report request API object
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.ReportRequest.Language">
+        <member name="P:PayrollEngine.Api.Model.ReportRequest.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportRequest.UserId">
@@ -3460,9 +3455,9 @@
             The report name
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.ReportResponse.Language">
+        <member name="P:PayrollEngine.Api.Model.ReportResponse.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportResponse.User">
@@ -3505,9 +3500,9 @@
             The payroll report template name
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Language">
+        <member name="P:PayrollEngine.Api.Model.ReportTemplate.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportTemplate.Content">
@@ -3558,9 +3553,9 @@
             The report parameter id
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Language">
+        <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Culture">
             <summary>
-            The report language
+            The report culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportTemplateAudit.Content">
@@ -3774,11 +3769,6 @@
         <member name="P:PayrollEngine.Api.Model.User.Culture">
             <summary>
             The users culture
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.User.Language">
-            <summary>
-            The users language
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.User.UserType">

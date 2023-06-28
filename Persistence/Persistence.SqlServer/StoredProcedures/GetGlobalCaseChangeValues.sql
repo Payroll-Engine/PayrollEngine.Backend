@@ -26,8 +26,8 @@ CREATE PROCEDURE dbo.[GetGlobalCaseChangeValues]
   @sql AS NVARCHAR(MAX),
   -- the attribute names: JSON array of VARCHAR(128)
   @attributes AS NVARCHAR(MAX) = NULL,
-    -- the ISO 639-1 language code
-  @language AS NVARCHAR(3) = NULL
+  -- the cultue
+  @culture AS NVARCHAR(128) = NULL
 AS
 BEGIN
   -- SET NOCOUNT ON added to prevent extra result sets from
@@ -65,13 +65,13 @@ BEGIN
   [dbo].[GlobalCaseValue].[Status],
   -- localized case name
   ' +
-  IIF(@language IS NULL, '[dbo].[GlobalCaseValue].[CaseName]', 'dbo.GetLocalizedValue([dbo].[GlobalCaseValue].[CaseNameLocalizations], ''' + @language + ''', [dbo].[GlobalCaseValue].[CaseName])') + ' AS [CaseName],
+  IIF(@culture IS NULL, '[dbo].[GlobalCaseValue].[CaseName]', 'dbo.GetLocalizedValue([dbo].[GlobalCaseValue].[CaseNameLocalizations], ''' + @culture + ''', [dbo].[GlobalCaseValue].[CaseName])') + ' AS [CaseName],
   -- localized case field name
   ' +
-  IIF(@language IS NULL, '[dbo].[GlobalCaseValue].[CaseFieldName]', 'dbo.GetLocalizedValue([dbo].[GlobalCaseValue].[CaseFieldNameLocalizations], ''' + @language + ''', [dbo].[GlobalCaseValue].[CaseFieldName])') + ' AS [CaseFieldName],
+  IIF(@culture IS NULL, '[dbo].[GlobalCaseValue].[CaseFieldName]', 'dbo.GetLocalizedValue([dbo].[GlobalCaseValue].[CaseFieldNameLocalizations], ''' + @culture + ''', [dbo].[GlobalCaseValue].[CaseFieldName])') + ' AS [CaseFieldName],
   -- localized case slot
   ' +
-  IIF(@language IS NULL, '[dbo].[GlobalCaseValue].[CaseSlot]', 'dbo.GetLocalizedValue([dbo].[GlobalCaseValue].[CaseSlotLocalizations], ''' + @language + ''', [dbo].[GlobalCaseValue].[CaseSlot])') + ' AS [CaseSlot],
+  IIF(@culture IS NULL, '[dbo].[GlobalCaseValue].[CaseSlot]', 'dbo.GetLocalizedValue([dbo].[GlobalCaseValue].[CaseSlotLocalizations], ''' + @culture + ''', [dbo].[GlobalCaseValue].[CaseSlot])') + ' AS [CaseSlot],
   [dbo].[GlobalCaseValue].[CaseRelation],
   [dbo].[GlobalCaseValue].[ValueType],
   [dbo].[GlobalCaseValue].[Value],

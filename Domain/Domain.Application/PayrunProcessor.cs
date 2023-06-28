@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -86,9 +87,11 @@ public class PayrunProcessor : FunctionToolBase
         // context division
         context.Division = setup.Division ?? await processorRepositories.LoadDivisionAsync(context.Payroll.DivisionId);
 
-        // culture
-        var cultureName = context.Division.Culture ?? Tenant.Culture ?? System.Globalization.CultureInfo.CurrentCulture.Name;
-        context.Culture = new System.Globalization.CultureInfo(cultureName);
+        // culture by priority: division > tenant > system
+        var cultureName = context.Division.Culture ??
+                          Tenant.Culture ??
+                          CultureInfo.CurrentCulture.Name;
+        context.PushCulture(cultureName);
 
         // calendar
         var calendarName = context.Division.Calendar ?? Tenant.Calendar;
@@ -534,13 +537,14 @@ public class PayrunProcessor : FunctionToolBase
         // context execution
         context.ExecutionPhase = executionPhase;
 
-        // culture by priority: employee > division > tenant
-        var cultureName = employee.Culture ??
-                          context.Division.Culture ??
-                          Tenant.Culture;
-        context.Culture = new System.Globalization.CultureInfo(cultureName);
+        // culture by priority: employee > division > tenant > system
+        var culture = employee.Culture ??
+                      context.Division.Culture ??
+                      Tenant.Culture ??
+                      CultureInfo.CurrentCulture.Name;
+        context.PushCulture(culture);
 
-        // calendar by priority: employee > division > tenant
+        // calendar by priority: employee > division > tenant > system
         var calendarName = employee.Calendar ??
                           context.Division.Calendar ??
                           Tenant.Calendar;
@@ -760,6 +764,9 @@ public class PayrunProcessor : FunctionToolBase
         caseValueProvider.PopCalculator(employeeCalculator);
         context.Calculator = prevCalculator;
 
+        // restore culture
+        context.PopCulture(culture);
+
         // set results creation date
         payrollResult.SetResultDate(context.EvaluationDate);
 
@@ -912,6 +919,7 @@ public class PayrunProcessor : FunctionToolBase
             var isAvailable = scriptController.IsEmployeeAvailable(new()
             {
                 DbContext = Settings.DbContext,
+                Culture = context.Culture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -1015,7 +1023,7 @@ public class PayrunProcessor : FunctionToolBase
     private readonly Calendar defaultCalendar = new();
 
     private async Task<IPayrollCalculator> GetCalculatorAsync(int tenantId, int userId,
-        System.Globalization.CultureInfo culture = null, string calendarName = null)
+        string culture = null, string calendarName = null)
     {
         // calendar: first on payrun and second on tenant, otherwise use the default calendar
         var calendar = defaultCalendar;
@@ -1038,11 +1046,14 @@ public class PayrunProcessor : FunctionToolBase
             return payrollCalculator;
         }
 
+        // culture
+        var cultureInfo = culture == null ? CultureInfo.CurrentCulture : new(culture);
+
         // new calculator based on the tenant calendar configuration
         var calculator = Settings.PayrollCalculatorProvider.CreateCalculator(
             tenantId: tenantId,
             userId: userId,
-            culture: culture,
+            culture: cultureInfo,
             calendar: calendar);
         payrollCalculators.Add(calendarName, calculator);
         return calculator;

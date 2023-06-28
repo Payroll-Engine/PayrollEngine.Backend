@@ -7,5 +7,5 @@ public static class ParameterGetDerivedReportTemplates
     public static readonly string RegulationDate = "@regulationDate";
     public static readonly string CreatedBefore = "@createdBefore";
     public static readonly string ReportNames = "@reportNames";
-    public static readonly string Language = "@language";
+    public static readonly string Culture = "@culture";
 }

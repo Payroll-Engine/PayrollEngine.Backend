@@ -40,11 +40,12 @@ public abstract class DerivedCaseTool : FunctionToolBase
     protected ClusterSet ClusterSet { get; }
 
     // global
-    public CultureInfo Culture { get; }
     public Tenant Tenant { get; }
     public User User { get; }
     public Payroll Payroll { get; }
+    public Division Division { get; }
     public Employee Employee { get; }
+    public string Culture { get; }
 
     // repositories
     public IPayrollRepository PayrollRepository { get; }
@@ -70,13 +71,9 @@ public abstract class DerivedCaseTool : FunctionToolBase
         GlobalCaseValueRepository = globalCaseValueRepository ??
                                     throw new ArgumentNullException(nameof(globalCaseValueRepository));
 
-        // culture
-        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
-            CultureInfo.CurrentCulture :
-            new CultureInfo(Tenant.Culture);
-
         // local
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id, culture: culture, calendar: settings.Calendar);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
+            culture: new(Culture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
@@ -232,10 +229,13 @@ public abstract class DerivedCaseTool : FunctionToolBase
         base(settings)
     {
         // global
-        Culture = settings.Culture ?? CultureInfo.CurrentCulture;
         Tenant = settings.Tenant ?? throw new ArgumentNullException(nameof(settings.Tenant));
         User = settings.User ?? throw new ArgumentNullException(nameof(settings.User));
         Payroll = settings.Payroll ?? throw new ArgumentNullException(nameof(settings.Payroll));
+        Division = settings.Division ?? throw new ArgumentNullException(nameof(settings.Division));
+
+        // culture by priority: division > tenant > system
+        Culture = settings.Division.Culture ?? Tenant.Culture ?? CultureInfo.CurrentCulture.Name;
 
         // local
         if (!string.IsNullOrWhiteSpace(settings.ClusterSetName) && Payroll.ClusterSets != null)
@@ -283,11 +283,11 @@ public abstract class DerivedCaseTool : FunctionToolBase
     /// <param name="cases">The cases</param>
     /// <param name="caseSlot">The case slot</param>
     /// <param name="caseChangeSetup">The case change setup</param>
-    /// <param name="language">The language</param>
+    /// <param name="culture">The culture</param>
     /// <param name="initValues">if set to <c>true</c> [initialize values].</param>
     /// <returns>The derived case set</returns>
     protected virtual async Task<CaseSet> GetDerivedCaseSetAsync(IList<Case> cases, string caseSlot,
-        CaseChangeSetup caseChangeSetup, Language language, bool initValues)
+        CaseChangeSetup caseChangeSetup, string culture, bool initValues)
     {
         if (cases == null)
         {
@@ -295,7 +295,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
         }
 
         // build derived case
-        var derivedCase = DerivedCaseFactory.BuildCase(cases, caseSlot, language);
+        var derivedCase = DerivedCaseFactory.BuildCase(cases, caseSlot, culture);
 
         //  case fields
         var allCaseFields = await GetDerivedCaseFieldsAsync(derivedCase);
@@ -308,7 +308,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
             foreach (var caseFields in caseFieldsByName)
             {
                 // build derived case field
-                var derivedCaseField = DerivedCaseFactory.BuildCaseField(caseFields, language);
+                var derivedCaseField = DerivedCaseFactory.BuildCaseField(caseFields, culture);
                 derivedCase.Fields.Add(derivedCaseField);
             }
 

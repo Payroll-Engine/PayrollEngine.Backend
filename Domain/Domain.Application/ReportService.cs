@@ -19,7 +19,7 @@ public class ReportService : ScriptTrackChildApplicationService<IReportRepositor
         QueryService = queryService ?? throw new ArgumentNullException(nameof(queryService));
     }
 
-    public virtual async Task<DataTable> ExecuteQueryAsync(Tenant tenant, string methodName, Language? language,
+    public virtual async Task<DataTable> ExecuteQueryAsync(Tenant tenant, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext)
     {
         if (tenant == null)
@@ -28,7 +28,7 @@ public class ReportService : ScriptTrackChildApplicationService<IReportRepositor
         }
 
         // report query
-        var systemTable = await QueryService.ExecuteQueryAsync(tenant.Id, methodName, language, parameters, controllerContext);
+        var systemTable = await QueryService.ExecuteQueryAsync(tenant.Id, methodName, culture, parameters, controllerContext);
 
         // result table
         var payrollTable = systemTable?.ToPayrollDataTable();

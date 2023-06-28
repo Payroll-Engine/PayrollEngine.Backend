@@ -8,6 +8,7 @@ internal sealed class CaseSetupSettings
     internal IDbContext DbContext { get; init; }
     internal Tenant Tenant { get; init; }
     internal Payroll Payroll { get; init; }
+    internal Division Division { get; init; }
     internal User User { get; init; }
     internal Employee Employee { get; init; }
     internal CaseType CaseType { get; init; }

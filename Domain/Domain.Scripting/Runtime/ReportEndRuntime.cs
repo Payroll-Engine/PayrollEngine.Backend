@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using PayrollEngine.Client.Scripting;
 using PayrollEngine.Client.Scripting.Function;
@@ -34,9 +35,9 @@ public class ReportEndRuntime : ReportRuntime, IReportEndRuntime
 
     /// <inheritdoc />
     public DataTable ExecuteQuery(string tableName, string methodName,
-        int language, Dictionary<string, string> parameters, bool resultQuery)
+        string culture, Dictionary<string, string> parameters, bool resultQuery)
     {
-        var table = base.ExecuteQuery(tableName, methodName, language, parameters);
+        var table = base.ExecuteQuery(tableName, methodName, culture, parameters);
         if (resultQuery && table != null)
         {
             // result table
@@ -52,7 +53,7 @@ public class ReportEndRuntime : ReportRuntime, IReportEndRuntime
     }
 
     /// <inheritdoc />
-    public DataTable ExecuteMergeQuery(string tableName, string methodName, int language,
+    public DataTable ExecuteMergeQuery(string tableName, string methodName, string culture,
         string mergeColumn, Dictionary<string, string> parameters, int schemaChange)
     {
         if (string.IsNullOrWhiteSpace(tableName))
@@ -63,10 +64,6 @@ public class ReportEndRuntime : ReportRuntime, IReportEndRuntime
         {
             throw new ArgumentException(nameof(methodName));
         }
-        if (!Enum.IsDefined((Language)language))
-        {
-            throw new PayrollException($"Invalid language code: {language}");
-        }
         if (!Enum.IsDefined((DataMergeSchemaChange)schemaChange))
         {
             throw new PayrollException($"Invalid schema change: {schemaChange}");
@@ -74,8 +71,11 @@ public class ReportEndRuntime : ReportRuntime, IReportEndRuntime
 
         try
         {
+            // culture
+            culture ??= CultureInfo.CurrentCulture.Name;
+
             // report query
-            var resultTable = QueryService.ExecuteQuery(TenantId, methodName, (Language)language, parameters, ControllerContext);
+            var resultTable = QueryService.ExecuteQuery(TenantId, methodName, culture, parameters, ControllerContext);
             if (resultTable == null)
             {
                 if (!DataSet.Tables.Contains(tableName))

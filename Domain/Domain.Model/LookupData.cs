@@ -14,9 +14,9 @@ public class LookupData : IEquatable<LookupData>
     public string Name { get; set; }
 
     /// <summary>
-    /// The language of the values
+    /// The values culture
     /// </summary>
-    public Language? Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// The lookup values
@@ -47,7 +47,7 @@ public class LookupData : IEquatable<LookupData>
         }
 
         Name = source.Name;
-        Language = source.Language;
+        Culture = source.Culture;
         Values = source.Values.Copy();
         RangeSize = source.RangeSize;
     }

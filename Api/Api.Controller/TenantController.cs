@@ -82,7 +82,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
     }
 
     public virtual async Task<ActionResult<DataTable>> ExecuteReportQueryAsync(
-        int tenantId, string methodName, Language? language, Dictionary<string, string> parameters = null)
+        int tenantId, string methodName, string culture, Dictionary<string, string> parameters = null)
     {
         try
         {
@@ -94,7 +94,7 @@ public abstract class TenantController : RepositoryRootObjectController<ITenantS
             }
 
             // query
-            var dataTable = await ReportService.ExecuteQueryAsync(tenant, methodName, language,
+            var dataTable = await ReportService.ExecuteQueryAsync(tenant, methodName, culture,
                 parameters, new ApiControllerContext(ControllerContext));
             return dataTable;
         }

@@ -30,9 +30,9 @@ public class ReportResponse : IEquatable<ReportResponse>
     public string ReportName { get; set; }
 
     /// <summary>
-    /// The report language
+    /// The report culture
     /// </summary>
-    public Language Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// The report user identifier

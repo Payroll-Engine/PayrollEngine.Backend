@@ -39,7 +39,7 @@ public class GlobalCaseChangeRepository : CaseChangeRepository<CaseChange>, IGlo
                 StoredProcedure = DbSchema.Procedures.GetGlobalCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
-                Language = caseChangeQuery?.Language
+                Culture = caseChangeQuery?.Culture
             })).ToList();
         return items;
     }
@@ -68,7 +68,7 @@ public class GlobalCaseChangeRepository : CaseChangeRepository<CaseChange>, IGlo
                 StoredProcedure = DbSchema.Procedures.GetGlobalCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
-                Language = caseChangeQuery?.Language
+                Culture = caseChangeQuery?.Culture
             });
         return count;
     }

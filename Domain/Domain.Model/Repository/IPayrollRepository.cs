@@ -151,11 +151,11 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
     /// <param name="context">The database context</param>
     /// <param name="query">The payroll query</param>
     /// <param name="reportNames">The report names filter (default: all)</param>
-    /// <param name="language">The report language</param>
+    /// <param name="culture">The report culture (default: current)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <returns>The derived report templates</returns>
-    Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(IDbContext context, PayrollQuery query, 
-        IEnumerable<string> reportNames = null, Language? language = null,OverrideType? overrideType = null);
+    Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(IDbContext context, PayrollQuery query,
+        IEnumerable<string> reportNames = null, string culture = null, OverrideType? overrideType = null);
 
     /// <summary>
     /// Get all active scripts, considering derived regulations

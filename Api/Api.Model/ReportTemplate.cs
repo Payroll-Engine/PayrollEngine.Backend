@@ -16,10 +16,10 @@ public class ReportTemplate : ApiObjectBase
     public string Name { get; set; }
 
     /// <summary>
-    /// The report language
+    /// The report culture
     /// </summary>
     [Required]
-    public Language Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// The report content (client owned)
@@ -56,5 +56,5 @@ public class ReportTemplate : ApiObjectBase
 
     /// <inheritdoc/>
     public override string ToString() =>
-        $"{Language} {base.ToString()}";
+        $"{Culture} {base.ToString()}";
 }

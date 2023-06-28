@@ -12,9 +12,9 @@ public class CaseChangeQuery : Query
     public int? DivisionId { get; set; }
 
     /// <summary>
-    /// The language
+    /// The culture
     /// </summary>
-    public Language? Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// Exclude global changes

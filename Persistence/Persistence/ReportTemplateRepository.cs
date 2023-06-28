@@ -24,7 +24,7 @@ public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplat
     /// <inheritdoc />
     protected override void GetObjectData(ReportTemplate template, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(template.Language), template.Language);
+        parameters.Add(nameof(template.Culture), template.Culture);
         parameters.Add(nameof(template.Content), template.Content);
         parameters.Add(nameof(template.ContentType), template.ContentType);
         parameters.Add(nameof(template.Schema), template.Schema);
@@ -38,7 +38,7 @@ public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplat
     public override async Task<IEnumerable<ReportTemplate>> QueryAsync(IDbContext context, int regulationId, Query query = null)
     {
         // report template query
-        if (query is ReportTemplateQuery reportTemplateQuery && reportTemplateQuery.Language.HasValue)
+        if (query is ReportTemplateQuery reportTemplateQuery && !string.IsNullOrWhiteSpace(reportTemplateQuery.Culture))
         {
             // db query
             var dbQuery = GetTemplateQuery(context, regulationId, reportTemplateQuery);
@@ -69,7 +69,7 @@ public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplat
     public override async Task<long> QueryCountAsync(IDbContext context, int regulationId, Query query = null)
     {
         // report template query
-        if (query is ReportTemplateQuery reportTemplateQuery && reportTemplateQuery.Language.HasValue)
+        if (query is ReportTemplateQuery reportTemplateQuery && !string.IsNullOrWhiteSpace(reportTemplateQuery.Culture))
         {
             // db query
             var dbQuery = GetTemplateQuery(context, regulationId, reportTemplateQuery);

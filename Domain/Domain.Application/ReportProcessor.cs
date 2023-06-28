@@ -84,7 +84,7 @@ public class ReportProcessor : ReportTool
         // report response
         var response = new ReportResponse
         {
-            Language = reportRequest.Language,
+            Culture = reportRequest.Culture,
             User = user.Identifier,
             Queries = report.Queries,
             Relations = report.Relations,
@@ -150,7 +150,7 @@ public class ReportProcessor : ReportTool
                 }
 
                 var reportParameters = report.Parameters?.ToDictionary(x => x.Name, y => y.Value);
-                var resultTable = await QueryService.ExecuteQueryAsync(Tenant.Id, query.Key, query.Value, request.Language,
+                var resultTable = await QueryService.ExecuteQueryAsync(Tenant.Id, query.Key, query.Value, request.Culture,
                     reportParameters, request.Parameters, controllerContext);
                 // store result table to data set
                 if (resultTable != null)
@@ -183,9 +183,11 @@ public class ReportProcessor : ReportTool
     private ReportRuntimeSettings GetRuntimeSettings(User user, ReportSet report, ReportRequest request,
         IApiControllerContext controllerContext)
     {
+        var culture = Tenant.Culture ?? CultureInfo.CurrentCulture.Name;
         return new()
         {
             DbContext = Settings.DbContext,
+            Culture = culture,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = user,

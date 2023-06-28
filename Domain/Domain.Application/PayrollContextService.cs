@@ -8,6 +8,7 @@ public class PayrollContextService : IPayrollContextService
     public ITenantService TenantService { get; set; }
     public ILookupSetService RegulationLookupSetService { get; set; }
     public IPayrollService PayrollService { get; set; }
+    public IDivisionService DivisionService { get; set; }
     public IRegulationService RegulationService { get; set; }
     public ICaseService CaseService { get; set; }
     public ICaseFieldService CaseFieldService { get; set; }

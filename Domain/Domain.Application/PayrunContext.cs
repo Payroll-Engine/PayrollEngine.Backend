@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using PayrollEngine.Domain.Model;
@@ -23,9 +22,6 @@ internal sealed class PayrunContext
     internal List<RetroPayrunJob> RetroPayrunJobs { get; set; }
     internal PayrunExecutionPhase ExecutionPhase { get; set; }
 
-    internal string CalendarName { get; set; }
-    internal CultureInfo Culture { get; set; }
-
     internal IPayrollCalculator Calculator { get; set; }
     internal ICaseFieldProvider CaseFieldProvider { get; set; }
 
@@ -42,6 +38,29 @@ internal sealed class PayrunContext
 
     internal IRegulationLookupProvider RegulationLookupProvider { get; set; }
     internal IRuntimeValueProvider RuntimeValueProvider { get; } = new RuntimeValueProvider();
+
+    #region Calendar and Culture
+
+    internal string CalendarName { get; set; }
+    internal string Culture => cultures.Peek();
+
+    private readonly Stack<string> cultures = new();
+
+    internal void PushCulture(string culture)
+    {
+        cultures.Push(culture);
+    }
+
+    internal void PopCulture(string culture)
+    {
+        if (!cultures.Any() || !string.Equals(Culture, culture))
+        {
+            throw new InvalidOperationException();
+        }
+        cultures.Pop();
+    }
+
+    #endregion
 
     /// <summary>
     /// Collected errors

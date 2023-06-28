@@ -18,9 +18,9 @@ public class ReportTemplateAudit : ScriptAuditDomainObject, IDomainAttributeObje
     public string Name { get; set; }
 
     /// <summary>
-    /// The report language
+    /// The report culture
     /// </summary>
-    public Language Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// The report content

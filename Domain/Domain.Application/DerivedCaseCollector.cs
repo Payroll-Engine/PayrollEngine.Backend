@@ -58,33 +58,33 @@ public class DerivedCaseCollector : DerivedCaseTool
     {
     }
 
-    public virtual async Task<bool> GlobalCaseAvailableAsync(string caseName, Language language) =>
-        await CaseAvailableAsync(CaseType.Global, caseName, language);
+    public virtual async Task<bool> GlobalCaseAvailableAsync(string caseName, string culture) =>
+        await CaseAvailableAsync(CaseType.Global, caseName, culture);
 
-    public virtual async Task<bool> NationalCaseAvailableAsync(string caseName, Language language) =>
-        await CaseAvailableAsync(CaseType.National, caseName, language);
+    public virtual async Task<bool> NationalCaseAvailableAsync(string caseName, string culture) =>
+        await CaseAvailableAsync(CaseType.National, caseName, culture);
 
-    public virtual async Task<bool> CompanyCaseAvailableAsync(string caseName, Language language) =>
-        await CaseAvailableAsync(CaseType.Company, caseName, language);
+    public virtual async Task<bool> CompanyCaseAvailableAsync(string caseName, string culture) =>
+        await CaseAvailableAsync(CaseType.Company, caseName, culture);
 
-    public virtual async Task<bool> EmployeeCaseAvailableAsync(string caseName, Language language) =>
-        await CaseAvailableAsync(CaseType.Employee, caseName, language);
+    public virtual async Task<bool> EmployeeCaseAvailableAsync(string caseName, string culture) =>
+        await CaseAvailableAsync(CaseType.Employee, caseName, culture);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableGlobalCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableGlobalCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.Global, language, caseNames);
+        await GetAvailableCasesAsync(CaseType.Global, culture, caseNames);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableNationalCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableNationalCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.National, language, caseNames);
+        await GetAvailableCasesAsync(CaseType.National, culture, caseNames);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableCompanyCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableCompanyCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.Company, language, caseNames);
+        await GetAvailableCasesAsync(CaseType.Company, culture, caseNames);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableEmployeeCasesAsync(Language language,
+    public virtual async Task<IEnumerable<Case>> GetAvailableEmployeeCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.Employee, language, caseNames);
+        await GetAvailableCasesAsync(CaseType.Employee, culture, caseNames);
 
     /// <summary>
     /// Get case period values by date period and the case field names
@@ -101,9 +101,9 @@ public class DerivedCaseCollector : DerivedCaseTool
     /// </summary>
     /// <param name="caseType">Type of the case</param>
     /// <param name="caseName">Name of the case</param>
-    /// <param name="language">The language</param>
+    /// <param name="culture">The culture</param>
     /// <returns>True if the case is available</returns>
-    protected virtual async Task<bool> CaseAvailableAsync(CaseType caseType, string caseName, Language language)
+    protected virtual async Task<bool> CaseAvailableAsync(CaseType caseType, string caseName, string culture)
     {
         if (string.IsNullOrWhiteSpace(caseName))
         {
@@ -123,7 +123,7 @@ public class DerivedCaseCollector : DerivedCaseTool
             caseNames: new[] { caseName },
             clusterSet: ClusterSet,
             overrideType: OverrideType.Active)).ToList();
-        var available = await CaseAvailable(cases, language);
+        var available = await CaseAvailable(cases, culture);
         Log.Trace(available ? $"Case {caseName} available" : $"Case {caseName} not available");
         return available;
     }
@@ -133,9 +133,9 @@ public class DerivedCaseCollector : DerivedCaseTool
     /// </summary>
     /// <param name="caseType">Type of the case</param>
     /// <param name="caseNames">The case names (default: all)</param>
-    /// <param name="language">The language</param>
+    /// <param name="culture">The culture</param>
     /// <returns>List of available cases</returns>
-    protected virtual async Task<IEnumerable<Case>> GetAvailableCasesAsync(CaseType caseType, Language language,
+    protected virtual async Task<IEnumerable<Case>> GetAvailableCasesAsync(CaseType caseType, string culture,
         IEnumerable<string> caseNames = null)
     {
         var availableCases = new List<Case>();
@@ -162,11 +162,11 @@ public class DerivedCaseCollector : DerivedCaseTool
                 var cases = groupedCase.ToList();
 
                 // case available
-                var available = await CaseAvailable(cases, language);
+                var available = await CaseAvailable(cases, culture);
                 if (available)
                 {
                     // collect derived case values
-                    var caseSet = DerivedCaseFactory.BuildCase(cases, null, language);
+                    var caseSet = DerivedCaseFactory.BuildCase(cases, null, culture);
                     availableCases.Add(caseSet);
                     Log.Trace($"Case {groupedCase.Key} available");
                 }
@@ -180,7 +180,7 @@ public class DerivedCaseCollector : DerivedCaseTool
         return availableCases;
     }
 
-    private async Task<bool> CaseAvailable(IEnumerable<Case> cases, Language language)
+    private async Task<bool> CaseAvailable(IEnumerable<Case> cases, string culture)
     {
         var lookupProvider = await NewRegulationLookupProviderAsync();
 
@@ -198,7 +198,7 @@ public class DerivedCaseCollector : DerivedCaseTool
             caseList = caseList.Where(x => !string.IsNullOrWhiteSpace(x.AvailableScript)).ToList();
 
             // case set
-            var caseSet = await GetDerivedCaseSetAsync(caseList, null, null, language, false);
+            var caseSet = await GetDerivedCaseSetAsync(caseList, null, null, culture, false);
 
             // case available function call
             foreach (var _ in availableScripts)
@@ -206,6 +206,7 @@ public class DerivedCaseCollector : DerivedCaseTool
                 var available = new CaseScriptController().CaseAvailable(new()
                 {
                     DbContext = Settings.DbContext,
+                    Culture = Culture,
                     FunctionHost = FunctionHost,
                     Tenant = Tenant,
                     User = User,

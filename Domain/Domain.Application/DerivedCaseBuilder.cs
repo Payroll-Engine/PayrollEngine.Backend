@@ -58,23 +58,23 @@ public class DerivedCaseBuilder : DerivedCaseTool
     }
 
     public virtual async Task<CaseSet> BuildGlobalCaseAsync(string caseName,
-        CaseChangeSetup caseChangeSetup, Language language) =>
-        await BuildCaseAsync(CaseType.Global, caseName, caseChangeSetup, language);
+        CaseChangeSetup caseChangeSetup, string culture) =>
+        await BuildCaseAsync(CaseType.Global, caseName, caseChangeSetup, culture);
 
     public virtual async Task<CaseSet> BuildNationalCaseAsync(string caseName,
-        CaseChangeSetup caseChangeSetup, Language language) =>
-        await BuildCaseAsync(CaseType.National, caseName, caseChangeSetup, language);
+        CaseChangeSetup caseChangeSetup, string culture) =>
+        await BuildCaseAsync(CaseType.National, caseName, caseChangeSetup, culture);
 
     public virtual async Task<CaseSet> BuildCompanyCaseAsync(string caseName,
-        CaseChangeSetup caseChangeSetup, Language language) =>
-        await BuildCaseAsync(CaseType.Company, caseName, caseChangeSetup, language);
+        CaseChangeSetup caseChangeSetup, string culture) =>
+        await BuildCaseAsync(CaseType.Company, caseName, caseChangeSetup, culture);
 
     public virtual async Task<CaseSet> BuildEmployeeCaseAsync(string caseName,
-        CaseChangeSetup caseChangeSetup, Language language) =>
-        await BuildCaseAsync(CaseType.Employee, caseName, caseChangeSetup, language);
+        CaseChangeSetup caseChangeSetup, string culture) =>
+        await BuildCaseAsync(CaseType.Employee, caseName, caseChangeSetup, culture);
 
     protected virtual async Task<CaseSet> BuildCaseAsync(CaseType caseType, string caseName,
-        CaseChangeSetup caseChangeSetup, Language language)
+        CaseChangeSetup caseChangeSetup, string culture)
     {
         if (string.IsNullOrWhiteSpace(caseName))
         {
@@ -106,17 +106,17 @@ public class DerivedCaseBuilder : DerivedCaseTool
 
         // derived case from the most derived one
         var caseSlot = caseChangeSetup.Case?.CaseSlot;
-        var caseSet = await GetDerivedCaseSetAsync(cases, caseSlot, caseChangeSetup, language, true);
+        var caseSet = await GetDerivedCaseSetAsync(cases, caseSlot, caseChangeSetup, culture, true);
 
         // resolve case: start of recursion
-        await BuildCaseAsync(cases, caseSet, caseChangeSetup, language);
+        await BuildCaseAsync(cases, caseSet, caseChangeSetup, culture);
 
         return caseSet;
     }
 
     // entry point to resolve recursive
     private async Task<bool> BuildCaseAsync(IList<Case> cases, CaseSet caseSet,
-        CaseChangeSetup caseChangeSetup, Language language)
+        CaseChangeSetup caseChangeSetup, string culture)
     {
         var build = await CaseBuildAsync(cases, caseSet);
         if (!build)
@@ -174,7 +174,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
                 throw new PayrollException($"Unknown related case with name {targetRelation.Key.TargetCaseName} in derived case {caseSet.Name}");
             }
             // target derived case on the most derived one
-            var targetCaseSet = await GetDerivedCaseSetAsync(targetCases, targetRelation.Key.TargetCaseSlot, caseChangeSetup, language, true);
+            var targetCaseSet = await GetDerivedCaseSetAsync(targetCases, targetRelation.Key.TargetCaseSlot, caseChangeSetup, culture, true);
 
             // build case relation
             if (!await CaseRelationBuildAsync(targetRelation.ToList(), caseSet, targetCaseSet))
@@ -205,7 +205,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             }
 
             // process related case (recursive)
-            if (await BuildCaseAsync(targetCases, targetCaseSet, caseChangeSetup, language))
+            if (await BuildCaseAsync(targetCases, targetCaseSet, caseChangeSetup, culture))
             {
                 // add related case (ignore invalid case)
                 caseSet.RelatedCases.Add(targetCaseSet);
@@ -227,6 +227,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             var caseBuild = new CaseScriptController().CaseBuild(buildScripts, new()
             {
                 DbContext = Settings.DbContext,
+                Culture = Culture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,
@@ -263,6 +264,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             var build = new CaseRelationScriptController().CaseRelationBuild(buildScripts, new()
             {
                 DbContext = Settings.DbContext,
+                Culture = Culture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,

@@ -670,7 +670,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="lookupNames">The lookup names (case-insensitive)</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
-    /// <param name="language">The content language</param>
+    /// <param name="culture">The content culture</param>
     /// <returns>The lookup data</returns>
     [HttpGet("{payrollId}/lookups/data")]
     [OkResponse]
@@ -678,7 +678,7 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollLookupData")]
     public async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupDataAsync(int tenantId, int payrollId,
         [FromQuery][Required] string[] lookupNames, [FromQuery] DateTime? regulationDate,
-        [FromQuery] DateTime? evaluationDate, [FromQuery] Language? language)
+        [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -694,7 +694,7 @@ public class PayrollController : Api.Controller.PayrollController
                 RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             },
-            lookupNames, language);
+            lookupNames, culture);
     }
 
     /// <summary>
@@ -707,7 +707,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="rangeValue">The lookup range value</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
-    /// <param name="language">The language</param>
+    /// <param name="culture">The content culture</param>
     /// <returns>The lookup value data</returns>
     [HttpGet("{payrollId}/lookups/values/data")]
     [OkResponse]
@@ -715,7 +715,7 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollLookupValueData")]
     public async Task<ActionResult<ApiObject.LookupValueData>> GetPayrollLookupValueDataAsync(int tenantId, int payrollId,
         [FromQuery][Required] string lookupName, [FromQuery] string lookupKey, [FromQuery] decimal? rangeValue,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] Language? language)
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -731,7 +731,7 @@ public class PayrollController : Api.Controller.PayrollController
                 RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             },
-            lookupName, lookupKey, rangeValue, language);
+            lookupName, lookupKey, rangeValue, culture);
     }
 
     /// <summary>
@@ -809,7 +809,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="reportNames">The report names (case-insensitive, default is all)</param>
-    /// <param name="language">The report language (default is all)</param>
+    /// <param name="culture">The report culture (default is all)</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
     /// <returns>Payroll report templates</returns>
@@ -818,7 +818,7 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [ApiOperationId("GetPayrollReportTemplates")]
     public async Task<ActionResult<ApiObject.ReportTemplate[]>> GetPayrollReportTemplatesAsync(int tenantId, int payrollId,
-        [FromQuery] string[] reportNames, [FromQuery] Language? language,
+        [FromQuery] string[] reportNames, [FromQuery] string culture,
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // tenant check
@@ -835,7 +835,7 @@ public class PayrollController : Api.Controller.PayrollController
                 RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             },
-            reportNames, language);
+            reportNames, culture);
     }
 
     /// <summary>

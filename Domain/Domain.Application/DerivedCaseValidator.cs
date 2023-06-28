@@ -352,7 +352,7 @@ public class DerivedCaseValidator : DerivedCaseTool
 
     // entry point to resolve recursive 
     private async Task ValidateCaseAsync(IList<Case> cases, CaseSet caseSet,
-        CaseChangeSetup caseChangeSetup, List<CaseValidationIssue> issues, Language language, bool ignoreUnknownRelations)
+        CaseChangeSetup caseChangeSetup, List<CaseValidationIssue> issues, string culture, bool ignoreUnknownRelations)
     {
         // case validation
         await CaseValidateAsync(cases, caseSet, issues);
@@ -405,7 +405,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                 throw new PayrollException($"Unknown related case with name {targetRelation.Key} in derived case {caseSet.Name}");
             }
             // target derived case set, the most derived one
-            var targetCaseSet = await GetDerivedCaseSetAsync(targetCase, targetRelation.Key.TargetCaseSlot, caseChangeSetup, language, false);
+            var targetCaseSet = await GetDerivedCaseSetAsync(targetCase, targetRelation.Key.TargetCaseSlot, caseChangeSetup, culture, false);
             caseSet.RelatedCases.Add(targetCaseSet);
 
             // ensure recursive cancellation date
@@ -415,7 +415,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             if (await CaseRelationValidateAsync(targetRelation.ToList(), caseSet, targetCaseSet, issues))
             {
                 // process related case (recursive)
-                await ValidateCaseAsync(targetCase, targetCaseSet, caseChangeSetup, issues, language, ignoreUnknownRelations);
+                await ValidateCaseAsync(targetCase, targetCaseSet, caseChangeSetup, issues, culture, ignoreUnknownRelations);
             }
         }
 
@@ -461,6 +461,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             var valid = new CaseScriptController().CaseValidate(validateScripts, new()
             {
                 DbContext = Settings.DbContext,
+                Culture = Culture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,
@@ -509,6 +510,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             var valid = new CaseRelationScriptController().CaseRelationValidate(validateScripts, new()
             {
                 DbContext = Settings.DbContext,
+                Culture = Culture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,

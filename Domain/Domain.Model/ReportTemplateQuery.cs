@@ -7,9 +7,9 @@ namespace PayrollEngine.Domain.Model;
 public class ReportTemplateQuery : Query
 {
     /// <summary>
-    /// Report language
+    /// Report culture
     /// </summary>
-    public Language? Language { get; set; }
+    public string Culture { get; set; }
 
     /// <summary>
     /// Exclude report content
