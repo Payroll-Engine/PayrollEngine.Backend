@@ -189,11 +189,10 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
             }
             caseFields.Add(caseField);
 
-
+            // case
             Case @case;
             if (string.IsNullOrWhiteSpace(caseChange.ValidationCaseName))
             {
-                // case
                 var caseId = await CaseFieldRepository.GetParentIdAsync(context, caseField.Id);
                 if (!caseId.HasValue)
                 {
@@ -277,6 +276,12 @@ public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseC
                 updateFields.Add(caseField);
                 // changed case value
                 updateValues.Add(caseValue);
+            }
+            else
+            {
+                // ignored case value
+                caseChange.IgnoredValues ??= new();
+                caseChange.IgnoredValues.Add(caseValue);
             }
         }
         // apply update fields and values

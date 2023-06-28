@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PayrollEngine.Api.Model;
@@ -58,5 +59,10 @@ public class CaseChange : ApiObjectBase
     /// <summary>
     /// The case values
     /// </summary>
-    public CaseValue[] Values { get; set; }
+    public List<CaseValue> Values { get; set; }
+
+    /// <summary>
+    /// The ignored case values
+    /// </summary>
+    public List<CaseValue> IgnoredValues { get; set; }
 }

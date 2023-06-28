@@ -59,6 +59,11 @@ public class CaseChange : DomainObjectBase, IEquatable<CaseChange>
     /// </summary>
     public List<CaseValue> Values { get; set; }
 
+    /// <summary>
+    /// The ignored case values (transient)
+    /// </summary>
+    public List<CaseValue> IgnoredValues { get; set; }
+
     /// <inheritdoc/>
     public CaseChange()
     {

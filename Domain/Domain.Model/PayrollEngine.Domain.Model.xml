@@ -702,6 +702,11 @@
             The case values
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseChange.IgnoredValues">
+            <summary>
+            The ignored case values (transient)
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.CaseChange.#ctor">
             <inheritdoc/>
         </member>

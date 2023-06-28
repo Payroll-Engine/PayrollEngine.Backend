@@ -147,7 +147,7 @@ public class CalendarController : Api.Controller.CalendarController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="cultureName">The culture to use (default: tenant culture)</param>
-    /// <param name="calendarName">The calendar name</param>
+    /// <param name="calendarName">The calendar configuration (default: tenant calendar)</param>
     /// <param name="periodMoment">The moment within the payrun period (default: now)</param>
     /// <param name="offset">The offset:<br />
     /// less than zero: past<br />

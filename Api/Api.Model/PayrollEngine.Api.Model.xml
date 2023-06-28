@@ -438,6 +438,11 @@
             The case values
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CaseChange.IgnoredValues">
+            <summary>
+            The ignored case values
+            </summary>
+        </member>
         <member name="T:PayrollEngine.Api.Model.CaseChangeCaseValue">
             <summary>A case value from a case change used in national, company and employee case</summary>
         </member>

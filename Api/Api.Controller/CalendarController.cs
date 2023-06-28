@@ -43,21 +43,37 @@ public abstract class CalendarController : RepositoryChildObjectController<ITena
     {
         try
         {
+            // tenant
+            var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
+            if (tenant == null)
+            {
+                return BadRequest($"Unknown tenant with id {tenantId}");
+            }
+
             // calendar
+            Calendar calendar;
             if (string.IsNullOrWhiteSpace(calendarName))
             {
-                return BadRequest("Missing calendar name");
+                // fallback 1: default calendar
+                calendarName = tenant.Calendar;
             }
-            var calendar = await Service.GetByNameAsync(Runtime.DbContext, tenantId, calendarName);
-            if (calendar == null)
+            if (!string.IsNullOrWhiteSpace(calendarName))
             {
-                return BadRequest($"Unknown calendar {calendarName}");
+                calendar = await Service.GetByNameAsync(Runtime.DbContext, tenantId, calendarName);
+                if (calendar == null)
+                {
+                    return BadRequest($"Unknown calendar {calendarName}");
+                }
+            }
+            else
+            {
+                // fallback 2: default calendar
+                calendar = new();
             }
 
             // culture
             if (string.IsNullOrWhiteSpace(cultureName))
             {
-                var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
                 // tenant culture
                 if (string.IsNullOrWhiteSpace(cultureName))
                 {
@@ -95,21 +111,37 @@ public abstract class CalendarController : RepositoryChildObjectController<ITena
     {
         try
         {
+            // tenant
+            var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
+            if (tenant == null)
+            {
+                return BadRequest($"Unknown tenant with id {tenantId}");
+            }
+
             // calendar
+            Calendar calendar;
             if (string.IsNullOrWhiteSpace(calendarName))
             {
-                return BadRequest("Missing calendar name");
+                // fallback 1: default calendar
+                calendarName = tenant.Calendar;
             }
-            var calendar = await Service.GetByNameAsync(Runtime.DbContext, tenantId, calendarName);
-            if (calendar == null)
+            if (!string.IsNullOrWhiteSpace(calendarName))
             {
-                return BadRequest($"Unknown calendar {calendarName}");
+                calendar = await Service.GetByNameAsync(Runtime.DbContext, tenantId, calendarName);
+                if (calendar == null)
+                {
+                    return BadRequest($"Unknown calendar {calendarName}");
+                }
+            }
+            else
+            {
+                // fallback 2: default calendar
+                calendar = new();
             }
 
             // culture
             if (string.IsNullOrWhiteSpace(cultureName))
             {
-                var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
                 // tenant culture
                 if (string.IsNullOrWhiteSpace(cultureName))
                 {
