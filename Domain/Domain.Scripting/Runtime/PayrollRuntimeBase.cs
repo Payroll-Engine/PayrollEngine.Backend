@@ -77,9 +77,6 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     /// <inheritdoc />
     public int PayrollId => Payroll.Id;
 
-    /// <inheritdoc />
-    public int PayrollCountry => Payroll.Country;
-
     #endregion
 
     #region Internal

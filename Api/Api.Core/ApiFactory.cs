@@ -11,13 +11,16 @@ internal static class ApiFactory
     // services setup
     internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
     {
+        // server config
+        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
+
         // database context
         var connectionString = configuration.GetConnectionString(SystemSpecification.DatabaseConnectionString);
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new PayrollException($"Missing database connection string {SystemSpecification.DatabaseConnectionString}");
         }
-        services.AddTransient<IDbContext>((_) => new DbContext(connectionString));
+        services.AddTransient<IDbContext>((_) => new DbContext(connectionString, serverConfiguration.DbCommandTimeout));
 
         // tenant management and api controller runtime context
         services.AddScoped<ITenantManager, TenantManager>();

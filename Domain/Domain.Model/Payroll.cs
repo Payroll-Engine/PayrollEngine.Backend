@@ -35,12 +35,6 @@ public class Payroll : DomainObjectBase, INamedObject, IDomainAttributeObject, I
     public int DivisionId { get; set; }
 
     /// <summary>
-    /// The ISO 3166-1 country code, 0 for undefined
-    /// <remarks>See <see cref="Country"/></remarks>
-    /// </summary>
-    public int Country { get; set; }
-
-    /// <summary>
     /// The case cluster set (undefined: all)
     /// </summary>
     public string ClusterSetCase { get; set; }

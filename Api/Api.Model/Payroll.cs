@@ -39,11 +39,6 @@ public class Payroll : ApiObjectBase
     public int DivisionId { get; set; }
 
     /// <summary>
-    /// The ISO 3166-1 country code, 0 for undefined
-    /// </summary>
-    public int Country { get; set; }
-
-    /// <summary>
     /// The case cluster set (undefined: all)
     /// </summary>
     [StringLength(128)]

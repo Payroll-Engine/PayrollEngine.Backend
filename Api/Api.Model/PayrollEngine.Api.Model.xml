@@ -2181,11 +2181,6 @@
             The division id (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.Country">
-            <summary>
-            The ISO 3166-1 country code, 0 for undefined
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCase">
             <summary>
             The case cluster set (undefined: all)

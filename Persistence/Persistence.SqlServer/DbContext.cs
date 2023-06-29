@@ -13,13 +13,37 @@ public class DbContext : IDbContext
     /// <summary>The database connection string</summary>
     public string ConnectionString { get; }
 
-    public DbContext(string connectionString)
+    /// <summary>The default command timeout in seconds</summary>
+    public int DefaultCommendTimeout { get; }
+
+    // minimum command timeout is 30 seconds
+    private const int MinCommandTimeout = 30;
+    // maximum command timeout is 30 minutes
+    private const int MaxCommandTimeout = 1800;
+
+    /// <summary>
+    /// New database connection
+    /// </summary>
+    /// <param name="connectionString">The database connection string</param>
+    /// <param name="defaultCommendTimeout">The default command timeout in seconds</param>
+    public DbContext(string connectionString, int defaultCommendTimeout = 120)
     {
+        // connection string
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new ArgumentException(nameof(connectionString));
         }
         ConnectionString = connectionString;
+
+        // default command timeout range limits
+        if (defaultCommendTimeout < MinCommandTimeout)
+        {
+            defaultCommendTimeout = MinCommandTimeout;
+        } else if (defaultCommendTimeout > MaxCommandTimeout)
+        {
+            defaultCommendTimeout = MaxCommandTimeout;
+        }
+        DefaultCommendTimeout = defaultCommendTimeout;
     }
 
     /// <summary>New database connection for SQL Server</summary>
@@ -37,42 +61,43 @@ public class DbContext : IDbContext
 
     #region Operations
 
-    public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null,
-        CommandType? commandType = null)
+    public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, 
+        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
-        return await connection.QueryAsync<T>(sql, param, transaction, commandTimeout, commandType);
+        return await connection.QueryAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
     }
 
     /// <inheritdoc />
-    public async Task<T> QueryFirstAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null,
-        CommandType? commandType = null)
+    public async Task<T> QueryFirstAsync<T>(string sql, object param = null, 
+        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
-        return await connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType);
+        return await connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
     }
 
     /// <inheritdoc />
-    public async Task<T> QuerySingleAsync<T>(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null,
-        CommandType? commandType = null)
+    public async Task<T> QuerySingleAsync<T>(string sql, object param = null, 
+        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
-        return await connection.QuerySingleAsync<T>(sql, param, transaction, commandTimeout, commandType);
+        return await connection.QuerySingleAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
     }
 
     /// <inheritdoc />
-    public async Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+    public async Task<int> ExecuteAsync(string sql, object param = null,
+        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
-        return await connection.ExecuteAsync(sql, param, transaction, commandTimeout, commandType);
+        return await connection.ExecuteAsync(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
     }
 
     /// <inheritdoc />
-    public async Task<T> ExecuteScalarAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
-        int? commandTimeout = null, CommandType? commandType = null)
+    public async Task<T> ExecuteScalarAsync<T>(string sql, object param = null, 
+        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
-        return await connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout, commandType);
+        return await connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
     }
 
     #endregion

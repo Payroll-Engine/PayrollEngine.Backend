@@ -38,7 +38,6 @@ public class PayrollRepository : ChildDomainRepository<Payroll>, IPayrollReposit
         parameters.Add(nameof(payroll.NameLocalizations), JsonSerializer.SerializeNamedDictionary(payroll.NameLocalizations));
         parameters.Add(nameof(payroll.Description), payroll.Description);
         parameters.Add(nameof(payroll.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(payroll.DescriptionLocalizations));
-        parameters.Add(nameof(payroll.Country), payroll.Country);
         parameters.Add(nameof(payroll.ClusterSetCase), payroll.ClusterSetCase);
         parameters.Add(nameof(payroll.ClusterSetCaseField), payroll.ClusterSetCaseField);
         parameters.Add(nameof(payroll.ClusterSetCollector), payroll.ClusterSetCollector);

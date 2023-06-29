@@ -20,6 +20,9 @@ public class PayrollServerConfiguration
     /// <summary>Use health check (default: false)</summary>
     public bool UseHealthCheck { get; set; }
 
+    /// <summary>Database command timeout in seconds (default: 120)</summary>
+    public int DbCommandTimeout { get; set; } = 120;
+
     /// <summary>Webhook timeout</summary>
     public TimeSpan WebhookTimeout { get; set; } = TimeSpan.FromMinutes(1);
 
