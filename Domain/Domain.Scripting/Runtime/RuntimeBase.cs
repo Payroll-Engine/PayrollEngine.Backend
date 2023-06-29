@@ -28,7 +28,7 @@ public abstract class RuntimeBase : IRuntime
         TimeSpan.FromMilliseconds(BackendScriptingSpecification.ScriptFunctionTimeout);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PayrollRuntime"/> class
+    /// Initializes a new instance of the <see cref="PayrollRuntimeBase"/> class
     /// </summary>
     /// <param name="settings">The runtime</param>
     protected RuntimeBase(RuntimeSettings settings)

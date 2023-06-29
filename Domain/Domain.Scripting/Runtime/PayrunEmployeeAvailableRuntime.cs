@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the payrun employee available function
 /// </summary>
-public class PayrunEmployeeAvailableRuntime : PayrunRuntime, IPayrunEmployeeAvailableRuntime
+public class PayrunEmployeeAvailableRuntime : PayrunRuntimeBase, IPayrunEmployeeAvailableRuntime
 {
     internal PayrunEmployeeAvailableRuntime(PayrunRuntimeSettings settings) :
         base(settings)

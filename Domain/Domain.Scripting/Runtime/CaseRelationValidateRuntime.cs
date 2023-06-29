@@ -13,7 +13,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the case relation validate function
 /// </summary>
-public class CaseRelationValidateRuntime : CaseRelationRuntime, ICaseRelationValidateRuntime
+public class CaseRelationValidateRuntime : CaseRelationRuntimeBase, ICaseRelationValidateRuntime
 {
     /// <summary>
     /// The validation issues

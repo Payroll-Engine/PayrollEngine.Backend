@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// runtime for the payrun script
 /// </summary>
-public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
+public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -35,7 +35,7 @@ public abstract class PayrunRuntime : PayrollRuntime, IPayrunRuntime
     protected IRuntimeValueProvider RuntimeValueProvider => Settings.RuntimeValueProvider;
 
     /// <inheritdoc />
-    protected PayrunRuntime(PayrunRuntimeSettings settings) :
+    protected PayrunRuntimeBase(PayrunRuntimeSettings settings) :
         base(settings)
     {
     }

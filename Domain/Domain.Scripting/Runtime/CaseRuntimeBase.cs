@@ -4,7 +4,7 @@ using PayrollEngine.Domain.Model;
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
 /// <summary>Runtime for a case change function</summary>
-public abstract class CaseRuntime : PayrollRuntime, ICaseRuntime
+public abstract class CaseRuntimeBase : PayrollRuntimeBase, ICaseRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -18,7 +18,7 @@ public abstract class CaseRuntime : PayrollRuntime, ICaseRuntime
     protected IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
 
     /// <inheritdoc />
-    protected CaseRuntime(CaseRuntimeSettings settings) :
+    protected CaseRuntimeBase(CaseRuntimeSettings settings) :
         base(settings)
     {
     }

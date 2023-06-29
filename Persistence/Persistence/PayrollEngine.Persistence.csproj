@@ -17,7 +17,7 @@
 	<ItemGroup>
 		<PackageReference Include="SqlKata" Version="2.4.0" />
 		<PackageReference Include="SqlKata.Execution" Version="2.4.0" />
-		<PackageReference Include="Microsoft.OData.Core" Version="7.16.0" />
+		<PackageReference Include="Microsoft.OData.Core" Version="7.17.0" />
 	</ItemGroup>
 
 	<ItemGroup>

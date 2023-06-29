@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the case relation build function
 /// </summary>
-public class CaseRelationBuildRuntime : CaseRelationRuntime, ICaseRelationBuildRuntime
+public class CaseRelationBuildRuntime : CaseRelationRuntimeBase, ICaseRelationBuildRuntime
 {
     /// <inheritdoc />
     internal CaseRelationBuildRuntime(CaseRelation caseRelation, CaseRelationRuntimeSettings settings) :

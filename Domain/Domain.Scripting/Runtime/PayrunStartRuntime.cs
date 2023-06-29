@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the payrun start function
 /// </summary>
-public class PayrunStartRuntime : PayrunRuntime, IPayrunStartRuntime
+public class PayrunStartRuntime : PayrunRuntimeBase, IPayrunStartRuntime
 {
     internal PayrunStartRuntime(PayrunRuntimeSettings settings) :
         base(settings)

@@ -9,7 +9,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for a case change function
 /// </summary>
-public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
+public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -25,9 +25,9 @@ public abstract class CaseChangeRuntime : CaseRuntime, ICaseChangeRuntime
     /// <summary>The case field provider</summary>
     protected ICaseFieldProvider CaseFieldProvider => CaseValueProvider.CaseFieldProvider;
 
-    /// <summary>Initializes a new instance of the <see cref="CaseChangeRuntime"/> class</summary>
+    /// <summary>Initializes a new instance of the <see cref="CaseChangeRuntimeBase"/> class</summary>
     /// <param name="settings">The runtime settings</param>
-    protected CaseChangeRuntime(CaseChangeRuntimeSettings settings) :
+    protected CaseChangeRuntimeBase(CaseChangeRuntimeSettings settings) :
         base(settings)
     {
     }

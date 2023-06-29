@@ -10,7 +10,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the case field available function
 /// </summary>
-public class CaseAvailableRuntime : CaseRuntime, ICaseAvailableRuntime
+public class CaseAvailableRuntime : CaseRuntimeBase, ICaseAvailableRuntime
 {
     internal CaseAvailableRuntime(CaseRuntimeSettings settings) :
         base(settings)

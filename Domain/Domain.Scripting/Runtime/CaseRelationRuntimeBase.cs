@@ -9,7 +9,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// runtime for a case script function
 /// </summary>
-public abstract class CaseRelationRuntime : PayrollRuntime, ICaseRelationRuntime
+public abstract class CaseRelationRuntimeBase : PayrollRuntimeBase, ICaseRelationRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -35,7 +35,7 @@ public abstract class CaseRelationRuntime : PayrollRuntime, ICaseRelationRuntime
     internal CaseSet TargetCaseSet => Settings.TargetCaseSet;
 
     /// <inheritdoc />
-    protected CaseRelationRuntime(CaseRelation caseRelation, CaseRelationRuntimeSettings settings) :
+    protected CaseRelationRuntimeBase(CaseRelation caseRelation, CaseRelationRuntimeSettings settings) :
         base(settings)
     {
         CaseRelation = caseRelation ?? throw new ArgumentNullException(nameof(caseRelation));

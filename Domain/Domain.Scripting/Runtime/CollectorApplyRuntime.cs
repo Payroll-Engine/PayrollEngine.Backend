@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the collector apply script
 /// </summary>
-public class CollectorApplyRuntime : CollectorRuntime, ICollectorApplyRuntime
+public class CollectorApplyRuntime : CollectorRuntimeBase, ICollectorApplyRuntime
 {
     /// <summary>
     /// The wage type result

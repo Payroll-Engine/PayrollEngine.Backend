@@ -12,7 +12,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the collector end script
 /// </summary>
-public class CollectorEndRuntime : CollectorRuntime, ICollectorEndRuntime
+public class CollectorEndRuntime : CollectorRuntimeBase, ICollectorEndRuntime
 {
     internal CollectorEndRuntime(CollectorRuntimeSettings settings) :
         base(settings)

@@ -10,7 +10,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// runtime for a collector function
 /// </summary>
-public abstract class CollectorRuntime : PayrunRuntime, ICollectorRuntime
+public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -65,7 +65,7 @@ public abstract class CollectorRuntime : PayrunRuntime, ICollectorRuntime
         Collector.Attributes?.GetValue<object>(attributeName);
 
     /// <inheritdoc />
-    protected CollectorRuntime(CollectorRuntimeSettings settings) :
+    protected CollectorRuntimeBase(CollectorRuntimeSettings settings) :
         base(settings)
     {
     }

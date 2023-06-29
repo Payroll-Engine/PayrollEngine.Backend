@@ -12,7 +12,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the payrun wage type is available function
 /// </summary>
-public class PayrunWageTypeAvailableRuntime : PayrunRuntime, IPayrunWageTypeAvailableRuntime
+public class PayrunWageTypeAvailableRuntime : PayrunRuntimeBase, IPayrunWageTypeAvailableRuntime
 {
     /// <summary>
     /// The wage type

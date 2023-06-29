@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the report start function
 /// </summary>
-public class ReportStartRuntime : ReportRuntime, IReportStartRuntime
+public class ReportStartRuntime : ReportRuntimeBase, IReportStartRuntime
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ReportStartRuntime"/> class.

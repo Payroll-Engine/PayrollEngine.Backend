@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// runtime for a wage type function
 /// </summary>
-public abstract class WageTypeRuntime : PayrunRuntime, IWageTypeRuntime
+public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -98,7 +98,7 @@ public abstract class WageTypeRuntime : PayrunRuntime, IWageTypeRuntime
         WageTypeAttributes?.GetValue<object>(attributeName);
 
     /// <inheritdoc />
-    protected WageTypeRuntime(WageTypeRuntimeSettings settings) :
+    protected WageTypeRuntimeBase(WageTypeRuntimeSettings settings) :
         base(settings)
     {
     }

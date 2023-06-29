@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime to build a case
 /// </summary>
-public class CaseBuildRuntime : CaseChangeRuntime, ICaseBuildRuntime
+public class CaseBuildRuntime : CaseChangeRuntimeBase, ICaseBuildRuntime
 {
     internal CaseBuildRuntime(CaseChangeRuntimeSettings settings) :
         base(settings)

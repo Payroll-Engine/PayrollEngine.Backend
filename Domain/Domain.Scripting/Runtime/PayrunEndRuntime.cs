@@ -13,7 +13,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the payrun end function
 /// </summary>
-public class PayrunEndRuntime : PayrunRuntime, IPayrunEndRuntime
+public class PayrunEndRuntime : PayrunRuntimeBase, IPayrunEndRuntime
 {
     internal PayrunEndRuntime(PayrunRuntimeSettings settings) :
         base(settings)

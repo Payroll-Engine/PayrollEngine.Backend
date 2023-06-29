@@ -12,7 +12,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the report build function
 /// </summary>
-public class ReportBuildRuntime : ReportRuntime, IReportBuildRuntime
+public class ReportBuildRuntime : ReportRuntimeBase, IReportBuildRuntime
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ReportBuildRuntime"/> class

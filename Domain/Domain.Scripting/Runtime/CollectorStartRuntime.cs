@@ -12,7 +12,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the collector start script
 /// </summary>
-public class CollectorStartRuntime : CollectorRuntime, ICollectorStartRuntime
+public class CollectorStartRuntime : CollectorRuntimeBase, ICollectorStartRuntime
 {
 
     internal CollectorStartRuntime(CollectorRuntimeSettings settings) :

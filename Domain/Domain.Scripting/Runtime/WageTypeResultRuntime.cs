@@ -12,7 +12,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the wage type result function
 /// </summary>
-public class WageTypeResultRuntime : WageTypeRuntime, IWageTypeResultRuntime
+public class WageTypeResultRuntime : WageTypeRuntimeBase, IWageTypeResultRuntime
 {
     /// <inheritdoc />
     public decimal WageTypeValue { get; }

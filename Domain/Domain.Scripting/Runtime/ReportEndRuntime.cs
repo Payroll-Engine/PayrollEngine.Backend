@@ -14,7 +14,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the report end function
 /// </summary>
-public class ReportEndRuntime : ReportRuntime, IReportEndRuntime
+public class ReportEndRuntime : ReportRuntimeBase, IReportEndRuntime
 {
     /// <inheritdoc />
     public DataSet DataSet { get; }

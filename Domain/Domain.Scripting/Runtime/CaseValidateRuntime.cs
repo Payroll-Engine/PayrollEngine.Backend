@@ -13,7 +13,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the case field validation function
 /// </summary>
-public class CaseValidateRuntime : CaseChangeRuntime, ICaseValidateRuntime
+public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
 {
     /// <summary>
     /// The validation issues

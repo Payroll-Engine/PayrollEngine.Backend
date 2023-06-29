@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for a payroll function
 /// </summary>
-public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
+public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -39,10 +39,10 @@ public abstract class PayrollRuntime : RuntimeBase, IPayrollRuntime
     public static readonly int MaxPeriodCount = 200;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PayrollRuntime"/> class
+    /// Initializes a new instance of the <see cref="PayrollRuntimeBase"/> class
     /// </summary>
     /// <param name="settings">The runtime settings</param>
-    protected PayrollRuntime(PayrollRuntimeSettings settings) :
+    protected PayrollRuntimeBase(PayrollRuntimeSettings settings) :
         base(settings)
     {
     }

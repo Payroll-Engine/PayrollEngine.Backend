@@ -11,7 +11,7 @@ using PayrollEngine.Domain.Model;
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
 /// <summary>runtime for the report script</summary>
-public abstract class ReportRuntime : RuntimeBase, IReportRuntime
+public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
 {
     /// <summary>
     /// The runtime settings
@@ -31,10 +31,10 @@ public abstract class ReportRuntime : RuntimeBase, IReportRuntime
     protected ReportRequest ReportRequest => Settings.ReportRequest;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ReportRuntime"/> class.
+    /// Initializes a new instance of the <see cref="ReportRuntimeBase"/> class.
     /// </summary>
     /// <param name="settings">The runtime settings</param>
-    protected ReportRuntime(ReportRuntimeSettings settings) :
+    protected ReportRuntimeBase(ReportRuntimeSettings settings) :
         base(settings)
     {
     }

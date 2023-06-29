@@ -3984,7 +3984,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.LookupData.Culture">
             <summary>
-            The culture of the values
+            The values culture
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.LookupData.Values">

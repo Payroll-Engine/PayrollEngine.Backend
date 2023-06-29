@@ -12,7 +12,7 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// <summary>
 /// Runtime for the wage type value function
 /// </summary>
-public class WageTypeValueRuntime : WageTypeRuntime, IWageTypeValueRuntime
+public class WageTypeValueRuntime : WageTypeRuntimeBase, IWageTypeValueRuntime
 {
     /// <summary>
     /// Provider for case fields
