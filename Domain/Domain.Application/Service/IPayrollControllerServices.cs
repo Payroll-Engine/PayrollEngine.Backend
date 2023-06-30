@@ -10,7 +10,6 @@ public interface IPayrollControllerServices
     IPayrollContextService Context { get; }
     Task<List<CaseValidationIssue>> ValidateCaseAsync(ValidateCaseSettings settings);
 
-    Task<IEnumerable<CaseValue>> GetPayrollTimeCaseValuesAsync(
-        IDbContext context, PayrollQuery query, CaseType caseType, string[] caseFieldNames = null,
-        DateTime? valueDate = null);
+    Task<IEnumerable<CaseValue>> GetPayrollTimeCaseValuesAsync(PayrollQuery query, 
+        CaseType caseType, string[] caseFieldNames = null, DateTime? valueDate = null);
 }

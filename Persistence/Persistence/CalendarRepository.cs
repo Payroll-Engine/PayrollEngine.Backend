@@ -37,7 +37,7 @@ public class CalendarRepository : ChildDomainRepository<Calendar>, ICalendarRepo
         base.GetObjectData(calendar, parameters);
     }
 
-    public virtual async Task<Calendar> GetByNameAsync(IDbContext context, int tenantId, string name)
+    public async Task<Calendar> GetByNameAsync(IDbContext context, int tenantId, string name)
     {
         if (tenantId <= 0)
         {

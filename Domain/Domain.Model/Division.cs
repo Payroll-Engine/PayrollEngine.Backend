@@ -24,7 +24,7 @@ public class Division : DomainObjectBase, INamedObject, IDomainAttributeObject, 
     public string Culture { get; set; }
 
     /// <summary>
-    /// The division calendar, fallback for tenant calendar
+    /// The division calendar (fallback: tenant calendar)
     /// </summary>
     public string Calendar { get; set; }
     

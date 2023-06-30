@@ -19,7 +19,7 @@ public abstract class RuntimeBase : IRuntime
     /// <summary>
     /// The function host
     /// </summary>
-    protected IFunctionHost FunctionHost => Settings.FunctionHost;
+    private IFunctionHost FunctionHost => Settings.FunctionHost;
 
     /// <summary>
     /// Function execution timeout <see cref="BackendScriptingSpecification.ScriptFunctionTimeout"/>/>
@@ -48,7 +48,7 @@ public abstract class RuntimeBase : IRuntime
     /// <summary>
     /// The tenant
     /// </summary>
-    protected Tenant Tenant => Settings.Tenant;
+    private Tenant Tenant => Settings.Tenant;
 
     /// <inheritdoc />
     public int TenantId => Tenant.Id;

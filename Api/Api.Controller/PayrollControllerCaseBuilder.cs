@@ -236,7 +236,7 @@ internal sealed class PayrollControllerCaseBuilder
 
                     // case value
                     var cancellationMode = GetCaseFieldCancellationMode(caseField);
-                    caseValue.Value = await GetCancellationCaseValueAsync(context, tenantId, payrollId,
+                    caseValue.Value = await GetCancellationCaseValueAsync(tenantId, payrollId,
                         caseChangeSetup, caseValue, cancellationMode, caseType.Value);
 
                     // ensure newer case value using the next second as creation date
@@ -396,7 +396,7 @@ internal sealed class PayrollControllerCaseBuilder
         return buffer.ToString();
     }
 
-    private async Task<string> GetCancellationCaseValueAsync(IDbContext context, int tenantId, int payrollId,
+    private async Task<string> GetCancellationCaseValueAsync(int tenantId, int payrollId,
         Model.CaseChangeSetup caseChangeSetup, Domain.Model.CaseValue caseValue,
         CaseFieldCancellationMode cancellationMode, CaseType caseType)
     {
@@ -404,7 +404,7 @@ internal sealed class PayrollControllerCaseBuilder
         switch (cancellationMode)
         {
             case CaseFieldCancellationMode.Previous:
-                cancellationCaseValue = await GetPreviousCaseValueAsync(context, tenantId, payrollId,
+                cancellationCaseValue = await GetPreviousCaseValueAsync(tenantId, payrollId,
                     caseChangeSetup.EmployeeId, caseValue, caseType, caseValue.ValueType);
                 break;
             case CaseFieldCancellationMode.Reset:
@@ -588,11 +588,11 @@ internal sealed class PayrollControllerCaseBuilder
         return caseFields;
     }
 
-    private async Task<string> GetPreviousCaseValueAsync(IDbContext context, int tenantId, int payrollId, int? employeeId,
+    private async Task<string> GetPreviousCaseValueAsync(int tenantId, int payrollId, int? employeeId,
         Domain.Model.CaseValue caseValue, CaseType caseType, ValueType valueType)
     {
         // get case value before the case value was created
-        var caseValues = await Services.GetPayrollTimeCaseValuesAsync(context,
+        var caseValues = await Services.GetPayrollTimeCaseValuesAsync(
             new()
             {
                 TenantId = tenantId,

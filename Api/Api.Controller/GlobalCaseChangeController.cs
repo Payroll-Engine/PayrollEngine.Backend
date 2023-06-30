@@ -14,8 +14,8 @@ public abstract class GlobalCaseChangeController : CaseChangeController<ITenantS
     DomainObject.Tenant, DomainObject.CaseChange, ApiObject.CaseChange>
 {
     protected GlobalCaseChangeController(ITenantService tenantService, IGlobalCaseChangeService caseChangeService,
-        ICaseFieldService caseFieldService, IDivisionService divisionService, IUserService userService, IControllerRuntime runtime) :
-        base(tenantService, caseChangeService, caseFieldService, divisionService, userService, runtime)
+        IControllerRuntime runtime) :
+        base(tenantService, caseChangeService, runtime)
     {
     }
 }

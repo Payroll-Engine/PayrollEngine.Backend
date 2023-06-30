@@ -1,6 +1,7 @@
 ﻿using System;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.Domain.Application;
 
@@ -18,11 +19,8 @@ public class DerivedCaseToolSettings : FunctionToolSettings
     public DateTime RegulationDate { get; set; }
     public DateTime EvaluationDate { get; set; }
     public IPayrollRepository PayrollRepository { get; set; }
-    public ICaseRepository CaseRepository { get; set; }
-    public ICaseRelationRepository CaseRelationRepository { get; set; }
     public IRegulationRepository RegulationRepository { get; set; }
     public ILookupSetRepository LookupSetRepository { get; set; }
     public IWebhookDispatchService WebhookDispatchService { get; set; }
-    public IRegulationLookupProvider RegulationLookupProvider { get; set; }
     public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
 }

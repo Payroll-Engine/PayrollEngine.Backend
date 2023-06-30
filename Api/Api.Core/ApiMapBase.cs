@@ -12,7 +12,8 @@ public abstract class ApiMapBase<TDomain, TApi> : IApiMap<TDomain, TApi>
     #region Doamin to Api
 
     public TApi ToApi(TDomain domainObject) => ToApi(domainObject, new());
-    public TApi ToApi(TDomain domainObject, TApi apiObject)
+
+    private TApi ToApi(TDomain domainObject, TApi apiObject)
     {
         if (apiObject == null)
         {
@@ -38,7 +39,7 @@ public abstract class ApiMapBase<TDomain, TApi> : IApiMap<TDomain, TApi>
         return targets.ToArray();
     }
 
-    protected virtual void MapDomainToApi(TDomain domainObject, TApi apiObject)
+    private void MapDomainToApi(TDomain domainObject, TApi apiObject)
     {
         try
         {
@@ -61,7 +62,8 @@ public abstract class ApiMapBase<TDomain, TApi> : IApiMap<TDomain, TApi>
     #region API to Domain
 
     public TDomain ToDomain(TApi apiObject) => ToDomain(apiObject, new());
-    public TDomain ToDomain(TApi apiObject, TDomain domainObject)
+
+    private TDomain ToDomain(TApi apiObject, TDomain domainObject)
     {
         if (domainObject == null)
         {
@@ -87,7 +89,7 @@ public abstract class ApiMapBase<TDomain, TApi> : IApiMap<TDomain, TApi>
         return domainObjects;
     }
 
-    protected virtual void MapApiToDomain(TApi apiObject, TDomain domainObject)
+    private void MapApiToDomain(TApi apiObject, TDomain domainObject)
     {
         try
         {

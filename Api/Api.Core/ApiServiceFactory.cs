@@ -212,13 +212,13 @@ internal static class ApiServiceFactory
             new PayrollContextService
             {
                 TenantService = serviceProvider.GetRequiredService<ITenantService>(),
+                CalendarService = serviceProvider.GetRequiredService<ICalendarService>(),
                 RegulationLookupSetService = serviceProvider.GetRequiredService<ILookupSetService>(),
                 PayrollService = serviceProvider.GetRequiredService<IPayrollService>(),
                 DivisionService = serviceProvider.GetRequiredService<IDivisionService>(),
                 RegulationService = serviceProvider.GetRequiredService<IRegulationService>(),
                 CaseService = serviceProvider.GetRequiredService<ICaseService>(),
                 CaseFieldService = serviceProvider.GetRequiredService<ICaseFieldService>(),
-                CaseRelationService = serviceProvider.GetRequiredService<ICaseRelationService>(),
                 UserService = serviceProvider.GetRequiredService<IUserService>(),
                 TaskService = serviceProvider.GetRequiredService<ITaskService>(),
                 LogService = serviceProvider.GetRequiredService<ILogService>(),
@@ -263,10 +263,6 @@ internal static class ApiServiceFactory
 
         private static IGlobalCaseValueService NewGlobalCaseValueService(IServiceProvider serviceProvider) =>
             new GlobalCaseValueService(
-                serviceProvider.GetRequiredService<IWebhookDispatchService>(),
-                serviceProvider.GetRequiredService<ILookupSetRepository>(),
-                serviceProvider.GetRequiredService<IPayrollRepository>(),
-                serviceProvider.GetRequiredService<ICaseRepository>(),
                 serviceProvider.GetRequiredService<IGlobalCaseValueRepository>());
 
         private static IGlobalCaseDocumentService NewGlobalCaseDocumentService(IServiceProvider serviceProvider) =>
@@ -280,10 +276,6 @@ internal static class ApiServiceFactory
 
         private static INationalCaseValueService NewNationalCaseValueService(IServiceProvider serviceProvider) =>
             new NationalCaseValueService(
-                serviceProvider.GetRequiredService<IWebhookDispatchService>(),
-                serviceProvider.GetRequiredService<ILookupSetRepository>(),
-                serviceProvider.GetRequiredService<IPayrollRepository>(),
-                serviceProvider.GetRequiredService<ICaseRepository>(),
                 serviceProvider.GetRequiredService<INationalCaseValueRepository>());
 
         private static INationalCaseDocumentService NewNationalCaseDocumentService(IServiceProvider serviceProvider) =>
@@ -297,10 +289,6 @@ internal static class ApiServiceFactory
 
         private static ICompanyCaseValueService NewCompanyCaseValueService(IServiceProvider serviceProvider) =>
             new CompanyCaseValueService(
-                serviceProvider.GetRequiredService<IWebhookDispatchService>(),
-                serviceProvider.GetRequiredService<ILookupSetRepository>(),
-                serviceProvider.GetRequiredService<IPayrollRepository>(),
-                serviceProvider.GetRequiredService<ICaseRepository>(),
                 serviceProvider.GetRequiredService<ICompanyCaseValueRepository>());
 
         private static ICompanyCaseDocumentService NewCompanyCaseDocumentService(IServiceProvider serviceProvider) =>
@@ -314,10 +302,6 @@ internal static class ApiServiceFactory
 
         private static IEmployeeCaseValueService NewEmployeeCaseValueService(IServiceProvider serviceProvider) =>
             new EmployeeCaseValueService(
-                serviceProvider.GetRequiredService<IWebhookDispatchService>(),
-                serviceProvider.GetRequiredService<ILookupSetRepository>(),
-                serviceProvider.GetRequiredService<IPayrollRepository>(),
-                serviceProvider.GetRequiredService<ICaseRepository>(),
                 serviceProvider.GetRequiredService<IEmployeeCaseValueRepository>());
 
         private static IEmployeeCaseDocumentService NewEmployeeCaseDocumentService(IServiceProvider serviceProvider) =>
@@ -361,18 +345,12 @@ internal static class ApiServiceFactory
                 LogRepository = serviceProvider.GetRequiredService<ILogRepository>(),
                 DivisionRepository = serviceProvider.GetRequiredService<IDivisionRepository>(),
                 EmployeeRepository = serviceProvider.GetRequiredService<IEmployeeRepository>(),
-                CaseRepository = serviceProvider.GetRequiredService<ICaseRepository>(),
-                CaseFieldRepository = serviceProvider.GetRequiredService<ICaseFieldRepository>(),
                 GlobalCaseValueRepository = serviceProvider.GetRequiredService<IGlobalCaseValueRepository>(),
                 NationalCaseValueRepository = serviceProvider.GetRequiredService<INationalCaseValueRepository>(),
                 CompanyCaseValueRepository = serviceProvider.GetRequiredService<ICompanyCaseValueRepository>(),
                 EmployeeCaseValueRepository = serviceProvider.GetRequiredService<IEmployeeCaseValueRepository>(),
                 PayrunRepository = serviceProvider.GetRequiredService<IPayrunRepository>(),
                 PayrunJobRepository = serviceProvider.GetRequiredService<IPayrunJobRepository>(),
-                CollectorRepository = serviceProvider.GetRequiredService<ICollectorRepository>(),
-                CollectorResultRepository = serviceProvider.GetRequiredService<ICollectorResultRepository>(),
-                WageTypeRepository = serviceProvider.GetRequiredService<IWageTypeRepository>(),
-                WageTypeAuditRepository = serviceProvider.GetRequiredService<IWageTypeAuditRepository>(),
                 RegulationRepository = serviceProvider.GetRequiredService<IRegulationRepository>(),
                 RegulationShareRepository = serviceProvider.GetRequiredService<IRegulationShareRepository>(),
                 PayrollRepository = serviceProvider.GetRequiredService<IPayrollRepository>(),
@@ -410,15 +388,22 @@ internal static class ApiServiceFactory
         internal static void SetupServices(IServiceCollection services)
         {
             services.AddScoped(NewReportService);
+            services.AddScoped(NewReportAuditService);
             services.AddScoped(NewReportSetService);
             services.AddScoped(NewReportParameterService);
+            services.AddScoped(NewReportParameterAuditService);
             services.AddScoped(NewReportTemplateService);
+            services.AddScoped(NewReportTemplateAuditService);
         }
 
         private static IReportService NewReportService(IServiceProvider serviceProvider) =>
             new ReportService(
                 serviceProvider.GetRequiredService<IReportRepository>(),
                 serviceProvider.GetRequiredService<IQueryService>());
+
+        private static IReportAuditService NewReportAuditService(IServiceProvider serviceProvider) =>
+            new ReportAuditService(
+                serviceProvider.GetRequiredService<IReportAuditRepository>());
 
         private static IReportSetService NewReportSetService(IServiceProvider serviceProvider) =>
             new ReportSetService(
@@ -427,6 +412,7 @@ internal static class ApiServiceFactory
                 new()
                 {
                     DbContext = serviceProvider.GetRequiredService<IDbContext>(),
+                    WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>(),
                     UserRepository = serviceProvider.GetRequiredService<IUserRepository>(),
                     TaskRepository = serviceProvider.GetRequiredService<ITaskRepository>(),
                     LogRepository = serviceProvider.GetRequiredService<ILogRepository>(),
@@ -439,7 +425,6 @@ internal static class ApiServiceFactory
                     RegulationRepository = serviceProvider.GetRequiredService<IRegulationRepository>(),
                     LookupRepository = serviceProvider.GetRequiredService<ILookupRepository>(),
                     LookupValueRepository = serviceProvider.GetRequiredService<ILookupValueRepository>(),
-                    CollectorRepository = serviceProvider.GetRequiredService<ICollectorRepository>(),
                     WageTypeRepository = serviceProvider.GetRequiredService<IWageTypeRepository>(),
                     PayrollRepository = serviceProvider.GetRequiredService<IPayrollRepository>(),
                     PayrollResultRepository = serviceProvider.GetRequiredService<IPayrollResultRepository>(),
@@ -450,17 +435,24 @@ internal static class ApiServiceFactory
                     PayrunResultRepository = serviceProvider.GetRequiredService<IPayrunResultRepository>(),
                     PayrunRepository = serviceProvider.GetRequiredService<IPayrunRepository>(),
                     ReportRepository = serviceProvider.GetRequiredService<IReportSetRepository>(),
-                    WebhookRepository = serviceProvider.GetRequiredService<IWebhookRepository>(),
-                    WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>()
+                    WebhookRepository = serviceProvider.GetRequiredService<IWebhookRepository>()
                 });
 
         private static IReportParameterService NewReportParameterService(IServiceProvider serviceProvider) =>
             new ReportParameterService(
                 serviceProvider.GetRequiredService<IReportParameterRepository>());
 
+        private static IReportParameterAuditService NewReportParameterAuditService(IServiceProvider serviceProvider) =>
+            new ReportParameterAuditService(
+                serviceProvider.GetRequiredService<IReportParameterAuditRepository>());
+
         private static IReportTemplateService NewReportTemplateService(IServiceProvider serviceProvider) =>
             new ReportTemplateService(
                 serviceProvider.GetRequiredService<IReportTemplateRepository>());
+
+        private static IReportTemplateAuditService NewReportTemplateAuditService(IServiceProvider serviceProvider) =>
+            new ReportTemplateAuditService(
+                serviceProvider.GetRequiredService<IReportTemplateAuditRepository>());
     }
 
     #endregion

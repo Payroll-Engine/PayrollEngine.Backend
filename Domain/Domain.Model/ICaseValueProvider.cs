@@ -51,18 +51,6 @@ public interface ICaseValueProvider
     /// </summary>
     DatePeriod EvaluationPeriod { get; }
 
-    /// <summary>
-    /// Push the current evaluation period
-    /// </summary>
-    /// <param name="evaluationPeriod">The new evaluation period</param>
-    void PushEvaluationPeriod(DatePeriod evaluationPeriod);
-
-    /// <summary>
-    /// Pop the current evaluation period
-    /// </summary>
-    /// <param name="evaluationPeriod">The new evaluation period</param>
-    void PopEvaluationPeriod(DatePeriod evaluationPeriod);
-
     #endregion
 
     #region Case Value
@@ -133,11 +121,6 @@ public interface ICaseValueProvider
     /// Gets the retro case value
     /// </summary>
     CaseValue RetroCaseValue { get; }
-
-    /// <summary>
-    /// Resets the retro case value
-    /// </summary>
-    void ResetRetroCaseValue();
 
     #endregion
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -23,6 +24,7 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// Query regulation lookup values
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The regulation lookup values</returns>
@@ -31,7 +33,8 @@ public class LookupValueController : Api.Controller.LookupValueController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLookupValues")]
-    public async Task<ActionResult> QueryLookupValuesAsync(int tenantId, int lookupId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryLookupValuesAsync(int tenantId,
+        int regulationId, int lookupId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -54,8 +57,8 @@ public class LookupValueController : Api.Controller.LookupValueController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetLookupValuesData")]
-    public override async Task<ActionResult<ApiObject.LookupValueData[]>> GetLookupValuesDataAsync(int tenantId, int regulationId,
-        int lookupId, [FromQuery] string culture)
+    public override async Task<ActionResult<ApiObject.LookupValueData[]>> GetLookupValuesDataAsync(
+        int tenantId, int regulationId, int lookupId, [FromQuery] string culture)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -70,6 +73,7 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// Get a regulation lookup value
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
     /// <param name="lookupValueId">The id of the lookup value</param>
     /// <returns></returns>
@@ -77,7 +81,8 @@ public class LookupValueController : Api.Controller.LookupValueController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetLookupValue")]
-    public async Task<ActionResult<ApiObject.LookupValue>> GetLookupValueAsync(int tenantId, int lookupId, int lookupValueId)
+    public async Task<ActionResult<ApiObject.LookupValue>> GetLookupValueAsync(
+        int tenantId, int regulationId, int lookupId, int lookupValueId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -92,6 +97,7 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// Add a new regulation lookup value
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The id of the lookup</param>
     /// <param name="lookup">The lookup value to add</param>
     /// <returns>The newly created lookup value</returns>
@@ -100,7 +106,8 @@ public class LookupValueController : Api.Controller.LookupValueController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateLookupValue")]
-    public async Task<ActionResult<ApiObject.LookupValue>> CreateLookupValueAsync(int tenantId, int lookupId, ApiObject.LookupValue lookup)
+    public async Task<ActionResult<ApiObject.LookupValue>> CreateLookupValueAsync(
+        int tenantId, int regulationId, int lookupId, ApiObject.LookupValue lookup)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -115,6 +122,7 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// Update a regulation lookup value
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The id of the lookup</param>
     /// <param name="lookup">The lookup value with updated values</param>
     /// <returns>The modified lookup value</returns>
@@ -123,7 +131,8 @@ public class LookupValueController : Api.Controller.LookupValueController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateLookupValue")]
-    public async Task<ActionResult<ApiObject.LookupValue>> UpdateLookupValueAsync(int tenantId, int lookupId, ApiObject.LookupValue lookup)
+    public async Task<ActionResult<ApiObject.LookupValue>> UpdateLookupValueAsync(
+        int tenantId, int regulationId, int lookupId, ApiObject.LookupValue lookup)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -138,12 +147,14 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// Delete a regulation lookup value
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The id of the lookup</param>
     /// <param name="lookupValueId">The id of the lookup value</param>
     /// <returns></returns>
     [HttpDelete("{lookupValueId}")]
     [ApiOperationId("DeleteLookupValue")]
-    public async Task<IActionResult> DeleteLookupValueAsync(int tenantId, int lookupId, int lookupValueId)
+    public async Task<IActionResult> DeleteLookupValueAsync(int tenantId,
+        int regulationId, int lookupId, int lookupValueId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

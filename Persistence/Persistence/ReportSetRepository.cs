@@ -9,13 +9,13 @@ namespace PayrollEngine.Persistence;
 
 public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRepository
 {
-    public ReportSetRepositorySettings Settings { get; }
-    public IReportParameterRepository ReportParameterRepository { get; }
-    public IReportTemplateRepository ReportTemplateRepository { get; }
-    public bool BulkInsert => Settings.BulkInsert;
+    private ReportSetRepositorySettings Settings { get; }
+    private IReportParameterRepository ReportParameterRepository { get; }
+    private IReportTemplateRepository ReportTemplateRepository { get; }
+    private bool BulkInsert => Settings.BulkInsert;
 
     public ReportSetRepository(ReportSetRepositorySettings settings) :
-        base(settings.ScriptController, settings.ScriptRepository, settings.AuditRepository)
+        base(settings.ScriptRepository, settings.AuditRepository)
     {
         Settings = settings;
         ReportParameterRepository = settings.ReportParameterRepository ??
@@ -76,7 +76,7 @@ public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRe
         throw new NotSupportedException("Update of report set not supported, please use the report parameter container");
     }
 
-    protected override async Task<bool> OnDeletingAsync(IDbContext context, int regulationId, int resultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int resultId)
     {
         // report templates
         var templates = (await ReportTemplateRepository.QueryAsync(context, resultId)).ToList();
@@ -92,6 +92,6 @@ public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRe
             await ReportParameterRepository.DeleteAsync(context, resultId, parameter.Id);
         }
 
-        return await base.OnDeletingAsync(context, regulationId, resultId);
+        return await base.OnDeletingAsync(context, resultId);
     }
 }

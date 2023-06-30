@@ -31,7 +31,8 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryNationalCaseDocuments")]
-    public async Task<ActionResult> QueryNationalCaseDocumentsAsync(int tenantId, int caseValueId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryNationalCaseDocumentsAsync(int tenantId,
+        int caseValueId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -53,7 +54,8 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetNationalCaseDocument")]
-    public async Task<ActionResult<ApiObject.CaseDocument>> GetNationalCaseDocumentAsync(int tenantId, int caseValueId, int documentId)
+    public async Task<ActionResult<ApiObject.CaseDocument>> GetNationalCaseDocumentAsync(
+        int tenantId, int caseValueId, int documentId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

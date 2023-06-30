@@ -11,7 +11,7 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit> : ChildDomainR
     where TDomain : TrackDomainObject<TAudit>, new()
     where TAudit : AuditDomainObject
 {
-    public IAuditChildDomainRepository<TAudit> AuditRepository { get; }
+    private IAuditChildDomainRepository<TAudit> AuditRepository { get; }
 
     protected TrackChildDomainRepository(string tableName, string parentFieldName,
         IAuditChildDomainRepository<TAudit> auditRepository ) :
@@ -32,7 +32,7 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit> : ChildDomainR
         return item;
     }
 
-    protected virtual TAudit CreateAuditObject(TDomain item) =>
+    private TAudit CreateAuditObject(TDomain item) =>
         item.ToAuditObject();
 
     protected override async Task OnCreatedAsync(IDbContext context, int parentId, TDomain item)
@@ -49,9 +49,9 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit> : ChildDomainR
         await AuditRepository.CreateAsync(context, item.Id, audit);
     }
 
-    protected override async Task<bool> OnDeletingAsync(IDbContext context, int parentId, int itemId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int itemId)
     {
-        var deleting = await base.OnDeletingAsync(context, parentId, itemId);
+        var deleting = await base.OnDeletingAsync(context, itemId);
         if (!deleting)
         {
             return false;

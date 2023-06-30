@@ -170,7 +170,7 @@ public class DivisionController : Api.Controller.DivisionController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(divisionId, attributeName, value);
+        return await SetAttributeAsync(divisionId, attributeName, value);
     }
 
     /// <summary>
@@ -190,7 +190,7 @@ public class DivisionController : Api.Controller.DivisionController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(divisionId, attributeName);
+        return await DeleteAttributeAsync(divisionId, attributeName);
     }
 
     #endregion

@@ -1,14 +1,13 @@
 ﻿using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 
 namespace PayrollEngine.Persistence;
 
 public class ReportRepository : ReportRepositoryBase<Report>, IReportRepository
 {
-    public ReportRepository(IReportScriptController<Report> scriptController, IScriptRepository scriptRepository,
+    public ReportRepository(IScriptRepository scriptRepository,
         IReportAuditRepository auditRepository) :
-        base(scriptController, scriptRepository, auditRepository)
+        base(scriptRepository, auditRepository)
     {
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace PayrollEngine.Domain.Model;
 

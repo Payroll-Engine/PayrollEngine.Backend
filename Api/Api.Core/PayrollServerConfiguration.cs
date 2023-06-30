@@ -1,4 +1,6 @@
 ﻿using System;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace PayrollEngine.Api.Core;
 

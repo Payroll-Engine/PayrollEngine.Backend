@@ -120,7 +120,7 @@ public class CaseRelation : ScriptTrackDomainObject<CaseRelationAudit>, IDerivab
     }
 
     /// <inheritdoc/>
-    public CaseRelation(CaseRelation copySource) :
+    protected CaseRelation(CaseRelation copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

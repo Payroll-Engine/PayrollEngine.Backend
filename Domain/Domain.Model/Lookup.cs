@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable MemberCanBeProtected.Global
 
 namespace PayrollEngine.Domain.Model;
 
@@ -50,7 +51,7 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDomainAttributeObject,
     }
 
     /// <inheritdoc/>
-    public Lookup(Lookup copySource) :
+    protected Lookup(Lookup copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

@@ -177,7 +177,7 @@ public class EmployeeController : Api.Controller.EmployeeController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(employeeId, attributeName, value);
+        return await SetAttributeAsync(employeeId, attributeName, value);
     }
 
     /// <summary>
@@ -197,7 +197,7 @@ public class EmployeeController : Api.Controller.EmployeeController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(employeeId, attributeName);
+        return await DeleteAttributeAsync(employeeId, attributeName);
     }
 
     #endregion

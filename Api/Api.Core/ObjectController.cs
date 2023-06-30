@@ -15,7 +15,7 @@ public abstract class ObjectController<TDomain, TApi> : ApiController
 
     protected string GetObjectName(Type type) => type.Name;
     protected string ObjectName => GetObjectName(typeof(TApi));
-    protected string GetObjectName(ApiObjectBase apiObject) =>
+    private string GetObjectName(ApiObjectBase apiObject) =>
         apiObject != null ? GetObjectName(apiObject.GetType()) : null;
 
     protected ObjectController(IControllerRuntime runtime, IApiMap<TDomain, TApi> map) :
@@ -26,16 +26,16 @@ public abstract class ObjectController<TDomain, TApi> : ApiController
 
     #region Mapping
 
-    protected virtual TApi MapDomainToApi(TDomain domainObject) =>
+    protected TApi MapDomainToApi(TDomain domainObject) =>
         Map.ToApi(domainObject);
 
-    protected virtual TApi[] MapDomainToApi(IEnumerable<TDomain> domainObjects) =>
+    protected TApi[] MapDomainToApi(IEnumerable<TDomain> domainObjects) =>
         domainObjects.Select(MapDomainToApi).ToArray();
 
-    protected virtual TDomain MapApiToDomain(TApi apiObject) =>
+    protected TDomain MapApiToDomain(TApi apiObject) =>
         Map.ToDomain(apiObject);
 
-    protected virtual IEnumerable<TDomain> MapApiToDomain(TApi[] apiObjects) =>
+    protected IEnumerable<TDomain> MapApiToDomain(TApi[] apiObjects) =>
         apiObjects.Select(MapApiToDomain);
 
     #endregion
@@ -51,7 +51,7 @@ public abstract class ObjectController<TDomain, TApi> : ApiController
     protected NotFoundObjectResult NotFound(Type type, int id) =>
         NotFound($"{GetObjectName(type)} with id {id} was not found");
 
-    protected NotFoundObjectResult NotFound(string objectName, int id) =>
+    private NotFoundObjectResult NotFound(string objectName, int id) =>
         NotFound($"{objectName} with id {id} was not found");
 
     protected BadRequestObjectResult QueryError(QueryException exception) =>

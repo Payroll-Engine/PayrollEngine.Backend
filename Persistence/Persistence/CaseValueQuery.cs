@@ -4,10 +4,10 @@ namespace PayrollEngine.Persistence;
 
 internal sealed class CaseValueQuery
 {
-    internal int ParentId { get; set; }
-    internal int? EmployeeId { get; set; }
-    internal string StoredProcedure { get; set; }
-    internal string Query { get; set; }
-    internal ICollection<string> QueryAttributes { get; set; }
-    internal string Culture { get; set; }
+    internal int ParentId { get; init; }
+    internal int? EmployeeId { get; init; }
+    internal string StoredProcedure { get; init; }
+    internal string Query { get; init; }
+    internal ICollection<string> QueryAttributes { get; init; }
+    internal string Culture { get; init; }
 }

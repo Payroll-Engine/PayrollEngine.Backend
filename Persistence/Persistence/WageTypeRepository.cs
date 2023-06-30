@@ -3,15 +3,14 @@ using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class WageTypeRepository : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>, IWageTypeRepository
 {
-    public WageTypeRepository(IWageTypeScriptController scriptController, IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository) :
-        base(DbSchema.Tables.WageType, DbSchema.WageTypeColumn.RegulationId, scriptController, scriptRepository, auditRepository)
+    public WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository) :
+        base(DbSchema.Tables.WageType, DbSchema.WageTypeColumn.RegulationId, scriptRepository, auditRepository)
     {
     }
 
@@ -43,6 +42,6 @@ public class WageTypeRepository : ScriptTrackChildDomainRepository<WageType, Wag
         base.GetObjectData(wageType, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<decimal> wageTypeNumbers) =>
+    public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<decimal> wageTypeNumbers) =>
         await ExistsAnyAsync(context, DbSchema.WageTypeColumn.RegulationId, regulationId, DbSchema.WageTypeColumn.WageTypeNumber, wageTypeNumbers);
 }

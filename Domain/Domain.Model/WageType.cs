@@ -71,7 +71,7 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
     }
 
     /// <summary>
-    /// The wage type calendar
+    /// The wage type calendar (fallback: employee calendar)
     /// </summary>
     public string Calendar { get; set; }
 
@@ -111,7 +111,7 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
     }
 
     /// <inheritdoc/>
-    public WageType(WageType copySource) :
+    protected WageType(WageType copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

@@ -9,8 +9,8 @@ namespace PayrollEngine.Domain.Application;
 
 public class ReportSetService : ChildApplicationService<IReportSetRepository, ReportSet>, IReportSetService
 {
-    public IQueryService QueryService { get; }
-    public ReportToolSettings Settings { get; }
+    private IQueryService QueryService { get; }
+    private ReportToolSettings Settings { get; }
 
     public ReportSetService(IReportSetRepository repository, IQueryService queryService, ReportToolSettings settings) :
         base(repository)
@@ -19,7 +19,7 @@ public class ReportSetService : ChildApplicationService<IReportSetRepository, Re
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
     }
 
-    public virtual async Task<ReportSet> GetReportAsync(Tenant tenant, ReportSet report, IApiControllerContext controllerContext,
+    public async Task<ReportSet> GetReportAsync(Tenant tenant, ReportSet report, IApiControllerContext controllerContext,
         ReportRequest reportRequest = null)
     {
         if (tenant == null)
@@ -41,7 +41,7 @@ public class ReportSetService : ChildApplicationService<IReportSetRepository, Re
         return buildReport;
     }
 
-    public virtual async Task<ReportResponse> ExecuteReportAsync(Tenant tenant, ReportSet report,
+    public async Task<ReportResponse> ExecuteReportAsync(Tenant tenant, ReportSet report,
         IApiControllerContext controllerContext, ReportRequest reportRequest)
     {
         if (tenant == null)

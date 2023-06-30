@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PayrollEngine.Api.Model;
@@ -16,13 +17,13 @@ public class Tenant : ApiObjectBase
     public string Identifier { get; set; }
 
     /// <summary>
-    /// The culture including the calendar
+    /// The tenant culture name based on RFC 4646 (fallback: system culture)
     /// </summary>
     [StringLength(128)]
     public string Culture { get; set; }
 
     /// <summary>
-    /// The tenant calendar, fallback is the system calendar
+    /// The tenant calendar (fallback: default calendar)
     /// </summary>
     public string Calendar { get; set; }
 

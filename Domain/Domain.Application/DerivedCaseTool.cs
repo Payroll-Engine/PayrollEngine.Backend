@@ -16,23 +16,23 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
     // providers
     protected ICaseProvider CaseProvider { get; }
-    protected ICaseFieldProvider CaseFieldProvider { get; }
+    private ICaseFieldProvider CaseFieldProvider { get; }
     protected ICaseValueProvider CaseValueProvider { get; }
 
     /// <summary>
     /// The webhook dispatcher
     /// </summary>
-    public IWebhookDispatchService WebhookDispatchService { get; }
+    protected IWebhookDispatchService WebhookDispatchService { get; }
 
     /// <summary>
     /// The regulation date
     /// </summary>
-    public DateTime RegulationDate { get; }
+    protected DateTime RegulationDate { get; }
 
     /// <summary>
     /// The evaluation date
     /// </summary>
-    public DateTime EvaluationDate { get; }
+    protected DateTime EvaluationDate { get; }
 
     /// <summary>
     /// The cluster set
@@ -40,24 +40,20 @@ public abstract class DerivedCaseTool : FunctionToolBase
     protected ClusterSet ClusterSet { get; }
 
     // global
-    public Tenant Tenant { get; }
-    public User User { get; }
-    public Payroll Payroll { get; }
-    public Division Division { get; }
-    public Employee Employee { get; }
-    public string Culture { get; }
+    protected Tenant Tenant { get; }
+    protected User User { get; }
+    protected Payroll Payroll { get; }
+    private Employee Employee { get; }
+    protected string Culture { get; }
 
     // repositories
-    public IPayrollRepository PayrollRepository { get; }
-    public ICaseRepository CaseRepository { get; }
-    public ICaseRelationRepository CaseRelationRepository { get; }
-    public IRegulationRepository RegulationRepository { get; }
-    public ILookupSetRepository RegulationLookupSetRepository { get; }
-
-    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; }
-    public INationalCaseValueRepository NationalCaseValueRepository { get; }
-    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; }
-    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; }
+    protected IPayrollRepository PayrollRepository { get; }
+    private IRegulationRepository RegulationRepository { get; }
+    private ILookupSetRepository RegulationLookupSetRepository { get; }
+    private IGlobalCaseValueRepository GlobalCaseValueRepository { get; }
+    private INationalCaseValueRepository NationalCaseValueRepository { get; }
+    private ICompanyCaseValueRepository CompanyCaseValueRepository { get; }
+    private IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; }
 
     /// <summary>
     /// Constructor for derived global cases
@@ -79,12 +75,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });
@@ -118,12 +110,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });
@@ -161,12 +149,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });
@@ -211,12 +195,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });
@@ -232,7 +212,6 @@ public abstract class DerivedCaseTool : FunctionToolBase
         Tenant = settings.Tenant ?? throw new ArgumentNullException(nameof(settings.Tenant));
         User = settings.User ?? throw new ArgumentNullException(nameof(settings.User));
         Payroll = settings.Payroll ?? throw new ArgumentNullException(nameof(settings.Payroll));
-        Division = settings.Division ?? throw new ArgumentNullException(nameof(settings.Division));
 
         // culture by priority: division > tenant > system
         Culture = settings.Division.Culture ?? Tenant.Culture ?? CultureInfo.CurrentCulture.Name;
@@ -254,8 +233,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // repositories
         PayrollRepository = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(settings.PayrollRepository));
-        CaseRepository = settings.CaseRepository ?? throw new ArgumentNullException(nameof(settings.CaseRepository));
-        CaseRelationRepository = settings.CaseRelationRepository ?? throw new ArgumentNullException(nameof(settings.CaseRelationRepository));
+        //     CaseRelationRepository = settings.CaseRelationRepository ?? throw new ArgumentNullException(nameof(settings.CaseRelationRepository));
         RegulationRepository = settings.RegulationRepository ?? throw new ArgumentNullException(nameof(settings.RegulationRepository));
         RegulationLookupSetRepository = settings.LookupSetRepository ?? throw new ArgumentNullException(nameof(settings.LookupSetRepository));
 
@@ -263,7 +241,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
         WebhookDispatchService = settings.WebhookDispatchService ?? throw new ArgumentNullException(nameof(settings.WebhookDispatchService));
     }
 
-    protected virtual async Task<IRegulationLookupProvider> NewRegulationLookupProviderAsync()
+    protected async Task<IRegulationLookupProvider> NewRegulationLookupProviderAsync()
     {
         var lookups = (await PayrollRepository.GetDerivedLookupsAsync(Settings.DbContext,
             new()
@@ -286,7 +264,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
     /// <param name="culture">The culture</param>
     /// <param name="initValues">if set to <c>true</c> [initialize values].</param>
     /// <returns>The derived case set</returns>
-    protected virtual async Task<CaseSet> GetDerivedCaseSetAsync(IList<Case> cases, string caseSlot,
+    protected async Task<CaseSet> GetDerivedCaseSetAsync(IList<Case> cases, string caseSlot,
         CaseChangeSetup caseChangeSetup, string culture, bool initValues)
     {
         if (cases == null)

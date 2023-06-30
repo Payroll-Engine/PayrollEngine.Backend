@@ -11,7 +11,7 @@ namespace PayrollEngine.Persistence;
 
 public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepository
 {
-    public IEmployeeDivisionRepository EmployeeDivisionRepository { get; }
+    private IEmployeeDivisionRepository EmployeeDivisionRepository { get; }
 
     public EmployeeRepository(IEmployeeDivisionRepository divisionRepository) :
         base(DbSchema.Tables.Employee, DbSchema.EmployeeColumn.TenantId)
@@ -35,7 +35,7 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
         base.GetObjectData(employee, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
+    public async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
         await ExistsAnyAsync(context, DbSchema.EmployeeColumn.TenantId, tenantId, DbSchema.EmployeeColumn.Identifier, identifier);
 
     /// <inheritdoc />
@@ -112,14 +112,14 @@ public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepo
     protected override async Task OnUpdatedAsync(IDbContext context, int tenantId, Employee employee) =>
         await SaveDivisions(context, tenantId, employee.Id, employee.Divisions);
 
-    protected override async Task<bool> OnDeletingAsync(IDbContext context, int tenantId, int employeeId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int employeeId)
     {
         var divisions = await EmployeeDivisionRepository.QueryAsync(context, employeeId);
         foreach (var division in divisions)
         {
             await EmployeeDivisionRepository.DeleteAsync(context, employeeId, division.Id);
         }
-        return await base.OnDeletingAsync(context, tenantId, employeeId);
+        return await base.OnDeletingAsync(context, employeeId);
     }
 
     private async Task<IList<Division>> GetDivisions(IDbContext context, int tenantId, int employeeId)

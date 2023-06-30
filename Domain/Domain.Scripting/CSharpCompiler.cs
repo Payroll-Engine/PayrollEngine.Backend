@@ -3,6 +3,7 @@
 #define LOG_STOPWATCH
 #endif
 //#define DUMP_COMPILER_SOURCES
+
 using System;
 using System.Collections.Generic;
 using System.IO;

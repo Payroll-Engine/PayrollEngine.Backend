@@ -7,11 +7,11 @@ public class RegulationReference
 {
     /// <summary>the regulation name</summary>
     /// <value>The name.</value>
-    public string Name { get; }
+    private string Name { get; }
 
     /// <summary>Gets the regulation version</summary>
     /// <value>The version.</value>
-    public int Version { get; }
+    private int Version { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RegulationReference"/> class.

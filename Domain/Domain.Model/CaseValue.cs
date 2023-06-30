@@ -72,7 +72,7 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
         get => jsonValue;
         set
         {
-            this.jsonValue = value;
+            jsonValue = value;
             UpdateNumericValue();
         }
     }

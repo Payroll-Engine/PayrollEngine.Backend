@@ -14,8 +14,8 @@ public abstract class EmployeeCaseChangeController : CaseChangeController<IEmplo
     DomainObject.Employee, DomainObject.CaseChange, ApiObject.CaseChange>
 {
     protected EmployeeCaseChangeController(IEmployeeService employeeService, IEmployeeCaseChangeService caseChangeService,
-        ICaseFieldService caseFieldService, IDivisionService divisionService, IUserService userService, IControllerRuntime runtime) :
-        base(employeeService, caseChangeService, caseFieldService, divisionService, userService, runtime)
+        IControllerRuntime runtime) :
+        base(employeeService, caseChangeService, runtime)
     {
     }
 }

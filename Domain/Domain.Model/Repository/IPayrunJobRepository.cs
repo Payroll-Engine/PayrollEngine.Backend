@@ -26,6 +26,7 @@ public interface IPayrunJobRepository : IChildDomainRepository<PayrunJob>
     /// <param name="employeeId">The employee id</param>
     /// <param name="query">The query parameters</param>
     /// <returns>Payrun jobs of the employee</returns>
+    // ReSharper disable once UnusedParameter.Global
     Task<long> QueryEmployeePayrunJobsCountAsync(IDbContext context, int tenantId, int employeeId, Query query = null);
 
     /// <summary>

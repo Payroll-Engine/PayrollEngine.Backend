@@ -13,7 +13,7 @@ namespace PayrollEngine.Persistence;
 
 public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobRepository
 {
-    public IPayrunJobEmployeeRepository JobEmployeeRepository { get; }
+    private IPayrunJobEmployeeRepository JobEmployeeRepository { get; }
 
     public PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeRepository) :
         base(DbSchema.Tables.PayrunJob, DbSchema.PayrunJobColumn.TenantId)
@@ -71,7 +71,7 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         base.GetObjectData(payrunJob, parameters);
     }
 
-    public virtual async Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(IDbContext context,
+    public async Task<IEnumerable<PayrunJob>> QueryEmployeePayrunJobsAsync(IDbContext context,
         int tenantId, int employeeId, Query query = null)
     {
         // query
@@ -97,7 +97,7 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         return items;
     }
 
-    public virtual async Task<long> QueryEmployeePayrunJobsCountAsync(IDbContext context,
+    public async Task<long> QueryEmployeePayrunJobsCountAsync(IDbContext context,
         int tenantId, int employeeId, Query query = null)
     {
         // query
@@ -118,7 +118,7 @@ public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobR
         return count;
     }
 
-    public virtual async Task<PayrunJob> PatchPayrunJobStatusAsync(IDbContext context,
+    public async Task<PayrunJob> PatchPayrunJobStatusAsync(IDbContext context,
         int tenantId, int payrunJobId, PayrunJobStatus jobStatus, int userId, string reason)
     {
         if (string.IsNullOrWhiteSpace(reason))

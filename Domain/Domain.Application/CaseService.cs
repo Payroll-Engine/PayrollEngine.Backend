@@ -13,6 +13,6 @@ public class CaseService : ScriptTrackChildApplicationService<ICaseRepository, C
     {
     }
 
-    public virtual async Task<Case> GetAsync(IDbContext context, int tenantId, int regulationId, string name) =>
+    public async Task<Case> GetAsync(IDbContext context, int tenantId, int regulationId, string name) =>
         (await Repository.QueryAsync(context, tenantId, name, regulationId)).FirstOrDefault();
 }

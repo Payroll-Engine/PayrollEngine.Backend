@@ -163,7 +163,7 @@ internal sealed class PayrunProcessorRegulation
             var wageTypeAttributes = valueExpressions.CollectDerivedAttributes(wt => wt.Attributes);
 
             // execute wage type value script
-            var result = new WageTypeScriptController().GetValue(context.CaseFieldProvider, new()
+            var result = new WageTypeScriptController().GetValue(new()
             {
                 DbContext = Settings.DbContext,
                 Culture = context.Culture,

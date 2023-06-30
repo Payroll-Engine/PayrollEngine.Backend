@@ -9,18 +9,15 @@ namespace PayrollEngine.Persistence;
 
 public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFieldAudit>, ICaseFieldRepository
 {
-    public ICaseRepository CaseRepository { get; }
-
-    public CaseFieldRepository(ICaseRepository caseRepository, ICaseFieldAuditRepository auditRepository) :
+    public CaseFieldRepository(ICaseFieldAuditRepository auditRepository) :
         base(DbSchema.Tables.CaseField, DbSchema.CaseFieldColumn.CaseId, auditRepository)
     {
-        CaseRepository = caseRepository ?? throw new ArgumentNullException(nameof(caseRepository));
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
+    public async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
         await ExistsAnyAsync(context, DbSchema.CaseFieldColumn.CaseId, caseId, DbSchema.CaseFieldColumn.Name, caseFieldNames);
 
-    public virtual async Task<IEnumerable<CaseField>> GetRegulationCaseFieldsAsync(IDbContext context, int tenantId,
+    public async Task<IEnumerable<CaseField>> GetRegulationCaseFieldsAsync(IDbContext context, int tenantId,
         IEnumerable<string> caseFieldNames, int? regulationId = null)
     {
         if (tenantId <= 0)

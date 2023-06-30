@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -23,6 +24,7 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     /// Query regulation collector audits
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="collectorId">The id of the collector</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The audit objects</returns>
@@ -31,7 +33,7 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryCollectorAudits")]
-    public async Task<ActionResult> QueryCollectorAuditsAsync(int tenantId, int collectorId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryCollectorAuditsAsync(int tenantId, int regulationId, int collectorId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -46,6 +48,7 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     /// Get a regulation collector audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="collectorId">The collector id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
@@ -53,7 +56,7 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCollectorAudit")]
-    public async Task<ActionResult<ApiObject.CollectorAudit>> GetCollectorAuditAsync(int tenantId, int collectorId, int auditId)
+    public async Task<ActionResult<ApiObject.CollectorAudit>> GetCollectorAuditAsync(int tenantId, int regulationId, int collectorId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

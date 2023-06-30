@@ -118,8 +118,8 @@ public class TenantController : Api.Controller.TenantController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetTenantSharedRegulations")]
-    public override async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(int tenantId,
-        [FromQuery] int? divisionId)
+    public override async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(
+        int tenantId, [FromQuery] int? divisionId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -140,8 +140,8 @@ public class TenantController : Api.Controller.TenantController
     [OkResponse]
     [ApiOperationId("GetSystemScriptActions")]
     [QueryIgnore]
-    public override async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionsAsync(int tenantId,
-        FunctionType functionType = FunctionType.All) =>
+    public override async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionsAsync(
+        int tenantId, FunctionType functionType = FunctionType.All) =>
         await base.GetSystemScriptActionsAsync(tenantId, functionType);
 
     /// <summary>
@@ -162,7 +162,8 @@ public class TenantController : Api.Controller.TenantController
     [ApiOperationId("ExecuteReportQuery")]
     [QueryIgnore]
     public override async Task<ActionResult<DataTable>> ExecuteReportQueryAsync(int tenantId,
-        [FromQuery] string methodName, [FromQuery] string culture, [FromBody] Dictionary<string, string> parameters = null)
+        [FromQuery] string methodName, [FromQuery] string culture,
+        [FromBody] Dictionary<string, string> parameters = null)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -186,7 +187,8 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetTenantAttribute")]
-    public virtual async Task<ActionResult<string>> GetTenantAttributeAsync(int tenantId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetTenantAttributeAsync(
+        int tenantId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -209,8 +211,8 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetTenantAttribute")]
-    public virtual async Task<ActionResult<string>> SetTenantAttributeAsync(int tenantId, string attributeName,
-        [FromBody] string value)
+    public virtual async Task<ActionResult<string>> SetTenantAttributeAsync(
+        int tenantId, string attributeName, [FromBody] string value)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -218,7 +220,7 @@ public class TenantController : Api.Controller.TenantController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(tenantId, attributeName, value);
+        return await SetAttributeAsync(tenantId, attributeName, value);
     }
 
     /// <summary>
@@ -229,7 +231,8 @@ public class TenantController : Api.Controller.TenantController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{tenantId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteTenantAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteTenantAttributeAsync(int tenantId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeleteTenantAttributeAsync(
+        int tenantId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -237,7 +240,7 @@ public class TenantController : Api.Controller.TenantController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(tenantId, attributeName);
+        return await DeleteAttributeAsync(tenantId, attributeName);
     }
 
     #endregion

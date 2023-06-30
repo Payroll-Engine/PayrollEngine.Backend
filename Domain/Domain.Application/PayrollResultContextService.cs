@@ -5,12 +5,13 @@ namespace PayrollEngine.Domain.Application;
 
 public class PayrollResultContextService : IPayrollResultContextService
 {
-    public IPayrollResultRepository ResultRepository { get; set; }
-    public ICollectorResultRepository CollectorResultRepository { get; set; }
-    public ICollectorCustomResultRepository CollectorCustomResultRepository { get; set; }
-    public IWageTypeResultRepository WageTypeResultRepository { get; set; }
-    public IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; set; }
-    public IPayrunResultRepository PayrunResultRepository { get; set; }
-    public IPayrollConsolidatedResultRepository ConsolidatedResultRepository { get; set; }
-    public IPayrollResultSetRepository ResultSetRepository { get; set; }
+    public IPayrollResultRepository ResultRepository { get; init; }
+    public IPayrollConsolidatedResultRepository ConsolidatedResultRepository { get; init; }
+
+    public ICollectorResultRepository CollectorResultRepository { get; init; }
+    public ICollectorCustomResultRepository CollectorCustomResultRepository { get; init; }
+    public IWageTypeResultRepository WageTypeResultRepository { get; init; }
+    public IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; init; }
+    public IPayrunResultRepository PayrunResultRepository { get; init; }
+    public IPayrollResultSetRepository ResultSetRepository { get; init; }
 }

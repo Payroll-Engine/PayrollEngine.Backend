@@ -10,31 +10,28 @@ namespace PayrollEngine.Domain.Application;
 public class PayrunProcessorSettings : FunctionToolSettings
 {
     // repositories
-    public ICalendarRepository CalendarRepository { get; set; }
-    public IUserRepository UserRepository { get; set; }
-    public IDivisionRepository DivisionRepository { get; set; }
-    public IEmployeeRepository EmployeeRepository { get; set; }
-    public ICaseRepository CaseRepository { get; set; }
-    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; set; }
-    public INationalCaseValueRepository NationalCaseValueRepository { get; set; }
-    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; set; }
-    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; set; }
-    public IPayrunRepository PayrunRepository { get; set; }
-    public IPayrunJobRepository PayrunJobRepository { get; set; }
-    public ICollectorRepository CollectorRepository { get; set; }
-    public IWageTypeRepository WageTypeRepository { get; set; }
-    public ILookupSetRepository RegulationLookupSetRepository { get; set; }
-    public IRegulationRepository RegulationRepository { get; set; }
-    public IRegulationShareRepository RegulationShareRepository { get; set; }
-    public IPayrollRepository PayrollRepository { get; set; }
-    public IPayrollResultRepository PayrollResultRepository { get; set; }
-    public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; set; }
-    public IPayrollResultSetRepository PayrollResultSetRepository { get; set; }
-    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
+    public ICalendarRepository CalendarRepository { get; init; }
+    public IUserRepository UserRepository { get; init; }
+    public IDivisionRepository DivisionRepository { get; init; }
+    public IEmployeeRepository EmployeeRepository { get; init; }
+    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; init; }
+    public INationalCaseValueRepository NationalCaseValueRepository { get; init; }
+    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; init; }
+    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; init; }
+    public IPayrunRepository PayrunRepository { get; init; }
+    public IPayrunJobRepository PayrunJobRepository { get; init; }
+    public ILookupSetRepository RegulationLookupSetRepository { get; init; }
+    public IRegulationRepository RegulationRepository { get; init; }
+    public IRegulationShareRepository RegulationShareRepository { get; init; }
+    public IPayrollRepository PayrollRepository { get; init; }
+    public IPayrollResultRepository PayrollResultRepository { get; init; }
+    public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; init; }
+    public IPayrollResultSetRepository PayrollResultSetRepository { get; init; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
 
     /// <summary>Function log timeout</summary>
-    public TimeSpan FunctionLogTimeout { get; set; }
+    public TimeSpan FunctionLogTimeout { get; init; }
 
     // services
-    public IWebhookDispatchService WebhookDispatchService { get; set; }
+    public IWebhookDispatchService WebhookDispatchService { get; init; }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -16,25 +15,12 @@ namespace PayrollEngine.Backend.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.GlobalCaseValue)]
 public class GlobalCaseValueController : Api.Controller.GlobalCaseValueController
 {
-    /// <summary>
-    /// Gets the tenant service
-    /// </summary>
-    protected IPayrollService PayrollService { get; }
-
-    /// <summary>
-    /// Gets the case service
-    /// </summary>
-    protected ICaseService CaseService { get; }
-
-
     /// <inheritdoc/>
     public GlobalCaseValueController(ITenantService tenantService, IPayrollService payrollService,
-        IRegulationService regulationService, ICaseService caseService, IGlobalCaseValueService caseValueService,
+        IRegulationService regulationService, IGlobalCaseValueService caseValueService,
         ILookupSetService lookupSetService, IControllerRuntime runtime) :
         base(tenantService, caseValueService, payrollService, regulationService, lookupSetService, runtime)
     {
-        PayrollService = payrollService ?? throw new ArgumentNullException(nameof(payrollService));
-        CaseService = caseService ?? throw new ArgumentNullException(nameof(caseService));
     }
 
     /// <summary>
@@ -48,7 +34,8 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryGlobalCaseValues")]
-    public async Task<ActionResult> QueryGlobalCaseValuesAsync(int tenantId, [FromQuery] CaseValueQuery query)
+    public async Task<ActionResult> QueryGlobalCaseValuesAsync(int tenantId, 
+        [FromQuery] CaseValueQuery query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -72,7 +59,8 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     [HttpGet("slots")]
     [OkResponse]
     [ApiOperationId("GetGlobalCaseValueSlots")]
-    public async Task<ActionResult<IEnumerable<string>>> GetGlobalCaseValueSlotsAsync(int tenantId, [Required] string caseFieldName)
+    public async Task<ActionResult<IEnumerable<string>>> GetGlobalCaseValueSlotsAsync(
+        int tenantId, [Required] string caseFieldName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -93,7 +81,8 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetGlobalCaseValue")]
-    public async Task<ActionResult<ApiObject.CaseValue>> GetGlobalCaseValueAsync(int tenantId, int caseValueId)
+    public async Task<ActionResult<ApiObject.CaseValue>> GetGlobalCaseValueAsync(
+        int tenantId, int caseValueId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

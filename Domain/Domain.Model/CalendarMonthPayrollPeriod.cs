@@ -11,12 +11,12 @@ public class CalendarMonthPayrollPeriod : IPayrollPeriod
     /// <summary>
     /// The culture
     /// </summary>
-    public CultureInfo Culture { get; }
+    private CultureInfo Culture { get; }
 
     /// <summary>
     /// The date calendar
     /// </summary>
-    public Calendar Calendar { get; }
+    private Calendar Calendar { get; }
 
     /// <inheritdoc />
     public CalendarMonthPayrollPeriod(CultureInfo culture, Calendar calendar, DateTime moment) :
@@ -29,7 +29,7 @@ public class CalendarMonthPayrollPeriod : IPayrollPeriod
     /// <param name="calendar">The calendar</param>
     /// <param name="year">The year</param>
     /// <param name="month">The month</param>
-    public CalendarMonthPayrollPeriod(CultureInfo culture, Calendar calendar, int year, int month)
+    private CalendarMonthPayrollPeriod(CultureInfo culture, Calendar calendar, int year, int month)
     {
         // arguments
         Culture = culture ?? throw new ArgumentNullException(nameof(culture));

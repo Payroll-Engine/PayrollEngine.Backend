@@ -139,7 +139,8 @@ public class TaskController : Api.Controller.TaskController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetTaskAttribute")]
-    public virtual async Task<ActionResult<string>> GetTaskAttributeAsync(int tenantId, int taskId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetTaskAttributeAsync(
+        int tenantId, int taskId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -163,7 +164,8 @@ public class TaskController : Api.Controller.TaskController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetTaskAttribute")]
-    public virtual async Task<ActionResult<string>> SetTaskAttributeAsync(int tenantId, int taskId, string attributeName,
+    public virtual async Task<ActionResult<string>> SetTaskAttributeAsync(
+        int tenantId, int taskId, string attributeName,
         [FromBody] string value)
     {
         // tenant check
@@ -172,7 +174,7 @@ public class TaskController : Api.Controller.TaskController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(taskId, attributeName, value);
+        return await SetAttributeAsync(taskId, attributeName, value);
     }
 
     /// <summary>
@@ -184,7 +186,8 @@ public class TaskController : Api.Controller.TaskController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{taskId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteTaskAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteTaskAttributeAsync(int tenantId, int taskId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeleteTaskAttributeAsync(
+        int tenantId, int taskId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -192,7 +195,7 @@ public class TaskController : Api.Controller.TaskController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(taskId, attributeName);
+        return await DeleteAttributeAsync(taskId, attributeName);
     }
 
     #endregion

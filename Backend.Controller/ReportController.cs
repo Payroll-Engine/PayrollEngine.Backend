@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -32,7 +33,8 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryReports")]
-    public async Task<ActionResult> QueryReportsAsync(int tenantId, int regulationId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryReportsAsync(int tenantId, int regulationId,
+        [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -54,7 +56,8 @@ public class ReportController : Api.Controller.ReportController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReport")]
-    public async Task<ActionResult<ApiObject.Report>> GetReportAsync(int tenantId, int regulationId, int reportId)
+    public async Task<ActionResult<ApiObject.Report>> GetReportAsync(int tenantId,
+        int regulationId, int reportId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -82,8 +85,8 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [ApiOperationId("ExecuteReport")]
     [QueryIgnore]
-    public override async Task<ActionResult<ApiObject.ReportResponse>> ExecuteReportAsync(int tenantId, int regulationId,
-        int reportId, [FromBody][Required] ApiObject.ReportRequest request)
+    public override async Task<ActionResult<ApiObject.ReportResponse>> ExecuteReportAsync(
+        int tenantId, int regulationId, int reportId, [FromBody][Required] ApiObject.ReportRequest request)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -106,8 +109,8 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateReport")]
-    public async Task<ActionResult<ApiObject.Report>> CreateReportAsync(int tenantId, int regulationId,
-        ApiObject.Report report)
+    public async Task<ActionResult<ApiObject.Report>> CreateReportAsync(int tenantId,
+        int regulationId, ApiObject.Report report)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -130,7 +133,8 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateReport")]
-    public async Task<ActionResult<ApiObject.Report>> UpdateReportAsync(int tenantId, int regulationId, ApiObject.Report report)
+    public async Task<ActionResult<ApiObject.Report>> UpdateReportAsync(int tenantId,
+        int regulationId, ApiObject.Report report)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -179,8 +183,8 @@ public class ReportController : Api.Controller.ReportController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportSet")]
-    public override async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(int tenantId, int regulationId,
-        int reportId, [FromBody] ApiObject.ReportRequest reportRequest = null)
+    public override async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
+        int tenantId, int regulationId, int reportId, [FromBody] ApiObject.ReportRequest reportRequest = null)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -203,8 +207,8 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateReportSet")]
-    public async Task<ActionResult<ApiObject.ReportSet>> CreateReportSetAsync(int tenantId, int regulationId,
-        ApiObject.ReportSet report)
+    public async Task<ActionResult<ApiObject.ReportSet>> CreateReportSetAsync(int tenantId,
+        int regulationId, ApiObject.ReportSet report)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -270,7 +274,8 @@ public class ReportController : Api.Controller.ReportController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportAttribute")]
-    public virtual async Task<ActionResult<string>> GetReportAttributeAsync(int tenantId, int regulationId, int reportId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetReportAttributeAsync(
+        int tenantId, int regulationId, int reportId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -295,8 +300,8 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetReportAttribute")]
-    public virtual async Task<ActionResult<string>> SetReportAttributeAsync(int tenantId, int regulationId,
-        int reportId, string attributeName, [FromBody] string value)
+    public virtual async Task<ActionResult<string>> SetReportAttributeAsync(int tenantId,
+        int regulationId, int reportId, string attributeName, [FromBody] string value)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -304,7 +309,7 @@ public class ReportController : Api.Controller.ReportController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(reportId, attributeName, value);
+        return await SetAttributeAsync(reportId, attributeName, value);
     }
 
     /// <summary>
@@ -317,7 +322,8 @@ public class ReportController : Api.Controller.ReportController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{reportId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteReportAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteReportAttributeAsync(int tenantId, int regulationId, int reportId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeleteReportAttributeAsync(int tenantId,
+        int regulationId, int reportId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -325,7 +331,7 @@ public class ReportController : Api.Controller.ReportController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(reportId, attributeName);
+        return await DeleteAttributeAsync(reportId, attributeName);
     }
 
     #endregion

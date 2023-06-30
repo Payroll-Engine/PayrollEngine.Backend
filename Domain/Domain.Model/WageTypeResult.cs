@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.Domain.Model;
 
@@ -95,7 +96,7 @@ public class WageTypeResult : DomainObjectBase, ITagObject, IDomainAttributeObje
     }
 
     /// <inheritdoc/>
-    public WageTypeResult(WageTypeResult copySource) :
+    protected WageTypeResult(WageTypeResult copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

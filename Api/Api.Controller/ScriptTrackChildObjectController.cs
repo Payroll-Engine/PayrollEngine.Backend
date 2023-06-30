@@ -30,7 +30,7 @@ public abstract class ScriptTrackChildObjectController<TParentService, TService,
     }
 
     // duplicated in PayrunController!
-    protected virtual async Task<ActionResult> RebuildAsync(int parentId, int itemId)
+    protected async Task<ActionResult> RebuildAsync(int parentId, int itemId)
     {
         if (parentId <= 0)
         {

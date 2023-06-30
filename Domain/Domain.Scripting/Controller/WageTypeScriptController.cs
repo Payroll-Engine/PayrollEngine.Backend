@@ -12,19 +12,17 @@ namespace PayrollEngine.Domain.Scripting.Controller;
 /// <summary>
 /// Wage type script controller
 /// </summary>
-public class WageTypeScriptController : ScriptControllerBase<WageType>, IWageTypeScriptController
+public class WageTypeScriptController : ScriptControllerBase<WageType>
 {
 
     #region Value
 
-    /// <inheritdoc />
-    public Tuple<decimal?, List<RetroPayrunJob>,bool> GetValue(ICaseFieldProvider caseFieldProvider,
-        WageTypeRuntimeSettings settings, bool autoPeriodResults)
+    public Tuple<decimal?, List<RetroPayrunJob>,bool> GetValue(WageTypeRuntimeSettings settings, bool autoPeriodResults)
     {
         LogStopwatch.Start(nameof(WageTypeValueRuntime));
 
         // script runtime
-        var runtime = new WageTypeValueRuntime(caseFieldProvider, settings);
+        var runtime = new WageTypeValueRuntime(settings);
 
         // wage type value
         var wageTypeValue = runtime.EvaluateValue(settings.WageType);
@@ -74,7 +72,6 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>, IWageTyp
 
     #region Result
 
-    /// <inheritdoc />
     public List<RetroPayrunJob> Result(decimal wageTypeValue, WageTypeRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(WageTypeResultRuntime));

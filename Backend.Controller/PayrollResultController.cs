@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -14,23 +14,12 @@ namespace PayrollEngine.Backend.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrollResult)]
 public class PayrollResultController : Api.Controller.PayrollResultController
 {
-    /// <summary>
-    /// The payroll service
-    /// </summary>
-    public IPayrollService PayrollService { get; }
-
-    /// <summary>
-    /// The payrun service
-    /// </summary>
-    public IPayrunService PayrunService { get; }
 
     /// <inheritdoc/>
     public PayrollResultController(ITenantService tenantService, IPayrollResultService payrollResultService,
-        IPayrollService payrollService, IPayrunService payrunService, IControllerRuntime runtime) :
+        IControllerRuntime runtime) :
         base(tenantService, payrollResultService, runtime)
     {
-        PayrollService = payrollService ?? throw new ArgumentNullException(nameof(payrollService));
-        PayrunService = payrunService ?? throw new ArgumentNullException(nameof(payrunService));
     }
 
     #region Payroll Results
@@ -67,7 +56,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollResult")]
-    public async Task<ActionResult<ApiObject.PayrollResult>> GetPayrollResultAsync(int tenantId, int payrollResultId)
+    public async Task<ActionResult<ApiObject.PayrollResult>> GetPayrollResultAsync(
+        int tenantId, int payrollResultId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -93,8 +83,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCollectorResults")]
-    public async Task<ActionResult<ApiObject.CollectorResult[]>> QueryCollectorResultsAsync(int tenantId, int payrollResultId,
-        [FromQuery] Query query)
+    public async Task<ActionResult<ApiObject.CollectorResult[]>> QueryCollectorResultsAsync(
+        int tenantId, int payrollResultId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -118,8 +108,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCollectorCustomResults")]
-    public async Task<ActionResult<ApiObject.CollectorCustomResult[]>> QueryCollectorCustomResultsAsync(int tenantId,
-        int payrollResultId, int collectorResultId, [FromQuery] Query query)
+    public async Task<ActionResult<ApiObject.CollectorCustomResult[]>> QueryCollectorCustomResultsAsync(
+        int tenantId, int payrollResultId, int collectorResultId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -146,8 +136,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryWageTypeResults")]
-    public async Task<ActionResult<ApiObject.WageTypeResult[]>> QueryWageTypeResultsAsync(int tenantId, int payrollResultId,
-        [FromQuery] Query query)
+    public async Task<ActionResult<ApiObject.WageTypeResult[]>> QueryWageTypeResultsAsync(
+        int tenantId, int payrollResultId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -171,8 +161,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryWageTypeCustomResults")]
-    public async Task<ActionResult<ApiObject.WageTypeCustomResult[]>> QueryWageTypeCustomResultsAsync(int tenantId,
-        int payrollResultId, int wageTypeResultId, [FromQuery] Query query)
+    public async Task<ActionResult<ApiObject.WageTypeCustomResult[]>> QueryWageTypeCustomResultsAsync(
+        int tenantId, int payrollResultId, int wageTypeResultId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -199,8 +189,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryPayrunResults")]
-    public async Task<ActionResult<ApiObject.PayrunResult[]>> QueryPayrunResultsAsync(int tenantId, int payrollResultId,
-        [FromQuery] Query query)
+    public async Task<ActionResult<ApiObject.PayrunResult[]>> QueryPayrunResultsAsync(
+        int tenantId, int payrollResultId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -227,8 +217,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryPayrollResultValues")]
-    public override async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId, [FromQuery] int? employeeId,
-        [FromQuery] Query query)
+    public override async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId,
+        [FromQuery] int? employeeId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -253,8 +243,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryPayrollResultSets")]
-    public async Task<ActionResult<ApiObject.PayrollResultSet[]>> QueryPayrollResultSetsAsync(int tenantId,
-        [FromQuery] Query query)
+    public async Task<ActionResult<ApiObject.PayrollResultSet[]>> QueryPayrollResultSetsAsync(
+        int tenantId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -277,7 +267,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollResultSet")]
-    public async Task<ActionResult<ApiObject.PayrollResultSet>> GetPayrollResultSetAsync(int tenantId, int payrollResultId)
+    public async Task<ActionResult<ApiObject.PayrollResultSet>> GetPayrollResultSetAsync(
+        int tenantId, int payrollResultId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

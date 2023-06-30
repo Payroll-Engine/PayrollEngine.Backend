@@ -1,4 +1,5 @@
-﻿using System;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace PayrollEngine.Api.Model;

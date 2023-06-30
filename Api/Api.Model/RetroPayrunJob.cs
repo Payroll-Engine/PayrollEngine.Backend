@@ -18,6 +18,7 @@ public class RetroPayrunJob : ApiObjectBase
     /// <summary>
     /// The result tags
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public List<string> ResultTags { get; set; }
 
     /// <inheritdoc/>

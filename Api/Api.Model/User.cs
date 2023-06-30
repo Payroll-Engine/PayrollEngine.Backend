@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PayrollEngine.Api.Model;
@@ -36,7 +37,7 @@ public class User : ApiObjectBase
     public string LastName { get; set; }
 
     /// <summary>
-    /// The users culture
+    /// The user culture name based on RFC 4646
     /// </summary>
     [StringLength(128)]
     public string Culture { get; set; }

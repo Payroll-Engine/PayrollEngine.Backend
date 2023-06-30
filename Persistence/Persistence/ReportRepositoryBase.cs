@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
@@ -9,9 +8,9 @@ namespace PayrollEngine.Persistence;
 public abstract class ReportRepositoryBase<T> : ScriptTrackChildDomainRepository<T, ReportAudit>, IReportRepository<T>
     where T : Report, new()
 {
-    protected ReportRepositoryBase(IReportScriptController<T> scriptController, IScriptRepository scriptRepository,
+    protected ReportRepositoryBase(IScriptRepository scriptRepository,
         IReportAuditRepository auditRepository) :
-        base(DbSchema.Tables.Report, DbSchema.ReportColumn.RegulationId, scriptController,
+        base(DbSchema.Tables.Report, DbSchema.ReportColumn.RegulationId,
             scriptRepository, auditRepository)
     {
     }

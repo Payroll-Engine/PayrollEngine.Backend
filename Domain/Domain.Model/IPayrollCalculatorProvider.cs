@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Domain.Model;
 

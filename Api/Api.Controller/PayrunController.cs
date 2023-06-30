@@ -17,7 +17,7 @@ public abstract class PayrunController : RepositoryChildObjectController<ITenant
     ITenantRepository, IPayrunRepository,
     DomainObject.Tenant, DomainObject.Payrun, ApiObject.Payrun>
 {
-    protected IPayrollService PayrollService { get; }
+    private IPayrollService PayrollService { get; }
 
     protected PayrunController(ITenantService tenantService, IPayrunService payrunService,
         IPayrollService payrollService, IControllerRuntime runtime) :
@@ -38,7 +38,7 @@ public abstract class PayrunController : RepositoryChildObjectController<ITenant
     }
 
     // duplicated in ScriptTrackChildObjectController!
-    protected virtual async Task<ActionResult> RebuildAsync(int tenantId, int payrunId)
+    protected async Task<ActionResult> RebuildAsync(int tenantId, int payrunId)
     {
         if (tenantId <= 0)
         {

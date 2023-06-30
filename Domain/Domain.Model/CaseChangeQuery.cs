@@ -1,4 +1,5 @@
 ﻿
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>

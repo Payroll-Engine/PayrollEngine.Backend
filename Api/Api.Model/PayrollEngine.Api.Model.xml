@@ -1796,7 +1796,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Division.Culture">
             <summary>
-            The culture including the calendar, fallback of employee culture
+            The division calendar (fallback: tenant calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Division.Calendar">
@@ -1839,12 +1839,12 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Employee.Culture">
             <summary>
-            The culture including the calendar, fallback is the division culture
+            The employee culture name based on RFC 4646 (fallback: division culture)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Employee.Calendar">
             <summary>
-            The employee calendar, fallback is the division calendar
+            The employee calendar (fallback: division calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Employee.Attributes">
@@ -3720,12 +3720,12 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Tenant.Culture">
             <summary>
-            The culture including the calendar
+            The tenant culture name based on RFC 4646 (fallback: system culture)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Tenant.Calendar">
             <summary>
-            The tenant calendar, fallback is the system calendar
+            The tenant calendar (fallback: default calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Tenant.Attributes">
@@ -3763,7 +3763,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.User.Culture">
             <summary>
-            The users culture
+            The user culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.User.UserType">
@@ -3817,6 +3817,11 @@
         <member name="P:PayrollEngine.Api.Model.WageType.ValueType">
             <summary>
             The value type, default is value type money
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.Calendar">
+            <summary>
+            The wage type calendar (fallback: employee calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageType.Collectors">
@@ -3890,6 +3895,16 @@
         <member name="P:PayrollEngine.Api.Model.WageTypeAudit.OverrideType">
             <summary>
             The override type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.ValueType">
+            <summary>
+            The value type, default is value type money
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Calendar">
+            <summary>
+            The wage type calendar
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Collectors">
@@ -4136,21 +4151,6 @@
         </member>
         <member name="M:PayrollEngine.Api.Model.WebhookMessage.ToString">
             <inheritdoc/>
-        </member>
-        <member name="T:PayrollEngine.Api.Model.WebhookRuntimeMessage">
-            <summary>
-            The Webhook runtime message API object
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.WebhookRuntimeMessage.Tenant">
-            <summary>
-            The tenant identifier
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.WebhookRuntimeMessage.User">
-            <summary>
-            The user identifier
-            </summary>
         </member>
     </members>
 </doc>

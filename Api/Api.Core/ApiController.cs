@@ -15,7 +15,7 @@ public abstract class ApiController : ControllerBase
     public IControllerRuntime Runtime { get; }
     public IConfiguration Configuration => Runtime.Configuration;
     protected LinkGenerator LinkGenerator => Runtime.LinkGenerator;
-    protected IApiDescriptionGroupCollectionProvider ApiExplorer => Runtime.ApiExplorer;
+    private IApiDescriptionGroupCollectionProvider ApiExplorer => Runtime.ApiExplorer;
 
     protected ApiController(IControllerRuntime runtime)
     {
@@ -31,7 +31,7 @@ public abstract class ApiController : ControllerBase
     [OkResponse]
     [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.HttpOptions)]
     [ApiOperationId(nameof(GetOptions))]
-    public virtual IActionResult GetOptions()
+    public IActionResult GetOptions()
     {
         // requested controller
         var requestController = RouteData.Values["controller"] as string;

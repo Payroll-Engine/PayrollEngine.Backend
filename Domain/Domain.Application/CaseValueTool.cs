@@ -14,15 +14,15 @@ public class CaseValueTool : FunctionToolBase
     private ICaseFieldProvider CaseFieldProvider { get; }
     private ICaseValueProvider CaseValueProvider { get; }
 
-    public DateTime ValueDate { get; }
-    public DateTime EvaluationDate { get; }
+    private DateTime ValueDate { get; }
+    private DateTime EvaluationDate { get; }
 
-    public Tenant Tenant { get; }
-    public Payroll Payroll { get; }
-    public Employee Employee { get; }
+    private Tenant Tenant { get; }
+    private Payroll Payroll { get; }
+    private Employee Employee { get; }
 
     // settings
-    protected new CaseValueToolSettings Settings => base.Settings as CaseValueToolSettings;
+    private new CaseValueToolSettings Settings => base.Settings as CaseValueToolSettings;
 
     // repositories
     public IPayrollRepository PayrollRepository { get; }
@@ -48,12 +48,8 @@ public class CaseValueTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });
@@ -81,12 +77,8 @@ public class CaseValueTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });
@@ -116,12 +108,8 @@ public class CaseValueTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });
@@ -155,12 +143,8 @@ public class CaseValueTool : FunctionToolBase
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = CaseRepository,
                 Calculator = calculator,
                 CaseFieldProvider = CaseFieldProvider,
-                RegulationLookupProvider = settings.RegulationLookupProvider,
                 EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
                 EvaluationDate = settings.EvaluationDate
             });

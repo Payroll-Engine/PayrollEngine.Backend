@@ -17,9 +17,9 @@ public static class HealthCheckExtensions
 {
     private static readonly string ReadyTag = "ready";
 
-    public static readonly Uri ReadyUrl = new("/health/ready");
-    public static readonly Uri LiveUrl = new("/health/live");
-    public static readonly Uri UserInterfaceUrl = new("/health/ui");
+    private static readonly Uri ReadyUrl = new("/health/ready");
+    private static readonly Uri LiveUrl = new("/health/live");
+    private static readonly Uri UserInterfaceUrl = new("/health/ui");
 
     /// <summary>
     /// Setup API health check

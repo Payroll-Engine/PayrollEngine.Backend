@@ -2184,18 +2184,6 @@
             <param name="caseValue">The case value</param>
             <returns>The case value reference</returns>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.CaseValuePeriodExtensions">
-            <summary>
-            Extension methods for the <see cref="T:PayrollEngine.Domain.Model.CaseValue"/>
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.CaseValuePeriodExtensions.Summary(System.Collections.Generic.IEnumerable{PayrollEngine.Domain.Model.CaseValue})">
-            <summary>
-            Get summary of case values
-            </summary>
-            <param name="caseValues">The case values</param>
-            <returns>Case value with the summary of the case values</returns>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.CaseValueQuery">
             <summary>
             Query by object name parameters
@@ -2948,7 +2936,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Division.Calendar">
             <summary>
-            The division calendar, fallback for tenant calendar
+            The division calendar (fallback: tenant calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Division.Attributes">
@@ -3129,12 +3117,12 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Employee.Culture">
             <summary>
-            The employee culture, fallback is the division culture
+            The employee culture name based on RFC 4646 (fallback: division culture)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Employee.Calendar">
             <summary>
-            The employee calendar, fallback is the division calendar
+            The employee calendar (fallback: division calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Employee.Attributes">
@@ -3328,18 +3316,6 @@
             The current evaluation period
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.PushEvaluationPeriod(PayrollEngine.DatePeriod)">
-            <summary>
-            Push the current evaluation period
-            </summary>
-            <param name="evaluationPeriod">The new evaluation period</param>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.PopEvaluationPeriod(PayrollEngine.DatePeriod)">
-            <summary>
-            Pop the current evaluation period
-            </summary>
-            <param name="evaluationPeriod">The new evaluation period</param>
-        </member>
         <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.GetCaseValueSlotsAsync(System.String)">
             <summary>
             Get all case slots from a specific case field
@@ -3393,11 +3369,6 @@
         <member name="P:PayrollEngine.Domain.Model.ICaseValueProvider.RetroCaseValue">
             <summary>
             Gets the retro case value
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.ICaseValueProvider.ResetRetroCaseValue">
-            <summary>
-            Resets the retro case value
             </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IClusterObject">
@@ -5718,100 +5689,6 @@
         <member name="M:PayrollEngine.Domain.Model.Regulation.ToString">
             <inheritdoc/>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.RegulationCase">
-            <summary>
-            A regulation case
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationCase.RegulationId">
-            <summary>
-            The regulationId
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCase.#ctor">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCase.#ctor(PayrollEngine.Domain.Model.RegulationCase)">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCase.Equals(PayrollEngine.Domain.Model.RegulationCase)">
-            <summary>Compare two objects</summary>
-            <param name="compare">The object to compare with this</param>
-            <returns>True for objects with the same data</returns>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.RegulationCaseField">
-            <summary>
-            A regulation case field
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationCaseField.RegulationId">
-            <summary>
-            The regulationId
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationCaseField.CaseId">
-            <summary>
-            The case id
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationCaseField.CaseType">
-            <summary>
-            The case type
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCaseField.#ctor">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCaseField.#ctor(PayrollEngine.Domain.Model.RegulationCaseField)">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCaseField.Equals(PayrollEngine.Domain.Model.RegulationCaseField)">
-            <summary>Compare two objects</summary>
-            <param name="compare">The object to compare with this</param>
-            <returns>True for objects with the same data</returns>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.RegulationCaseRelation">
-            <summary>
-            A regulation case relation
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationCaseRelation.RegulationId">
-            <summary>
-            The regulationId
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCaseRelation.#ctor">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCaseRelation.#ctor(PayrollEngine.Domain.Model.RegulationCaseRelation)">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCaseRelation.Equals(PayrollEngine.Domain.Model.RegulationCaseRelation)">
-            <summary>Compare two objects</summary>
-            <param name="compare">The object to compare with this</param>
-            <returns>True for objects with the same data</returns>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.RegulationCollector">
-            <summary>
-            A regulation collector
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationCollector.RegulationId">
-            <summary>
-            The regulationId
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCollector.#ctor">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCollector.#ctor(PayrollEngine.Domain.Model.RegulationCollector)">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationCollector.Equals(PayrollEngine.Domain.Model.RegulationCollector)">
-            <summary>Compare two objects</summary>
-            <param name="compare">The object to compare with this</param>
-            <returns>True for objects with the same data</returns>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.RegulationReference">
             <summary>Reference to regulation</summary>
         </member>
@@ -5883,27 +5760,6 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.RegulationShare.ToString">
             <inheritdoc/>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.RegulationWageType">
-            <summary>
-            A regulation wage type
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.RegulationWageType.RegulationId">
-            <summary>
-            The regulationId
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationWageType.#ctor">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationWageType.#ctor(PayrollEngine.Domain.Model.RegulationWageType)">
-            <inheritdoc/>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.RegulationWageType.Equals(PayrollEngine.Domain.Model.RegulationWageType)">
-            <summary>Compare two objects</summary>
-            <param name="compare">The object to compare with this</param>
-            <returns>True for objects with the same data</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Report">
             <summary>
@@ -7171,11 +7027,6 @@
             Repository for collector results
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Repository.ICollectorResultSetRepository.CollectorCustomResultRepository">
-            <summary>
-            The collector custom result repository
-            </summary>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IDivisionRepository">
             <summary>
             Repository for divisions
@@ -7673,16 +7524,6 @@
             Repository for payroll results
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Repository.IPayrollResultSetRepository.WageTypeResultSetRepository">
-            <summary>
-            The wage type result repository
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.Repository.IPayrollResultSetRepository.CollectorResultSetRepository">
-            <summary>
-            The collector result repository
-            </summary>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IPayrunJobEmployeeRepository">
             <summary>
             Repository for payrun job employees
@@ -8024,11 +7865,6 @@
         <member name="T:PayrollEngine.Domain.Model.Repository.IWageTypeResultSetRepository">
             <summary>
             Repository for wage type results
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.Repository.IWageTypeResultSetRepository.WageTypeCustomResultRepository">
-            <summary>
-            The wage type custom result repository
             </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IWebhookMessageRepository">
@@ -8566,12 +8402,12 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Tenant.Culture">
             <summary>
-            The culture
+            The tenant culture name based on RFC 4646 (fallback: system culture)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Tenant.Calendar">
             <summary>
-            The tenant calendar, fallback is the system default
+            The tenant calendar (fallback: default calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Tenant.Attributes">
@@ -8653,7 +8489,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.User.Culture">
             <summary>
-            The users culture
+            The user culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.User.UserType">
@@ -8730,7 +8566,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageType.Calendar">
             <summary>
-            The wage type calendar
+            The wage type calendar (fallback: employee calendar)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageType.Collectors">

@@ -23,7 +23,7 @@ public class PayrollLayerRepository : ChildDomainRepository<PayrollLayer>, IPayr
         base.GetObjectData(payrollLayer, parameters);
     }
 
-    public virtual async Task<bool> ExistsAsync(IDbContext context, int payrollId, int level, int priority)
+    public async Task<bool> ExistsAsync(IDbContext context, int payrollId, int level, int priority)
     {
         if (payrollId <= 0)
         {

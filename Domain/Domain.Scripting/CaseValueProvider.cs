@@ -199,8 +199,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
     /// <inheritdoc />
     public DatePeriod EvaluationPeriod => evaluationPeriods.Peek();
 
-    /// <inheritdoc />
-    public void PushEvaluationPeriod(DatePeriod evaluationPeriod)
+    private void PushEvaluationPeriod(DatePeriod evaluationPeriod)
     {
         //Log.Warning($"Push on count {evaluationPeriods.Count}: {evaluationPeriod}");
         if (evaluationPeriods.Count == 0)
@@ -214,8 +213,8 @@ public sealed class CaseValueProvider : ICaseValueProvider
         evaluationPeriods.Push(evaluationPeriod);
     }
 
-    /// <inheritdoc />
-    public void PopEvaluationPeriod(DatePeriod evaluationPeriod)
+    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+    private void PopEvaluationPeriod(DatePeriod evaluationPeriod)
     {
         //Log.Warning($"Pop on count {evaluationPeriods.Count}: {evaluationPeriod}");
         if (evaluationPeriod == null)
@@ -828,9 +827,6 @@ public sealed class CaseValueProvider : ICaseValueProvider
 
     /// <inheritdoc />
     public CaseValue RetroCaseValue { get; private set; }
-
-    /// <inheritdoc />
-    public void ResetRetroCaseValue() => RetroCaseValue = null;
 
     private async Task UpdateRetroCaseValue(ICaseValueCache caseValueRepository, string caseFieldName)
     {

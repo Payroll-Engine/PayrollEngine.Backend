@@ -40,12 +40,8 @@ internal sealed class PayrunProcessorScripts
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = Settings.CaseRepository,
                 Calculator = context.Calculator,
                 CaseFieldProvider = context.CaseFieldProvider,
-                RegulationLookupProvider = context.RegulationLookupProvider,
                 EvaluationPeriod = context.EvaluationPeriod,
                 EvaluationDate = context.EvaluationDate,
                 RetroDate = context.RetroDate
@@ -90,12 +86,8 @@ internal sealed class PayrunProcessorScripts
             new()
             {
                 DbContext = Settings.DbContext,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                CaseRepository = Settings.CaseRepository,
                 Calculator = context.Calculator,
                 CaseFieldProvider = context.CaseFieldProvider,
-                RegulationLookupProvider = context.RegulationLookupProvider,
                 EvaluationPeriod = context.EvaluationPeriod,
                 EvaluationDate = context.EvaluationDate,
                 RetroDate = context.RetroDate

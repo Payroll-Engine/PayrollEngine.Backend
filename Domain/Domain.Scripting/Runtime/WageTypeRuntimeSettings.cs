@@ -6,20 +6,20 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 public class WageTypeRuntimeSettings : PayrunRuntimeSettings
 {
     /// <summary>The execution count</summary>
-    public int ExecutionCount { get; set; }
+    public int ExecutionCount { get; init; }
 
     /// <summary>The wage type</summary>
-    public WageType WageType { get; set; }
+    public WageType WageType { get; init; }
 
     /// <summary>The wage type attributes</summary>
-    public Dictionary<string, object> WageTypeAttributes { get; set; }
+    public Dictionary<string, object> WageTypeAttributes { get; init; }
 
     /// <summary>The disabled collectors</summary>
-    public List<string> DisabledCollectors { get; set; }
+    public List<string> DisabledCollectors { get; init; }
 
     /// <summary>The current wage type and collector results</summary>
-    public PayrollResultSet CurrentPayrollResult { get; set; }
+    public PayrollResultSet CurrentPayrollResult { get; init; }
 
     /// <summary>The current wage type result</summary>
-    public WageTypeResultSet CurrentWageTypeResult { get; set; }
+    public WageTypeResultSet CurrentWageTypeResult { get; init; }
 }

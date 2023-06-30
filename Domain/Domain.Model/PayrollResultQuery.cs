@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBeProtected.Global
 
 namespace PayrollEngine.Domain.Model;
 
@@ -46,6 +48,6 @@ public class PayrollResultQuery
     /// <summary>
     /// Copy constructor
     /// </summary>
-    public PayrollResultQuery(PayrollResultQuery copySource) =>
+    protected PayrollResultQuery(PayrollResultQuery copySource) =>
         CopyTool.CopyProperties(copySource, this);
 }

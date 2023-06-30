@@ -14,12 +14,12 @@ public class Tenant : DomainObjectBase, IIdentifiableObject, IDomainAttributeObj
     public string Identifier { get; set; }
 
     /// <summary>
-    /// The culture
+    /// The tenant culture name based on RFC 4646 (fallback: system culture)
     /// </summary>
     public string Culture { get; set; }
 
     /// <summary>
-    /// The tenant calendar, fallback is the system default
+    /// The tenant calendar (fallback: default calendar)
     /// </summary>
     public string Calendar { get; set; }
 

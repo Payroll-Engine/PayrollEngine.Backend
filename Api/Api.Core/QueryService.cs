@@ -20,7 +20,7 @@ public class QueryService : IQueryService
 {
     private Dictionary<string, QueryMethodInfo> queryMethods;
 
-    public IServiceProvider ServiceProvider { get; }
+    private IServiceProvider ServiceProvider { get; }
 
     public QueryService(IServiceProvider serviceProvider)
     {
@@ -32,7 +32,7 @@ public class QueryService : IQueryService
         Queries.ContainsKey(methodName);
 
     /// <inheritdoc />
-    public virtual DataTable ExecuteQuery(int tenantId, string methodName, string culture,
+    public DataTable ExecuteQuery(int tenantId, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext)
     {
         if (string.IsNullOrWhiteSpace(methodName))
@@ -93,7 +93,7 @@ public class QueryService : IQueryService
         }
     }
 
-    public virtual async Task<DataTable> ExecuteQueryAsync(int tenantId, string methodName, string culture,
+    public async Task<DataTable> ExecuteQueryAsync(int tenantId, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext)
     {
         if (string.IsNullOrWhiteSpace(methodName))
@@ -145,7 +145,7 @@ public class QueryService : IQueryService
     }
 
     /// <inheritdoc />
-    public virtual async Task<DataTable> ExecuteQueryAsync(int tenantId, string queryName, string methodName, string culture,
+    public async Task<DataTable> ExecuteQueryAsync(int tenantId, string queryName, string methodName, string culture,
         Dictionary<string, string> requestParameters, Dictionary<string, string> reportParameters,
         IApiControllerContext controllerContext)
     {

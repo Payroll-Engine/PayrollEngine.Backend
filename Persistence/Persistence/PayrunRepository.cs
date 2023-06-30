@@ -2,22 +2,20 @@
 using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 using PayrollEngine.Serialization;
 using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrunRepository : ScriptChildDomainRepository<Payrun, Payrun>, IPayrunRepository
+public class PayrunRepository : ScriptChildDomainRepository<Payrun>, IPayrunRepository
 {
-    public PayrunRepository(IPayrunScriptController scriptController,
-        IScriptRepository scriptRepository) :
-        base(DbSchema.Tables.Payrun, DbSchema.PayrunColumn.TenantId, scriptController, scriptRepository)
+    public PayrunRepository(IScriptRepository scriptRepository) :
+        base(DbSchema.Tables.Payrun, DbSchema.PayrunColumn.TenantId, scriptRepository)
     {
     }
 
     // duplicated in ScriptTrackChildDomainRepository!
-    public virtual async Task RebuildAsync(IDbContext context, int tenantId, int payrunId)
+    public async Task RebuildAsync(IDbContext context, int tenantId, int payrunId)
     {
         if (tenantId == default)
         {

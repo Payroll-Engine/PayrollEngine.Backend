@@ -16,19 +16,19 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     /// <summary>
     /// The runtime settings
     /// </summary>
-    protected new ReportRuntimeSettings Settings => base.Settings as ReportRuntimeSettings;
+    private new ReportRuntimeSettings Settings => base.Settings as ReportRuntimeSettings;
 
     protected IQueryService QueryService => Settings.QueryService;
     protected IApiControllerContext ControllerContext => Settings.ControllerContext;
 
     /// <summary>The webhook dispatch service</summary>
-    protected IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
+    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
 
     /// <summary>The report</summary>
     protected ReportSet Report => Settings.Report;
 
     /// <summary>The report request</summary>
-    protected ReportRequest ReportRequest => Settings.ReportRequest;
+    private ReportRequest ReportRequest => Settings.ReportRequest;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReportRuntimeBase"/> class.

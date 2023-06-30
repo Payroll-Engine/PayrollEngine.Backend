@@ -9,7 +9,7 @@ namespace PayrollEngine.Persistence;
 
 public abstract class CaseValueSetupRepository : CaseValueRepositoryBase<CaseValueSetup>, ICaseValueSetupRepository
 {
-    public ICaseDocumentRepository CaseDocumentRepository { get; }
+    private ICaseDocumentRepository CaseDocumentRepository { get; }
 
     protected CaseValueSetupRepository(string tableName, string parentFieldName,
         ICaseFieldRepository caseFieldRepository,
@@ -41,7 +41,7 @@ public abstract class CaseValueSetupRepository : CaseValueRepositoryBase<CaseVal
         throw new NotSupportedException("Update of case value setup is not supported");
     }
 
-    protected override async Task<bool> OnDeletingAsync(IDbContext context, int parentId, int caseValueSetupId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int caseValueSetupId)
     {
         // documents
         var documents = (await CaseDocumentRepository.QueryAsync(context, caseValueSetupId)).ToList();
@@ -50,6 +50,6 @@ public abstract class CaseValueSetupRepository : CaseValueRepositoryBase<CaseVal
             await CaseDocumentRepository.DeleteAsync(context, caseValueSetupId, document.Id);
         }
 
-        return await base.OnDeletingAsync(context, parentId, caseValueSetupId);
+        return await base.OnDeletingAsync(context, caseValueSetupId);
     }
 }

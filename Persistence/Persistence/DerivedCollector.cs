@@ -1,4 +1,5 @@
 ﻿using PayrollEngine.Domain.Model;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace PayrollEngine.Persistence;
 

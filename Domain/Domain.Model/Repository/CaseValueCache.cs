@@ -22,32 +22,32 @@ public class CaseValueCache : ICaseValueCache
     /// <summary>
     /// The database context
     /// </summary>
-    public IDbContext Context { get; }
+    private IDbContext Context { get; }
 
     /// <summary>
     /// The case value repository
     /// </summary>
-    public ICaseValueRepository CaseValueRepository { get; }
+    private ICaseValueRepository CaseValueRepository { get; }
 
     /// <summary>
     /// The repository parent id
     /// </summary>
-    public int ParentId { get; }
+    private int ParentId { get; }
 
     /// <summary>
     /// The division id
     /// </summary>
-    public int DivisionId { get; }
+    private int DivisionId { get; }
 
     /// <summary>
     /// The evaluation date
     /// </summary>
-    public DateTime EvaluationDate { get; }
+    private DateTime EvaluationDate { get; }
 
     /// <summary>
     /// The forecast name
     /// </summary>
-    public string Forecast { get; }
+    private string Forecast { get; }
 
     private Dictionary<CaseValueKey, List<CaseValue>> caseValuesCache;
     private Dictionary<CaseValueKey, List<CaseValue>> casePeriodValuesCache;
@@ -73,11 +73,11 @@ public class CaseValueCache : ICaseValueCache
     }
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<string>> GetCaseValueSlotsAsync(string caseFieldName) =>
+    public async Task<IEnumerable<string>> GetCaseValueSlotsAsync(string caseFieldName) =>
         await CaseValueRepository.GetCaseValueSlotsAsync(Context, ParentId, caseFieldName);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<CaseValue>> GetCaseValuesAsync(string caseFieldName)
+    public async Task<IEnumerable<CaseValue>> GetCaseValuesAsync(string caseFieldName)
     {
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
@@ -127,7 +127,7 @@ public class CaseValueCache : ICaseValueCache
     }
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<CaseValue>> GetCasePeriodValuesAsync(string caseFieldName)
+    public async Task<IEnumerable<CaseValue>> GetCasePeriodValuesAsync(string caseFieldName)
     {
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
@@ -182,7 +182,7 @@ public class CaseValueCache : ICaseValueCache
     }
 
     /// <inheritdoc />
-    public virtual async Task<CaseValue> GetRetroCaseValueAsync(string caseFieldName, DatePeriod period) =>
+    public async Task<CaseValue> GetRetroCaseValueAsync(string caseFieldName, DatePeriod period) =>
         await CaseValueRepository.GetRetroCaseValueAsync(Context,
             new()
             {

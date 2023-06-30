@@ -1,4 +1,4 @@
-﻿
+﻿// ReSharper disable UnusedMemberInSuper.Global
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>

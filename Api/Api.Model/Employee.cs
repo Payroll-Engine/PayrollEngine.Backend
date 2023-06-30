@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PayrollEngine.Api.Model;
@@ -35,13 +36,13 @@ public class Employee : ApiObjectBase
     public List<string> Divisions { get; set; }
         
     /// <summary>
-    /// The culture including the calendar, fallback is the division culture
+    /// The employee culture name based on RFC 4646 (fallback: division culture)
     /// </summary>
     [StringLength(128)]
     public string Culture { get; set; }
     
     /// <summary>
-    /// The employee calendar, fallback is the division calendar
+    /// The employee calendar (fallback: division calendar)
     /// </summary>
     public string Calendar { get; set; }
 

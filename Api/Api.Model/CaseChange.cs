@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace PayrollEngine.Api.Model;
 
@@ -59,6 +60,7 @@ public class CaseChange : ApiObjectBase
     /// <summary>
     /// The case values
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public List<CaseValue> Values { get; set; }
 
     /// <summary>

@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -23,6 +24,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     /// Query regulation case fields
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="caseId">The case id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The regulation case fields</returns>
@@ -30,7 +32,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCaseFields")]
-    public async Task<ActionResult> QueryCaseFieldsAsync(int tenantId, int caseId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryCaseFieldsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -45,6 +47,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     /// Get a regulation case field
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="caseId">The case id</param>
     /// <param name="caseFieldId">The case field id</param>
     /// <returns>The regulation case</returns>
@@ -53,7 +56,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetCaseField")]
-    public async Task<ActionResult<ApiObject.CaseField>> GetCaseFieldAsync(int tenantId, int caseId, int caseFieldId)
+    public async Task<ActionResult<ApiObject.CaseField>> GetCaseFieldAsync(int tenantId, int regulationId, int caseId, int caseFieldId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

@@ -1,4 +1,6 @@
-﻿//#define AUDIT_EXPOSE
+﻿#if DEBUG
+//#define AUDIT_IGNORE
+#endif
 
 namespace PayrollEngine.Api.Core;
 
@@ -11,10 +13,10 @@ public static class ApiServiceIgnore
 {
     // defaults
     private const bool Ignore = false;
-#if AUDIT_EXPOSE
-        private const bool AuditIgnore = false;
-#else
+#if AUDIT_IGNORE
     private const bool AuditIgnore = true;
+#else
+    private const bool AuditIgnore = false;
 #endif
 
     // http

@@ -10,9 +10,9 @@ namespace PayrollEngine.Persistence;
 public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet>, IPayrollResultSetRepository
 {
     public IWageTypeResultSetRepository WageTypeResultSetRepository { get; }
-    public ICollectorResultSetRepository CollectorResultSetRepository { get; }
-    public IPayrunResultRepository PayrunResultRepository { get; }
-    public bool BulkInsert { get; }
+    private ICollectorResultSetRepository CollectorResultSetRepository { get; }
+    private IPayrunResultRepository PayrunResultRepository { get; }
+    private bool BulkInsert { get; }
 
     public PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeResultSetRepository,
         ICollectorResultSetRepository collectorResultSetRepository,
@@ -104,7 +104,7 @@ public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet
         throw new NotSupportedException("Update of payroll results not supported");
     }
 
-    protected override async Task<bool> OnDeletingAsync(IDbContext context, int tenantId, int payrollResultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int payrollResultId)
     {
         // wage type results
         var wageTypeResults = (await WageTypeResultSetRepository.QueryAsync(context, payrollResultId)).ToList();
@@ -127,6 +127,6 @@ public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet
             await PayrunResultRepository.DeleteAsync(context, payrollResultId, payrunResult.Id);
         }
 
-        return await base.OnDeletingAsync(context, tenantId, payrollResultId);
+        return await base.OnDeletingAsync(context, payrollResultId);
     }
 }

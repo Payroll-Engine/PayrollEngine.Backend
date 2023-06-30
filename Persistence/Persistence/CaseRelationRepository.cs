@@ -1,15 +1,14 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class CaseRelationRepository : ScriptTrackChildDomainRepository<CaseRelation, CaseRelationAudit>, ICaseRelationRepository
 {
-    public CaseRelationRepository(ICaseRelationScriptController scriptController, IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository) :
-        base(DbSchema.Tables.CaseRelation, DbSchema.CaseRelationColumn.RegulationId, scriptController, scriptRepository, auditRepository)
+    public CaseRelationRepository(IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository) :
+        base(DbSchema.Tables.CaseRelation, DbSchema.CaseRelationColumn.RegulationId, scriptRepository, auditRepository)
     {
     }
 

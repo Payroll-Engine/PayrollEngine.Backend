@@ -4,19 +4,18 @@ using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class CaseRepository : ScriptTrackChildDomainRepository<Case, CaseAudit>, ICaseRepository
 {
-    public CaseRepository(ICaseScriptController scriptController, IScriptRepository scriptRepository, ICaseAuditRepository auditRepository) :
-        base(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId, scriptController, scriptRepository, auditRepository)
+    public CaseRepository(IScriptRepository scriptRepository, ICaseAuditRepository auditRepository) :
+        base(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId, scriptRepository, auditRepository)
     {
     }
 
-    public virtual async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
+    public async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
     {
         if (tenantId <= 0)
         {

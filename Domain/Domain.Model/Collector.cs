@@ -239,7 +239,7 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     }
 
     /// <inheritdoc/>
-    public Collector(Collector copySource) :
+    protected Collector(Collector copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

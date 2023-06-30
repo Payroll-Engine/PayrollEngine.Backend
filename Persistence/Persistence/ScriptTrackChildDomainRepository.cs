@@ -14,16 +14,13 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit> : TrackC
     where TDomain : TrackDomainObject<TAudit>, new()
     where TAudit : AuditDomainObject
 {
-    public IScriptController<TDomain> ScriptController { get; }
     // used in derived types to access the derived scripts
-    public IScriptRepository ScriptRepository { get; }
+    private IScriptRepository ScriptRepository { get; }
 
     protected ScriptTrackChildDomainRepository(string tableName, string parentFieldName,
-        IScriptController<TDomain> scriptController, IScriptRepository scriptRepository,
-        IAuditChildDomainRepository<TAudit> auditRepository) :
+        IScriptRepository scriptRepository, IAuditChildDomainRepository<TAudit> auditRepository) :
         base(tableName, parentFieldName, auditRepository)
     {
-        ScriptController = scriptController ?? throw new ArgumentNullException(nameof(scriptController));
         ScriptRepository = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
     }
 
@@ -77,7 +74,7 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit> : TrackC
     }
 
     // duplicated in ScriptChildDomainSqlRepository!
-    protected virtual async Task SetupBinaryAsync(IDbContext context, int parentId, TDomain item)
+    private async Task SetupBinaryAsync(IDbContext context, int parentId, TDomain item)
     {
         if (!(item is IScriptObject scriptObject))
         {

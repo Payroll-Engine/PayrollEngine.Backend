@@ -8,9 +8,9 @@ namespace PayrollEngine.Domain.Scripting;
 /// <inheritdoc/>
 public class FunctionHost : IFunctionHost
 {
-    public FunctionHostSettings Settings { get; }
-    public ITaskRepository TaskRepository => Settings.TaskRepository;
-    public ILogRepository LogRepository => Settings.LogRepository;
+    private FunctionHostSettings Settings { get; }
+    private ITaskRepository TaskRepository => Settings.TaskRepository;
+    private ILogRepository LogRepository => Settings.LogRepository;
 
     /// <summary>
     /// The function log level, default is information
@@ -18,7 +18,6 @@ public class FunctionHost : IFunctionHost
     public LogLevel LogLevel { get; set; } = LogLevel.Information;
 
     private readonly AssemblyCache assemblyCache;
-    private bool disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FunctionHost"/> class
@@ -28,13 +27,6 @@ public class FunctionHost : IFunctionHost
     {
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
         assemblyCache = new(settings.DbContext, settings.AssemblyCacheTimeout, settings.ScriptProvider);
-    }
-
-    /// <inheritdoc/>
-    ~FunctionHost()
-    {
-        // Finalizer calls Dispose(false)
-        Dispose(false);
     }
 
     /// <inheritdoc/>
@@ -65,27 +57,5 @@ public class FunctionHost : IFunctionHost
             return;
         }
         _ = LogRepository.CreateAsync(Settings.DbContext, tenantId, log).Result;
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    /// Public implementation of Dispose pattern
-    /// </summary>
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Protected implementation of Dispose pattern
-    /// </summary>
-    /// <param name="disposing"></param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposed)
-        {
-            disposed = true;
-        }
     }
 }

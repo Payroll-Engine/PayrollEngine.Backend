@@ -7,13 +7,13 @@ public class CaseRelationRuntimeSettings : PayrollRuntimeSettings
     /// <summary>
     /// The case values of the relation source
     /// </summary>
-    public CaseSet SourceCaseSet { get; set; }
+    public CaseSet SourceCaseSet { get; init; }
 
     /// <summary>
     /// The case values of the relation target
     /// </summary>
-    public CaseSet TargetCaseSet { get; set; }
+    public CaseSet TargetCaseSet { get; init; }
 
     /// <summary>The webhook dispatch service</summary>
-    public IWebhookDispatchService WebhookDispatchService { get; set; }
+    public IWebhookDispatchService WebhookDispatchService { get; init; }
 }

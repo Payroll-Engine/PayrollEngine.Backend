@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -13,7 +14,7 @@ namespace PayrollEngine.Backend.Controller;
 public class CaseAuditController : Api.Controller.CaseAuditController
 {
     /// <inheritdoc/>
-    public CaseAuditController(ICaseService caseService, 
+    public CaseAuditController(ICaseService caseService,
         ICaseAuditService caseAuditService, IControllerRuntime runtime) :
         base(caseService, caseAuditService, runtime)
     {
@@ -24,13 +25,14 @@ public class CaseAuditController : Api.Controller.CaseAuditController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="caseId">The case id </param>
+    /// <param name="regulationId">The regulation id </param>
     /// <param name="query">Query parameters</param>
     /// <returns>The audit objects</returns>
     [HttpGet]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCaseAudits")]
-    public async Task<ActionResult> QueryCaseAuditsAsync(int tenantId, int caseId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryCaseAuditsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -45,6 +47,7 @@ public class CaseAuditController : Api.Controller.CaseAuditController
     /// Get a regulation case audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id </param>
     /// <param name="caseId">The case id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
@@ -53,7 +56,7 @@ public class CaseAuditController : Api.Controller.CaseAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetCaseAudit")]
-    public async Task<ActionResult<ApiObject.CaseAudit>> GetCaseAuditAsync(int tenantId, int caseId, int auditId)
+    public async Task<ActionResult<ApiObject.CaseAudit>> GetCaseAuditAsync(int tenantId, int regulationId, int caseId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

@@ -7,13 +7,8 @@ namespace PayrollEngine.Domain.Scripting;
 /// <summary>
 /// Provide an assembly
 /// </summary>
-public interface IFunctionHost : IDisposable
+public interface IFunctionHost
 {
-    /// <summary>
-    /// The function log level
-    /// </summary>
-    LogLevel LogLevel { get; set; }
-
     /// <summary>
     /// Get object script assembly
     /// </summary>

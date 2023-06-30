@@ -9,10 +9,8 @@ using PayrollEngine.Domain.Scripting.Runtime;
 namespace PayrollEngine.Domain.Scripting.Controller;
 
 /// <summary>Case script controller</summary>
-public class CaseScriptController : ScriptControllerBase<Case>, ICaseScriptController
+public class CaseScriptController : ScriptControllerBase<Case>
 {
-
-    /// <inheritdoc />
     public bool? CaseAvailable(CaseRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(CaseAvailableRuntime));
@@ -28,7 +26,6 @@ public class CaseScriptController : ScriptControllerBase<Case>, ICaseScriptContr
         return available;
     }
 
-    /// <inheritdoc />
     public bool? CaseBuild(Case @case, CaseChangeRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(CaseBuildRuntime));
@@ -44,7 +41,6 @@ public class CaseScriptController : ScriptControllerBase<Case>, ICaseScriptContr
         return build;
     }
 
-    /// <inheritdoc />
     public bool? CaseValidate(Case @case, CaseChangeRuntimeSettings settings, ICollection<CaseValidationIssue> issues)
     {
         LogStopwatch.Start(nameof(CaseValidateRuntime));

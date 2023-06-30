@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -10,13 +9,9 @@ namespace PayrollEngine.Persistence;
 
 public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IEmployeeCaseChangeRepository
 {
-    public IEmployeeRepository EmployeeRepository { get; }
-
-    public EmployeeCaseChangeRepository(IEmployeeRepository employeeRepository,
-        CaseChangeRepositorySettings settings) :
+    public EmployeeCaseChangeRepository(CaseChangeRepositorySettings settings) :
         base(DbSchema.Tables.EmployeeCaseChange, DbSchema.EmployeeCaseChangeColumn.EmployeeId, settings)
     {
-        EmployeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
     }
 
     protected override void GetObjectCreateData(CaseChange caseChange, DbParameterCollection parameters)

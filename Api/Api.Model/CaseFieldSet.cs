@@ -24,6 +24,7 @@ public class CaseFieldSet : CaseField
     /// <summary>
     /// The localized case slots
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseSlotLocalizations { get; set; }
 
     /// <summary>

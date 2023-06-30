@@ -55,7 +55,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryEmployeePayrunJobs")]
-    public override async Task<ActionResult> QueryEmployeePayrunJobsAsync(int tenantId, int employeeId, [FromQuery] Query query)
+    public override async Task<ActionResult> QueryEmployeePayrunJobsAsync(
+        int tenantId, int employeeId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -76,7 +77,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrunJob")]
-    public async Task<ActionResult<ApiObject.PayrunJob>> GetPayrunJobAsync(int tenantId, int payrunJobId)
+    public async Task<ActionResult<ApiObject.PayrunJob>> GetPayrunJobAsync(
+        int tenantId, int payrunJobId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -98,8 +100,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("StartPayrunJob")]
-    public override async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunJobAsync(int tenantId,
-        ApiObject.PayrunJobInvocation jobInvocation)
+    public override async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunJobAsync(
+        int tenantId, ApiObject.PayrunJobInvocation jobInvocation)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -120,7 +122,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrunJobStatus")]
-    public override async Task<ActionResult<string>> GetPayrunJobStatusAsync(int tenantId, int payrunJobId) =>
+    public override async Task<ActionResult<string>> GetPayrunJobStatusAsync(
+        int tenantId, int payrunJobId) =>
         await base.GetPayrunJobStatusAsync(tenantId, payrunJobId);
 
     /// <summary>
@@ -138,8 +141,9 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("ChangePayrunJobStatus")]
-    public override async Task<IActionResult> ChangePayrunJobStatusAsync(int tenantId, int payrunJobId,
-        [FromBody] PayrunJobStatus jobStatus, [Required] int userId, [Required] string reason, bool patchMode) =>
+    public override async Task<IActionResult> ChangePayrunJobStatusAsync(
+        int tenantId, int payrunJobId, [FromBody] PayrunJobStatus jobStatus,
+        [Required] int userId, [Required] string reason, bool patchMode) =>
         await base.ChangePayrunJobStatusAsync(tenantId, payrunJobId, jobStatus, userId, reason, patchMode);
 
     /// <summary>
@@ -174,7 +178,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrunJobAttribute")]
-    public virtual async Task<ActionResult<string>> GetPayrunJobAttributeAsync(int tenantId, int payrunJobId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetPayrunJobAttributeAsync(
+        int tenantId, int payrunJobId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -198,8 +203,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetPayrunJobAttribute")]
-    public virtual async Task<ActionResult<string>> SetPayrunJobAttributeAsync(int tenantId, int payrunJobId,
-        string attributeName, [FromBody] string value)
+    public virtual async Task<ActionResult<string>> SetPayrunJobAttributeAsync(
+        int tenantId, int payrunJobId, string attributeName, [FromBody] string value)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -207,7 +212,7 @@ public class PayrunJobController : Api.Controller.PayrunJobController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(payrunJobId, attributeName, value);
+        return await SetAttributeAsync(payrunJobId, attributeName, value);
     }
 
     /// <summary>
@@ -219,7 +224,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{payrunJobId}/attributes/{attributeName}")]
     [ApiOperationId("DeletePayrunJobAttribute")]
-    public virtual async Task<ActionResult<bool>> DeletePayrunJobAttributeAsync(int tenantId, int payrunJobId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeletePayrunJobAttributeAsync(
+        int tenantId, int payrunJobId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -227,7 +233,7 @@ public class PayrunJobController : Api.Controller.PayrunJobController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(payrunJobId, attributeName);
+        return await DeleteAttributeAsync(payrunJobId, attributeName);
     }
 
     #endregion

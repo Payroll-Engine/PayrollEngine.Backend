@@ -1,4 +1,5 @@
-﻿
+﻿// ReSharper disable PropertyCanBeMadeInitOnly.Global
+
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>
@@ -9,6 +10,7 @@ public class ReportTemplateQuery : Query
     /// <summary>
     /// Report culture
     /// </summary>
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public string Culture { get; set; }
 
     /// <summary>

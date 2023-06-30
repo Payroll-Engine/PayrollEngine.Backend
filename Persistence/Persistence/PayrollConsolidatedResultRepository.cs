@@ -15,7 +15,7 @@ public class PayrollConsolidatedResultRepository : ChildDomainRepository<Payroll
     }
 
     /// <inheritdoc />
-    public virtual async Task<ConsolidatedPayrollResult> GetPayrollResultAsync(IDbContext context, PayrollResultQuery query)
+    public async Task<ConsolidatedPayrollResult> GetPayrollResultAsync(IDbContext context, PayrollResultQuery query)
     {
         // collector results
         var collectorResults = (await GetCollectorResultsAsync(context,
@@ -59,7 +59,7 @@ public class PayrollConsolidatedResultRepository : ChildDomainRepository<Payroll
     }
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<WageTypeResult>> GetWageTypeResultsAsync(IDbContext context,
+    public async Task<IEnumerable<WageTypeResult>> GetWageTypeResultsAsync(IDbContext context,
         ConsolidatedWageTypeResultQuery query)
     {
         return await new ConsolidateWageTypeResultCommand(context).GetResultsAsync(query);
@@ -67,22 +67,22 @@ public class PayrollConsolidatedResultRepository : ChildDomainRepository<Payroll
 
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<WageTypeCustomResult>> GetWageTypeCustomResultsAsync(IDbContext context,
+    public async Task<IEnumerable<WageTypeCustomResult>> GetWageTypeCustomResultsAsync(IDbContext context,
         ConsolidatedWageTypeResultQuery query) =>
         await new ConsolidateWageTypeCustomResultCommand(context).GetResultsAsync(query);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<CollectorResult>> GetCollectorResultsAsync(IDbContext context,
+    public async Task<IEnumerable<CollectorResult>> GetCollectorResultsAsync(IDbContext context,
         ConsolidatedCollectorResultQuery query) =>
         await new ConsolidateCollectorResultCommand(context).GetResultsAsync(query);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<CollectorCustomResult>> GetCollectorCustomResultsAsync(IDbContext context,
+    public async Task<IEnumerable<CollectorCustomResult>> GetCollectorCustomResultsAsync(IDbContext context,
         ConsolidatedCollectorResultQuery query) =>
         await new CollectorCustomResultConsolidateCommand(context).GetResultsAsync(query);
 
     /// <inheritdoc />
-    public virtual async Task<IEnumerable<PayrunResult>> GetPayrunResultsAsync(IDbContext context,
+    public async Task<IEnumerable<PayrunResult>> GetPayrunResultsAsync(IDbContext context,
         ConsolidatedPayrunResultQuery query) =>
         await new PayrunResultConsolidateCommand(context).GetResultsAsync(query);
 }

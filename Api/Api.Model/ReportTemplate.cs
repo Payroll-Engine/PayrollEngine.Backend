@@ -52,6 +52,7 @@ public class ReportTemplate : ApiObjectBase
     /// <summary>
     /// Custom attributes
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

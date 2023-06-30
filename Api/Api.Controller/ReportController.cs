@@ -21,8 +21,8 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
     private readonly ReportRequestMap reportRequestMap = new();
     private readonly ReportResponseMap reportResponseMap = new();
 
-    protected ITenantService TenantService { get; }
-    protected IReportSetService ReportSetService { get; }
+    private ITenantService TenantService { get; }
+    private IReportSetService ReportSetService { get; }
 
     protected ReportController(ITenantService tenantService, IRegulationService regulationService, IReportService reportService,
         IReportSetService reportSetService, IControllerRuntime runtime) :
@@ -103,7 +103,7 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.ReportSet>> CreateReportSetAsync(
+    protected async Task<ActionResult<ApiObject.ReportSet>> CreateReportSetAsync(
         int regulationId, ApiObject.ReportSet report)
     {
         var domainReport = reportSetMap.ToDomain(report);
@@ -111,7 +111,7 @@ public abstract class ReportController : ScriptTrackChildObjectController<IRegul
         return reportSetMap.ToApi(result);
     }
 
-    protected virtual async Task<IActionResult> DeleteReportSetAsync(int regulationId, int reportId)
+    protected async Task<IActionResult> DeleteReportSetAsync(int regulationId, int reportId)
     {
         await ReportSetService.DeleteAsync(Runtime.DbContext, regulationId, reportId);
         return Ok();

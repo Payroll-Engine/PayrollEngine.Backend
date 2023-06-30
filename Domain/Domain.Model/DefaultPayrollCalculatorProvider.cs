@@ -13,7 +13,7 @@ public class DefaultPayrollCalculatorProvider : IPayrollCalculatorProvider
     public static Calendar DefaultCalendar => new();
 
     /// <inheritdoc />
-    public virtual IPayrollCalculator CreateCalculator(int tenantId, int? userId = null,
+    public IPayrollCalculator CreateCalculator(int tenantId, int? userId = null,
         CultureInfo culture = null, Calendar calendar = null) =>
         new PayrollCalculator(culture, calendar);
 }

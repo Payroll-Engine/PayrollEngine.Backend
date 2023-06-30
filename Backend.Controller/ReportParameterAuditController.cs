@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -15,7 +16,7 @@ namespace PayrollEngine.Backend.Controller;
 public class ReportParameterAuditController : Api.Controller.ReportParameterAuditController
 {
     /// <inheritdoc/>
-    public ReportParameterAuditController(IReportParameterService reportParameterService, 
+    public ReportParameterAuditController(IReportParameterService reportParameterService,
         IReportParameterAuditService auditService, IControllerRuntime runtime) :
         base(reportParameterService, auditService, runtime)
     {
@@ -25,7 +26,9 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
     /// Query regulation report parameter audits
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportParameterId">The id of the report parameter</param>
+    /// <param name="regulationId">The tenant id</param>
+    /// <param name="reportId">The id of the report</param>
+    /// <param name="parameterId">The id of the report parameter</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The audit objects</returns>
     [HttpGet]
@@ -33,7 +36,8 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryReportParameterAudits")]
-    public async Task<ActionResult> QueryReportParameterAuditsAsync(int tenantId, int reportParameterId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryReportParameterAuditsAsync(int tenantId,
+        int regulationId, int reportId, int parameterId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -41,21 +45,24 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
         {
             return tenantResult;
         }
-        return await QueryItemsAsync(reportParameterId, query);
+        return await QueryItemsAsync(parameterId, query);
     }
 
     /// <summary>
     /// Get a regulation report parameter audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportParameterId">The report parameter id</param>
+    /// <param name="regulationId">The tenant id</param>
+    /// <param name="reportId">The id of the report</param>
+    /// <param name="parameterId">The report parameter id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
     [HttpGet("{auditId}")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportParameterAudit")]
-    public async Task<ActionResult<ApiObject.ReportParameterAudit>> GetReportParameterAuditAsync(int tenantId, int reportParameterId, int auditId)
+    public async Task<ActionResult<ApiObject.ReportParameterAudit>> GetReportParameterAuditAsync(
+        int tenantId, int regulationId, int reportId, int parameterId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -63,6 +70,6 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
         {
             return tenantResult;
         }
-        return await GetAsync(reportParameterId, auditId);
+        return await GetAsync(parameterId, auditId);
     }
 }

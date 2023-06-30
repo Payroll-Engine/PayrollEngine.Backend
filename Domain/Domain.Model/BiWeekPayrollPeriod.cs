@@ -13,22 +13,22 @@ public class BiWeekPayrollPeriod : IPayrollPeriod
     /// <summary>
     /// The culture
     /// </summary>
-    public CultureInfo Culture { get; }
+    private CultureInfo Culture { get; }
 
     /// <summary>
     /// The date calendar
     /// </summary>
-    public Calendar Calendar { get; }
+    private Calendar Calendar { get; }
 
     /// <summary>
     /// Gets the first week of year
     /// </summary>
-    public int StartWeekOfYear { get; }
+    private int StartWeekOfYear { get; }
 
     /// <summary>
     /// Gets the first week of year
     /// </summary>
-    public int EndWeekOfYear { get; }
+    private int EndWeekOfYear { get; }
 
     /// <inheritdoc />
     public BiWeekPayrollPeriod(CultureInfo culture, Calendar calendar, int year, int month, int day) :

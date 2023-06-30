@@ -29,6 +29,7 @@ public class CaseValue : ApiObjectBase
     /// <summary>
     /// The localized case names
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseNameLocalizations { get; set; }
 
     /// <summary>
@@ -41,6 +42,7 @@ public class CaseValue : ApiObjectBase
     /// <summary>
     /// The localized case field names
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseFieldNameLocalizations { get; set; }
 
     /// <summary>
@@ -52,6 +54,7 @@ public class CaseValue : ApiObjectBase
     /// <summary>
     /// The localized case slots
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseSlotLocalizations { get; set; }
 
     /// <summary>
@@ -98,11 +101,13 @@ public class CaseValue : ApiObjectBase
     /// <summary>
     /// The case value tags
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public List<string> Tags { get; set; }
 
     /// <summary>
     /// Custom attributes
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

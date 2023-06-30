@@ -13,9 +13,9 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 internal sealed class PayrunContext
 {
-    internal User User { get; set; }
+    internal User User { get; init; }
     internal Division Division { get; set; }
-    internal Payroll Payroll { get; set; }
+    internal Payroll Payroll { get; init; }
 
     internal PayrunJob PayrunJob { get; set; }
     internal PayrunJob ParentPayrunJob { get; set; }
@@ -26,7 +26,7 @@ internal sealed class PayrunContext
     internal ICaseFieldProvider CaseFieldProvider { get; set; }
 
     internal DateTime EvaluationDate { get; set; }
-    internal DateTime? RetroDate { get; set; }
+    internal DateTime? RetroDate { get; init; }
     internal DatePeriod EvaluationPeriod { get; set; }
 
     internal CaseValueCache GlobalCaseValues { get; set; }
@@ -51,6 +51,7 @@ internal sealed class PayrunContext
         cultures.Push(culture);
     }
 
+    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
     internal void PopCulture(string culture)
     {
         if (!cultures.Any() || !string.Equals(Culture, culture))

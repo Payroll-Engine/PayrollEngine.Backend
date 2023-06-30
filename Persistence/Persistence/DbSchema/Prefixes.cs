@@ -4,13 +4,13 @@ namespace PayrollEngine.Persistence.DbSchema;
 public static class Prefixes
 {
     /// <summary>Prefix for text attribute fields</summary>
-    public static readonly string TextAttributePrefix = SystemSpecification.TextAttributePrefix;
+    private static readonly string TextAttributePrefix = SystemSpecification.TextAttributePrefix;
 
     /// <summary>Prefix for date attribute fields</summary>
-    public static readonly string DateAttributePrefix = SystemSpecification.DateAttributePrefix;
+    private static readonly string DateAttributePrefix = SystemSpecification.DateAttributePrefix;
 
     /// <summary>Prefix for numeric attribute fields</summary>
-    public static readonly string NumericAttributePrefix = SystemSpecification.NumericAttributePrefix;
+    private static readonly string NumericAttributePrefix = SystemSpecification.NumericAttributePrefix;
 
     /// <summary>Prefix for boolean attribute fields</summary>
     public static string[] AttributePrefixes => new[] {

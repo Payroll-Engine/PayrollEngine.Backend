@@ -14,7 +14,7 @@ public class TenantRepository : RootDomainRepository<Tenant>, ITenantRepository
     {
     }
 
-    public virtual async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
+    public async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
         await ExistsAsync(context, DbSchema.TenantColumn.Identifier, identifier);
 
     protected override void GetObjectCreateData(Tenant tenant, DbParameterCollection parameters)

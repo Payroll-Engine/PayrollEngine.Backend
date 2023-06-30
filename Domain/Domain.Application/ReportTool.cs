@@ -12,35 +12,28 @@ namespace PayrollEngine.Domain.Application;
 
 public abstract class ReportTool : FunctionToolBase
 {
-    public static readonly string VariableStartMarker = "$";
-    public static readonly string VariableEndMarker = "$";
+    private static readonly string VariableStartMarker = "$";
+    private static readonly string VariableEndMarker = "$";
 
-    public CultureInfo Culture { get; }
-    public Tenant Tenant { get; }
+    private CultureInfo Culture => CultureInfo.CurrentCulture;
+    protected Tenant Tenant { get; }
 
     // settings
     // settings
     protected new ReportToolSettings Settings => base.Settings as ReportToolSettings;
 
-    /// <summary>
-    /// The webhook dispatcher
-    /// </summary>
-    public IWebhookDispatchService WebhookDispatchService { get; }
-
     // repositories
-    public IUserRepository UserRepository { get; }
-    public IEmployeeRepository EmployeeRepository { get; }
-    public IRegulationRepository RegulationRepository { get; }
-    public IPayrollRepository PayrollRepository { get; }
-    public IPayrunRepository PayrunRepository { get; }
-    public IReportSetRepository ReportRepository { get; }
-    public IWebhookRepository WebhookRepository { get; }
+    private IUserRepository UserRepository { get; }
+    private IEmployeeRepository EmployeeRepository { get; }
+    private IRegulationRepository RegulationRepository { get; }
+    private IPayrollRepository PayrollRepository { get; }
+    private IPayrunRepository PayrunRepository { get; }
+    private IReportSetRepository ReportRepository { get; }
+    private IWebhookRepository WebhookRepository { get; }
 
     protected ReportTool(Tenant tenant, ReportToolSettings settings) :
         base(settings)
     {
-        Culture = settings.Culture ?? CultureInfo.CurrentCulture;
-
         Tenant = tenant ?? throw new ArgumentNullException(nameof(tenant));
 
         UserRepository = settings.UserRepository ?? throw new ArgumentNullException(nameof(settings.UserRepository));
@@ -50,8 +43,6 @@ public abstract class ReportTool : FunctionToolBase
         PayrunRepository = settings.PayrunRepository ?? throw new ArgumentNullException(nameof(settings.PayrunRepository));
         ReportRepository = settings.ReportRepository ?? throw new ArgumentNullException(nameof(settings.ReportRepository));
         WebhookRepository = settings.WebhookRepository ?? throw new ArgumentNullException(nameof(settings.WebhookRepository));
-
-        WebhookDispatchService = settings.WebhookDispatchService ?? throw new ArgumentNullException(nameof(settings.WebhookDispatchService));
     }
 
     protected async Task SetupReport(ReportSet report, ReportRequest request)

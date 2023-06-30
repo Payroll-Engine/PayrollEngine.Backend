@@ -13,6 +13,6 @@ public class ScriptService : ChildApplicationService<IScriptRepository, Script>,
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> scriptNames) =>
+    public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> scriptNames) =>
         await Repository.ExistsAnyAsync(context, regulationId, scriptNames);
 }

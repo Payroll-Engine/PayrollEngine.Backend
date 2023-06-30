@@ -5,7 +5,7 @@ namespace PayrollEngine.Persistence;
 
 public abstract class TableRepository : RepositoryBase, IRepository
 {
-    public string TableName { get; }
+    protected string TableName { get; }
 
     /// <summary>
     /// The object type name

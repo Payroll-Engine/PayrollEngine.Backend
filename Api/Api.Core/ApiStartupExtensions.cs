@@ -18,6 +18,7 @@ namespace PayrollEngine.Api.Core;
 
 public static class ApiStartupExtensions
 {
+    // ReSharper disable once UnusedMethodReturnValue.Global
     public static IServiceCollection AddApiServices(this IServiceCollection services,
         IConfiguration configuration, ApiSpecification specification)
     {

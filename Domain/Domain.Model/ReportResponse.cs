@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PayrollEngine.Data;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace PayrollEngine.Domain.Model;
 

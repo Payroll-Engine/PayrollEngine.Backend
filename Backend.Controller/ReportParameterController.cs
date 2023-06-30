@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -23,6 +24,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     /// Query report parameters
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The report parameters</returns>
@@ -31,7 +33,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryReportParameters")]
-    public async Task<ActionResult> QueryReportParametersAsync(int tenantId, int reportId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryReportParametersAsync(int tenantId, int regulationId, int reportId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -46,6 +48,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     /// Get a report parameter
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="parameterId">The id of the parameter</param>
     /// <returns>The report parameter</returns>
@@ -53,7 +56,8 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportParameter")]
-    public async Task<ActionResult<ApiObject.ReportParameter>> GetReportParameterAsync(int tenantId, int reportId, int parameterId)
+    public async Task<ActionResult<ApiObject.ReportParameter>> GetReportParameterAsync(
+        int tenantId, int regulationId, int reportId, int parameterId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -68,6 +72,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     /// Add a new report parameter
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="parameter">The report parameter to add</param>
     /// <returns>The newly created report parameter</returns>
@@ -76,8 +81,8 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateReportParameter")]
-    public async Task<ActionResult<ApiObject.ReportParameter>> CreateReportParameterAsync(int tenantId,
-        int reportId, ApiObject.ReportParameter parameter)
+    public async Task<ActionResult<ApiObject.ReportParameter>> CreateReportParameterAsync(
+        int tenantId, int regulationId, int reportId, ApiObject.ReportParameter parameter)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -92,6 +97,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     /// Update a report parameter
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="parameter">The report parameter to modify</param>
     /// <returns>The modified parameter</returns>
@@ -100,7 +106,8 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateReportParameter")]
-    public async Task<ActionResult<ApiObject.ReportParameter>> UpdateReportParameterAsync(int tenantId, int reportId, ApiObject.ReportParameter parameter)
+    public async Task<ActionResult<ApiObject.ReportParameter>> UpdateReportParameterAsync(
+        int tenantId, int regulationId, int reportId, ApiObject.ReportParameter parameter)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -115,12 +122,14 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     /// Delete a report
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="parameterId">The id of the report parameter</param>
     /// <returns></returns>
     [HttpDelete("{parameterId}")]
     [ApiOperationId("DeleteReportParameter")]
-    public async Task<IActionResult> DeleteReportParameterAsync(int tenantId, int reportId, int parameterId)
+    public async Task<IActionResult> DeleteReportParameterAsync(int tenantId,
+        int regulationId, int reportId, int parameterId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

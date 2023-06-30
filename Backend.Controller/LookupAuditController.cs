@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -13,7 +14,7 @@ namespace PayrollEngine.Backend.Controller;
 public class LookupAuditController : Api.Controller.LookupAuditController
 {
     /// <inheritdoc/>
-    public LookupAuditController(ILookupService lookupService, 
+    public LookupAuditController(ILookupService lookupService,
         ILookupAuditService caseFieldAuditService, IControllerRuntime runtime) :
         base(lookupService, caseFieldAuditService, runtime)
     {
@@ -23,6 +24,7 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     /// Query regulation lookup audits
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The audit objects</returns>
@@ -31,7 +33,8 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLookupAudits")]
-    public async Task<ActionResult> QueryLookupAuditsAsync(int tenantId, int lookupId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryLookupAuditsAsync(int tenantId, int regulationId,
+        int lookupId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -46,6 +49,7 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     /// Get a regulation lookup audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
@@ -53,7 +57,8 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetLookupAudit")]
-    public async Task<ActionResult<ApiObject.LookupAudit>> GetLookupAuditAsync(int tenantId, int lookupId, int auditId)
+    public async Task<ActionResult<ApiObject.LookupAudit>> GetLookupAuditAsync(int tenantId,
+        int regulationId, int lookupId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

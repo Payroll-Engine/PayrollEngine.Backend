@@ -16,11 +16,11 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     /// <summary>
     /// The regulation service
     /// </summary>
-    protected IRegulationService RegulationService { get; }
+    private IRegulationService RegulationService { get; }
     /// <summary>
     /// The division service
     /// </summary>
-    protected IDivisionService DivisionService { get; }
+    private IDivisionService DivisionService { get; }
 
     /// <inheritdoc/>
     public RegulationShareController(IRegulationShareService shareService,
@@ -67,7 +67,8 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateRegulationShare")]
-    public async Task<ActionResult<ApiObject.RegulationShare>> CreateRegulationShareAsync(ApiObject.RegulationShare share)
+    public async Task<ActionResult<ApiObject.RegulationShare>> CreateRegulationShareAsync(
+        ApiObject.RegulationShare share)
     {
         // validate tenant
         var tenantId = await RegulationService.GetParentIdAsync(Runtime.DbContext, share.ProviderRegulationId);
@@ -115,7 +116,8 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateRegulationShare")]
-    public async Task<ActionResult<ApiObject.RegulationShare>> UpdateRegulationShareAsync(ApiObject.RegulationShare share) =>
+    public async Task<ActionResult<ApiObject.RegulationShare>> UpdateRegulationShareAsync(
+        ApiObject.RegulationShare share) =>
         await UpdateAsync(share);
 
     /// <summary>
@@ -142,8 +144,8 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetRegulationShareAttribute")]
-    public virtual async Task<ActionResult<string>> GetRegulationShareAttributeAsync(int shareId,
-        string attributeName) =>
+    public virtual async Task<ActionResult<string>> GetRegulationShareAttributeAsync(
+        int shareId, string attributeName) =>
         await GetAttributeAsync(shareId, attributeName);
 
     /// <summary>
@@ -158,10 +160,10 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetRegulationShareAttribute")]
-    public virtual async Task<ActionResult<string>> SetRegulationShareAttributeAsync(int shareId, string attributeName,
-        [FromBody] string value)
+    public virtual async Task<ActionResult<string>> SetRegulationShareAttributeAsync(
+        int shareId, string attributeName, [FromBody] string value)
     {
-        return await base.SetAttributeAsync(shareId, attributeName, value);
+        return await SetAttributeAsync(shareId, attributeName, value);
     }
 
     /// <summary>
@@ -172,9 +174,10 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{shareId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteRegulationShareAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteRegulationShareAttributeAsync(int shareId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeleteRegulationShareAttributeAsync(
+        int shareId, string attributeName)
     {
-        return await base.DeleteAttributeAsync(shareId, attributeName);
+        return await DeleteAttributeAsync(shareId, attributeName);
     }
 
     #endregion

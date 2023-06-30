@@ -21,9 +21,9 @@ public abstract class CaseValueController<TParentService, TParentRepo, TRepo, TP
     where TRepo : class, IChildDomainRepository<DomainObject.CaseValue>
     where TParent : class, DomainObject.IDomainObject, new()
 {
-    protected IPayrollService PayrollsService { get; }
-    protected IRegulationService RegulationService { get; }
-    protected ILookupSetService LookupSetService { get; }
+    private IPayrollService PayrollsService { get; }
+    private IRegulationService RegulationService { get; }
+    private ILookupSetService LookupSetService { get; }
 
     protected CaseValueController(TParentService parentService, ICaseValueService<TRepo, DomainObject.CaseValue> caseValueService,
         IPayrollService payrollsService, IRegulationService regulationService, ILookupSetService lookupSetService,

@@ -17,12 +17,12 @@ public class PayrunWageTypeAvailableRuntime : PayrunRuntimeBase, IPayrunWageType
     /// <summary>
     /// The wage type
     /// </summary>
-    protected WageType WageType { get; }
+    private WageType WageType { get; }
 
     /// <summary>
     /// The derived wage type attributes
     /// </summary>
-    protected Dictionary<string, object> WageTypeAttributes { get; }
+    private Dictionary<string, object> WageTypeAttributes { get; }
 
     /// <inheritdoc />
     public decimal WageTypeNumber => WageType.WageTypeNumber;

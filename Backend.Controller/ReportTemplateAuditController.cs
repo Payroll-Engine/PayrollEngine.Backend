@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
 /// <inheritdoc/>
-[ApiControllerName("Report parameter audits")]
-[Route("api/tenants/{tenantId}/regulations/{regulationId}/reports/{reportId}/templates/{parameterId}/audits")]
+[ApiControllerName("Report template audits")]
+[Route("api/tenants/{tenantId}/regulations/{regulationId}/reports/{reportId}/templates/{templateId}/audits")]
 // ReSharper restore StringLiteralTypo
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.ReportTemplateAudit)]
 public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditController
@@ -24,7 +25,9 @@ public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditC
     /// Query regulation report template audits
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportTemplateId">The id of the report template</param>
+    /// <param name="regulationId">The tenant id</param>
+    /// <param name="reportId">The id of the report</param>
+    /// <param name="templateId">The id of the report template</param>
     /// <param name="query">Query templates</param>
     /// <returns>The audit objects</returns>
     [HttpGet]
@@ -32,7 +35,8 @@ public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditC
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryReportTemplateAudits")]
-    public async Task<ActionResult> QueryReportTemplateAuditsAsync(int tenantId, int reportTemplateId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryReportTemplateAuditsAsync(int tenantId, 
+        int regulationId, int reportId, int templateId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -40,21 +44,24 @@ public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditC
         {
             return tenantResult;
         }
-        return await QueryItemsAsync(reportTemplateId, query);
+        return await QueryItemsAsync(templateId, query);
     }
 
     /// <summary>
     /// Get a regulation report template audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="reportTemplateId">The report template id</param>
+    /// <param name="regulationId">The tenant id</param>
+    /// <param name="reportId">The id of the report</param>
+    /// <param name="templateId">The report template id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
     [HttpGet("{auditId}")]
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportTemplateAudit")]
-    public async Task<ActionResult<ApiObject.ReportTemplateAudit>> GetReportTemplateAuditAsync(int tenantId, int reportTemplateId, int auditId)
+    public async Task<ActionResult<ApiObject.ReportTemplateAudit>> GetReportTemplateAuditAsync(
+        int tenantId, int regulationId, int reportId, int templateId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -62,6 +69,6 @@ public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditC
         {
             return tenantResult;
         }
-        return await GetAsync(reportTemplateId, auditId);
+        return await GetAsync(templateId, auditId);
     }
 }

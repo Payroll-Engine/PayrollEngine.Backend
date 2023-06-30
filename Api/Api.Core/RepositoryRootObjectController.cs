@@ -27,7 +27,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     /// </summary>
     /// <param name="query">The query</param>
     /// <returns>Items, count or both</returns>
-    protected virtual async Task<ActionResult> QueryItemsAsync(Query query = null)
+    protected async Task<ActionResult> QueryItemsAsync(Query query = null)
     {
         query ??= new();
         query.Result ??= QueryResultType.Items;
@@ -66,7 +66,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     /// </summary>
     /// <param name="query">Query parameters</param>
     /// <returns>List of requested Api objects</returns>
-    protected virtual async Task<ActionResult<TApi[]>> QueryAsync(Query query = null)
+    private async Task<ActionResult<TApi[]>> QueryAsync(Query query = null)
     {
         var apiObjects = new List<TApi>();
         var items = (await Service.QueryAsync(Runtime.DbContext, query)).ToList();
@@ -82,12 +82,12 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     /// </summary>
     /// <param name="query">Query parameters</param>
     /// <returns>Count of requested Api objects</returns>
-    protected virtual async Task<ActionResult<long>> QueryCountAsync(Query query = null)
+    private async Task<ActionResult<long>> QueryCountAsync(Query query = null)
     {
         return await Service.QueryCountAsync(Runtime.DbContext, query);
     }
 
-    protected virtual async Task<ActionResult<TApi>> GetAsync(int id)
+    protected async Task<ActionResult<TApi>> GetAsync(int id)
     {
         try
         {
@@ -116,7 +116,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     /// </summary>
     /// <param name="apiObject">The API object</param>
     /// <returns>New created object</returns>
-    protected virtual async Task<ActionResult<TApi>> CreateAsync(TApi apiObject)
+    protected async Task<ActionResult<TApi>> CreateAsync(TApi apiObject)
     {
         // argument check
         if (apiObject == null)
@@ -150,7 +150,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
         return new CreatedObjectResult(Request.Path, MapDomainToApi(domainObject));
     }
 
-    protected virtual async Task<ActionResult<TApi>> UpdateAsync(TApi apiObject)
+    protected async Task<ActionResult<TApi>> UpdateAsync(TApi apiObject)
     {
         try
         {
@@ -193,7 +193,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
         }
     }
 
-    protected virtual async Task<IActionResult> DeleteAsync(int itemId)
+    protected async Task<IActionResult> DeleteAsync(int itemId)
     {
         try
         {

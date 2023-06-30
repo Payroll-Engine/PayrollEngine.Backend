@@ -1,4 +1,5 @@
 ﻿using System;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.Domain.Model;
 
@@ -53,7 +54,7 @@ public class WebhookMessage : DomainObjectBase, IEquatable<WebhookMessage>
     }
 
     /// <inheritdoc/>
-    public WebhookMessage(WebhookMessage copySource) :
+    protected WebhookMessage(WebhookMessage copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

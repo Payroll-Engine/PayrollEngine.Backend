@@ -59,23 +59,23 @@ public class DerivedCaseValidator : DerivedCaseTool
     {
     }
 
-    public virtual async Task<List<CaseValidationIssue>> ValidateGlobalCaseAsync(string caseName, string caseSlot,
+    public async Task<List<CaseValidationIssue>> ValidateGlobalCaseAsync(string caseName, string caseSlot,
         CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
         await ValidateCaseAsync(CaseType.Global, caseName, caseSlot, caseChangeSetup, cancellationDate);
 
-    public virtual async Task<List<CaseValidationIssue>> ValidateNationalCaseAsync(string caseName, string caseSlot,
+    public async Task<List<CaseValidationIssue>> ValidateNationalCaseAsync(string caseName, string caseSlot,
         CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
         await ValidateCaseAsync(CaseType.National, caseName, caseSlot, caseChangeSetup, cancellationDate);
 
-    public virtual async Task<List<CaseValidationIssue>> ValidateCompanyCaseAsync(string caseName, string caseSlot,
+    public async Task<List<CaseValidationIssue>> ValidateCompanyCaseAsync(string caseName, string caseSlot,
         CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
         await ValidateCaseAsync(CaseType.Company, caseName, caseSlot, caseChangeSetup, cancellationDate);
 
-    public virtual async Task<List<CaseValidationIssue>> ValidateEmployeeCaseAsync(string caseName, string caseSlot,
+    public async Task<List<CaseValidationIssue>> ValidateEmployeeCaseAsync(string caseName, string caseSlot,
         CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
         await ValidateCaseAsync(CaseType.Employee, caseName, caseSlot, caseChangeSetup, cancellationDate);
 
-    protected virtual async Task<List<CaseValidationIssue>> ValidateCaseAsync(CaseType caseType, string caseName,
+    private async Task<List<CaseValidationIssue>> ValidateCaseAsync(CaseType caseType, string caseName,
         string caseSlot, CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null)
     {
         if (string.IsNullOrWhiteSpace(caseName))

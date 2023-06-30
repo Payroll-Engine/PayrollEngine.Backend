@@ -5,30 +5,24 @@ namespace PayrollEngine.Domain.Application.Service;
 
 public class PayrunJobServiceSettings
 {
-    public ILookupSetRepository RegulationLookupSetRepository { get; set; }
-    public ICalendarRepository CalendarRepository { get; set; }
-    public IUserRepository UserRepository { get; set; }
-    public ITaskRepository TaskRepository { get; set; }
-    public ILogRepository LogRepository { get; set; }
-    public IDivisionRepository DivisionRepository { get; set; }
-    public IEmployeeRepository EmployeeRepository { get; set; }
-    public ICaseRepository CaseRepository { get; set; }
-    public ICaseFieldRepository CaseFieldRepository { get; set; }
-    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; set; }
-    public INationalCaseValueRepository NationalCaseValueRepository { get; set; }
-    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; set; }
-    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; set; }
-    public IPayrunRepository PayrunRepository { get; set; }
-    public IPayrunJobRepository PayrunJobRepository { get; set; }
-    public ICollectorRepository CollectorRepository { get; set; }
-    public ICollectorResultRepository CollectorResultRepository { get; set; }
-    public IWageTypeRepository WageTypeRepository { get; set; }
-    public IWageTypeAuditRepository WageTypeAuditRepository { get; set; }
-    public IRegulationRepository RegulationRepository { get; set; }
-    public IRegulationShareRepository RegulationShareRepository { get; set; }
-    public IPayrollRepository PayrollRepository { get; set; }
-    public IPayrollResultRepository PayrollResultRepository { get; set; }
-    public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; set; }
-    public IPayrollResultSetRepository PayrollResultSetRepository { get; set; }
-    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
+    public ILookupSetRepository RegulationLookupSetRepository { get; init; }
+    public ICalendarRepository CalendarRepository { get; init; }
+    public IUserRepository UserRepository { get; init; }
+    public ITaskRepository TaskRepository { get; init; }
+    public ILogRepository LogRepository { get; init; }
+    public IDivisionRepository DivisionRepository { get; init; }
+    public IEmployeeRepository EmployeeRepository { get; init; }
+    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; init; }
+    public INationalCaseValueRepository NationalCaseValueRepository { get; init; }
+    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; init; }
+    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; init; }
+    public IPayrunRepository PayrunRepository { get; init; }
+    public IPayrunJobRepository PayrunJobRepository { get; init; }
+    public IRegulationRepository RegulationRepository { get; init; }
+    public IRegulationShareRepository RegulationShareRepository { get; init; }
+    public IPayrollRepository PayrollRepository { get; init; }
+    public IPayrollResultRepository PayrollResultRepository { get; init; }
+    public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; init; }
+    public IPayrollResultSetRepository PayrollResultSetRepository { get; init; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
 }

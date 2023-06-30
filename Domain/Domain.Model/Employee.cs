@@ -29,12 +29,12 @@ public class Employee : DomainObjectBase, IIdentifiableObject, IDomainAttributeO
     public List<string> Divisions { get; set; }
 
     /// <summary>
-    /// The employee culture, fallback is the division culture
+    /// The employee culture name based on RFC 4646 (fallback: division culture)
     /// </summary>
     public string Culture { get; set; }
 
     /// <summary>
-    /// The employee calendar, fallback is the division calendar
+    /// The employee calendar (fallback: division calendar)
     /// </summary>
     public string Calendar { get; set; }
 

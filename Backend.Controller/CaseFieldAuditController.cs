@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -23,6 +24,8 @@ public class CaseFieldAuditController : Api.Controller.CaseFieldAuditController
     /// Query regulation case field audits
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
+    /// <param name="caseId">The regulation id</param>
     /// <param name="fieldId">The case field id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The audit objects</returns>
@@ -31,8 +34,8 @@ public class CaseFieldAuditController : Api.Controller.CaseFieldAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryCaseFieldAudits")]
-    public async Task<ActionResult> QueryCaseFieldAuditsAsync(int tenantId, int fieldId,
-        [FromQuery] Query query)
+    public async Task<ActionResult> QueryCaseFieldAuditsAsync(int tenantId, int regulationId,
+        int caseId, int fieldId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -47,6 +50,8 @@ public class CaseFieldAuditController : Api.Controller.CaseFieldAuditController
     /// Get a regulation case field audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
+    /// <param name="caseId">The regulation id</param>
     /// <param name="fieldId">The case field id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
@@ -54,7 +59,8 @@ public class CaseFieldAuditController : Api.Controller.CaseFieldAuditController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCaseFieldAudit")]
-    public async Task<ActionResult<ApiObject.CaseFieldAudit>> GetCaseFieldAuditAsync(int tenantId, int fieldId, int auditId)
+    public async Task<ActionResult<ApiObject.CaseFieldAudit>> GetCaseFieldAuditAsync(int tenantId, 
+        int regulationId, int caseId, int fieldId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

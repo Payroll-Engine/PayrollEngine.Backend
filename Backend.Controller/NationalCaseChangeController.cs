@@ -15,8 +15,8 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
 {
     /// <inheritdoc/>
     public NationalCaseChangeController(ITenantService tenantService, INationalCaseChangeService caseChangeService,
-        ICaseFieldService caseFieldService, IDivisionService divisionService, IUserService userService, IControllerRuntime runtime) :
-        base(tenantService, caseChangeService, caseFieldService, divisionService, userService, runtime)
+         IControllerRuntime runtime) :
+        base(tenantService, caseChangeService, runtime)
     {
     }
 
@@ -32,7 +32,8 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryNationalCaseChanges")]
-    public async Task<ActionResult> QueryNationalCaseChangesAsync(int tenantId, [FromQuery] DomainObject.CaseChangeQuery query)
+    public async Task<ActionResult> QueryNationalCaseChangesAsync(int tenantId,
+        [FromQuery] DomainObject.CaseChangeQuery query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -53,7 +54,8 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetNationalCaseChange")]
-    public async Task<ActionResult<ApiObject.CaseChange>> GetNationalCaseChangeAsync(int tenantId, int caseChangeId)
+    public async Task<ActionResult<ApiObject.CaseChange>> GetNationalCaseChangeAsync(
+        int tenantId, int caseChangeId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -75,7 +77,8 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryNationalCaseChangesValues")]
-    public async Task<ActionResult> QueryNationalCaseChangesValuesAsync(int tenantId, [FromQuery] DomainObject.CaseChangeQuery query) =>
+    public async Task<ActionResult> QueryNationalCaseChangesValuesAsync(
+        int tenantId, [FromQuery] DomainObject.CaseChangeQuery query) =>
         await QueryValuesAsync(tenantId, tenantId, query);
 
     /// <summary>

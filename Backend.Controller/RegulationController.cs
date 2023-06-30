@@ -14,9 +14,9 @@ namespace PayrollEngine.Backend.Controller;
 public class RegulationController : Api.Controller.RegulationController
 {
     /// <inheritdoc/>
-    public RegulationController(ITenantService tenantService, ILookupSetService lookupSetService, IRegulationService regulationService,
-        ICaseService caseService, ICaseFieldService caseFieldService, ICaseRelationService caseRelationService, IControllerRuntime runtime) :
-        base(tenantService, lookupSetService, regulationService, caseService, caseFieldService, caseRelationService, runtime)
+    public RegulationController(ITenantService tenantService, IRegulationService regulationService,
+        ICaseService caseService, ICaseFieldService caseFieldService, IControllerRuntime runtime) :
+        base(tenantService, regulationService, caseService, caseFieldService, runtime)
     {
     }
 
@@ -52,7 +52,8 @@ public class RegulationController : Api.Controller.RegulationController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetRegulation")]
-    public async Task<ActionResult<ApiObject.Regulation>> GetRegulationAsync(int tenantId, int regulationId)
+    public async Task<ActionResult<ApiObject.Regulation>> GetRegulationAsync(
+        int tenantId, int regulationId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -73,7 +74,8 @@ public class RegulationController : Api.Controller.RegulationController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCaseOfCaseField")]
-    public override async Task<ActionResult<string>> GetCaseOfCaseFieldAsync(int tenantId, [Required] string caseFieldName)
+    public override async Task<ActionResult<string>> GetCaseOfCaseFieldAsync(
+        int tenantId, [Required] string caseFieldName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -95,7 +97,8 @@ public class RegulationController : Api.Controller.RegulationController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateRegulation")]
-    public async Task<ActionResult<ApiObject.Regulation>> CreateRegulationAsync(int tenantId, ApiObject.Regulation regulation)
+    public async Task<ActionResult<ApiObject.Regulation>> CreateRegulationAsync(
+        int tenantId, ApiObject.Regulation regulation)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -117,7 +120,8 @@ public class RegulationController : Api.Controller.RegulationController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateRegulation")]
-    public async Task<ActionResult<ApiObject.Regulation>> UpdateRegulationAsync(int tenantId, ApiObject.Regulation regulation)
+    public async Task<ActionResult<ApiObject.Regulation>> UpdateRegulationAsync(
+        int tenantId, ApiObject.Regulation regulation)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -160,7 +164,8 @@ public class RegulationController : Api.Controller.RegulationController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetRegulationAttribute")]
-    public virtual async Task<ActionResult<string>> GetRegulationAttributeAsync(int tenantId, int regulationId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetRegulationAttributeAsync(
+        int tenantId, int regulationId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -184,7 +189,8 @@ public class RegulationController : Api.Controller.RegulationController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetRegulationAttribute")]
-    public virtual async Task<ActionResult<string>> SetRegulationAttributeAsync(int tenantId, int regulationId, string attributeName,
+    public virtual async Task<ActionResult<string>> SetRegulationAttributeAsync(
+        int tenantId, int regulationId, string attributeName,
         [FromBody] string value)
     {
         // tenant check
@@ -193,7 +199,7 @@ public class RegulationController : Api.Controller.RegulationController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(regulationId, attributeName, value);
+        return await SetAttributeAsync(regulationId, attributeName, value);
     }
 
     /// <summary>
@@ -205,7 +211,8 @@ public class RegulationController : Api.Controller.RegulationController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{regulationId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteRegulationAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteRegulationAttributeAsync(int tenantId, int regulationId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeleteRegulationAttributeAsync(
+        int tenantId, int regulationId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -213,7 +220,7 @@ public class RegulationController : Api.Controller.RegulationController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(regulationId, attributeName);
+        return await DeleteAttributeAsync(regulationId, attributeName);
     }
 
     #endregion

@@ -14,16 +14,16 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
     /// <summary>
     /// The runtime settings
     /// </summary>
-    protected new CaseChangeRuntimeSettings Settings => base.Settings as CaseChangeRuntimeSettings;
+    private new CaseChangeRuntimeSettings Settings => base.Settings as CaseChangeRuntimeSettings;
 
     /// <summary>The case set</summary>
     protected new CaseSet Case => (CaseSet)base.Case;
 
     /// <summary>The case provider</summary>
-    protected ICaseProvider CaseProvider => Settings.CaseProvider;
+    private ICaseProvider CaseProvider => Settings.CaseProvider;
 
     /// <summary>The case field provider</summary>
-    protected ICaseFieldProvider CaseFieldProvider => CaseValueProvider.CaseFieldProvider;
+    private ICaseFieldProvider CaseFieldProvider => CaseValueProvider.CaseFieldProvider;
 
     /// <summary>Initializes a new instance of the <see cref="CaseChangeRuntimeBase"/> class</summary>
     /// <param name="settings">The runtime settings</param>
@@ -86,7 +86,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
     /// </summary>
     /// <param name="caseName">The name of the case</param>
     /// <returns>The case set matching the name, null on missing case</returns>
-    protected Case GetCase(string caseName)
+    private Case GetCase(string caseName)
     {
         if (string.IsNullOrWhiteSpace(caseName))
         {

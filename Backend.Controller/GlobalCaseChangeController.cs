@@ -15,8 +15,8 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
 {
     /// <inheritdoc/>
     public GlobalCaseChangeController(ITenantService tenantService, IGlobalCaseChangeService caseChangeService,
-        ICaseFieldService caseFieldService, IDivisionService divisionService, IUserService userService, IControllerRuntime runtime) :
-        base(tenantService, caseChangeService, caseFieldService, divisionService, userService, runtime)
+        IControllerRuntime runtime) :
+        base(tenantService, caseChangeService, runtime)
     {
     }
 
@@ -31,7 +31,8 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryGlobalCaseChanges")]
-    public async Task<ActionResult> QueryGlobalCaseChangesAsync(int tenantId, [FromQuery] DomainObject.CaseChangeQuery query)
+    public async Task<ActionResult> QueryGlobalCaseChangesAsync(int tenantId, 
+        [FromQuery] DomainObject.CaseChangeQuery query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -52,7 +53,8 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetGlobalCaseChange")]
-    public async Task<ActionResult<ApiObject.CaseChange>> GetGlobalCaseChangeAsync(int tenantId, int caseChangeId)
+    public async Task<ActionResult<ApiObject.CaseChange>> GetGlobalCaseChangeAsync(
+        int tenantId, int caseChangeId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -74,7 +76,8 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryGlobalCaseChangesValues")]
-    public async Task<ActionResult> QueryGlobalCaseChangesValuesAsync(int tenantId, [FromQuery] DomainObject.CaseChangeQuery query) =>
+    public async Task<ActionResult> QueryGlobalCaseChangesValuesAsync(int tenantId, 
+        [FromQuery] DomainObject.CaseChangeQuery query) =>
         await QueryValuesAsync(tenantId, tenantId, query);
 
     /// <summary>

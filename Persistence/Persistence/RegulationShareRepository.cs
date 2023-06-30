@@ -9,7 +9,7 @@ namespace PayrollEngine.Persistence;
 
 public class RegulationShareRepository : RootDomainRepository<RegulationShare>, IRegulationShareRepository
 {
-    public IRegulationRepository RegulationRepository { get; }
+    private IRegulationRepository RegulationRepository { get; }
 
     public RegulationShareRepository(IRegulationRepository regulationRepository) :
         base(DbSchema.Tables.RegulationShare)

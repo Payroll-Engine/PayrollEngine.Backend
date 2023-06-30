@@ -11,12 +11,12 @@ namespace PayrollEngine.Persistence;
 public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseChangeRepository<T>
     where T : CaseChange
 {
-    public IPayrollRepository PayrollRepository { get; }
-    public ICaseRepository CaseRepository { get; }
-    public ICaseFieldRepository CaseFieldRepository { get; }
-    public ICaseValueRepository CaseValueRepository { get; }
-    public ICaseValueSetupRepository CaseValueSetupRepository { get; }
-    public ICaseValueChangeRepository CaseValueChangeRepository { get; }
+    private IPayrollRepository PayrollRepository { get; }
+    private ICaseRepository CaseRepository { get; }
+    private ICaseFieldRepository CaseFieldRepository { get; }
+    private ICaseValueRepository CaseValueRepository { get; }
+    private ICaseValueSetupRepository CaseValueSetupRepository { get; }
+    private ICaseValueChangeRepository CaseValueChangeRepository { get; }
 
     protected CaseChangeRepository(string tableName, string parentFieldName,
         CaseChangeRepositorySettings settings) :

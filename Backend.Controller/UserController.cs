@@ -189,7 +189,8 @@ public class UserController : Api.Controller.UserController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateUserPassword")]
-    public async Task<ActionResult<ApiObject.User>> UpdateUserPasswordAsync(int tenantId, int userId, [FromBody] string password)
+    public async Task<ActionResult<ApiObject.User>> UpdateUserPasswordAsync(
+        int tenantId, int userId, [FromBody] string password)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -233,7 +234,8 @@ public class UserController : Api.Controller.UserController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetUserAttribute")]
-    public virtual async Task<ActionResult<string>> GetUserAttributeAsync(int tenantId, int userId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetUserAttributeAsync(
+        int tenantId, int userId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -257,7 +259,8 @@ public class UserController : Api.Controller.UserController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetUserAttribute")]
-    public virtual async Task<ActionResult<string>> SetUserAttributeAsync(int tenantId, int userId, string attributeName, [FromBody] string value)
+    public virtual async Task<ActionResult<string>> SetUserAttributeAsync(
+        int tenantId, int userId, string attributeName, [FromBody] string value)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -265,7 +268,7 @@ public class UserController : Api.Controller.UserController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(userId, attributeName, value);
+        return await SetAttributeAsync(userId, attributeName, value);
     }
 
     /// <summary>
@@ -277,7 +280,8 @@ public class UserController : Api.Controller.UserController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{userId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteUserAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteUserAttributeAsync(int tenantId, int userId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeleteUserAttributeAsync(
+        int tenantId, int userId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -285,7 +289,7 @@ public class UserController : Api.Controller.UserController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(userId, attributeName);
+        return await DeleteAttributeAsync(userId, attributeName);
     }
 
     #endregion

@@ -9,19 +9,15 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class ScriptChildDomainRepository<TDomain, TScript> : ChildDomainRepository<TDomain>
+public abstract class ScriptChildDomainRepository<TDomain> : ChildDomainRepository<TDomain>
     where TDomain : DomainObjectBase, new()
-    where TScript : DomainObjectBase, new()
 {
-    public IScriptController<TScript> ScriptController { get; }
     // used in derived types to access the derived scripts
-    public IScriptRepository ScriptRepository { get; }
+    private IScriptRepository ScriptRepository { get; }
 
-    protected ScriptChildDomainRepository(string tableName, string parentFieldName,
-        IScriptController<TScript> scriptController, IScriptRepository scriptRepository) :
+    protected ScriptChildDomainRepository(string tableName, string parentFieldName, IScriptRepository scriptRepository) :
         base(tableName, parentFieldName)
     {
-        ScriptController = scriptController ?? throw new ArgumentNullException(nameof(scriptController));
         ScriptRepository = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
     }
 
@@ -38,7 +34,7 @@ public abstract class ScriptChildDomainRepository<TDomain, TScript> : ChildDomai
     }
 
     // duplicated in ScriptTrackChildDomainRepository!
-    protected virtual async Task SetupBinaryAsync(IDbContext context, int parentId, TDomain item)
+    protected async Task SetupBinaryAsync(IDbContext context, int parentId, TDomain item)
     {
         if (item is not IScriptObject scriptObject)
         {

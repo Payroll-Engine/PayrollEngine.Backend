@@ -14,6 +14,7 @@ public static class ProviderStartupExtensions
     /// <summary>
     /// Adds the local API services
     /// </summary>
+    // ReSharper disable once UnusedMethodReturnValue.Global
     public static IServiceCollection AddLocalApiServices(this IServiceCollection services)
     {
         // case controllers
@@ -63,9 +64,6 @@ public static class ProviderStartupExtensions
         services.AddTransient(ctx => new CompanyCaseChangeController(
             ctx.GetRequiredService<ITenantService>(),
             ctx.GetRequiredService<ICompanyCaseChangeService>(),
-            ctx.GetRequiredService<ICaseFieldService>(),
-            ctx.GetRequiredService<IDivisionService>(),
-            ctx.GetRequiredService<IUserService>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 
         services.AddTransient(ctx => new CompanyCaseValueController(
@@ -91,9 +89,6 @@ public static class ProviderStartupExtensions
         services.AddTransient(ctx => new EmployeeCaseChangeController(
             ctx.GetRequiredService<IEmployeeService>(),
             ctx.GetRequiredService<IEmployeeCaseChangeService>(),
-            ctx.GetRequiredService<ICaseFieldService>(),
-            ctx.GetRequiredService<IDivisionService>(),
-            ctx.GetRequiredService<IUserService>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 
         services.AddTransient(ctx => new EmployeeCaseValueController(
@@ -140,16 +135,12 @@ public static class ProviderStartupExtensions
         services.AddTransient(ctx => new NationalCaseChangeController(
             ctx.GetRequiredService<ITenantService>(),
             ctx.GetRequiredService<INationalCaseChangeService>(),
-            ctx.GetRequiredService<ICaseFieldService>(),
-            ctx.GetRequiredService<IDivisionService>(),
-            ctx.GetRequiredService<IUserService>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 
         services.AddTransient(ctx => new NationalCaseValueController(
             ctx.GetRequiredService<ITenantService>(),
             ctx.GetRequiredService<IPayrollService>(),
             ctx.GetRequiredService<IRegulationService>(),
-            ctx.GetRequiredService<ICaseService>(),
             ctx.GetRequiredService<INationalCaseValueService>(),
             ctx.GetRequiredService<ILookupSetService>(),
             ctx.GetRequiredService<IControllerRuntime>()));
@@ -172,8 +163,6 @@ public static class ProviderStartupExtensions
         services.AddTransient(ctx => new PayrollResultController(
             ctx.GetRequiredService<ITenantService>(),
             ctx.GetRequiredService<IPayrollResultService>(),
-            ctx.GetRequiredService<IPayrollService>(),
-            ctx.GetRequiredService<IPayrunService>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 
         services.AddTransient(ctx => new PayrollConsolidatedResultController(
@@ -202,11 +191,9 @@ public static class ProviderStartupExtensions
         // regulation controllers
         services.AddTransient(ctx => new RegulationController(
             ctx.GetRequiredService<ITenantService>(),
-            ctx.GetRequiredService<ILookupSetService>(),
             ctx.GetRequiredService<IRegulationService>(),
             ctx.GetRequiredService<ICaseService>(),
             ctx.GetRequiredService<ICaseFieldService>(),
-            ctx.GetRequiredService<ICaseRelationService>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 
         // report controllers

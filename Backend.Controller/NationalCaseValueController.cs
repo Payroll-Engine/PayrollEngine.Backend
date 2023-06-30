@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -16,24 +15,12 @@ namespace PayrollEngine.Backend.Controller;
 [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.NationalCaseValue)]
 public class NationalCaseValueController : Api.Controller.NationalCaseValueController
 {
-    /// <summary>
-    /// Gets the tenant service
-    /// </summary>
-    protected IPayrollService PayrollService { get; }
-
-    /// <summary>
-    /// Gets the case service
-    /// </summary>
-    protected ICaseService CaseService { get; }
-
     /// <inheritdoc/>
     public NationalCaseValueController(ITenantService tenantService, IPayrollService payrollService,
-        IRegulationService regulationService, ICaseService caseService, INationalCaseValueService caseValueService,
+        IRegulationService regulationService, INationalCaseValueService caseValueService,
         ILookupSetService lookupSetService, IControllerRuntime runtime) :
         base(tenantService, caseValueService, payrollService, regulationService, lookupSetService, runtime)
     {
-        PayrollService = payrollService ?? throw new ArgumentNullException(nameof(payrollService));
-        CaseService = caseService ?? throw new ArgumentNullException(nameof(caseService));
     }
         /// <summary>
     /// Query national case values
@@ -46,7 +33,8 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryNationalCaseValues")]
-    public async Task<ActionResult> QueryNationalCaseValuesAsync(int tenantId, [FromQuery] CaseValueQuery query)
+    public async Task<ActionResult> QueryNationalCaseValuesAsync(int tenantId,
+            [FromQuery] CaseValueQuery query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -70,7 +58,8 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
     [HttpGet("slots")]
     [OkResponse]
     [ApiOperationId("GetNationalCaseValueSlots")]
-    public async Task<ActionResult<IEnumerable<string>>> GetNationalCaseValueSlotsAsync(int tenantId, [Required] string caseFieldName)
+    public async Task<ActionResult<IEnumerable<string>>> GetNationalCaseValueSlotsAsync(
+        int tenantId, [Required] string caseFieldName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -91,7 +80,8 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetNationalCaseValue")]
-    public async Task<ActionResult<ApiObject.CaseValue>> GetNationalCaseValueAsync(int tenantId, int caseValueId)
+    public async Task<ActionResult<ApiObject.CaseValue>> GetNationalCaseValueAsync(
+        int tenantId, int caseValueId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

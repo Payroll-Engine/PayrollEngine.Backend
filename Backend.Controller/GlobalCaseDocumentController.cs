@@ -31,7 +31,8 @@ public class GlobalCaseDocumentController : Api.Controller.GlobalCaseDocumentCon
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryGlobalCaseDocuments")]
-    public async Task<ActionResult> QueryGlobalCaseDocumentsAsync(int tenantId, int caseValueId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryGlobalCaseDocumentsAsync(int tenantId, 
+        int caseValueId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -53,7 +54,8 @@ public class GlobalCaseDocumentController : Api.Controller.GlobalCaseDocumentCon
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetGlobalCaseDocument")]
-    public async Task<ActionResult<ApiObject.CaseDocument>> GetGlobalCaseDocumentAsync(int tenantId, int caseValueId, int documentId)
+    public async Task<ActionResult<ApiObject.CaseDocument>> GetGlobalCaseDocumentAsync(
+        int tenantId, int caseValueId, int documentId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

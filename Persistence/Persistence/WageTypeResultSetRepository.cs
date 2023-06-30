@@ -10,8 +10,8 @@ namespace PayrollEngine.Persistence;
 
 public class WageTypeResultSetRepository : ChildDomainRepository<WageTypeResultSet>, IWageTypeResultSetRepository
 {
-    public IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; }
-    public bool BulkInsert { get; }
+    private IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; }
+    private bool BulkInsert { get; }
 
     public WageTypeResultSetRepository(IWageTypeCustomResultRepository wageTypeCustomResultRepository,
         bool bulkInsert) :
@@ -65,7 +65,7 @@ public class WageTypeResultSetRepository : ChildDomainRepository<WageTypeResultS
         throw new NotSupportedException("Update of wage type results not supported");
     }
 
-    protected override async Task<bool> OnDeletingAsync(IDbContext context, int payrollResultId, int wageTypeResultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int wageTypeResultId)
     {
         // wage type custom results
         var customResults = (await WageTypeCustomResultRepository.QueryAsync(context, wageTypeResultId)).ToList();
@@ -73,6 +73,6 @@ public class WageTypeResultSetRepository : ChildDomainRepository<WageTypeResultS
         {
             await WageTypeCustomResultRepository.DeleteAsync(context, wageTypeResultId, customResult.Id);
         }
-        return await base.OnDeletingAsync(context, payrollResultId, wageTypeResultId);
+        return await base.OnDeletingAsync(context, wageTypeResultId);
     }
 }

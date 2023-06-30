@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.Domain.Model;
 

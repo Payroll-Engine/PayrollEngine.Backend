@@ -36,7 +36,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
     /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
     /// </returns>
-    public virtual async Task<IEnumerable<T>> QueryAsync(IDbContext context, string sql, object param = null,
+    protected async Task<IEnumerable<T>> QueryAsync(IDbContext context, string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
         await QueryAsync<T>(context, sql, param, transaction, commandTimeout, commandType);
 
@@ -55,7 +55,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
     /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
     /// </returns>
-    public virtual async Task<IEnumerable<TItem>> QueryAsync<TItem>(IDbContext context, string sql, object param = null,
+    protected async Task<IEnumerable<TItem>> QueryAsync<TItem>(IDbContext context, string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
         await context.QueryAsync<TItem>(sql, param, transaction, commandTimeout, commandType);
 
@@ -73,7 +73,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
     /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
     /// </returns>
-    public virtual async Task<TResult> QuerySingleAsync<TResult>(IDbContext context, string sql, object param = null,
+    protected async Task<TResult> QuerySingleAsync<TResult>(IDbContext context, string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
         await context.QuerySingleAsync<TResult>(sql, param, transaction, commandTimeout, commandType);
 
@@ -91,7 +91,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
     /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
     /// </returns>
-    internal virtual async Task<IEnumerable<TItem>> QueryCaseValuesAsync<TItem>(IDbContext context, CaseValueQuery query) =>
+    internal async Task<IEnumerable<TItem>> QueryCaseValuesAsync<TItem>(IDbContext context, CaseValueQuery query) =>
         await new CaseValueResultCommand().QueryCaseValuesAsync<TItem>(context, query);
 
     /// <summary>
@@ -100,7 +100,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// <param name="context">The database context</param>
     /// <param name="query">The case value query</param>
     /// <returns>The record count matching the query criteria</returns>
-    internal virtual async Task<long> QueryCaseValueCountAsync(IDbContext context, CaseValueQuery query) =>
+    internal async Task<long> QueryCaseValueCountAsync(IDbContext context, CaseValueQuery query) =>
         await new CaseValueResultCountCommand().QueryCaseValuesCountAsync(context, query);
 
     #endregion
@@ -117,7 +117,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The number of rows affected</returns>
-    public async Task<int> ExecuteAsync(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
+    protected async Task<int> ExecuteAsync(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
         await context.ExecuteAsync(sql, param, transaction, commandTimeout, commandType);
 
     /// <summary>
@@ -130,7 +130,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The first cell returned, as <typeparamref name="T"/></returns>
-    public async Task<TValue> ExecuteScalarAsync<TValue>(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
+    protected async Task<TValue> ExecuteScalarAsync<TValue>(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
         await context.ExecuteScalarAsync<TValue>(sql, param, transaction, commandTimeout, commandType);
 
     /// <summary>
@@ -143,100 +143,9 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The first cell returned, as <see cref="object"/></returns>
-    public async Task<object> ExecuteScalarAsync(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
+    protected async Task<object> ExecuteScalarAsync(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
         await context.ExecuteScalarAsync<object>(sql, param, transaction, commandTimeout, commandType);
 
-    /*
- /// <summary>
- /// Execute a command asynchronously using Task
- /// </summary>
- /// <param name="context">The database context</param>
- /// <param name="sql">The SQL to execute for this query</param>
- /// <param name="param">The parameters to use for this query</param>
- /// <param name="transaction">The transaction to use for this query</param>
- /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
- /// <param name="commandType">Is it a stored proc or a batch?</param>
- /// <returns>The number of rows affected</returns>
- public async Task<int> ExecuteAsync(IDbContext context, string sql, object param = null,
-     IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
- {
-     using var connection = context.NewConnection();
-     connection.Open();
-     return await ExecuteAsync(connection, sql, param, transaction, commandTimeout, commandType);
- }
-
- private async Task<int> ExecuteAsync(IDbConnection connection, string sql, object param = null,
-     IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-     await connection.ExecuteAsync(new(sql, param, transaction, commandTimeout, commandType));
-
-
- /// <summary>
- /// Execute parameterized SQL that selects a single value
- /// </summary>
- /// <param name="context">The database context</param>
- /// <param name="sql">The SQL to execute</param>
- /// <param name="param">The parameters to use for this command</param>
- /// <param name="transaction">The transaction to use for this command</param>
- /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
- /// <param name="commandType">Is it a stored proc or a batch?</param>
- /// <returns>The first cell returned, as <typeparamref name="T"/></returns>
- public Task<TValue> ExecuteScalarAsync<TValue>(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
- {
-     TValue result;
-     using (var connection = context.NewConnection())
-     {
-         connection.Open();
-         var result = ExecuteScalarAsync<TValue>(connection, sql, param, transaction, commandTimeout, commandType);
-         connection.Close();
-     }
-     return res;
- }
-
- private Task<TValue> ExecuteScalarAsync<TValue>(IDbConnection connection, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-     connection.ExecuteScalarAsync<TValue>(new(sql, param, transaction, commandTimeout, commandType));
-
- /// <summary>
- /// Execute parameterized SQL that selects a single value
- /// </summary>
- /// <param name="context">The database context</param>
- /// <param name="sql">The SQL to execute</param>
- /// <param name="param">The parameters to use for this command</param>
- /// <param name="transaction">The transaction to use for this command</param>
- /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
- /// <param name="commandType">Is it a stored proc or a batch?</param>
- /// <returns>The first cell returned, as <see cref="object"/></returns>
- public Task<object> ExecuteScalarAsync(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
- {
-     using var connection = context.NewConnection();
-     connection.Open();
-     return ExecuteScalarAsync(connection, sql, param, transaction, commandTimeout, commandType);
- }
-
- private Task<object> ExecuteScalarAsync(IDbConnection connection, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-     connection.ExecuteScalarAsync(new(sql, param, transaction, commandTimeout, commandType));
-
- /*
- /// <summary>
- /// Execute parameterized SQL that selects a single value
- /// </summary>
- /// <param name="context">The database context</param>
- /// <param name="sql">The SQL to execute</param>
- /// <param name="param">The parameters to use for this command</param>
- /// <param name="transaction">The transaction to use for this command</param>
- /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
- /// <param name="commandType">Is it a stored proc or a batch?</param>
- /// <returns>The first cell returned, as <typeparamref name="T"/></returns>
- public async Task<TValue> ExecuteScalarAsync<TValue>(IDbContext context, string sql, object param = null,
-     IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
- {
-     using var connection = context.NewConnection();
-     return await ExecuteScalarInternalAsync<TValue>(connection, sql, param, transaction, commandTimeout, commandType);
- }
-
- private async Task<TValue> ExecuteScalarInternalAsync<TValue>(IDbConnection connection, string sql, object param = null,
-     IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-     await connection.ExecuteScalarAsync<TValue>(new(sql, param, transaction, commandTimeout, commandType));
- */
     #endregion
 
     #region Db Scripting
@@ -273,7 +182,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
     {
     }
 
-    protected virtual void GetObjectUpdateData(T obj, DbParameterCollection parameters)
+    protected void GetObjectUpdateData()
     {
     }
 
@@ -308,7 +217,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
         return objects.Any();
     }
 
-    public virtual async Task<bool> ExistsAnyAsync<TValue>(IDbContext context, string testColumn, IEnumerable<TValue> testValues)
+    public async Task<bool> ExistsAnyAsync<TValue>(IDbContext context, string testColumn, IEnumerable<TValue> testValues)
     {
         if (string.IsNullOrWhiteSpace(testColumn))
         {
@@ -329,7 +238,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
         return count > 0;
     }
 
-    public virtual async Task<bool> ExistsAnyAsync<TValue>(IDbContext context, string parentColumn, int parentId,
+    protected async Task<bool> ExistsAnyAsync<TValue>(IDbContext context, string parentColumn, int parentId,
         string testColumn, IEnumerable<TValue> testValues)
     {
         if (string.IsNullOrWhiteSpace(parentColumn))
@@ -363,7 +272,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
 
     #region Attributes
 
-    public bool IsAttributeObject { get; }
+    private bool IsAttributeObject { get; }
 
     public virtual async Task<string> GetAttributeAsync(IDbContext context, int id, string attributeName)
     {

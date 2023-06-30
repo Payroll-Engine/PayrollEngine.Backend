@@ -57,23 +57,23 @@ public class DerivedCaseBuilder : DerivedCaseTool
     {
     }
 
-    public virtual async Task<CaseSet> BuildGlobalCaseAsync(string caseName,
+    public async Task<CaseSet> BuildGlobalCaseAsync(string caseName,
         CaseChangeSetup caseChangeSetup, string culture) =>
         await BuildCaseAsync(CaseType.Global, caseName, caseChangeSetup, culture);
 
-    public virtual async Task<CaseSet> BuildNationalCaseAsync(string caseName,
+    public async Task<CaseSet> BuildNationalCaseAsync(string caseName,
         CaseChangeSetup caseChangeSetup, string culture) =>
         await BuildCaseAsync(CaseType.National, caseName, caseChangeSetup, culture);
 
-    public virtual async Task<CaseSet> BuildCompanyCaseAsync(string caseName,
+    public async Task<CaseSet> BuildCompanyCaseAsync(string caseName,
         CaseChangeSetup caseChangeSetup, string culture) =>
         await BuildCaseAsync(CaseType.Company, caseName, caseChangeSetup, culture);
 
-    public virtual async Task<CaseSet> BuildEmployeeCaseAsync(string caseName,
+    public async Task<CaseSet> BuildEmployeeCaseAsync(string caseName,
         CaseChangeSetup caseChangeSetup, string culture) =>
         await BuildCaseAsync(CaseType.Employee, caseName, caseChangeSetup, culture);
 
-    protected virtual async Task<CaseSet> BuildCaseAsync(CaseType caseType, string caseName,
+    private async Task<CaseSet> BuildCaseAsync(CaseType caseType, string caseName,
         CaseChangeSetup caseChangeSetup, string culture)
     {
         if (string.IsNullOrWhiteSpace(caseName))

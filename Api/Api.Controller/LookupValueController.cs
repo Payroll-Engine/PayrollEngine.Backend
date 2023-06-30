@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
 using PayrollEngine.Domain.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Api.Controller;
 

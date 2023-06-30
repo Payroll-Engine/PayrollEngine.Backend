@@ -11,7 +11,7 @@ namespace PayrollEngine.Persistence;
 
 public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRepository
 {
-    public ILookupValueRepository ValueRepository { get; }
+    private ILookupValueRepository ValueRepository { get; }
 
     public LookupSetRepository(ILookupValueRepository valueRepository,
         ILookupAuditRepository auditRepository) :
@@ -29,7 +29,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         }
     }
 
-    public virtual async Task<LookupSet> GetLookupSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId)
+    public async Task<LookupSet> GetLookupSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId)
     {
         if (tenantId <= 0)
         {
@@ -94,7 +94,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         return deleted;
     }
 
-    public virtual async Task<LookupData> GetLookupDataAsync(IDbContext context,
+    public async Task<LookupData> GetLookupDataAsync(IDbContext context,
         int tenantId, int regulationId, int lookupId, string culture = null)
     {
         var lookupData = new LookupData();
@@ -170,7 +170,7 @@ public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRe
         };
     }
 
-    public virtual async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
+    public async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
         int tenantId, int lookupId, decimal rangeValue, string lookupKey = null, string culture = null)
     {
         if (lookupId <= 0)

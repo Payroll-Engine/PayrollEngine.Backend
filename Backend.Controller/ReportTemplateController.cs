@@ -4,6 +4,7 @@ using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -24,6 +25,7 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     /// Query report templates
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="query">Query templates</param>
     /// <returns>The report templates</returns>
@@ -32,7 +34,8 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryReportTemplates")]
-    public async Task<ActionResult> QueryReportTemplatesAsync(int tenantId, int reportId, [FromQuery] ReportTemplateQuery query)
+    public async Task<ActionResult> QueryReportTemplatesAsync(int tenantId,
+        int regulationId, int reportId, [FromQuery] ReportTemplateQuery query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -47,6 +50,7 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     /// Get a report template
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="templateId">The id of the template</param>
     /// <returns>The report template</returns>
@@ -54,7 +58,8 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportTemplate")]
-    public async Task<ActionResult<ApiObject.ReportTemplate>> GetReportTemplateAsync(int tenantId, int reportId, int templateId)
+    public async Task<ActionResult<ApiObject.ReportTemplate>> GetReportTemplateAsync(
+        int tenantId, int regulationId, int reportId, int templateId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -69,6 +74,7 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     /// Add a new report template
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="template">The report template to add</param>
     /// <returns>The newly created report template</returns>
@@ -77,8 +83,8 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateReportTemplate")]
-    public async Task<ActionResult<ApiObject.ReportTemplate>> CreateReportTemplateAsync(int tenantId,
-        int reportId, ApiObject.ReportTemplate template)
+    public async Task<ActionResult<ApiObject.ReportTemplate>> CreateReportTemplateAsync(
+        int tenantId, int regulationId, int reportId, ApiObject.ReportTemplate template)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -93,6 +99,7 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     /// Update a report template
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="template">The report template to modify</param>
     /// <returns>The modified template</returns>
@@ -101,7 +108,8 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateReportTemplate")]
-    public async Task<ActionResult<ApiObject.ReportTemplate>> UpdateReportTemplateAsync(int tenantId, int reportId, ApiObject.ReportTemplate template)
+    public async Task<ActionResult<ApiObject.ReportTemplate>> UpdateReportTemplateAsync(
+        int tenantId, int regulationId, int reportId, ApiObject.ReportTemplate template)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -116,12 +124,14 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     /// Delete a report
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="templateId">The id of the report template</param>
     /// <returns></returns>
     [HttpDelete("{templateId}")]
     [ApiOperationId("DeleteReportTemplate")]
-    public async Task<IActionResult> DeleteReportTemplateAsync(int tenantId, int reportId, int templateId)
+    public async Task<IActionResult> DeleteReportTemplateAsync(int tenantId,
+        int regulationId, int reportId, int templateId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

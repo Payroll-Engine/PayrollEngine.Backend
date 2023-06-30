@@ -8,7 +8,7 @@ namespace PayrollEngine.Domain.Model.Repository;
 public class PayrollValidator
 {
     /// <summary>Gets the payroll repository</summary>
-    public IPayrollRepository PayrollRepository { get; }
+    private IPayrollRepository PayrollRepository { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PayrollValidator"/> class.

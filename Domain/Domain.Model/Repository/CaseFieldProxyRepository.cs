@@ -26,22 +26,22 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
     /// <summary>
     /// The payroll repository
     /// </summary>
-    public IPayrollRepository PayrollRepository { get; }
+    private IPayrollRepository PayrollRepository { get; }
 
     /// <summary>
     /// The tenant id
     /// </summary>
-    public int TenantId { get; }
+    private int TenantId { get; }
 
     /// <summary>
     /// The payroll id
     /// </summary>
-    public int PayrollId { get; }
+    private int PayrollId { get; }
 
     /// <summary>
     /// The regulation validation date
     /// </summary>
-    public DateTime RegulationDate { get; }
+    private DateTime RegulationDate { get; }
 
     /// <summary>
     /// The evaluation date
@@ -51,7 +51,7 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
     /// <summary>
     /// The cluster set
     /// </summary>
-    public ClusterSet ClusterSet { get; set; }
+    private ClusterSet ClusterSet { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CaseFieldProxyRepository"/> class

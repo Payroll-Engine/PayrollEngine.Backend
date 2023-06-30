@@ -32,7 +32,7 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
     /// <param name="context">The database context</param>
     /// <param name="id">The object id</param>
     /// <returns>True if object exists</returns>
-    protected virtual async Task<bool> ExistsAsync(IDbContext context, int id) =>
+    protected async Task<bool> ExistsAsync(IDbContext context, int id) =>
         await Service.ExistsAsync(context, id);
 
     /// <summary>Creates new culture</summary>
@@ -54,10 +54,10 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
 
     #region Attributes
 
-    protected virtual async Task<ActionResult<bool>> ExistsAttributeAsync(int id, string attributeName) =>
+    protected async Task<ActionResult<bool>> ExistsAttributeAsync(int id, string attributeName) =>
         await Service.ExistsAttributeAsync(Runtime.DbContext, id, attributeName);
 
-    protected virtual async Task<ActionResult<string>> GetAttributeAsync(int id, string attributeName)
+    protected async Task<ActionResult<string>> GetAttributeAsync(int id, string attributeName)
     {
         var attribute = await Service.GetAttributeAsync(Runtime.DbContext, id, attributeName);
         if (attribute == null)
@@ -67,7 +67,7 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
         return attribute;
     }
 
-    protected virtual async Task<ActionResult<string>> SetAttributeAsync(int id, string attributeName, string value)
+    protected async Task<ActionResult<string>> SetAttributeAsync(int id, string attributeName, string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -91,7 +91,7 @@ public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>
         return attribute;
     }
 
-    protected virtual async Task<ActionResult<bool>> DeleteAttributeAsync(int id, string attributeName)
+    protected async Task<ActionResult<bool>> DeleteAttributeAsync(int id, string attributeName)
     {
         var delete = await Service.DeleteAttributeAsync(Runtime.DbContext, id, attributeName);
         if (delete == null)

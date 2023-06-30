@@ -16,7 +16,7 @@ public class CollectorApplyRuntime : CollectorRuntimeBase, ICollectorApplyRuntim
     /// <summary>
     /// The wage type result
     /// </summary>
-    protected Model.WageTypeResult WageTypeResult { get; }
+    private Model.WageTypeResult WageTypeResult { get; }
 
     internal CollectorApplyRuntime(Model.WageTypeResult wageTypeResult, CollectorRuntimeSettings settings) :
         base(settings)

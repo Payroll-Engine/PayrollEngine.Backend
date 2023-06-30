@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.Domain.Model;
 
@@ -108,7 +109,7 @@ public class CollectorResult : DomainObjectBase, ITagObject, IDomainAttributeObj
     }
 
     /// <inheritdoc/>
-    public CollectorResult(CollectorResult copySource) :
+    protected CollectorResult(CollectorResult copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

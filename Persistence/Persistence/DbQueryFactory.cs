@@ -347,7 +347,7 @@ public static class DbQueryFactory
     /// <summary>
     /// New delete query with table name
     /// </summary>
-    public static SqlKata.Query NewDeleteQuery(string table) =>
+    private static SqlKata.Query NewDeleteQuery(string table) =>
         NewQuery(table).AsDelete();
 
     /// <summary>

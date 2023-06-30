@@ -18,9 +18,9 @@ namespace PayrollEngine.Api.Controller;
 public abstract class TenantController : RepositoryRootObjectController<ITenantService, ITenantRepository,
     Tenant, ApiObject.Tenant>
 {
-    protected IRegulationService RegulationService { get; }
-    protected IRegulationShareService RegulationShareService { get; }
-    protected IReportService ReportService { get; }
+    private IRegulationService RegulationService { get; }
+    private IRegulationShareService RegulationShareService { get; }
+    private IReportService ReportService { get; }
 
     protected TenantController(ITenantService tenantService, IRegulationService regulationService,
         IRegulationShareService regulationShareService, IReportService reportService,

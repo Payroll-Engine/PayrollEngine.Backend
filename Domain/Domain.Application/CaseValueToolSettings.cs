@@ -9,13 +9,12 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 public class CaseValueToolSettings : FunctionToolSettings
 {
-    public Tenant Tenant { get; set; }
-    public Calendar Calendar { get; set; }
-    public Payroll Payroll { get; set; }
-    public DateTime ValueDate { get; set; }
-    public DateTime EvaluationDate { get; set; }
-    public IPayrollRepository PayrollRepository { get; set; }
-    public ICaseRepository CaseRepository { get; set; }
-    public IRegulationLookupProvider RegulationLookupProvider { get; set; }
-    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
+    public Tenant Tenant { get; init; }
+    public Calendar Calendar { get; init; }
+    public Payroll Payroll { get; init; }
+    public DateTime ValueDate { get; init; }
+    public DateTime EvaluationDate { get; init; }
+    public IPayrollRepository PayrollRepository { get; init; }
+    public ICaseRepository CaseRepository { get; init; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
 }

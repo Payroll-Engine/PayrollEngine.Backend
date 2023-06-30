@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -31,7 +32,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryPayrollLayers")]
-    public async Task<ActionResult> QueryPayrollLayersAsync(int tenantId, int payrollId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryPayrollLayersAsync(int tenantId, int payrollId,
+        [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -53,7 +55,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollLayer")]
-    public async Task<ActionResult<ApiObject.PayrollLayer>> GetPayrollLayerAsync(int tenantId, int payrollId, int layerId)
+    public async Task<ActionResult<ApiObject.PayrollLayer>> GetPayrollLayerAsync(
+        int tenantId, int payrollId, int layerId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -76,8 +79,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreatePayrollLayer")]
-    public async Task<ActionResult<ApiObject.PayrollLayer>> CreatePayrollLayerAsync(int tenantId,
-        int payrollId, ApiObject.PayrollLayer layer)
+    public async Task<ActionResult<ApiObject.PayrollLayer>> CreatePayrollLayerAsync(
+        int tenantId, int payrollId, ApiObject.PayrollLayer layer)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -100,7 +103,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdatePayrollLayer")]
-    public async Task<ActionResult<ApiObject.PayrollLayer>> UpdatePayrollLayerAsync(int tenantId, int payrollId, ApiObject.PayrollLayer layer)
+    public async Task<ActionResult<ApiObject.PayrollLayer>> UpdatePayrollLayerAsync(
+        int tenantId, int payrollId, ApiObject.PayrollLayer layer)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -144,7 +148,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollLayerAttribute")]
-    public virtual async Task<ActionResult<string>> GetPayrollLayerAttributeAsync(int tenantId, int payrollId, int layerId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetPayrollLayerAttributeAsync(
+        int tenantId, int payrollId, int layerId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -169,8 +174,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetPayrollLayerAttribute")]
-    public virtual async Task<ActionResult<string>> SetPayrollLayerAttributeAsync(int tenantId, int payrollId, int layerId,
-        string attributeName, [FromBody] string value)
+    public virtual async Task<ActionResult<string>> SetPayrollLayerAttributeAsync(
+        int tenantId, int payrollId, int layerId, string attributeName, [FromBody] string value)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -178,7 +183,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(layerId, attributeName, value);
+        return await SetAttributeAsync(layerId, attributeName, value);
     }
 
     /// <summary>
@@ -191,7 +196,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{layerId}/attributes/{attributeName}")]
     [ApiOperationId("DeletePayrollLayerAttribute")]
-    public virtual async Task<ActionResult<bool>> DeletePayrollLayerAttributeAsync(int tenantId, int payrollId, int layerId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeletePayrollLayerAttributeAsync(
+        int tenantId, int payrollId, int layerId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -199,7 +205,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(layerId, attributeName);
+        return await DeleteAttributeAsync(layerId, attributeName);
     }
 
     #endregion

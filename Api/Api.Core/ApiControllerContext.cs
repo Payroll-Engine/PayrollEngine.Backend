@@ -5,7 +5,7 @@ namespace PayrollEngine.Api.Core;
 
 public class ApiControllerContext : IApiControllerContext
 {
-    public ControllerContext Context { get; }
+    private ControllerContext Context { get; }
 
     public ApiControllerContext(ControllerContext context)
     {

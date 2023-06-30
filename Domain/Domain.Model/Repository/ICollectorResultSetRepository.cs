@@ -5,8 +5,4 @@
 /// </summary>
 public interface ICollectorResultSetRepository : IChildDomainRepository<CollectorResultSet>
 {
-    /// <summary>
-    /// The collector custom result repository
-    /// </summary>
-    ICollectorCustomResultRepository CollectorCustomResultRepository { get; }
 }

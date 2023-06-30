@@ -11,10 +11,10 @@ namespace PayrollEngine.Persistence.SqlServer;
 public class DbContext : IDbContext
 {
     /// <summary>The database connection string</summary>
-    public string ConnectionString { get; }
+    private string ConnectionString { get; }
 
     /// <summary>The default command timeout in seconds</summary>
-    public int DefaultCommendTimeout { get; }
+    private int DefaultCommendTimeout { get; }
 
     // minimum command timeout is 30 seconds
     private const int MinCommandTimeout = 30;

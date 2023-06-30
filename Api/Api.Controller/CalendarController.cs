@@ -17,7 +17,7 @@ public abstract class CalendarController : RepositoryChildObjectController<ITena
     ITenantRepository, ICalendarRepository,
     Tenant, Calendar, ApiObject.Calendar>
 {
-    protected IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
+    private IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
 
     protected CalendarController(ITenantService tenantService, ICalendarService calendarService,
         IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime) :

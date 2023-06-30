@@ -55,6 +55,7 @@ public interface ICaseChangeRepository<T> : IChildDomainRepository<T>
     /// <param name="parentId">The parent object id</param>
     /// <param name="query">The query parameters</param>
     /// <returns>Resource count matching the query</returns>
+    // ReSharper disable once UnusedParameter.Global
     Task<long> QueryCountAsync(IDbContext context, int tenantId, int parentId, Query query = null);
 
     /// <summary>

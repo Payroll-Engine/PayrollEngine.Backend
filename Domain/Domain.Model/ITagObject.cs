@@ -1,5 +1,5 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace PayrollEngine.Domain.Model;
 

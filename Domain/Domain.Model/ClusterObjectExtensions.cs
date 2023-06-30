@@ -38,7 +38,7 @@ public static class ClusterObjectExtensions
     /// <param name="clusterObject">The cluster object</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>True, if the cluster is available</returns>
-    public static bool AvailableCluster(this IClusterObject clusterObject, ClusterSet clusterSet)
+    private static bool AvailableCluster(this IClusterObject clusterObject, ClusterSet clusterSet)
     {
         // no object or missing cluster set
         if (clusterObject == null || clusterSet == null)

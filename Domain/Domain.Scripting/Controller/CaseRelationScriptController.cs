@@ -11,9 +11,8 @@ namespace PayrollEngine.Domain.Scripting.Controller;
 /// <summary>
 /// Case relation script controller
 /// </summary>
-public class CaseRelationScriptController : ScriptControllerBase<CaseRelation>, ICaseRelationScriptController
+public class CaseRelationScriptController : ScriptControllerBase<CaseRelation>
 {
-    /// <inheritdoc />
     public bool? CaseRelationBuild(CaseRelation caseRelation, CaseRelationRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(CaseRelationBuildRuntime));
@@ -28,7 +27,6 @@ public class CaseRelationScriptController : ScriptControllerBase<CaseRelation>, 
         return result;
     }
 
-    /// <inheritdoc />
     public bool? CaseRelationValidate(CaseRelation caseRelation, CaseRelationRuntimeSettings settings,
         ICollection<CaseValidationIssue> issues)
     {

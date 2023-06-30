@@ -83,6 +83,7 @@ internal abstract class ResultCommandBase
 #endif
     }
 
+    // ReSharper disable once UnusedParameter.Global
     protected static void QueryEnd(Func<string> message)
     {
 #if COLLECTED_RESULTS

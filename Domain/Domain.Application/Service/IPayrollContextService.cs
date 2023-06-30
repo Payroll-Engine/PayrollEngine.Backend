@@ -4,26 +4,27 @@ namespace PayrollEngine.Domain.Application.Service;
 
 public interface IPayrollContextService
 {
-    ITenantService TenantService { get; set; }
-    ILookupSetService RegulationLookupSetService { get; set; }
-    IPayrollService PayrollService { get; set; }
-    IDivisionService DivisionService { get; set; }
-    IRegulationService RegulationService { get; set; }
-    ICaseService CaseService { get; set; }
-    ICaseFieldService CaseFieldService { get; set; }
-    ICaseRelationService CaseRelationService { get; set; }
-    IUserService UserService { get; set; }
-    ITaskService TaskService { get; set; }
-    ILogService LogService { get; set; }
-    IGlobalCaseChangeService GlobalChangeService { get; set; }
-    IGlobalCaseValueService GlobalCaseValueService { get; set; }
-    INationalCaseChangeService NationalChangeService { get; set; }
-    INationalCaseValueService NationalCaseValueService { get; set; }
-    ICompanyCaseChangeService CompanyChangeService { get; set; }
-    ICompanyCaseValueService CompanyCaseValueService { get; set; }
-    IEmployeeService EmployeeService { get; set; }
-    IEmployeeCaseChangeService EmployeeChangeService { get; set; }
-    IEmployeeCaseValueService EmployeeCaseValueService { get; set; }
-    IWebhookDispatchService WebhookDispatchService { get; set; }
-    IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
+    ITenantService TenantService { get; }
+    IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
+
+    ICalendarService CalendarService { get; init; }
+    ILookupSetService RegulationLookupSetService { get; init; }
+    IPayrollService PayrollService { get; }
+    IDivisionService DivisionService { get; init; }
+    IRegulationService RegulationService { get; init; }
+    ICaseService CaseService { get; init; }
+    ICaseFieldService CaseFieldService { get; init; }
+    IUserService UserService { get; init; }
+    ITaskService TaskService { get; init; }
+    ILogService LogService { get; init; }
+    IGlobalCaseChangeService GlobalChangeService { get; init; }
+    IGlobalCaseValueService GlobalCaseValueService { get; init; }
+    INationalCaseChangeService NationalChangeService { get; init; }
+    INationalCaseValueService NationalCaseValueService { get; init; }
+    ICompanyCaseChangeService CompanyChangeService { get; init; }
+    ICompanyCaseValueService CompanyCaseValueService { get; init; }
+    IEmployeeService EmployeeService { get; init; }
+    IEmployeeCaseChangeService EmployeeChangeService { get; init; }
+    IEmployeeCaseValueService EmployeeCaseValueService { get; init; }
+    IWebhookDispatchService WebhookDispatchService { get; init; }
 }

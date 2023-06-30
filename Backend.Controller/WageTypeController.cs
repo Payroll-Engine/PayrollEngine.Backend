@@ -31,7 +31,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryWageTypes")]
-    public async Task<ActionResult> QueryWageTypesAsync(int tenantId, int regulationId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryWageTypesAsync(int tenantId, int regulationId,
+        [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -53,7 +54,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetWageType")]
-    public async Task<ActionResult<ApiObject.WageType>> GetWageTypeAsync(int tenantId, int regulationId, int wageTypeId)
+    public async Task<ActionResult<ApiObject.WageType>> GetWageTypeAsync(
+        int tenantId, int regulationId, int wageTypeId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -76,7 +78,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateWageType")]
-    public async Task<ActionResult<ApiObject.WageType>> CreateWageTypeAsync(int tenantId, int regulationId, ApiObject.WageType wageType)
+    public async Task<ActionResult<ApiObject.WageType>> CreateWageTypeAsync(
+        int tenantId, int regulationId, ApiObject.WageType wageType)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -99,7 +102,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateWageType")]
-    public async Task<ActionResult<ApiObject.WageType>> UpdateWageTypeAsync(int tenantId, int regulationId, ApiObject.WageType wageType)
+    public async Task<ActionResult<ApiObject.WageType>> UpdateWageTypeAsync(
+        int tenantId, int regulationId, ApiObject.WageType wageType)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -119,7 +123,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [HttpPut("{wageTypeId}/rebuild")]
     [NotFoundResponse]
     [ApiOperationId("RebuildWageType")]
-    public async Task<ActionResult> RebuildWageTypeAsync(int tenantId, int regulationId, int wageTypeId)
+    public async Task<ActionResult> RebuildWageTypeAsync(int tenantId,
+        int regulationId, int wageTypeId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -138,7 +143,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     /// <param name="wageTypeId">The id of the wage type</param>
     [HttpDelete("{wageTypeId}")]
     [ApiOperationId("DeleteWageType")]
-    public async Task<IActionResult> DeleteWageTypeAsync(int tenantId, int regulationId, int wageTypeId)
+    public async Task<IActionResult> DeleteWageTypeAsync(int tenantId,
+        int regulationId, int wageTypeId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

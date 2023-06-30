@@ -11,12 +11,12 @@ public class SemiMonthPayrollPeriod : IPayrollPeriod
     /// <summary>
     /// The culture
     /// </summary>
-    public CultureInfo Culture { get; }
+    private CultureInfo Culture { get; }
 
     /// <summary>
     /// The date calendar
     /// </summary>
-    public Calendar Calendar { get; }
+    private Calendar Calendar { get; }
 
     /// <summary>Initializes a new instance of the <see cref="SemiMonthPayrollPeriod"/> class</summary>
     /// <param name="culture">The culture</param>

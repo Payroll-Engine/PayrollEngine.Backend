@@ -16,7 +16,7 @@ namespace PayrollEngine.Domain.Application;
 public class ReportProcessor : ReportTool
 {
     // query
-    public IQueryService QueryService { get; }
+    private IQueryService QueryService { get; }
 
     public ReportProcessor(Tenant tenant, IQueryService queryService, ReportToolSettings settings) :
         base(tenant, settings)
@@ -24,7 +24,7 @@ public class ReportProcessor : ReportTool
         QueryService = queryService ?? throw new ArgumentNullException(nameof(queryService));
     }
 
-    public virtual async Task<ReportResponse> ExecuteAsync(ReportSet report, IApiControllerContext controllerContext, ReportRequest reportRequest)
+    public async Task<ReportResponse> ExecuteAsync(ReportSet report, IApiControllerContext controllerContext, ReportRequest reportRequest)
     {
         if (report == null)
         {
@@ -200,7 +200,6 @@ public class ReportProcessor : ReportTool
             EmployeCaseValueRepository = Settings.EmployeCaseValueRepository,
             LookupRepository = Settings.LookupRepository,
             LookupValueRepository = Settings.LookupValueRepository,
-            CollectorRepository = Settings.CollectorRepository,
             WageTypeRepository = Settings.WageTypeRepository,
             ReportLogRepository = Settings.ReportLogRepository,
             PayrollResultRepository = Settings.PayrollResultRepository,
@@ -209,7 +208,7 @@ public class ReportProcessor : ReportTool
             CollectorResultRepository = Settings.CollectorResultRepository,
             CollectorCustomResultRepository = Settings.CollectorCustomResultRepository,
             PayrunResultRepository = Settings.PayrunResultRepository,
-            WebhookDispatchService = WebhookDispatchService,
+            WebhookDispatchService = Settings.WebhookDispatchService,
             ControllerContext = controllerContext
         };
     }

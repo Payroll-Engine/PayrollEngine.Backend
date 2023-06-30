@@ -12,7 +12,7 @@ public abstract class CaseChangeService<TRepo, TDomain> : ChildApplicationServic
     where TRepo : class, ICaseChangeRepository<TDomain>
     where TDomain : CaseChange, new()
 {
-    public IWebhookDispatchService WebhookDispatcher { get; }
+    private IWebhookDispatchService WebhookDispatcher { get; }
 
     protected CaseChangeService(IWebhookDispatchService webhookDispatcher, TRepo caseChangeRepository) :
         base(caseChangeRepository)

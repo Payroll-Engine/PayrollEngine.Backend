@@ -58,31 +58,31 @@ public class DerivedCaseCollector : DerivedCaseTool
     {
     }
 
-    public virtual async Task<bool> GlobalCaseAvailableAsync(string caseName, string culture) =>
+    public async Task<bool> GlobalCaseAvailableAsync(string caseName, string culture) =>
         await CaseAvailableAsync(CaseType.Global, caseName, culture);
 
-    public virtual async Task<bool> NationalCaseAvailableAsync(string caseName, string culture) =>
+    public async Task<bool> NationalCaseAvailableAsync(string caseName, string culture) =>
         await CaseAvailableAsync(CaseType.National, caseName, culture);
 
-    public virtual async Task<bool> CompanyCaseAvailableAsync(string caseName, string culture) =>
+    public async Task<bool> CompanyCaseAvailableAsync(string caseName, string culture) =>
         await CaseAvailableAsync(CaseType.Company, caseName, culture);
 
-    public virtual async Task<bool> EmployeeCaseAvailableAsync(string caseName, string culture) =>
+    public async Task<bool> EmployeeCaseAvailableAsync(string caseName, string culture) =>
         await CaseAvailableAsync(CaseType.Employee, caseName, culture);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableGlobalCasesAsync(string culture,
+    public async Task<IEnumerable<Case>> GetAvailableGlobalCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.Global, culture, caseNames);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableNationalCasesAsync(string culture,
+    public async Task<IEnumerable<Case>> GetAvailableNationalCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.National, culture, caseNames);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableCompanyCasesAsync(string culture,
+    public async Task<IEnumerable<Case>> GetAvailableCompanyCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.Company, culture, caseNames);
 
-    public virtual async Task<IEnumerable<Case>> GetAvailableEmployeeCasesAsync(string culture,
+    public async Task<IEnumerable<Case>> GetAvailableEmployeeCasesAsync(string culture,
         IEnumerable<string> caseNames = null) =>
         await GetAvailableCasesAsync(CaseType.Employee, culture, caseNames);
 
@@ -92,7 +92,7 @@ public class DerivedCaseCollector : DerivedCaseTool
     /// <param name="period">The date period</param>
     /// <param name="caseFieldNames">The case field names</param>
     /// <returns>The case values for all case fields</returns>
-    public virtual async Task<IEnumerable<CaseFieldValue>> GetCasePeriodValuesAsync(
+    public async Task<IEnumerable<CaseFieldValue>> GetCasePeriodValuesAsync(
         DatePeriod period, IEnumerable<string> caseFieldNames) =>
         await CaseValueProvider.GetCasePeriodValuesAsync(period, caseFieldNames);
 
@@ -103,7 +103,7 @@ public class DerivedCaseCollector : DerivedCaseTool
     /// <param name="caseName">Name of the case</param>
     /// <param name="culture">The culture</param>
     /// <returns>True if the case is available</returns>
-    protected virtual async Task<bool> CaseAvailableAsync(CaseType caseType, string caseName, string culture)
+    private async Task<bool> CaseAvailableAsync(CaseType caseType, string caseName, string culture)
     {
         if (string.IsNullOrWhiteSpace(caseName))
         {
@@ -135,7 +135,7 @@ public class DerivedCaseCollector : DerivedCaseTool
     /// <param name="caseNames">The case names (default: all)</param>
     /// <param name="culture">The culture</param>
     /// <returns>List of available cases</returns>
-    protected virtual async Task<IEnumerable<Case>> GetAvailableCasesAsync(CaseType caseType, string culture,
+    private async Task<IEnumerable<Case>> GetAvailableCasesAsync(CaseType caseType, string culture,
         IEnumerable<string> caseNames = null)
     {
         var availableCases = new List<Case>();

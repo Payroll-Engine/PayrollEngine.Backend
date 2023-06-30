@@ -10,11 +10,9 @@ namespace PayrollEngine.Domain.Scripting.Controller;
 /// <summary>
 /// Report script controller
 /// </summary>
-public class ReportScriptController<T> : ScriptControllerBase<T>, IReportScriptController<T>
+public class ReportScriptController<T> : ScriptControllerBase<T>
     where T : Report
 {
-
-    /// <inheritdoc />
     public bool? Build(ReportRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(ReportBuildRuntime));
@@ -30,7 +28,6 @@ public class ReportScriptController<T> : ScriptControllerBase<T>, IReportScriptC
         return build;
     }
 
-    /// <inheritdoc />
     public void Start(ReportRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(ReportStartRuntime));
@@ -44,7 +41,6 @@ public class ReportScriptController<T> : ScriptControllerBase<T>, IReportScriptC
         LogStopwatch.Stop(nameof(ReportStartRuntime));
     }
 
-    /// <inheritdoc />
     public void End(ReportRuntimeSettings settings, System.Data.DataSet dataSet)
     {
         LogStopwatch.Start(nameof(ReportEndRuntime));

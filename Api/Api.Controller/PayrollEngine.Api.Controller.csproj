@@ -7,14 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="IPayrollControllerServices.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="IPayrollControllerServices.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Api.Map\PayrollEngine.Api.Map.csproj" />
 	</ItemGroup>
 

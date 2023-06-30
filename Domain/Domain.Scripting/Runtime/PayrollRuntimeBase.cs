@@ -31,7 +31,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     /// <summary>
     /// Provider for regulation lookups
     /// </summary>
-    protected IRegulationLookupProvider RegulationLookupProvider => Settings.RegulationLookupProvider;
+    private IRegulationLookupProvider RegulationLookupProvider => Settings.RegulationLookupProvider;
 
     /// <summary>
     /// Maximum period count
@@ -275,7 +275,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     }
 
     /// <summary>Gets a value indicating whether to track the case field requests</summary>
-    protected virtual bool TrackCaseFieldRequests => false;
+    private bool TrackCaseFieldRequests => false;
 
     /// <inheritdoc />
     public virtual Dictionary<string, List<Tuple<DateTime, DateTime?, DateTime?, object>>> GetCasePeriodValues(DateTime startDate,

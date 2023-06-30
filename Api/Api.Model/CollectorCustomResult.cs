@@ -23,6 +23,7 @@ public class CollectorCustomResult : ApiObjectBase
     /// <summary>
     /// The localized collector names (immutable)
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CollectorNameLocalizations { get; set; }
 
     /// <summary>
@@ -58,11 +59,13 @@ public class CollectorCustomResult : ApiObjectBase
     /// <summary>
     /// The result tags
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public List<string> Tags { get; set; }
 
     /// <summary>
     /// The result attributes (immutable)
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

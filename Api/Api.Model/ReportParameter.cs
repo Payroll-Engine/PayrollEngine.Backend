@@ -19,6 +19,7 @@ public class ReportParameter : ApiObjectBase
     /// The localized wage type names
     /// </summary>
     [Localization(nameof(Name))]
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
@@ -30,6 +31,7 @@ public class ReportParameter : ApiObjectBase
     /// The localized report parameter descriptions
     /// </summary>
     [Localization(nameof(Description))]
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> DescriptionLocalizations { get; set; }
 
     /// <summary>
@@ -60,6 +62,7 @@ public class ReportParameter : ApiObjectBase
     /// <summary>
     /// Custom attributes
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

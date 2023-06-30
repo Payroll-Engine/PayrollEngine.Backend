@@ -17,11 +17,12 @@ public abstract class CaseRelationRuntimeBase : PayrollRuntimeBase, ICaseRelatio
     protected new CaseRelationRuntimeSettings Settings => base.Settings as CaseRelationRuntimeSettings;
 
     /// <summary>The webhook dispatch service</summary>
-    protected IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
+    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
 
     /// <summary>
     /// The case relation
     /// </summary>
+    // ReSharper disable once MemberCanBeProtected.Global
     public CaseRelation CaseRelation { get; }
 
     /// <summary>
@@ -45,7 +46,7 @@ public abstract class CaseRelationRuntimeBase : PayrollRuntimeBase, ICaseRelatio
     protected override string LogOwner => RelationName;
 
     /// <summary>Gets the case relation name</summary>
-    protected string RelationName
+    private string RelationName
     {
         get
         {

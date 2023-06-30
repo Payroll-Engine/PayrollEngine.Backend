@@ -100,7 +100,7 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
     }
 
     /// <inheritdoc/>
-    public Report(Report copySource) :
+    protected Report(Report copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

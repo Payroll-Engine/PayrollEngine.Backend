@@ -9,10 +9,10 @@ namespace PayrollEngine.Domain.Scripting;
 /// </summary>
 public class FunctionHostSettings
 {
-    public IDbContext DbContext { get; set; }
-    public ITaskRepository TaskRepository { get; set; }
-    public ILogRepository LogRepository { get; set; }
+    public IDbContext DbContext { get; init; }
+    public ITaskRepository TaskRepository { get; init; }
+    public ILogRepository LogRepository { get; init; }
     /// <summary>Function log timeout</summary>
-    public TimeSpan AssemblyCacheTimeout { get; set; } = TimeSpan.FromMinutes(30);
-    public IScriptProvider ScriptProvider { get; set; }
+    public TimeSpan AssemblyCacheTimeout { get; init; } = TimeSpan.FromMinutes(30);
+    public IScriptProvider ScriptProvider { get; init; }
 }

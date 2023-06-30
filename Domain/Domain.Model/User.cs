@@ -34,7 +34,7 @@ public class User : DomainObjectBase, IIdentifiableObject, IDomainAttributeObjec
     public string LastName { get; set; }
 
     /// <summary>
-    /// The users culture
+    /// The user culture name based on RFC 4646
     /// </summary>
     public string Culture { get; set; }
 

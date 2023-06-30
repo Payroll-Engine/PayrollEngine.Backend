@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable CollectionNeverQueried.Global
 
 namespace PayrollEngine.Domain.Model;
 

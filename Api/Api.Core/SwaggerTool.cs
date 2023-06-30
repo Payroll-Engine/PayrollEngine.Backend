@@ -16,8 +16,8 @@ namespace PayrollEngine.Api.Core;
 
 public static class SwaggerTool
 {
-    public static readonly string SwaggerRootFolder = "swagger";
-    public static readonly string SwaggerFileName = "swagger.json";
+    private static readonly string SwaggerRootFolder = "swagger";
+    private static readonly string SwaggerFileName = "swagger.json";
 
     public static void SetupSwagger(this SwaggerGenOptions options)
     {

@@ -31,9 +31,6 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         // SELECT execution
         var items = (await QueryAsync<T>(context, compileQuery)).ToList();
 
-        // notification
-        await OnRetrieved(context, items);
-
         return items;
     }
 
@@ -53,27 +50,9 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
     public virtual async Task<T> GetAsync(IDbContext context, int id)
     {
         var item = await SelectSingleByIdAsync<T>(context, TableName, id);
-        // notification
-        if (item != null)
-        {
-            await OnRetrieved(context, item);
-        }
         return item;
     }
 
-    protected virtual Task OnRetrieved(IDbContext context, T item) =>
-        Task.FromResult<object>(null);
-
-    protected virtual async Task OnRetrieved(IDbContext context, IEnumerable<T> items)
-    {
-        if (items != null)
-        {
-            foreach (var item in items)
-            {
-                await OnRetrieved(context, item);
-            }
-        }
-    }
     #endregion
 
     #region Create
@@ -141,7 +120,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         return createdObjects;
     }
 
-    protected virtual void GetCreateData(T obj, DbParameterCollection data)
+    private void GetCreateData(T obj, DbParameterCollection data)
     {
         GetObjectData(obj, data);
         GetObjectCreateData(obj, data);
@@ -160,7 +139,7 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         // create and update date
         item.InitCreatedDate(Date.Now);
 
-        if (await OnCreatingAsync(context, item))
+        if (await OnCreatingAsync())
         {
             var parameters = new DbParameterCollection();
             GetCreateData(item, parameters);
@@ -186,15 +165,15 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
                 throw;
             }
 
-            await OnCreatedAsync(context, item);
+            await OnCreatedAsync();
             return true;
         }
 
         return false;
     }
 
-    protected virtual Task<bool> OnCreatingAsync(IDbContext context, T item) => Task.FromResult(true);
-    protected virtual Task OnCreatedAsync(IDbContext context, T item) => Task.FromResult(0);
+    private Task<bool> OnCreatingAsync() => Task.FromResult(true);
+    private Task OnCreatedAsync() => Task.FromResult(0);
 
     #endregion
 
@@ -224,10 +203,10 @@ public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomain
         return obj;
     }
 
-    protected virtual void GetUpdateData(T obj, DbParameterCollection parameters)
+    private void GetUpdateData(T obj, DbParameterCollection parameters)
     {
         GetObjectData(obj, parameters);
-        GetObjectUpdateData(obj, parameters);
+        GetObjectUpdateData();
         if (!parameters.HasAny)
         {
             throw new PayrollException($"Missing object data for object {obj}");

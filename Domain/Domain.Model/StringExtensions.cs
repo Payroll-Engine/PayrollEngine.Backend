@@ -185,7 +185,7 @@ public static class StringExtensions
     /// </summary>
     /// <param name="script">The script</param>
     /// <returns>A list of code tags</returns>
-    public static IEnumerable<string> GetScriptTags(this string script)
+    private static IEnumerable<string> GetScriptTags(this string script)
     {
         // tags comment start
         var tagsStartIndex = script.IndexOf(ScriptingSpecification.TagsStartMarker, 0, StringComparison.InvariantCulture);

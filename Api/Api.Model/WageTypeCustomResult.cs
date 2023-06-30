@@ -28,6 +28,7 @@ public class WageTypeCustomResult : ApiObjectBase
     /// <summary>
     /// The localized wage type names (immutable)
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> WageTypeNameLocalizations { get; set; }
 
     /// <summary>
@@ -62,11 +63,13 @@ public class WageTypeCustomResult : ApiObjectBase
     /// <summary>
     /// The result tags
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public List<string> Tags { get; set; }
 
     /// <summary>
     /// The result attributes (immutable)
     /// </summary>
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

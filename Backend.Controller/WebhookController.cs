@@ -30,7 +30,8 @@ public class WebhookController : Api.Controller.WebhookController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryWebhooks")]
-    public async Task<ActionResult> QueryWebhooksAsync(int tenantId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryWebhooksAsync(int tenantId,
+        [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -51,7 +52,8 @@ public class WebhookController : Api.Controller.WebhookController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetWebhook")]
-    public async Task<ActionResult<ApiObject.Webhook>> GetWebhookAsync(int tenantId, int webhookId)
+    public async Task<ActionResult<ApiObject.Webhook>> GetWebhookAsync(
+        int tenantId, int webhookId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -73,7 +75,8 @@ public class WebhookController : Api.Controller.WebhookController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateWebhook")]
-    public async Task<ActionResult<ApiObject.Webhook>> CreateWebhookAsync(int tenantId, ApiObject.Webhook webhook)
+    public async Task<ActionResult<ApiObject.Webhook>> CreateWebhookAsync(
+        int tenantId, ApiObject.Webhook webhook)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -95,7 +98,8 @@ public class WebhookController : Api.Controller.WebhookController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateWebhook")]
-    public async Task<ActionResult<ApiObject.Webhook>> UpdateWebhookAsync(int tenantId, ApiObject.Webhook webhook)
+    public async Task<ActionResult<ApiObject.Webhook>> UpdateWebhookAsync(
+        int tenantId, ApiObject.Webhook webhook)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -138,7 +142,8 @@ public class WebhookController : Api.Controller.WebhookController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetWebhookAttribute")]
-    public virtual async Task<ActionResult<string>> GetWebhookAttributeAsync(int tenantId, int webhookId, string attributeName)
+    public virtual async Task<ActionResult<string>> GetWebhookAttributeAsync(
+        int tenantId, int webhookId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -162,8 +167,8 @@ public class WebhookController : Api.Controller.WebhookController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("SetWebhookAttribute")]
-    public virtual async Task<ActionResult<string>> SetWebhookAttributeAsync(int tenantId, int webhookId,
-        string attributeName, [FromBody] string value)
+    public virtual async Task<ActionResult<string>> SetWebhookAttributeAsync(
+        int tenantId, int webhookId, string attributeName, [FromBody] string value)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -171,7 +176,7 @@ public class WebhookController : Api.Controller.WebhookController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(webhookId, attributeName, value);
+        return await SetAttributeAsync(webhookId, attributeName, value);
     }
 
     /// <summary>
@@ -183,7 +188,8 @@ public class WebhookController : Api.Controller.WebhookController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{webhookId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteWebhookAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteWebhookAttributeAsync(int tenantId, int webhookId, string attributeName)
+    public virtual async Task<ActionResult<bool>> DeleteWebhookAttributeAsync(
+        int tenantId, int webhookId, string attributeName)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -191,7 +197,7 @@ public class WebhookController : Api.Controller.WebhookController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(webhookId, attributeName);
+        return await DeleteAttributeAsync(webhookId, attributeName);
     }
 
     #endregion

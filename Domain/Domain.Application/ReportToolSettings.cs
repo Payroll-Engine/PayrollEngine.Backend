@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using PayrollEngine.Domain.Model;
+﻿using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
@@ -9,30 +8,27 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 public class ReportToolSettings : FunctionToolSettings
 {
-    public CultureInfo Culture { get; set; }
+    public IWebhookDispatchService WebhookDispatchService { get; init; }
 
-    public IUserRepository UserRepository { get; set; }
-    public IEmployeeRepository EmployeeRepository { get; set; }
-    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; set; }
-    public INationalCaseValueRepository NationalCaseValueRepository { get; set; }
-    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; set; }
-    public IEmployeeCaseValueRepository EmployeCaseValueRepository { get; set; }
-    public IRegulationRepository RegulationRepository { get; set; }
-    public ILookupRepository LookupRepository { get; set; }
-    public ILookupValueRepository LookupValueRepository { get; set; }
-    public ICollectorRepository CollectorRepository { get; set; }
-    public IWageTypeRepository WageTypeRepository { get; set; }
-    public IReportLogRepository ReportLogRepository { get; set; }
-    public IPayrollRepository PayrollRepository { get; set; }
-    public IPayrollResultRepository PayrollResultRepository { get; set; }
-    public IWageTypeResultRepository WageTypeResultRepository { get; set; }
-    public IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; set; }
-    public ICollectorResultRepository CollectorResultRepository { get; set; }
-    public ICollectorCustomResultRepository CollectorCustomResultRepository { get; set; }
-    public IPayrunResultRepository PayrunResultRepository { get; set; }
-    public IPayrunRepository PayrunRepository { get; set; }
-    public IReportSetRepository ReportRepository { get; set; }
-    public IWebhookRepository WebhookRepository { get; set; }
-
-    public IWebhookDispatchService WebhookDispatchService { get; set; }
+    public IUserRepository UserRepository { get; init; }
+    public IEmployeeRepository EmployeeRepository { get; init; }
+    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; init; }
+    public INationalCaseValueRepository NationalCaseValueRepository { get; init; }
+    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; init; }
+    public IEmployeeCaseValueRepository EmployeCaseValueRepository { get; init; }
+    public IRegulationRepository RegulationRepository { get; init; }
+    public ILookupRepository LookupRepository { get; init; }
+    public ILookupValueRepository LookupValueRepository { get; init; }
+    public IWageTypeRepository WageTypeRepository { get; init; }
+    public IReportLogRepository ReportLogRepository { get; init; }
+    public IPayrollRepository PayrollRepository { get; init; }
+    public IPayrollResultRepository PayrollResultRepository { get; init; }
+    public IWageTypeResultRepository WageTypeResultRepository { get; init; }
+    public IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; init; }
+    public ICollectorResultRepository CollectorResultRepository { get; init; }
+    public ICollectorCustomResultRepository CollectorCustomResultRepository { get; init; }
+    public IPayrunResultRepository PayrunResultRepository { get; init; }
+    public IPayrunRepository PayrunRepository { get; init; }
+    public IReportSetRepository ReportRepository { get; init; }
+    public IWebhookRepository WebhookRepository { get; init; }
 }

@@ -11,12 +11,11 @@ namespace PayrollEngine.Domain.Scripting.Controller;
 /// <summary>
 /// Payrun script controller
 /// </summary>
-public class PayrunScriptController : ScriptControllerBase<Payrun>, IPayrunScriptController
+public class PayrunScriptController : ScriptControllerBase<Payrun>
 {
 
     #region Start
 
-    /// <inheritdoc />
     public bool? Start(PayrunRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(PayrunStartRuntime));
@@ -36,7 +35,6 @@ public class PayrunScriptController : ScriptControllerBase<Payrun>, IPayrunScrip
 
     #region Employee Available
 
-    /// <inheritdoc />
     public bool? IsEmployeeAvailable(PayrunRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(PayrunEmployeeAvailableRuntime));
@@ -52,7 +50,6 @@ public class PayrunScriptController : ScriptControllerBase<Payrun>, IPayrunScrip
         return isAvailable;
     }
 
-    /// <inheritdoc />
     public bool? EmployeeStart(PayrunRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(PayrunEmployeeStartRuntime));
@@ -68,7 +65,6 @@ public class PayrunScriptController : ScriptControllerBase<Payrun>, IPayrunScrip
         return start;
     }
 
-    /// <inheritdoc />
     public void EmployeeEnd(PayrunRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(PayrunEmployeeEndRuntime));
@@ -86,7 +82,6 @@ public class PayrunScriptController : ScriptControllerBase<Payrun>, IPayrunScrip
 
     #region Wage Type Available
 
-    /// <inheritdoc />
     public bool? IsWageTypeAvailable(WageType wageType, Dictionary<string, object> wageTypeAttributes, PayrunRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(PayrunWageTypeAvailableRuntime));
@@ -106,7 +101,6 @@ public class PayrunScriptController : ScriptControllerBase<Payrun>, IPayrunScrip
 
     #region End
 
-    /// <inheritdoc />
     public void End(PayrunRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(PayrunEndRuntime));

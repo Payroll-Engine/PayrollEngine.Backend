@@ -32,7 +32,8 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryEmployeeCaseDocuments")]
-    public async Task<ActionResult> QueryEmployeeCaseDocumentsAsync(int tenantId, int employeeId, int caseValueId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryEmployeeCaseDocumentsAsync(int tenantId, int employeeId, 
+        int caseValueId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -69,7 +70,8 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetEmployeeCaseDocument")]
-    public async Task<ActionResult<ApiObject.CaseDocument>> GetEmployeeCaseDocumentAsync(int tenantId, int employeeId, int caseValueId, int documentId)
+    public async Task<ActionResult<ApiObject.CaseDocument>> GetEmployeeCaseDocumentAsync(int tenantId, 
+        int employeeId, int caseValueId, int documentId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

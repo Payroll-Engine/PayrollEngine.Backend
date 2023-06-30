@@ -9,11 +9,11 @@ namespace PayrollEngine.Persistence;
 
 public class PayrollRepository : ChildDomainRepository<Payroll>, IPayrollRepository
 {
-    public IPayrollLayerRepository PayrollLayerRepository { get; }
-    public IRegulationRepository RegulationRepository { get; }
-    public ICaseFieldRepository CaseFieldRepository { get; }
-    public IReportSetRepository ReportRepository { get; }
-    public IScriptRepository ScriptRepository { get; }
+    private IPayrollLayerRepository PayrollLayerRepository { get; }
+    private IRegulationRepository RegulationRepository { get; }
+    private ICaseFieldRepository CaseFieldRepository { get; }
+    private IReportSetRepository ReportRepository { get; }
+    private IScriptRepository ScriptRepository { get; }
 
     public PayrollRepository(IPayrollLayerRepository payrollLayerRepository, IRegulationRepository regulationRepository,
         ICaseFieldRepository caseFieldRepository, IReportSetRepository reportRepository, IScriptRepository scriptRepository) :
@@ -58,79 +58,79 @@ public class PayrollRepository : ChildDomainRepository<Payroll>, IPayrollReposit
     #region Derived
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<Regulation>> GetDerivedRegulationsAsync(IDbContext context, PayrollQuery query) =>
+    public async Task<IEnumerable<Regulation>> GetDerivedRegulationsAsync(IDbContext context, PayrollQuery query) =>
         await new PayrollRepositoryRegulationCommand(context).GetDerivedRegulationsAsync(
             RegulationRepository, PayrollLayerRepository, query);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<Case>> GetDerivedCasesAsync(IDbContext context, PayrollQuery query, CaseType? caseType = null,
+    public async Task<IEnumerable<Case>> GetDerivedCasesAsync(IDbContext context, PayrollQuery query, CaseType? caseType = null,
         IEnumerable<string> caseNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryCaseCommand(context).GetDerivedCasesAsync(query, caseType,
             caseNames, overrideType, clusterSet);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> caseFieldNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryCaseFieldCommand(context).GetDerivedCaseFieldsAsync(query,
             caseFieldNames, overrideType, clusterSet);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsOfCaseAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsOfCaseAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> caseNames, OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryFieldOfCaseCommand(context).GetDerivedFieldsOfCaseAsync(query,
             caseNames, overrideType, clusterSet);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<CaseRelation>> GetDerivedCaseRelationsAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<CaseRelation>> GetDerivedCaseRelationsAsync(IDbContext context, PayrollQuery query,
         string sourceCaseName = null, string targetCaseName = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryCaseRelationCommand(context).GetDerivedCaseRelationsAsync(query,
             sourceCaseName, targetCaseName, overrideType, clusterSet);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<WageType>> GetDerivedWageTypesAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<WageType>> GetDerivedWageTypesAsync(IDbContext context, PayrollQuery query,
         IEnumerable<decimal> wageTypeNumbers = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryWageTypeCommand(context).GetDerivedWageTypesAsync(query,
             wageTypeNumbers, overrideType, clusterSet);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<Collector>> GetDerivedCollectorsAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<Collector>> GetDerivedCollectorsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> collectorNames = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryCollectorCommand(context).GetDerivedCollectorsAsync(query,
             collectorNames, overrideType, clusterSet);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<Lookup>> GetDerivedLookupsAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<Lookup>> GetDerivedLookupsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> lookupNames = null, OverrideType? overrideType = null) =>
         await new PayrollRepositoryLookupCommand(context).GetDerivedLookupsAsync(query,
             lookupNames, overrideType);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<LookupValue>> GetDerivedLookupValuesAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<LookupValue>> GetDerivedLookupValuesAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> lookupNames = null, IEnumerable<string> lookupKeys = null, OverrideType? overrideType = null) =>
         await new PayrollRepositoryLookupValuesCommand(context).GetDerivedLookupValuesAsync(query, lookupNames, lookupKeys, overrideType);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> reportNames = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryReportCommand(context).GetDerivedReportsAsync(ReportRepository,
             query, reportNames, overrideType, clusterSet);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<ReportParameter>> GetDerivedReportParametersAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<ReportParameter>> GetDerivedReportParametersAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> reportNames = null, OverrideType? overrideType = null) =>
         await new PayrollRepositoryReportParametersCommand(context).GetDerivedReportParametersAsync(query, reportNames, overrideType);
 
     /// <inheritdoc/>
-    public virtual async Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(IDbContext context, PayrollQuery query,
        IEnumerable<string> reportNames = null,  string culture = null, OverrideType? overrideType = null) =>
         await new PayrollRepositoryReportTemplatesCommand(context).GetDerivedReportTemplatesAsync(
             query, reportNames, culture, overrideType);
 
-    public virtual async Task<IEnumerable<Script>> GetDerivedScriptsAsync(IDbContext context, PayrollQuery query,
+    public async Task<IEnumerable<Script>> GetDerivedScriptsAsync(IDbContext context, PayrollQuery query,
         IEnumerable<string> scriptNames = null, OverrideType? overrideType = null) =>
         await new PayrollRepositoryScriptCommand(context).GetDerivedScriptsAsync(ScriptRepository,
             query, scriptNames, overrideType);

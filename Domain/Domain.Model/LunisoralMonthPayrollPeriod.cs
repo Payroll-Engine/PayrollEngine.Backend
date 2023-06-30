@@ -11,12 +11,12 @@ public class LunisoralMonthPayrollPeriod : IPayrollPeriod
     /// <summary>
     /// The culture
     /// </summary>
-    public CultureInfo Culture { get; }
+    private CultureInfo Culture { get; }
 
     /// <summary>
     /// The date calendar
     /// </summary>
-    public Calendar Calendar { get; }
+    private Calendar Calendar { get; }
 
 
     /// <inheritdoc />

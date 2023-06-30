@@ -5,27 +5,27 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 public class PayrunRuntimeSettings : PayrollRuntimeSettings
 {
     /// <summary>The webhook dispatch service</summary>
-    public IWebhookDispatchService WebhookDispatchService { get; set; }
+    public IWebhookDispatchService WebhookDispatchService { get; init; }
 
     /// <summary>The Payrun</summary>
-    public Payrun Payrun { get; set; }
+    public Payrun Payrun { get; init; }
 
     /// <summary>
     /// Provider for employee results
     /// </summary>
-    public IResultProvider ResultProvider { get; set; }
+    public IResultProvider ResultProvider { get; init; }
 
     /// <summary>
     /// Provider for runtime values
     /// </summary>
-    public IRuntimeValueProvider RuntimeValueProvider { get; set; }
+    public IRuntimeValueProvider RuntimeValueProvider { get; init; }
 
     /// <summary>The Payrun job</summary>
-    public PayrunJob PayrunJob { get; set; }
+    public PayrunJob PayrunJob { get; init; }
 
     /// <summary>The parent payrun job, usually the payrun retro source payrun job</summary>
-    public PayrunJob ParentPayrunJob { get; set; }
+    public PayrunJob ParentPayrunJob { get; init; }
 
     /// <summary>The parent payrun job, usually the payrun retro source payrun job</summary>
-    public PayrunExecutionPhase ExecutionPhase { get; set; }
+    public PayrunExecutionPhase ExecutionPhase { get; init; }
 }

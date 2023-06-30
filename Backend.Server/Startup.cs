@@ -31,7 +31,7 @@ public class Startup
     /// <summary>
     /// The application configuration
     /// </summary>
-    public IConfiguration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
     /// <summary>
     /// Service configuration

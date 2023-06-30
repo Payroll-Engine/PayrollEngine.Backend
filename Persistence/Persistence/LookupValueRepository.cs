@@ -14,7 +14,7 @@ public class LookupValueRepository : TrackChildDomainRepository<LookupValue, Loo
     {
     }
 
-    public virtual async Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null)
+    public async Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null)
     {
         var conditions = new Dictionary<string, object>
         {
@@ -24,7 +24,7 @@ public class LookupValueRepository : TrackChildDomainRepository<LookupValue, Loo
         return (await SelectAsync<LookupValue>(context, TableName, conditions)).Any();
     }
 
-    public virtual async Task<int> DeleteAll(IDbContext context, int lookupId)
+    public async Task<int> DeleteAll(IDbContext context, int lookupId)
     {
         var query = DbQueryFactory.NewDeleteQuery(TableName, ParentFieldName, lookupId);
         var compileQuery = CompileQuery(query);

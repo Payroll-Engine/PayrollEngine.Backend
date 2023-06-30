@@ -1,4 +1,5 @@
 ﻿using System;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.Domain.Model;
 

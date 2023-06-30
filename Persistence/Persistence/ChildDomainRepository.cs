@@ -16,7 +16,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     /// <summary>
     /// The parent field name
     /// </summary>
-    public string ParentFieldName { get; }
+    protected string ParentFieldName { get; }
 
     /// <summary>
     /// Constructor
@@ -165,7 +165,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     /// <param name="context">The database context</param>
     /// <param name="parentId">The parent id</param>
     /// <param name="items">The retrieved items</param>
-    protected virtual async Task OnRetrieved(IDbContext context, int parentId, IEnumerable<T> items)
+    protected async Task OnRetrieved(IDbContext context, int parentId, IEnumerable<T> items)
     {
         if (items != null)
         {
@@ -265,37 +265,32 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         // create and update date
         item.InitCreatedDate(Date.Now);
 
-        if (await OnCreatingAsync(context, parentId, item))
+        var parameters = new DbParameterCollection();
+        GetCreateData(parentId, item, parameters);
+
+        // build query statement
+        var queryBuilder = new StringBuilder();
+        queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
+        queryBuilder.AppendIdentitySelect();
+        var query = queryBuilder.ToString();
+
+        // db insert
+        try
         {
-            var parameters = new DbParameterCollection();
-            GetCreateData(parentId, item, parameters);
-
-            // build query statement
-            var queryBuilder = new StringBuilder();
-            queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
-            queryBuilder.AppendIdentitySelect();
-            var query = queryBuilder.ToString();
-
-            // db insert
-            try
+            item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
+        }
+        catch (Exception exception)
+        {
+            var transformException = context.TransformException(exception);
+            if (transformException != null)
             {
-                item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
+                throw transformException;
             }
-            catch (Exception exception)
-            {
-                var transformException = context.TransformException(exception);
-                if (transformException != null)
-                {
-                    throw transformException;
-                }
-                throw;
-            }
-
-            await OnCreatedAsync(context, parentId, item);
-            return true;
+            throw;
         }
 
-        return false;
+        await OnCreatedAsync(context, parentId, item);
+        return true;
     }
 
     /// <summary>
@@ -319,16 +314,6 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         // parent
         parameters.Add(ParentFieldName, parentId);
     }
-
-    /// <summary>
-    /// Item creating request
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="item">The item to create</param>
-    /// <returns>True for a valid item</returns>
-    protected virtual Task<bool> OnCreatingAsync(IDbContext context, int parentId, T item) =>
-        Task.FromResult(true);
 
     /// <summary>
     /// Item created handler
@@ -356,36 +341,25 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         // update date
         item.Updated = Date.Now;
-        if (await OnUpdatingAsync(context, parentId, item))
-        {
-            var parameters = new DbParameterCollection();
-            GetUpdateData(item, parameters);
 
-            // build update statement
-            var queryBuilder = new StringBuilder();
-            queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), item.Id);
-            var query = queryBuilder.ToString();
+        var parameters = new DbParameterCollection();
+        GetUpdateData(item, parameters);
 
-            // transaction
-            using var txScope = TransactionFactory.NewTransactionScope();
-            // db update
-            await ExecuteAsync(context, query, parameters);
-            // children
-            await OnUpdatedAsync(context, parentId, item);
-            txScope.Complete();
-        }
+        // build update statement
+        var queryBuilder = new StringBuilder();
+        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), item.Id);
+        var query = queryBuilder.ToString();
+
+        // transaction
+        using var txScope = TransactionFactory.NewTransactionScope();
+        // db update
+        await ExecuteAsync(context, query, parameters);
+        // children
+        await OnUpdatedAsync(context, parentId, item);
+        txScope.Complete();
+
         return item;
     }
-
-    /// <summary>
-    /// Item updating request
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="item">The item to update</param>
-    /// <returns>True for a valid item</returns>
-    protected virtual Task<bool> OnUpdatingAsync(IDbContext context, int parentId, T item) =>
-        Task.FromResult(true);
 
     /// <summary>
     /// Item updated handler
@@ -401,10 +375,10 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     /// </summary>
     /// <param name="item">The item to update</param>
     /// <param name="parameters">The database parameters</param>
-    protected virtual void GetUpdateData(T item, DbParameterCollection parameters)
+    private void GetUpdateData(T item, DbParameterCollection parameters)
     {
         GetObjectData(item, parameters);
-        GetObjectUpdateData(item, parameters);
+        GetObjectUpdateData();
         parameters.Add(DbSchema.ObjectColumn.Status, item.Status);
         parameters.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(item));
     }
@@ -427,7 +401,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         var deleted = false;
         using var txScope = TransactionFactory.NewTransactionScope();
-        if (await OnDeletingAsync(context, parentId, itemId))
+        if (await OnDeletingAsync(context, itemId))
         {
             // item
             var query = DbQueryFactory.NewDeleteQuery(TableName, itemId);
@@ -435,7 +409,6 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
             // DELETE execution
             deleted = (await ExecuteAsync(context, compileQuery)) > 0;
-            await OnDeletedAsync(context, parentId, itemId);
         }
         txScope.Complete();
         return deleted;
@@ -445,20 +418,10 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     /// Item deleting request
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
     /// <param name="itemId">The item id</param>
     /// <returns>True for a valid item</returns>
-    protected virtual Task<bool> OnDeletingAsync(IDbContext context, int parentId, int itemId) =>
+    protected virtual Task<bool> OnDeletingAsync(IDbContext context, int itemId) =>
         Task.FromResult(true);
-
-    /// <summary>
-    /// Item deleted handler
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="parentId">The parent id</param>
-    /// <param name="itemId">The item id</param>
-    protected virtual Task OnDeletedAsync(IDbContext context, int parentId, int itemId) =>
-        Task.FromResult<object>(null);
 
     #endregion
 

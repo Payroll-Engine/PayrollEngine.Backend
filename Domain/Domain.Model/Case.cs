@@ -142,7 +142,7 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
     }
 
     /// <inheritdoc/>
-    public Case(Case copySource) :
+    protected Case(Case copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

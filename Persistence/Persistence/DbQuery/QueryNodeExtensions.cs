@@ -69,6 +69,7 @@ internal static class QueryNodeExtensions
     /// <param name="columnName">The column name</param>
     /// <param name="columnType">The column type</param>
     /// <returns>The query constant value</returns>
+    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
     internal static object GetConstantValue(this QueryNode node, string columnName, Type columnType)
     {
         if (node == null)

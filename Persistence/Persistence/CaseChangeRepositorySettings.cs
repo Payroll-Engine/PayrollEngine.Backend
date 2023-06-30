@@ -4,10 +4,10 @@ namespace PayrollEngine.Persistence;
 
 public class CaseChangeRepositorySettings
 {
-    public IPayrollRepository PayrollRepository { get; set; }
-    public ICaseRepository CaseRepository { get; set; }
-    public ICaseFieldRepository CaseFieldRepository { get; set; }
-    public ICaseValueRepository CaseValueRepository { get; set; }
-    public ICaseValueSetupRepository CaseValueSetupRepository { get; set; }
-    public ICaseValueChangeRepository CaseValueChangeRepository { get; set; }
+    public IPayrollRepository PayrollRepository { get; init; }
+    public ICaseRepository CaseRepository { get; init; }
+    public ICaseFieldRepository CaseFieldRepository { get; init; }
+    public ICaseValueRepository CaseValueRepository { get; init; }
+    public ICaseValueSetupRepository CaseValueSetupRepository { get; init; }
+    public ICaseValueChangeRepository CaseValueChangeRepository { get; init; }
 }

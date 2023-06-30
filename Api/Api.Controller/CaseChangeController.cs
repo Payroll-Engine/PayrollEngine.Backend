@@ -24,17 +24,10 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     where TDomain : CaseChange, new()
     where TApi : ApiObject.CaseChange, new()
 {
-    protected IUserService UserService { get; }
-    protected IDivisionService DivisionService { get; }
-    protected ICaseFieldService CaseFieldService { get; }
-
     protected CaseChangeController(TParentService parentService, ICaseChangeService<TRepo, TDomain> caseChangeService,
-        ICaseFieldService caseFieldService, IDivisionService divisionService, IUserService userService, IControllerRuntime runtime) :
+        IControllerRuntime runtime) :
         base(parentService, caseChangeService, runtime, new CaseChangeMap<TDomain, TApi>())
     {
-        DivisionService = divisionService ?? throw new ArgumentNullException(nameof(divisionService));
-        UserService = userService ?? throw new ArgumentNullException(nameof(userService));
-        CaseFieldService = caseFieldService ?? throw new ArgumentNullException(nameof(caseFieldService));
     }
 
     /// <summary>
@@ -44,7 +37,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// <param name="parentId">The change parent id</param>
     /// <param name="query">The query</param>
     /// <returns>Items, count or both</returns>
-    protected virtual async Task<ActionResult> QueryAsync(int tenantId, int parentId, Query query = null)
+    protected async Task<ActionResult> QueryAsync(int tenantId, int parentId, Query query = null)
     {
         query ??= new();
         query.Result ??= QueryResultType.Items;
@@ -73,7 +66,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// <param name="parentId">The change parent id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>List of requested Api objects</returns>
-    protected virtual async Task<ActionResult<ApiObject.CaseChange[]>> QueryChangesAsync(int tenantId, int parentId, Query query = null)
+    private async Task<ActionResult<ApiObject.CaseChange[]>> QueryChangesAsync(int tenantId, int parentId, Query query = null)
     {
         try
         {
@@ -114,7 +107,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// <param name="parentId">The change parent id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>Count of requested Api objects</returns>
-    protected virtual async Task<ActionResult<long>> QueryChangesCountAsync(int tenantId,
+    private async Task<ActionResult<long>> QueryChangesCountAsync(int tenantId,
         int parentId, Query query = null)
     {
         try
@@ -150,7 +143,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// <param name="parentId">The change parent id</param>
     /// <param name="query">The query</param>
     /// <returns>Items, count or both</returns>
-    protected virtual async Task<ActionResult> QueryValuesAsync(int tenantId, int parentId, Query query = null)
+    protected async Task<ActionResult> QueryValuesAsync(int tenantId, int parentId, Query query = null)
     {
         query ??= new();
         query.Result ??= QueryResultType.Items;
@@ -179,7 +172,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// <param name="parentId">The change parent id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>List of requested Api objects</returns>
-    protected virtual async Task<ActionResult<ApiObject.CaseChangeCaseValue[]>> QueryChangesValuesAsync(int tenantId, int parentId, Query query = null)
+    private async Task<ActionResult<ApiObject.CaseChangeCaseValue[]>> QueryChangesValuesAsync(int tenantId, int parentId, Query query = null)
     {
         try
         {
@@ -221,7 +214,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     /// <param name="parentId">The change parent id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>Count of requested Api objects</returns>
-    protected virtual async Task<ActionResult<long>> QueryChangesValuesCountAsync(int tenantId, int parentId, Query query = null)
+    private async Task<ActionResult<long>> QueryChangesValuesCountAsync(int tenantId, int parentId, Query query = null)
     {
         try
         {

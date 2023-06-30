@@ -24,10 +24,10 @@ public class WebhookDispatchService : IWebhookDispatchService
         set => HttpClient.Timeout = value;
     }
 
-    public ITenantRepository TenantRepository { get; }
-    public IUserRepository UserRepository { get; }
-    public IWebhookRepository WebhookRepository { get; }
-    public IWebhookMessageRepository MessageRepository { get; }
+    private ITenantRepository TenantRepository { get; }
+    private IUserRepository UserRepository { get; }
+    private IWebhookRepository WebhookRepository { get; }
+    private IWebhookMessageRepository MessageRepository { get; }
 
     /// <summary>
     /// Only one http client
@@ -49,7 +49,7 @@ public class WebhookDispatchService : IWebhookDispatchService
     }
 
     /// <inheritdoc />
-    public virtual async Task<string> InvokeAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
+    public async Task<string> InvokeAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
     {
         // tenant
         var tenant = await TenantRepository.GetAsync(context, tenantId);
@@ -78,7 +78,7 @@ public class WebhookDispatchService : IWebhookDispatchService
     }
 
     /// <inheritdoc />
-    public virtual async Task SendMessageAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
+    public async Task SendMessageAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
     {
         if (tenantId <= 0)
         {

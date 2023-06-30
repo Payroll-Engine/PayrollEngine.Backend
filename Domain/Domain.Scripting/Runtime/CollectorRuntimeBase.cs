@@ -15,7 +15,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     /// <summary>
     /// The runtime settings
     /// </summary>
-    protected new CollectorRuntimeSettings Settings => base.Settings as CollectorRuntimeSettings;
+    private new CollectorRuntimeSettings Settings => base.Settings as CollectorRuntimeSettings;
 
     /// <inheritdoc />
     public string CollectorName => Collector.Name;
@@ -82,7 +82,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     protected Collector Collector => Settings.Collector;
 
     /// <summary>The current wage type and collector results</summary>
-    protected PayrollResultSet CurrentPayrollResult => Settings.CurrentPayrollResult;
+    private PayrollResultSet CurrentPayrollResult => Settings.CurrentPayrollResult;
 
     /// <summary>Result attributes</summary>
     private CollectorResultSet CurrentCollectorResult => Settings.CurrentCollectorResult;

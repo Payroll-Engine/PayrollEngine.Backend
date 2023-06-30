@@ -25,7 +25,7 @@ public static class Program
     /// </summary>
     /// <param name="args"></param>
     /// <returns></returns>
-    public static IHostBuilder CreateWebHostBuilder(string[] args)
+    private static IHostBuilder CreateWebHostBuilder(string[] args)
     {
         var config = new ConfigurationBuilder().AddCommandLine(args).Build();
         var builder = Host.CreateDefaultBuilder(args)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+// ReSharper disable MemberCanBeProtected.Global
 
 namespace PayrollEngine.Domain.Model;
 

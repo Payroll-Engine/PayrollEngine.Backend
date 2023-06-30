@@ -29,11 +29,11 @@ public class PayrunProcessor : FunctionToolBase
     }
 
     // global
-    public Tenant Tenant { get; }
-    public Payrun Payrun { get; }
+    private Tenant Tenant { get; }
+    private Payrun Payrun { get; }
 
     // internal
-    protected new PayrunProcessorSettings Settings => base.Settings as PayrunProcessorSettings;
+    private new PayrunProcessorSettings Settings => base.Settings as PayrunProcessorSettings;
     private IResultProvider ResultProvider { get; }
     private bool LogWatch { get; }
 
@@ -312,12 +312,8 @@ public class PayrunProcessor : FunctionToolBase
                 new()
                 {
                     DbContext = Settings.DbContext,
-                    FunctionHost = FunctionHost,
-                    Tenant = Tenant,
-                    CaseRepository = Settings.CaseRepository,
                     Calculator = context.Calculator,
                     CaseFieldProvider = context.CaseFieldProvider,
-                    RegulationLookupProvider = context.RegulationLookupProvider,
                     EvaluationPeriod = context.EvaluationPeriod,
                     EvaluationDate = context.EvaluationDate,
                     RetroDate = context.RetroDate
@@ -905,12 +901,8 @@ public class PayrunProcessor : FunctionToolBase
                 new()
                 {
                     DbContext = Settings.DbContext,
-                    FunctionHost = FunctionHost,
-                    Tenant = Tenant,
-                    CaseRepository = Settings.CaseRepository,
                     Calculator = context.Calculator,
                     CaseFieldProvider = context.CaseFieldProvider,
-                    RegulationLookupProvider = context.RegulationLookupProvider,
                     EvaluationPeriod = context.EvaluationPeriod,
                     EvaluationDate = context.EvaluationDate,
                     RetroDate = context.RetroDate,

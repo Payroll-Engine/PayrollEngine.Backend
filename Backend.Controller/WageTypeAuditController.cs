@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -24,6 +25,7 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
     /// Query regulation wage type audits
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="wageTypeId">The id of the wage type</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The audit objects</returns>
@@ -32,7 +34,8 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryWageTypeAudits")]
-    public async Task<ActionResult> QueryWageTypeAuditsAsync(int tenantId, int wageTypeId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryWageTypeAuditsAsync(int tenantId,
+        int regulationId, int wageTypeId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -47,6 +50,7 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
     /// Get a regulation wage type audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="wageTypeId">The wage type id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
@@ -54,7 +58,8 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetWageTypeAudit")]
-    public async Task<ActionResult<ApiObject.WageTypeAudit>> GetWageTypeAuditAsync(int tenantId, int wageTypeId, int auditId)
+    public async Task<ActionResult<ApiObject.WageTypeAudit>> GetWageTypeAuditAsync(
+        int tenantId, int regulationId, int wageTypeId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

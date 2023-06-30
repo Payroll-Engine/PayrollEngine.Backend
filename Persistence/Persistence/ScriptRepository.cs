@@ -28,10 +28,10 @@ public class ScriptRepository : TrackChildDomainRepository<Script, ScriptAudit>,
         base.GetObjectData(script, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> scriptNames) =>
+    public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> scriptNames) =>
         await ExistsAnyAsync(context, DbSchema.ScriptColumn.RegulationId, regulationId, DbSchema.ScriptColumn.Name, scriptNames);
 
-    public virtual async Task<IEnumerable<Script>> GetFunctionScriptsAsync(IDbContext context, int regulationId,
+    public async Task<IEnumerable<Script>> GetFunctionScriptsAsync(IDbContext context, int regulationId,
         List<FunctionType> functionTypes = null, DateTime? evaluationDate = null)
     {
         if (regulationId <= 0)

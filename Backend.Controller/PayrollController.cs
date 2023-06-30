@@ -862,7 +862,7 @@ public class PayrollController : Api.Controller.PayrollController
         {
             return tenantResult;
         }
-        return await base.GetPayrollScriptAsync(
+        return await GetPayrollScriptAsync(
             new()
             {
                 TenantId = tenantId,
@@ -957,7 +957,7 @@ public class PayrollController : Api.Controller.PayrollController
         {
             return tenantResult;
         }
-        return await base.SetAttributeAsync(payrollId, attributeName, value);
+        return await SetAttributeAsync(payrollId, attributeName, value);
     }
 
     /// <summary>
@@ -977,7 +977,7 @@ public class PayrollController : Api.Controller.PayrollController
         {
             return tenantResult;
         }
-        return await base.DeleteAttributeAsync(payrollId, attributeName);
+        return await DeleteAttributeAsync(payrollId, attributeName);
     }
 
     #endregion

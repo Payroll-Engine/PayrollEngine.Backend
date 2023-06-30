@@ -25,7 +25,7 @@ public class DivisionRepository : ChildDomainRepository<Division>, IDivisionRepo
         base.GetObjectData(division, parameters);
     }
 
-    public virtual async Task<IEnumerable<Division>> GetByIdsAsync(IDbContext context, int tenantId, IEnumerable<int> divisionIds)
+    public async Task<IEnumerable<Division>> GetByIdsAsync(IDbContext context, int tenantId, IEnumerable<int> divisionIds)
     {
         if (tenantId <= 0)
         {
@@ -47,7 +47,7 @@ public class DivisionRepository : ChildDomainRepository<Division>, IDivisionRepo
         return await QueryAsync<Division>(context, compileQuery);
     }
 
-    public virtual async Task<Division> GetByNameAsync(IDbContext context, int tenantId, string name)
+    public async Task<Division> GetByNameAsync(IDbContext context, int tenantId, string name)
     {
         if (tenantId <= 0)
         {

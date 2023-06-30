@@ -29,7 +29,7 @@ public static class CalendarExtensions
     /// <param name="calendar">The payroll calendar</param>
     /// <param name="workDay">The work day</param>
     /// <returns>Returns true for valid time units</returns>
-    public static bool HasWorkDay(this Calendar calendar, DayOfWeek workDay) =>
+    private static bool HasWorkDay(this Calendar calendar, DayOfWeek workDay) =>
         workDay switch
         {
             DayOfWeek.Sunday => calendar.WorkSunday,

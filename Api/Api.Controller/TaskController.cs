@@ -19,8 +19,8 @@ public abstract class TaskController : RepositoryChildObjectController<ITenantSe
     ITenantRepository, ITaskRepository,
     Tenant, DomainObject.Task, ApiObject.Task>
 {
-    public IUserService UserService { get; }
-    public IWebhookDispatchService WebhookDispatcher { get; }
+    private IUserService UserService { get; }
+    private IWebhookDispatchService WebhookDispatcher { get; }
 
     protected TaskController(ITenantService tenantService, ITaskService taskService,
         IUserService userService, IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :

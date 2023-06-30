@@ -12,7 +12,7 @@ namespace PayrollEngine.Persistence;
 public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<TDomain>, ICaseValueRepository<TDomain>
     where TDomain : CaseValue, new()
 {
-    public ICaseFieldRepository CaseFieldRepository { get; }
+    private ICaseFieldRepository CaseFieldRepository { get; }
 
     /// <summary>The table name</summary>
     protected abstract string CaseValueTableName { get; }

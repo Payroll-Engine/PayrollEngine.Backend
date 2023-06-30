@@ -15,7 +15,7 @@ public abstract class CaseRuntimeBase : PayrollRuntimeBase, ICaseRuntime
     protected Case Case => Settings.Case;
 
     /// <summary>The webhook dispatch service</summary>
-    protected IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
+    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
 
     /// <inheritdoc />
     protected CaseRuntimeBase(CaseRuntimeSettings settings) :

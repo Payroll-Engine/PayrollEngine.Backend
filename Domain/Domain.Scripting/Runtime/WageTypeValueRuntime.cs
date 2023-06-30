@@ -14,16 +14,10 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 /// </summary>
 public class WageTypeValueRuntime : WageTypeRuntimeBase, IWageTypeValueRuntime
 {
-    /// <summary>
-    /// Provider for case fields
-    /// </summary>
-    protected ICaseFieldProvider CaseFieldProvider { get; }
-
     /// <inheritdoc />
-    internal WageTypeValueRuntime(ICaseFieldProvider caseFieldProvider, WageTypeRuntimeSettings settings) :
+    internal WageTypeValueRuntime(WageTypeRuntimeSettings settings) :
         base(settings)
     {
-        CaseFieldProvider = caseFieldProvider ?? throw new ArgumentNullException(nameof(caseFieldProvider));
     }
 
     /// <inheritdoc />

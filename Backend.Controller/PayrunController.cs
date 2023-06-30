@@ -51,7 +51,8 @@ public class PayrunController : Api.Controller.PayrunController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrun")]
-    public async Task<ActionResult<ApiObject.Payrun>> GetPayrunAsync(int tenantId, int payrunId)
+    public async Task<ActionResult<ApiObject.Payrun>> GetPayrunAsync(
+        int tenantId, int payrunId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -73,7 +74,8 @@ public class PayrunController : Api.Controller.PayrunController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreatePayrun")]
-    public async Task<ActionResult<ApiObject.Payrun>> CreatePayrunAsync(int tenantId, ApiObject.Payrun payrun)
+    public async Task<ActionResult<ApiObject.Payrun>> CreatePayrunAsync(
+        int tenantId, ApiObject.Payrun payrun)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -95,7 +97,8 @@ public class PayrunController : Api.Controller.PayrunController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdatePayrun")]
-    public async Task<ActionResult<ApiObject.Payrun>> UpdatePayrunAsync(int tenantId, ApiObject.Payrun payrun)
+    public async Task<ActionResult<ApiObject.Payrun>> UpdatePayrunAsync(
+        int tenantId, ApiObject.Payrun payrun)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

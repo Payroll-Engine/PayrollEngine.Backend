@@ -18,19 +18,15 @@ public abstract class RegulationController : RepositoryChildObjectController<ITe
     ITenantRepository, IRegulationRepository,
     Tenant, Regulation, ApiObject.Regulation>
 {
-    protected ILookupSetService LookupSetService { get; }
-    protected ICaseService CaseService { get; }
-    protected ICaseFieldService CaseFieldService { get; }
-    protected ICaseRelationService CaseRelationService { get; }
+    private ICaseService CaseService { get; }
+    private ICaseFieldService CaseFieldService { get; }
 
-    protected RegulationController(ITenantService tenantService, ILookupSetService lookupSetService, IRegulationService regulationService,
-        ICaseService caseService, ICaseFieldService caseFieldService, ICaseRelationService caseRelationService, IControllerRuntime runtime) :
+    protected RegulationController(ITenantService tenantService, IRegulationService regulationService,
+        ICaseService caseService, ICaseFieldService caseFieldService, IControllerRuntime runtime) :
         base(tenantService, regulationService, runtime, new RegulationMap())
     {
-        LookupSetService = lookupSetService ?? throw new ArgumentNullException(nameof(lookupSetService));
         CaseService = caseService ?? throw new ArgumentNullException(nameof(caseService));
         CaseFieldService = caseFieldService ?? throw new ArgumentNullException(nameof(caseFieldService));
-        CaseRelationService = caseRelationService ?? throw new ArgumentNullException(nameof(caseRelationService));
     }
 
     public virtual async Task<ActionResult<string>> GetCaseOfCaseFieldAsync(int tenantId, string caseFieldName)

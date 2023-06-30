@@ -12,9 +12,8 @@ namespace PayrollEngine.Domain.Scripting.Controller;
 /// <summary>
 /// Collector script controller
 /// </summary>
-public class CollectorScriptController : ScriptControllerBase<Collector>, ICollectorScriptController
+public class CollectorScriptController : ScriptControllerBase<Collector>
 {
-    /// <inheritdoc />
     public List<RetroPayrunJob> Start(CollectorRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(CollectorStartRuntime));
@@ -33,7 +32,6 @@ public class CollectorScriptController : ScriptControllerBase<Collector>, IColle
         return runtime.RetroJobs;
     }
 
-    /// <inheritdoc />
     public Tuple<decimal?, List<RetroPayrunJob>> ApplyValue(WageTypeResult wageTypeResult, CollectorRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(CollectorApplyRuntime));
@@ -53,7 +51,6 @@ public class CollectorScriptController : ScriptControllerBase<Collector>, IColle
         return new(value, runtime.RetroJobs);
     }
 
-    /// <inheritdoc />
     public List<RetroPayrunJob> End(CollectorRuntimeSettings settings)
     {
         LogStopwatch.Start(nameof(CollectorEndRuntime));

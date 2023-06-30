@@ -7,10 +7,10 @@ namespace PayrollEngine.Domain.Model;
 public class PayrollCalculator : IPayrollCalculator
 {
     /// <summary>The culture</summary>
-    public CultureInfo Culture { get; }
+    private CultureInfo Culture { get; }
 
     /// <summary>The payroll calendar</summary>
-    public Calendar Calendar { get; }
+    private Calendar Calendar { get; }
 
     /// <summary>Initializes a new instance of the <see cref="PayrollCalculator"/> class, using the current culture and default calendar</summary>
     public PayrollCalculator() :
@@ -34,11 +34,11 @@ public class PayrollCalculator : IPayrollCalculator
     public CalendarTimeUnit PeriodTimeUnit => Calendar.PeriodTimeUnit;
 
     /// <inheritdoc />
-    public virtual IPayrollPeriod GetPayrunCycle(DateTime cycleMoment) =>
+    public IPayrollPeriod GetPayrunCycle(DateTime cycleMoment) =>
         GetPayrunPeriod(cycleMoment, Calendar.CycleTimeUnit);
 
     /// <inheritdoc />
-    public virtual IPayrollPeriod GetPayrunPeriod(DateTime periodMoment) =>
+    public IPayrollPeriod GetPayrunPeriod(DateTime periodMoment) =>
         GetPayrunPeriod(periodMoment, Calendar.PeriodTimeUnit);
 
     private IPayrollPeriod GetPayrunPeriod(DateTime periodMoment, CalendarTimeUnit timeUnit)
@@ -59,7 +59,7 @@ public class PayrollCalculator : IPayrollCalculator
     }
 
     /// <inheritdoc />
-    public virtual decimal? CalculateCasePeriodValue(CaseValueCalculation calculation)
+    public decimal? CalculateCasePeriodValue(CaseValueCalculation calculation)
     {
         switch (Calendar.PeriodTimeUnit)
         {
@@ -91,7 +91,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case year period value</returns>
-    protected virtual decimal? CalculateYearValue(CaseValueCalculation calculation)
+    private decimal? CalculateYearValue(CaseValueCalculation calculation)
     {
         // year period
         var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
@@ -124,7 +124,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case semi year period value</returns>
-    protected virtual decimal? CalculateSemiYearValue(CaseValueCalculation calculation)
+    private decimal? CalculateSemiYearValue(CaseValueCalculation calculation)
     {
         // semi year period
         var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
@@ -157,7 +157,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case quarter period value</returns>
-    protected virtual decimal? CalculateQuarterValue(CaseValueCalculation calculation)
+    private decimal? CalculateQuarterValue(CaseValueCalculation calculation)
     {
         // quarter period
         var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
@@ -190,7 +190,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case bi month period value</returns>
-    protected virtual decimal? CalculateBiMonthValue(CaseValueCalculation calculation)
+    private decimal? CalculateBiMonthValue(CaseValueCalculation calculation)
     {
         // bi month period
         var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
@@ -223,7 +223,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case calendar month period value</returns>
-    protected virtual decimal? CalculateCalendarMonthValue(CaseValueCalculation calculation)
+    private decimal? CalculateCalendarMonthValue(CaseValueCalculation calculation)
     {
         if (!calculation.EvaluationPeriod.Start.IsSameMonth(calculation.EvaluationPeriod.End))
         {
@@ -266,7 +266,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case semi month period value</returns>
-    protected virtual decimal? CalculateLunisoralMonthValue(CaseValueCalculation calculation)
+    private decimal? CalculateLunisoralMonthValue(CaseValueCalculation calculation)
     {
         // lunar month period
         var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
@@ -292,7 +292,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case semi month period value</returns>
-    protected virtual decimal? CalculateSemiMonthValue(CaseValueCalculation calculation)
+    private decimal? CalculateSemiMonthValue(CaseValueCalculation calculation)
     {
         // semi month period
         var periodStart = calculation.CaseValuePeriod.Start;
@@ -332,7 +332,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case bi week period value</returns>
-    protected virtual decimal? CalculateBiWeekValue(CaseValueCalculation calculation)
+    private decimal? CalculateBiWeekValue(CaseValueCalculation calculation)
     {
         // bi week days
         var biWeekDayCount = GetPeriodWeekDayCount(calculation, Date.DaysInBiWeek);
@@ -354,7 +354,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case week period value</returns>
-    protected virtual decimal? CalculateWeekValue(CaseValueCalculation calculation)
+    private decimal? CalculateWeekValue(CaseValueCalculation calculation)
     {
         // week days
         var weekDayCount = GetPeriodWeekDayCount(calculation, Date.DaysInWeek);
@@ -376,7 +376,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <param name="weekCount">The week mode day count</param>
-    protected virtual decimal GetPeriodWeekDayCount(CaseValueCalculation calculation, decimal weekCount)
+    private decimal GetPeriodWeekDayCount(CaseValueCalculation calculation, decimal weekCount)
     {
         var weekDayCount = 0m;
         switch (Calendar.WeekMode)
@@ -396,7 +396,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="period">The period to count</param>
     /// <returns></returns>
-    protected virtual decimal GetPeriodDayCount(DatePeriod period)
+    private decimal GetPeriodDayCount(DatePeriod period)
     {
         var daysInPeriod = 0m;
         var month = period.Start.Date;
@@ -414,7 +414,7 @@ public class PayrollCalculator : IPayrollCalculator
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <param name="cycleFactor">The cycle factor</param>
-    protected virtual decimal MapPeriodValue(CaseValueCalculation calculation, decimal cycleFactor)
+    private decimal MapPeriodValue(CaseValueCalculation calculation, decimal cycleFactor)
     {
         var caseValue = Calendar.TimeMap switch
         {

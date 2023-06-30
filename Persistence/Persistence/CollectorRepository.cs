@@ -3,15 +3,14 @@ using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class CollectorRepository : ScriptTrackChildDomainRepository<Collector, CollectorAudit>, ICollectorRepository
 {
-    public CollectorRepository(ICollectorScriptController scriptController, IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository) :
-        base(DbSchema.Tables.Collector, DbSchema.CollectorColumn.RegulationId, scriptController, scriptRepository, auditRepository)
+    public CollectorRepository(IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository) :
+        base(DbSchema.Tables.Collector, DbSchema.CollectorColumn.RegulationId, scriptRepository, auditRepository)
     {
     }
 
@@ -43,6 +42,6 @@ public class CollectorRepository : ScriptTrackChildDomainRepository<Collector, C
         base.GetObjectData(collector, parameters);
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> collectorNames) =>
+    public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> collectorNames) =>
         await ExistsAnyAsync(context, DbSchema.CollectorColumn.RegulationId, regulationId, DbSchema.CollectorColumn.Name, collectorNames);
 }

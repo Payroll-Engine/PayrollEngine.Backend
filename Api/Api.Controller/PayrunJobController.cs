@@ -22,7 +22,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
     ITenantRepository, IPayrunJobRepository,
     Tenant, PayrunJob, ApiObject.PayrunJob>
 {
-    public IWebhookDispatchService WebhookDispatcher { get; }
+    private IWebhookDispatchService WebhookDispatcher { get; }
     private PayrunJobServiceSettings ServiceSettings => Service.Settings;
 
     protected PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
@@ -147,7 +147,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
             // settings
             var serverConfiguration = Runtime.Configuration.GetConfiguration<PayrollServerConfiguration>();
 
-            using var processor = new PayrunProcessor(
+            var processor = new PayrunProcessor(
                 tenant,
                 payrun,
                 new()
@@ -159,15 +159,12 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
                     TaskRepository = ServiceSettings.TaskRepository,
                     LogRepository = ServiceSettings.LogRepository,
                     EmployeeRepository = ServiceSettings.EmployeeRepository,
-                    CaseRepository = ServiceSettings.CaseRepository,
                     GlobalCaseValueRepository = ServiceSettings.GlobalCaseValueRepository,
                     NationalCaseValueRepository = ServiceSettings.NationalCaseValueRepository,
                     CompanyCaseValueRepository = ServiceSettings.CompanyCaseValueRepository,
                     EmployeeCaseValueRepository = ServiceSettings.EmployeeCaseValueRepository,
                     PayrunRepository = ServiceSettings.PayrunRepository,
                     PayrunJobRepository = ServiceSettings.PayrunJobRepository,
-                    CollectorRepository = ServiceSettings.CollectorRepository,
-                    WageTypeRepository = ServiceSettings.WageTypeRepository,
                     RegulationLookupSetRepository = ServiceSettings.RegulationLookupSetRepository,
                     RegulationRepository = ServiceSettings.RegulationRepository,
                     RegulationShareRepository = ServiceSettings.RegulationShareRepository,

@@ -31,7 +31,8 @@ public class ScriptController : Api.Controller.ScriptController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryScripts")]
-    public async Task<ActionResult> QueryScriptsAsync(int tenantId, int regulationId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryScriptsAsync(int tenantId, int regulationId, 
+        [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -53,7 +54,8 @@ public class ScriptController : Api.Controller.ScriptController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetScript")]
-    public async Task<ActionResult<ApiObject.Script>> GetScriptAsync(int tenantId, int regulationId, int scriptId)
+    public async Task<ActionResult<ApiObject.Script>> GetScriptAsync(int tenantId,
+        int regulationId, int scriptId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -76,7 +78,8 @@ public class ScriptController : Api.Controller.ScriptController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateScript")]
-    public async Task<ActionResult<ApiObject.Script>> CreateScriptAsync(int tenantId, int regulationId, ApiObject.Script script)
+    public async Task<ActionResult<ApiObject.Script>> CreateScriptAsync(int tenantId,
+        int regulationId, ApiObject.Script script)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -99,7 +102,8 @@ public class ScriptController : Api.Controller.ScriptController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateScript")]
-    public async Task<ActionResult<ApiObject.Script>> UpdateScriptAsync(int tenantId, int regulationId, ApiObject.Script script)
+    public async Task<ActionResult<ApiObject.Script>> UpdateScriptAsync(int tenantId,
+        int regulationId, ApiObject.Script script)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -118,7 +122,8 @@ public class ScriptController : Api.Controller.ScriptController
     /// <param name="scriptId">The script id</param>
     [HttpDelete("{scriptId}")]
     [ApiOperationId("DeleteScript")]
-    public async Task<IActionResult> DeleteScriptAsync(int tenantId, int regulationId, int scriptId)
+    public async Task<IActionResult> DeleteScriptAsync(int tenantId, 
+        int regulationId, int scriptId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

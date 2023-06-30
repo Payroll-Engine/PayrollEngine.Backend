@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using SqlKata;
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace PayrollEngine.Persistence;
 
@@ -87,7 +88,7 @@ public static class SqlQueryExtensions
     /// <summary>
     /// Execute left join
     /// </summary>
-    public static SqlKata.Query LeftObjectJoin(this SqlKata.Query query, string sourceTable, string sourceColumn, string targetTable, string targetColumn)
+    private static SqlKata.Query LeftObjectJoin(this SqlKata.Query query, string sourceTable, string sourceColumn, string targetTable, string targetColumn)
     {
         query?.LeftJoin(targetTable,
             ToTableColumn(sourceTable, sourceColumn),

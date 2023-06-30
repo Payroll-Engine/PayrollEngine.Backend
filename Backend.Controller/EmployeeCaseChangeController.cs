@@ -15,8 +15,8 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
 {
     /// <inheritdoc/>
     public EmployeeCaseChangeController(IEmployeeService employeeService, IEmployeeCaseChangeService caseChangeService,
-        ICaseFieldService caseFieldService, IDivisionService divisionService, IUserService userService, IControllerRuntime runtime) :
-        base(employeeService, caseChangeService, caseFieldService, divisionService, userService, runtime)
+         IControllerRuntime runtime) :
+        base(employeeService, caseChangeService, runtime)
     {
     }
 

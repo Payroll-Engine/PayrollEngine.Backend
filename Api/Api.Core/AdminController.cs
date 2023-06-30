@@ -8,7 +8,7 @@ namespace PayrollEngine.Api.Core;
 
 public abstract class AdminController : ApiController
 {
-    public IHostApplicationLifetime ApplicationLifetime { get; }
+    private IHostApplicationLifetime ApplicationLifetime { get; }
 
     protected AdminController(IControllerRuntime runtime, IHostApplicationLifetime appLifetime) :
         base(runtime)

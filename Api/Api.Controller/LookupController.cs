@@ -19,10 +19,11 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
     IRegulationRepository, ILookupRepository,
     DomainObject.Regulation, DomainObject.Lookup, ApiObject.Lookup>
 {
-    protected IApiMap<DomainObject.Lookup, ApiObject.Lookup> LookupMap { get; } = new LookupMap();
-    protected IApiMap<DomainObject.LookupSet, ApiObject.LookupSet> LookupSetMap { get; } = new LookupSetMap();
+    private IApiMap<DomainObject.Lookup, ApiObject.Lookup> LookupMap { get; } = new LookupMap();
+    private IApiMap<DomainObject.LookupSet, ApiObject.LookupSet> LookupSetMap { get; } = new LookupSetMap();
+
     protected ILookupService LookupService => Service;
-    protected ILookupSetService LookupSetService { get; }
+    private ILookupSetService LookupSetService { get; }
 
     protected LookupController(IRegulationService regulationService, ILookupService lookupService,
         ILookupSetService lookupSetService, IControllerRuntime runtime) :
@@ -46,7 +47,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
         return await base.CreateAsync(regulationId, lookup);
     }
 
-    protected virtual async Task<ActionResult<ApiObject.Lookup[]>> CreateAsync(int regulationId, ApiObject.Lookup[] apiObjects)
+    protected async Task<ActionResult<ApiObject.Lookup[]>> CreateAsync(int regulationId, ApiObject.Lookup[] apiObjects)
     {
         var names = apiObjects.Select(x => x.Name).ToList();
         if (names.Count == 0)
@@ -101,7 +102,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
         }
     }
 
-    protected async Task<ActionResult<ApiObject.LookupSet[]>> QuerySetsAsync(int tenantId, int regulationId, Query query = null)
+    private async Task<ActionResult<ApiObject.LookupSet[]>> QuerySetsAsync(int tenantId, int regulationId, Query query = null)
     {
         try
         {
@@ -143,7 +144,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
         }
     }
 
-    protected virtual async Task<ActionResult<ApiObject.LookupSet>> GetSetAsync(int tenantId, int regulationId, int lookupId)
+    protected async Task<ActionResult<ApiObject.LookupSet>> GetSetAsync(int tenantId, int regulationId, int lookupId)
     {
         try
         {
@@ -167,7 +168,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
         }
     }
 
-    protected virtual async Task<ActionResult> CreateSetsAsync(int regulationId, IEnumerable<ApiObject.LookupSet> lookupSets)
+    protected async Task<ActionResult> CreateSetsAsync(int regulationId, IEnumerable<ApiObject.LookupSet> lookupSets)
     {
         try
         {
@@ -180,7 +181,7 @@ public abstract class LookupController : RepositoryChildObjectController<IRegula
         }
     }
 
-    protected virtual async Task<ActionResult> DeleteSetAsync(int regulationId, int lookupId)
+    protected async Task<ActionResult> DeleteSetAsync(int regulationId, int lookupId)
     {
         try
         {

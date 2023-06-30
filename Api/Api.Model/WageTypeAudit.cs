@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PayrollEngine.Api.Model;
@@ -45,6 +46,16 @@ public class WageTypeAudit : ApiObjectBase
     /// The override type
     /// </summary>
     public OverrideType OverrideType { get; set; }
+    
+    /// <summary>
+    /// The value type, default is value type money
+    /// </summary>
+    public ValueType ValueType { get; set; }
+
+    /// <summary>
+    /// The wage type calendar
+    /// </summary>
+    public string Calendar { get; set; }
 
     /// <summary>
     /// Associated collectors

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PayrollEngine.Api.Model;
@@ -47,6 +48,11 @@ public class WageType : ApiObjectBase
     /// The value type, default is value type money
     /// </summary>
     public ValueType ValueType { get; set; }
+
+    /// <summary>
+    /// The wage type calendar (fallback: employee calendar)
+    /// </summary>
+    public string Calendar { get; set; }
 
     /// <summary>
     /// Associated collectors

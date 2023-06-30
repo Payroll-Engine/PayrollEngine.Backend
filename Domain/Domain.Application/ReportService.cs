@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Application;
 
 public class ReportService : ScriptTrackChildApplicationService<IReportRepository, Report, ReportAudit>, IReportService
 {
-    public IQueryService QueryService { get; }
+    private IQueryService QueryService { get; }
 
     public ReportService(IReportRepository repository, IQueryService queryService) :
         base(repository)
@@ -19,7 +19,7 @@ public class ReportService : ScriptTrackChildApplicationService<IReportRepositor
         QueryService = queryService ?? throw new ArgumentNullException(nameof(queryService));
     }
 
-    public virtual async Task<DataTable> ExecuteQueryAsync(Tenant tenant, string methodName, string culture,
+    public async Task<DataTable> ExecuteQueryAsync(Tenant tenant, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext)
     {
         if (tenant == null)

@@ -14,8 +14,8 @@ public abstract class CompanyCaseChangeController : CaseChangeController<ITenant
     DomainObject.Tenant, DomainObject.CaseChange, ApiObject.CaseChange>
 {
     protected CompanyCaseChangeController(ITenantService tenantService, ICompanyCaseChangeService caseChangeService,
-        ICaseFieldService caseFieldService, IDivisionService divisionService, IUserService userService, IControllerRuntime runtime) :
-        base(tenantService, caseChangeService, caseFieldService, divisionService, userService, runtime)
+        IControllerRuntime runtime) :
+        base(tenantService, caseChangeService, runtime)
     {
     }
 }

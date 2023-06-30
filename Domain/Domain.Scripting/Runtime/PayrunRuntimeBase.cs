@@ -19,15 +19,15 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     protected new PayrunRuntimeSettings Settings => base.Settings as PayrunRuntimeSettings;
 
     /// <summary>The webhook dispatch service</summary>
-    protected IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
+    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
 
     /// <summary>The Payrun</summary>
-    protected Payrun Payrun => Settings.Payrun;
+    private Payrun Payrun => Settings.Payrun;
 
     /// <summary>
     /// Provider for employee results
     /// </summary>
-    protected IResultProvider ResultProvider => Settings.ResultProvider;
+    private IResultProvider ResultProvider => Settings.ResultProvider;
 
     /// <summary>
     /// Provider for runtime values
@@ -70,10 +70,10 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     #region PayrunJob
 
     /// <summary>The Payrun job</summary>
-    protected PayrunJob PayrunJob => Settings.PayrunJob;
+    private PayrunJob PayrunJob => Settings.PayrunJob;
 
     /// <summary>The parent payrun job, usually the payrun retro source payrun job</summary>
-    protected PayrunJob ParentPayrunJob => Settings.ParentPayrunJob;
+    private PayrunJob ParentPayrunJob => Settings.ParentPayrunJob;
 
     /// <inheritdoc />
     public Tuple<DateTime, DateTime> RetroPeriod =>

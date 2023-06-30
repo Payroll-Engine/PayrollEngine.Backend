@@ -150,7 +150,7 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
     }
 
     /// <inheritdoc/>
-    public CaseField(CaseField copySource) :
+    protected CaseField(CaseField copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

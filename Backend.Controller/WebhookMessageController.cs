@@ -31,7 +31,8 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryWebhookMessages")]
-    public async Task<ActionResult> QueryWebhookMessagesAsync(int tenantId, int webhookId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryWebhookMessagesAsync(int tenantId,
+        int webhookId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -53,7 +54,8 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetWebhookMessage")]
-    public async Task<ActionResult<ApiObject.WebhookMessage>> GetWebhookMessageAsync(int tenantId, int webhookId, int webhookMessageId)
+    public async Task<ActionResult<ApiObject.WebhookMessage>> GetWebhookMessageAsync(
+        int tenantId, int webhookId, int webhookMessageId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -76,8 +78,8 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateWebhookMessage")]
-    public async Task<ActionResult<ApiObject.WebhookMessage>> CreateWebhookMessageAsync(int tenantId,
-        int webhookId, ApiObject.WebhookMessage webhookMessage)
+    public async Task<ActionResult<ApiObject.WebhookMessage>> CreateWebhookMessageAsync(
+        int tenantId, int webhookId, ApiObject.WebhookMessage webhookMessage)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -100,8 +102,8 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateWebhookMessage")]
-    public async Task<ActionResult<ApiObject.WebhookMessage>> UpdateWebhookMessageAsync(int tenantId, int webhookId,
-        ApiObject.WebhookMessage webhookMessage)
+    public async Task<ActionResult<ApiObject.WebhookMessage>> UpdateWebhookMessageAsync(
+        int tenantId, int webhookId, ApiObject.WebhookMessage webhookMessage)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -121,7 +123,8 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
     /// <returns></returns>
     [HttpDelete("{webhookMessageId}")]
     [ApiOperationId("DeleteWebhookMessage")]
-    public async Task<IActionResult> DeleteWebhookMessageAsync(int tenantId, int webhookId, int webhookMessageId)
+    public async Task<IActionResult> DeleteWebhookMessageAsync(int tenantId,
+        int webhookId, int webhookMessageId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

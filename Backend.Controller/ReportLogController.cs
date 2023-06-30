@@ -51,7 +51,8 @@ public class ReportLogController : Api.Controller.ReportLogController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportLog")]
-    public async Task<ActionResult<ApiObject.ReportLog>> GetReportLogAsync(int tenantId, int logId)
+    public async Task<ActionResult<ApiObject.ReportLog>> GetReportLogAsync(
+        int tenantId, int logId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -73,8 +74,8 @@ public class ReportLogController : Api.Controller.ReportLogController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateReportLog")]
-    public async Task<ActionResult<ApiObject.ReportLog>> CreateReportLogAsync(int tenantId,
-        ApiObject.ReportLog log)
+    public async Task<ActionResult<ApiObject.ReportLog>> CreateReportLogAsync(
+        int tenantId, ApiObject.ReportLog log)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

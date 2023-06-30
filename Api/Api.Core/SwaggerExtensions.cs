@@ -5,6 +5,7 @@ namespace PayrollEngine.Api.Core;
 
 public static class SwaggerExtensions
 {
+    // ReSharper disable once UnusedMethodReturnValue.Global
     public static IApplicationBuilder UseSwagger(this IApplicationBuilder appBuilder, 
         string apiDocumentationName, string apiName, string apiVersion, bool darkTheme)
     {

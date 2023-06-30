@@ -39,13 +39,13 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
     #region Internal
 
     /// <summary>The wage type</summary>
-    protected WageType WageType => Settings.WageType;
+    private WageType WageType => Settings.WageType;
 
     /// <summary>The wage type attributes</summary>
-    protected Dictionary<string, object> WageTypeAttributes => Settings.WageTypeAttributes;
+    private Dictionary<string, object> WageTypeAttributes => Settings.WageTypeAttributes;
 
     /// <summary>The current wage type and collector results</summary>
-    protected PayrollResultSet CurrentPayrollResult => Settings.CurrentPayrollResult;
+    private PayrollResultSet CurrentPayrollResult => Settings.CurrentPayrollResult;
 
     /// <summary>The current wage type result</summary>
     private WageTypeResultSet CurrentWageTypeResult => Settings.CurrentWageTypeResult;

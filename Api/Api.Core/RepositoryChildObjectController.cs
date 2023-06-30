@@ -8,6 +8,7 @@ using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Api.Core;
 
@@ -22,7 +23,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     where TApi : ApiObjectBase, new()
 {
     protected TParentService ParentService { get; }
-    protected string ParentObjectName => GetObjectName(typeof(TParent));
+    private string ParentObjectName => GetObjectName(typeof(TParent));
     protected TService ChildService => Service;
 
     protected RepositoryChildObjectController(TParentService parentService, TService service, IControllerRuntime runtime,
@@ -32,16 +33,13 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
         ParentService = parentService ?? throw new ArgumentNullException(nameof(parentService));
     }
 
-    protected virtual TDomain MapApiToDomain(int parentId, TApi apiObject) =>
-        MapApiToDomain(apiObject);
-
     /// <summary>
     /// Query items
     /// </summary>
     /// <param name="parentId">The tenant id</param>
     /// <param name="query">The query</param>
     /// <returns>Items, count or both</returns>
-    protected virtual async Task<ActionResult> QueryItemsAsync(int parentId, Query query = null)
+    protected async Task<ActionResult> QueryItemsAsync(int parentId, Query query = null)
     {
         query ??= new();
         query.Result ??= QueryResultType.Items;
@@ -69,7 +67,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     /// <param name="parentId">The tenant id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>List of requested Api objects</returns>
-    protected virtual async Task<ActionResult<TApi[]>> QueryAsync(int parentId, Query query = null)
+    protected async Task<ActionResult<TApi[]>> QueryAsync(int parentId, Query query = null)
     {
         try
         {
@@ -108,7 +106,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     /// <param name="parentId">The tenant id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>Count of requested Api objects</returns>
-    protected virtual async Task<ActionResult<long>> QueryCountAsync(int parentId, Query query = null)
+    protected async Task<ActionResult<long>> QueryCountAsync(int parentId, Query query = null)
     {
         try
         {
@@ -189,7 +187,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             TDomain domainObject;
             try
             {
-                domainObject = MapApiToDomain(parentId, apiObject);
+                domainObject = MapApiToDomain(apiObject);
             }
             catch (PayrollMapException exception)
             {
@@ -229,7 +227,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     /// <param name="parentId">The tenant id</param>
     /// <param name="apiObjects">The API objects</param>
     /// <returns>New created object</returns>
-    protected virtual async Task<ActionResult<TApi[]>> CreateAsync(int parentId, IEnumerable<TApi> apiObjects)
+    protected async Task<ActionResult<TApi[]>> CreateAsync(int parentId, IEnumerable<TApi> apiObjects)
     {
         try
         {
@@ -259,7 +257,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
                 }
                 try
                 {
-                    domainObjects.Add(MapApiToDomain(parentId, apiObject));
+                    domainObjects.Add(MapApiToDomain(apiObject));
                 }
                 catch (PayrollMapException exception)
                 {
@@ -324,7 +322,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             TDomain domainObject;
             try
             {
-                domainObject = MapApiToDomain(parentId, apiObject);
+                domainObject = MapApiToDomain(apiObject);
             }
             catch (PayrollMapException exception)
             {
@@ -353,7 +351,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
         }
     }
 
-    protected virtual async Task<IActionResult> DeleteAsync(int parentId, int itemId)
+    protected async Task<IActionResult> DeleteAsync(int parentId, int itemId)
     {
         try
         {

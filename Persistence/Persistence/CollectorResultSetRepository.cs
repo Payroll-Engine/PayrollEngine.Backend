@@ -10,8 +10,8 @@ namespace PayrollEngine.Persistence;
 
 public class CollectorResultSetRepository : ChildDomainRepository<CollectorResultSet>, ICollectorResultSetRepository
 {
-    public ICollectorCustomResultRepository CollectorCustomResultRepository { get; }
-    public bool BulkInsert { get; }
+    private ICollectorCustomResultRepository CollectorCustomResultRepository { get; }
+    private bool BulkInsert { get; }
 
     public CollectorResultSetRepository(ICollectorCustomResultRepository wageTypeCustomResultRepository,
         bool bulkInsert) :
@@ -67,7 +67,7 @@ public class CollectorResultSetRepository : ChildDomainRepository<CollectorResul
         throw new NotSupportedException("Update of custom collector results is not supported");
     }
 
-    protected override async Task<bool> OnDeletingAsync(IDbContext context, int payrollResultId, int wageTypeResultId)
+    protected override async Task<bool> OnDeletingAsync(IDbContext context, int wageTypeResultId)
     {
         // custom collector results
         var customResults = (await CollectorCustomResultRepository.QueryAsync(context, wageTypeResultId)).ToList();
@@ -75,6 +75,6 @@ public class CollectorResultSetRepository : ChildDomainRepository<CollectorResul
         {
             await CollectorCustomResultRepository.DeleteAsync(context, wageTypeResultId, customResult.Id);
         }
-        return await base.OnDeletingAsync(context, payrollResultId, wageTypeResultId);
+        return await base.OnDeletingAsync(context, wageTypeResultId);
     }
 }

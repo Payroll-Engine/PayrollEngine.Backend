@@ -126,20 +126,22 @@
         <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.QueryCaseAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.QueryCaseAuditsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation case audits
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="caseId">The case id </param>
+            <param name="regulationId">The regulation id </param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.GetCaseAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseAuditController.GetCaseAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation case audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id </param>
             <param name="caseId">The case id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -208,20 +210,24 @@
         <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.ICaseFieldAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.QueryCaseFieldAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.QueryCaseFieldAuditsAsync(System.Int32,System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation case field audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="caseId">The regulation id</param>
             <param name="fieldId">The case field id</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.GetCaseFieldAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldAuditController.GetCaseFieldAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation case field audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="caseId">The regulation id</param>
             <param name="fieldId">The case field id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -232,20 +238,22 @@
         <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.#ctor(PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.QueryCaseFieldsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.QueryCaseFieldsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation case fields
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="caseId">The case id</param>
             <param name="query">Query parameters</param>
             <returns>The regulation case fields</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.GetCaseFieldAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseFieldController.GetCaseFieldAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation case field
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="caseId">The case id</param>
             <param name="caseFieldId">The case field id</param>
             <returns>The regulation case</returns>
@@ -282,20 +290,22 @@
         <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICaseRelationService,PayrollEngine.Domain.Application.Service.ICaseRelationAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.QueryCaseRelationAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.QueryCaseRelationAuditsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation case relation audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="relationId">The case relation id</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.GetCaseRelationAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.CaseRelationAuditController.GetCaseRelationAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation case relation audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="relationId">The relation id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -364,20 +374,22 @@
         <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.#ctor(PayrollEngine.Domain.Application.Service.ICollectorService,PayrollEngine.Domain.Application.Service.ICollectorAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.QueryCollectorAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.QueryCollectorAuditsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation collector audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="collectorId">The id of the collector</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.GetCollectorAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.CollectorAuditController.GetCollectorAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation collector audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="collectorId">The collector id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -443,7 +455,7 @@
         <member name="T:PayrollEngine.Backend.Controller.CompanyCaseChangeController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICompanyCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICompanyCaseChangeService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.CompanyCaseChangeController.QueryCompanyCaseChangesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
@@ -609,7 +621,7 @@
         <member name="T:PayrollEngine.Backend.Controller.EmployeeCaseChangeController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.IEmployeeService,PayrollEngine.Domain.Application.Service.IEmployeeCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.IEmployeeService,PayrollEngine.Domain.Application.Service.IEmployeeCaseChangeService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.QueryEmployeeCaseChangesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
@@ -784,7 +796,7 @@
         <member name="T:PayrollEngine.Backend.Controller.GlobalCaseChangeController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IGlobalCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IGlobalCaseChangeService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.GlobalCaseChangeController.QueryGlobalCaseChangesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
@@ -846,17 +858,7 @@
         <member name="T:PayrollEngine.Backend.Controller.GlobalCaseValueController">
             <inheritdoc/>
         </member>
-        <member name="P:PayrollEngine.Backend.Controller.GlobalCaseValueController.PayrollService">
-            <summary>
-            Gets the tenant service
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Backend.Controller.GlobalCaseValueController.CaseService">
-            <summary>
-            Gets the case service
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.IGlobalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IGlobalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.QueryGlobalCaseValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseValueQuery)">
@@ -927,20 +929,22 @@
         <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.#ctor(PayrollEngine.Domain.Application.Service.ILookupService,PayrollEngine.Domain.Application.Service.ILookupAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.QueryLookupAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.QueryLookupAuditsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation lookup audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="lookupId">The lookup id</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.GetLookupAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupAuditController.GetLookupAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation lookup audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="lookupId">The lookup id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -1036,20 +1040,24 @@
         <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.#ctor(PayrollEngine.Domain.Application.Service.ILookupValueService,PayrollEngine.Domain.Application.Service.ILookupValueAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.QueryLookupValueAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.QueryLookupValueAuditsAsync(System.Int32,System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation lookup value audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupId">The lookup id</param>
             <param name="lookupValueId">The lookup value id</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.GetLookupValueAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueAuditController.GetLookupValueAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation lookup audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
+            <param name="lookupId">The lookup id</param>
             <param name="lookupValueId">The lookup value id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -1060,11 +1068,12 @@
         <member name="M:PayrollEngine.Backend.Controller.LookupValueController.#ctor(PayrollEngine.Domain.Application.Service.ILookupService,PayrollEngine.Domain.Application.Service.ILookupValueService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.QueryLookupValuesAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.QueryLookupValuesAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation lookup values
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="lookupId">The lookup id</param>
             <param name="query">Query parameters</param>
             <returns>The regulation lookup values</returns>
@@ -1079,38 +1088,42 @@
             <param name="culture">The culture</param>
             <returns>The lookup value data</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.GetLookupValueAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.GetLookupValueAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation lookup value
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="lookupId">The lookup id</param>
             <param name="lookupValueId">The id of the lookup value</param>
             <returns></returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.CreateLookupValueAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.LookupValue)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.CreateLookupValueAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.LookupValue)">
             <summary>
             Add a new regulation lookup value
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="lookup">The lookup value to add</param>
             <returns>The newly created lookup value</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.UpdateLookupValueAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.LookupValue)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.UpdateLookupValueAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.LookupValue)">
             <summary>
             Update a regulation lookup value
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="lookup">The lookup value with updated values</param>
             <returns>The modified lookup value</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.DeleteLookupValueAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.LookupValueController.DeleteLookupValueAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Delete a regulation lookup value
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="lookupValueId">The id of the lookup value</param>
             <returns></returns>
@@ -1118,7 +1131,7 @@
         <member name="T:PayrollEngine.Backend.Controller.NationalCaseChangeController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.INationalCaseChangeService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IUserService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.INationalCaseChangeService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.NationalCaseChangeController.QueryNationalCaseChangesAsync(System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
@@ -1180,17 +1193,7 @@
         <member name="T:PayrollEngine.Backend.Controller.NationalCaseValueController">
             <inheritdoc/>
         </member>
-        <member name="P:PayrollEngine.Backend.Controller.NationalCaseValueController.PayrollService">
-            <summary>
-            Gets the tenant service
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Backend.Controller.NationalCaseValueController.CaseService">
-            <summary>
-            Gets the case service
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.INationalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.INationalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.QueryNationalCaseValuesAsync(System.Int32,PayrollEngine.Domain.Model.CaseValueQuery)">
@@ -1715,17 +1718,7 @@
         <member name="T:PayrollEngine.Backend.Controller.PayrollResultController">
             <inheritdoc/>
         </member>
-        <member name="P:PayrollEngine.Backend.Controller.PayrollResultController.PayrollService">
-            <summary>
-            The payroll service
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Backend.Controller.PayrollResultController.PayrunService">
-            <summary>
-            The payrun service
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollResultService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IPayrunService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollResultService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollResultController.QueryPayrollResultsAsync(System.Int32,PayrollEngine.Query)">
@@ -2018,7 +2011,7 @@
         <member name="T:PayrollEngine.Backend.Controller.RegulationController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.RegulationController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Domain.Application.Service.ICaseRelationService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.RegulationController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ICaseService,PayrollEngine.Domain.Application.Service.ICaseFieldService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.RegulationController.QueryRegulationsAsync(System.Int32,PayrollEngine.Query)">
@@ -2179,20 +2172,22 @@
         <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.#ctor(PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Application.Service.IReportAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.QueryReportAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.QueryReportAuditsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation report audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="reportId">The id of the report</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.GetReportAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportAuditController.GetReportAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation report audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="reportId">The report id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -2376,21 +2371,25 @@
         <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.#ctor(PayrollEngine.Domain.Application.Service.IReportParameterService,PayrollEngine.Domain.Application.Service.IReportParameterAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.QueryReportParameterAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.QueryReportParameterAuditsAsync(System.Int32,System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation report parameter audits
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportParameterId">The id of the report parameter</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="parameterId">The id of the report parameter</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.GetReportParameterAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterAuditController.GetReportParameterAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation report parameter audit
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportParameterId">The report parameter id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="parameterId">The report parameter id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
         </member>
@@ -2400,47 +2399,52 @@
         <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.#ctor(PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Application.Service.IReportParameterService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.QueryReportParametersAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.QueryReportParametersAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query report parameters
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="query">Query parameters</param>
             <returns>The report parameters</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.GetReportParameterAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.GetReportParameterAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a report parameter
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="parameterId">The id of the parameter</param>
             <returns>The report parameter</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.CreateReportParameterAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportParameter)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.CreateReportParameterAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.ReportParameter)">
             <summary>
             Add a new report parameter
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="parameter">The report parameter to add</param>
             <returns>The newly created report parameter</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.UpdateReportParameterAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportParameter)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.UpdateReportParameterAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.ReportParameter)">
             <summary>
             Update a report parameter
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="parameter">The report parameter to modify</param>
             <returns>The modified parameter</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.DeleteReportParameterAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportParameterController.DeleteReportParameterAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Delete a report
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="parameterId">The id of the report parameter</param>
             <returns></returns>
@@ -2451,21 +2455,25 @@
         <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.#ctor(PayrollEngine.Domain.Application.Service.IReportTemplateService,PayrollEngine.Domain.Application.Service.IReportTemplateAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.QueryReportTemplateAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.QueryReportTemplateAuditsAsync(System.Int32,System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation report template audits
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportTemplateId">The id of the report template</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="templateId">The id of the report template</param>
             <param name="query">Query templates</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.GetReportTemplateAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateAuditController.GetReportTemplateAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation report template audit
             </summary>
             <param name="tenantId">The tenant id</param>
-            <param name="reportTemplateId">The report template id</param>
+            <param name="regulationId">The tenant id</param>
+            <param name="reportId">The id of the report</param>
+            <param name="templateId">The report template id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
         </member>
@@ -2475,47 +2483,52 @@
         <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.#ctor(PayrollEngine.Domain.Application.Service.IReportService,PayrollEngine.Domain.Application.Service.IReportTemplateService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.QueryReportTemplatesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.ReportTemplateQuery)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.QueryReportTemplatesAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Domain.Model.ReportTemplateQuery)">
             <summary>
             Query report templates
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="query">Query templates</param>
             <returns>The report templates</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.GetReportTemplateAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.GetReportTemplateAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a report template
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="templateId">The id of the template</param>
             <returns>The report template</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.CreateReportTemplateAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportTemplate)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.CreateReportTemplateAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.ReportTemplate)">
             <summary>
             Add a new report template
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="template">The report template to add</param>
             <returns>The newly created report template</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.UpdateReportTemplateAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.ReportTemplate)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.UpdateReportTemplateAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.ReportTemplate)">
             <summary>
             Update a report template
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="template">The report template to modify</param>
             <returns>The modified template</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.DeleteReportTemplateAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ReportTemplateController.DeleteReportTemplateAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Delete a report
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="templateId">The id of the report template</param>
             <returns></returns>
@@ -2526,20 +2539,22 @@
         <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.#ctor(PayrollEngine.Domain.Application.Service.IScriptService,PayrollEngine.Domain.Application.Service.IScriptAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.QueryScriptAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.QueryScriptAuditsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation script audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="scriptId">The script id</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.GetScriptAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.ScriptAuditController.GetScriptAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation script audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The tenant id</param>
             <param name="scriptId">The script id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>
@@ -2867,20 +2882,22 @@
         <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.#ctor(PayrollEngine.Domain.Application.Service.IWageTypeService,PayrollEngine.Domain.Application.Service.IWageTypeAuditService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.QueryWageTypeAuditsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.QueryWageTypeAuditsAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
             Query regulation wage type audits
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="wageTypeId">The id of the wage type</param>
             <param name="query">Query parameters</param>
             <returns>The audit objects</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.GetWageTypeAuditAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:PayrollEngine.Backend.Controller.WageTypeAuditController.GetWageTypeAuditAsync(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Get a regulation wage type audit
             </summary>
             <param name="tenantId">The tenant id</param>
+            <param name="regulationId">The regulation id</param>
             <param name="wageTypeId">The wage type id</param>
             <param name="auditId">The audit object id</param>
             <returns>The audit object</returns>

@@ -1,6 +1,5 @@
 ﻿using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting.Controller;
 using PayrollEngine.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -79,7 +78,7 @@ internal static class ApiRepositoryFactory
             new EmployeeDivisionRepository(
                 NewDivisionRepository());
 
-        internal static IEmployeeRepository NewEmployeeRepository() =>
+        private static IEmployeeRepository NewEmployeeRepository() =>
             new EmployeeRepository(
                 NewEmployeeDivisionRepository());
     }
@@ -123,7 +122,6 @@ internal static class ApiRepositoryFactory
 
         internal static ICaseFieldRepository NewCaseFieldRepository() =>
             new CaseFieldRepository(
-                NewCaseRepository(),
                 NewCaseFieldAuditRepository());
 
         private static ICaseFieldAuditRepository NewCaseFieldAuditRepository() =>
@@ -131,7 +129,6 @@ internal static class ApiRepositoryFactory
 
         private static ICaseRelationRepository NewCaseRelationRepository() =>
             new CaseRelationRepository(
-                new CaseRelationScriptController(),
                 NewScriptRepository(),
                 NewCaseRelationAuditService());
 
@@ -140,7 +137,6 @@ internal static class ApiRepositoryFactory
 
         private static IWageTypeRepository NewWageTypeRepository() =>
             new WageTypeRepository(
-                new WageTypeScriptController(),
                 NewScriptRepository(),
                 NewWageTypeAuditRepository());
 
@@ -149,7 +145,6 @@ internal static class ApiRepositoryFactory
 
         internal static ICaseRepository NewCaseRepository() =>
             new CaseRepository(
-                new CaseScriptController(),
                 NewScriptRepository(),
                 NewCaseAuditRepository());
 
@@ -158,7 +153,6 @@ internal static class ApiRepositoryFactory
 
         private static ICollectorRepository NewCollectorRepository() =>
             new CollectorRepository(
-                new CollectorScriptController(),
                 NewScriptRepository(),
                 NewCollectorAuditRepository());
 
@@ -307,7 +301,6 @@ internal static class ApiRepositoryFactory
 
         private static IEmployeeCaseChangeRepository NewEmployeeCaseChangeRepository() =>
             new EmployeeCaseChangeRepository(
-                TenantRepositoryFactory.NewEmployeeRepository(),
                 new()
                 {
                     PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(),
@@ -346,8 +339,7 @@ internal static class ApiRepositoryFactory
             services.AddScoped(_ => NewPayrollResultSetRepository());
         }
         private static IPayrunRepository NewPayrunRepository() =>
-            new PayrunRepository(new PayrunScriptController(),
-                RegulationRepositoryFactory.NewScriptRepository());
+            new PayrunRepository(RegulationRepositoryFactory.NewScriptRepository());
 
         private static IPayrunParameterRepository NewPayrunParameterRepository() =>
             new PayrunParameterRepository();
@@ -414,7 +406,6 @@ internal static class ApiRepositoryFactory
 
         private static IReportRepository NewReportRepository() =>
             new ReportRepository(
-                new ReportScriptController<ReportSet>(),
                 RegulationRepositoryFactory.NewScriptRepository(),
                 NewReportAuditRepository());
 
@@ -427,7 +418,6 @@ internal static class ApiRepositoryFactory
                 {
                     ReportParameterRepository = NewReportParameterRepository(),
                     ReportTemplateRepository = NewReportTemplateRepository(),
-                    ScriptController = new ReportScriptController<ReportSet>(),
                     ScriptRepository = RegulationRepositoryFactory.NewScriptRepository(),
                     AuditRepository = NewReportAuditRepository(),
                     BulkInsert = true

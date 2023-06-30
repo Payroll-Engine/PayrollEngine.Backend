@@ -13,7 +13,7 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
     {
     }
 
-    public virtual async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
+    public async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
         await ExistsAnyAsync(context, DbSchema.UserColumn.TenantId, tenantId, DbSchema.UserColumn.Identifier, identifier);
 
     protected override void GetObjectCreateData(User user, DbParameterCollection parameters)
@@ -33,7 +33,7 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
     }
 
     /// <inheritdoc />
-    public virtual async System.Threading.Tasks.Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, string password)
+    public async System.Threading.Tasks.Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, string password)
     {
         var user = await GetAsync(context, tenantId, userId);
         if (user == null)

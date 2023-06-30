@@ -22,7 +22,7 @@ public class Division : ApiObjectBase
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The culture including the calendar, fallback of employee culture
+    /// The division calendar (fallback: tenant calendar)
     /// </summary>
     [StringLength(128)]
     public string Culture { get; set; }

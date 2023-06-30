@@ -3,6 +3,7 @@ using PayrollEngine.Api.Core;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
+// ReSharper disable UnusedParameter.Global
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -15,7 +16,7 @@ namespace PayrollEngine.Backend.Controller;
 public class ReportAuditController : Api.Controller.ReportAuditController
 {
     /// <inheritdoc/>
-    public ReportAuditController(IReportService reportService, 
+    public ReportAuditController(IReportService reportService,
         IReportAuditService auditService, IControllerRuntime runtime) :
         base(reportService, auditService, runtime)
     {
@@ -25,6 +26,7 @@ public class ReportAuditController : Api.Controller.ReportAuditController
     /// Query regulation report audits
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="reportId">The id of the report</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The audit objects</returns>
@@ -33,7 +35,8 @@ public class ReportAuditController : Api.Controller.ReportAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryReportAudits")]
-    public async Task<ActionResult> QueryReportAuditsAsync(int tenantId, int reportId, [FromQuery] Query query)
+    public async Task<ActionResult> QueryReportAuditsAsync(int tenantId, int regulationId,
+        int reportId, [FromQuery] Query query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -48,6 +51,7 @@ public class ReportAuditController : Api.Controller.ReportAuditController
     /// Get a regulation report audit
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
+    /// <param name="regulationId">The regulation id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="auditId">The audit object id</param>
     /// <returns>The audit object</returns>
@@ -55,7 +59,8 @@ public class ReportAuditController : Api.Controller.ReportAuditController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportAudit")]
-    public async Task<ActionResult<ApiObject.ReportAudit>> GetReportAuditAsync(int tenantId, int reportId, int auditId)
+    public async Task<ActionResult<ApiObject.ReportAudit>> GetReportAuditAsync(int tenantId,
+        int regulationId, int reportId, int auditId)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);

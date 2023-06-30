@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Timers;
 using PayrollEngine.Domain.Model;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace PayrollEngine.Domain.Scripting;
 
@@ -72,23 +73,23 @@ public class AssemblyCache
     /// <summary>
     /// The cache timeout
     /// </summary>
-    public static TimeSpan? CacheTimeout { get; private set; }
+    private static TimeSpan? CacheTimeout { get; set; }
 
     /// <summary>
     /// Enable disable the cache
     /// </summary>
-    public static bool CacheEnabled => CacheTimeout.HasValue &&
-                                       CacheTimeout.Value != TimeSpan.Zero;
+    private static bool CacheEnabled => CacheTimeout.HasValue &&
+                                        CacheTimeout.Value != TimeSpan.Zero;
 
     /// <summary>
     /// The script provider
     /// </summary>
-    public IDbContext DbContext { get; set; }
+    private IDbContext DbContext { get; }
 
     /// <summary>
     /// The script provider
     /// </summary>
-    public IScriptProvider ScriptProvider { get; set; }
+    private IScriptProvider ScriptProvider { get; }
 
     /// <summary>
     /// Assembly cache ctor
