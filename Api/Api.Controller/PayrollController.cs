@@ -512,7 +512,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     }
 
     protected async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollAvailableCaseFieldValuesAsync(
-        DomainObject.PayrollQuery query, int userId, string[] caseFieldNames, DateTime startDate, DateTime endDate)
+        DomainObject.PayrollQuery query, int userId, string[] caseFieldNames, DateTime startDate, DateTime endDate, string culture)
     {
         if (caseFieldNames == null || !caseFieldNames.Any())
         {
@@ -603,6 +603,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 DbContext = Runtime.DbContext,
                 CaseType = caseType,
                 Tenant = querySetup.Tenant,
+                Culture = culture,
                 Calendar = calendar,
                 Payroll = querySetup.Payroll,
                 User = querySetup.User,
@@ -668,10 +669,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var evaluationDate = query.EvaluationDate ?? valueDate;
             var regulationDate = query.RegulationDate ?? valueDate;
 
-            // calendar by priority: employee > division > tenant
-            var calendarName = querySetup.Employee?.Calendar ??
-                               querySetup.Division.Calendar ??
-                               querySetup.Tenant.Calendar;
+            // [calendar by priority]: employee? > division > tenant</remarks>
+            var calendarName =
+                // priority 1: employee calendar
+                querySetup.Employee?.Calendar ??
+                // priority 2: division calendar
+                querySetup.Division.Calendar ??
+                // priority 3: tenant calendar
+                querySetup.Tenant.Calendar;
             DomainObject.Calendar calendar = null;
             if (!string.IsNullOrWhiteSpace(calendarName))
             {
@@ -881,9 +886,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         DomainObject.Division division, DomainObject.Employee employee = null)
     {
         DomainObject.Calendar calendar = null;
-        var calendarName = employee?.Calendar ??
-                           division.Calendar ??
-                           tenant.Calendar;
+        // [calendar by priority]: employee? > division > tenant</remarks>
+        var calendarName =
+            // priority 1: employee calendar
+            employee?.Calendar ??
+            // priority 2: division calendar
+            division.Calendar ??
+            // priority 3: tenant calendar
+            tenant.Calendar;
         if (!string.IsNullOrWhiteSpace(calendarName))
         {
             calendar = await CalendarService.GetByNameAsync(Runtime.DbContext, tenant.Id, calendarName);
@@ -1745,10 +1755,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 culture = cultureQuery.Culture;
             }
-            // culture by priority: query > tenant > system
+            // [culture by priority]: query > system</remarks>
             querySetup.Culture =
+                // priority 1: query culture
                 culture ??
-                tenant.Culture ??
+                // priority 2: system culture
                 CultureInfo.CurrentCulture.Name;
 
             return new(querySetup, null);

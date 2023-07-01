@@ -357,6 +357,7 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="employeeId">The employee id, mandatory for employee case</param>
     /// <param name="regulationDate">The regulation date (default: UTC now)</param>
     /// <param name="evaluationDate">Creation date filter (default: UTC now)</param>
+    /// <param name="culture">The query culture name based on RFC 4646</param>
     /// <returns>Case period values, split by changed values</returns>
     [HttpGet("{payrollId}/cases/values/periods")]
     [OkResponse]
@@ -365,7 +366,7 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollAvailableCaseFieldValuesAsync(int tenantId, int payrollId,
         [FromQuery][Required] int userId, [FromQuery][Required] string[] caseFieldNames, [FromQuery][Required] DateTime startDate,
         [FromQuery][Required] DateTime endDate, [FromQuery] int? employeeId = null, [FromQuery] DateTime? regulationDate = null,
-        [FromQuery] DateTime? evaluationDate = null)
+        [FromQuery] DateTime? evaluationDate = null, string culture = null)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -383,7 +384,7 @@ public class PayrollController : Api.Controller.PayrollController
                 RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             },
-            userId, caseFieldNames, startDate, endDate);
+            userId, caseFieldNames, startDate, endDate, culture);
     }
 
     /// <summary>

@@ -1401,7 +1401,7 @@
             <param name="evaluationDate">The evaluation date (default: valueDate)</param>
             <returns>The payroll case value of the case field</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCaseFieldValuesAsync(System.Int32,System.Int32,System.Int32,System.String[],System.DateTime,System.DateTime,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCaseFieldValuesAsync(System.Int32,System.Int32,System.Int32,System.String[],System.DateTime,System.DateTime,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Get available case period values
             </summary>
@@ -1414,6 +1414,7 @@
             <param name="employeeId">The employee id, mandatory for employee case</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">Creation date filter (default: UTC now)</param>
+            <param name="culture">The query culture name based on RFC 4646</param>
             <returns>Case period values, split by changed values</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.AddPayrollCaseAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.CaseChangeSetup)">

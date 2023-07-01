@@ -54,10 +54,14 @@ public abstract class DerivedCaseTool : FunctionToolBase
     private ICompanyCaseValueRepository CompanyCaseValueRepository { get; }
     private IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; }
 
-    // culture by priority: tool-setting > tenant > system
+    /// <summary>
+    /// Case culture
+    /// <remarks>[culture by priority]: tool-setting > system</remarks>
+    /// </summary>
     protected string Culture =>
+        // priority 1: setting culture
         Settings.Culture ??
-        Tenant.Culture ??
+        // priority 2: system culture
         CultureInfo.CurrentCulture.Name;
 
     /// <summary>

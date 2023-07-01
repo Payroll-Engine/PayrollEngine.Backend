@@ -87,10 +87,14 @@ public class PayrunProcessor : FunctionToolBase
         // context division
         context.Division = setup.Division ?? await processorRepositories.LoadDivisionAsync(context.Payroll.DivisionId);
 
-        // culture by priority: division > tenant > system
-        var cultureName = context.Division.Culture ??
-                          Tenant.Culture ??
-                          CultureInfo.CurrentCulture.Name;
+        // [culture by priority]: division > tenant > system</remarks>
+        var cultureName =
+            // priority 1: division culture
+            context.Division.Culture ??
+            // priority 2: tenant culture
+            Tenant.Culture ??
+            // priority 3: system culture
+            CultureInfo.CurrentCulture.Name;
         context.PushCulture(cultureName);
 
         // calendar
@@ -533,17 +537,26 @@ public class PayrunProcessor : FunctionToolBase
         // context execution
         context.ExecutionPhase = executionPhase;
 
-        // culture by priority: employee > division > tenant > system
-        var culture = employee.Culture ??
-                      context.Division.Culture ??
-                      Tenant.Culture ??
-                      CultureInfo.CurrentCulture.Name;
+        // [culture by priority]: employee > division > tenant > system</remarks>
+        var culture =
+            // priority 1: employee culture
+            employee.Culture ??
+            // priority 2: division culture
+            context.Division.Culture ??
+            // priority 3: tenant culture
+            Tenant.Culture ??
+            // priority 4: system culture
+            CultureInfo.CurrentCulture.Name;
         context.PushCulture(culture);
 
-        // calendar by priority: employee > division > tenant
-        var calendarName = employee.Calendar ??
-                          context.Division.Calendar ??
-                          Tenant.Calendar;
+        // [calendar by priority]: employee > division > tenant</remarks>
+        var calendarName =
+            // priority 1: employee calendar
+            employee.Calendar ??
+            // priority 2: division calendar
+            context.Division.Calendar ??
+            // priority 3: tenant calendar
+            Tenant.Calendar;
         context.CalendarName = calendarName;
 
         // payroll calculator based on the employee culture and calendar

@@ -28,10 +28,14 @@ public class CaseValueTool : FunctionToolBase
     public IPayrollRepository PayrollRepository { get; }
     public ICaseRepository CaseRepository { get; }
 
-    // culture by priority: tool-setting > tenant > system
+    /// <summary>
+    /// Case culture
+    /// <remarks>[culture by priority]: tool-setting > system</remarks>
+    /// </summary>
     private string Culture =>
+        // priority 1: setting culture
         Settings.Culture ??
-        Tenant.Culture ??
+        // priority 2: system culture
         CultureInfo.CurrentCulture.Name;
 
     /// <summary>
