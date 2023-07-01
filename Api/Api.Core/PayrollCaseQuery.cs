@@ -8,7 +8,7 @@ namespace PayrollEngine.Api.Core;
 /// <summary>
 /// Query for the payroll case controller
 /// </summary>
-public class PayrollCaseQuery : PayrollQuery
+public class PayrollCaseQuery : PayrollQuery, ICultureQuery
 {
     /// <summary>
     /// The user id
@@ -21,6 +21,11 @@ public class PayrollCaseQuery : PayrollQuery
     /// </summary>
     [Required]
     public CaseType CaseType { get; set; }
+    
+    /// <summary>
+    /// The culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// The case names (optional)

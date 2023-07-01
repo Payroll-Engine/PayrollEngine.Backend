@@ -80,8 +80,9 @@ public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFie
         parameters.Add(nameof(caseField.DefaultStart), caseField.DefaultStart);
         parameters.Add(nameof(caseField.DefaultEnd), caseField.DefaultEnd);
         parameters.Add(nameof(caseField.DefaultValue), caseField.DefaultValue);
-        parameters.Add(nameof(caseField.Tags), JsonSerializer.SerializeList(caseField.Tags));
         parameters.Add(nameof(caseField.LookupSettings), caseField.LookupSettings);
+        // json collections
+        parameters.Add(nameof(caseField.Tags), JsonSerializer.SerializeList(caseField.Tags));
         parameters.Add(nameof(caseField.Clusters), JsonSerializer.SerializeList(caseField.Clusters));
         parameters.Add(nameof(caseField.BuildActions), JsonSerializer.SerializeList(caseField.BuildActions));
         parameters.Add(nameof(caseField.ValidateActions), JsonSerializer.SerializeList(caseField.ValidateActions));

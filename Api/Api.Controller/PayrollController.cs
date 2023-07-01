@@ -512,8 +512,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     }
 
     protected async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollAvailableCaseFieldValuesAsync(
-        DomainObject.PayrollQuery query,
-        int userId, string[] caseFieldNames, DateTime startDate, DateTime endDate)
+        DomainObject.PayrollQuery query, int userId, string[] caseFieldNames, DateTime startDate, DateTime endDate)
     {
         if (caseFieldNames == null || !caseFieldNames.Any())
         {
@@ -604,7 +603,6 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 DbContext = Runtime.DbContext,
                 CaseType = caseType,
                 Tenant = querySetup.Tenant,
-                Culture = query.Culture,
                 Calendar = calendar,
                 Payroll = querySetup.Payroll,
                 User = querySetup.User,
@@ -1742,9 +1740,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 querySetup.ClusterSet = clusterSet;
             }
 
+            string culture = null;
+            if (query is ICultureQuery cultureQuery)
+            {
+                culture = cultureQuery.Culture;
+            }
             // culture by priority: query > tenant > system
             querySetup.Culture =
-                query.Culture ??
+                culture ??
                 tenant.Culture ??
                 CultureInfo.CurrentCulture.Name;
 

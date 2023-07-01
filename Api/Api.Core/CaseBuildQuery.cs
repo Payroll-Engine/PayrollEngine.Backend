@@ -6,12 +6,17 @@ namespace PayrollEngine.Api.Core;
 /// <summary>
 /// Query for the payroll case controller
 /// </summary>
-public class CaseBuildQuery : PayrollQuery
+public class CaseBuildQuery : PayrollQuery, ICultureQuery
 {
     /// <summary>
     /// The user id
     /// </summary>
     public int? UserId { get; set; }
+    
+    /// <summary>
+    /// The culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// The case name

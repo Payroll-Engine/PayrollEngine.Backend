@@ -2941,7 +2941,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.Division.Culture">
             <summary>
-            The division culture, fallback for tenant culture
+            The division culture name based on RFC 4646 (fallback: tenant culture)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Division.Calendar">
@@ -4597,11 +4597,6 @@
         <member name="P:PayrollEngine.Domain.Model.PayrollQuery.EmployeeId">
             <summary>
             The employee id
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrollQuery.Culture">
-            <summary>
-            The culture (optional)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollQuery.RegulationDate">

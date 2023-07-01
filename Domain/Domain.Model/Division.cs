@@ -19,7 +19,7 @@ public class Division : DomainObjectBase, INamedObject, IDomainAttributeObject, 
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The division culture, fallback for tenant culture
+    /// The division culture name based on RFC 4646 (fallback: tenant culture)
     /// </summary>
     public string Culture { get; set; }
 

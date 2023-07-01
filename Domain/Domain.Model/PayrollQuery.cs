@@ -27,11 +27,6 @@ public class PayrollQuery
     public int? EmployeeId { get; set; }
 
     /// <summary>
-    /// The culture (optional)
-    /// </summary>
-    public string Culture { get; set; }
-
-    /// <summary>
     /// The regulation date
     /// </summary>
     public DateTime? RegulationDate { get; set; }
