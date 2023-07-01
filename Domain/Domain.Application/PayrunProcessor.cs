@@ -540,7 +540,7 @@ public class PayrunProcessor : FunctionToolBase
                       CultureInfo.CurrentCulture.Name;
         context.PushCulture(culture);
 
-        // calendar by priority: employee > division > tenant > system
+        // calendar by priority: employee > division > tenant
         var calendarName = employee.Calendar ??
                           context.Division.Calendar ??
                           Tenant.Calendar;

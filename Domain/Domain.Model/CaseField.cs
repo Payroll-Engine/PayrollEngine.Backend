@@ -70,6 +70,11 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
     public CaseValueCreationMode ValueCreationMode { get; set; }
 
     /// <summary>
+    /// The case field culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// Mandatory case field value
     /// </summary>
     public bool ValueMandatory { get; set; }
@@ -183,6 +188,7 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
             OverrideType = OverrideType,
             CancellationMode = CancellationMode,
             ValueCreationMode = ValueCreationMode,
+            Culture = Culture,
             ValueMandatory = ValueMandatory,
             Order = Order,
             StartDateType = StartDateType,
@@ -221,6 +227,7 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
         OverrideType = audit.OverrideType;
         CancellationMode = audit.CancellationMode;
         ValueCreationMode = audit.ValueCreationMode;
+        Culture = audit.Culture;
         ValueMandatory = audit.ValueMandatory;
         Order = audit.Order;
         StartDateType = audit.StartDateType;

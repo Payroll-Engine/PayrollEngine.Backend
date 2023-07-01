@@ -1032,6 +1032,11 @@
             The case value creation mode
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseField.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CaseField.ValueMandatory">
             <summary>
             Mandatory case field value
@@ -1195,6 +1200,11 @@
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.ValueCreationMode">
             <summary>
             The case value creation mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.ValueMandatory">
@@ -4587,6 +4597,11 @@
         <member name="P:PayrollEngine.Domain.Model.PayrollQuery.EmployeeId">
             <summary>
             The employee id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollQuery.Culture">
+            <summary>
+            The culture (optional)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollQuery.RegulationDate">

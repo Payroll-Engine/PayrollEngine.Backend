@@ -73,6 +73,7 @@ public static class ApiStartupExtensions
         var culture = serverConfiguration.StartupCulture;
         if (!string.IsNullOrWhiteSpace(culture) && !CultureInfo.CurrentCulture.Name.Equals(culture))
         {
+            Log.Trace($"Changing application culture from {CultureInfo.CurrentCulture.Name} to {culture}");
             CultureInfo.CurrentCulture = new(culture);
         }
 

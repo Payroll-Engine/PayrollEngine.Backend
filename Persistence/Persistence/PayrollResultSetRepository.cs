@@ -9,7 +9,7 @@ namespace PayrollEngine.Persistence;
 
 public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet>, IPayrollResultSetRepository
 {
-    public IWageTypeResultSetRepository WageTypeResultSetRepository { get; }
+    private IWageTypeResultSetRepository WageTypeResultSetRepository { get; }
     private ICollectorResultSetRepository CollectorResultSetRepository { get; }
     private IPayrunResultRepository PayrunResultRepository { get; }
     private bool BulkInsert { get; }

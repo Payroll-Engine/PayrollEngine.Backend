@@ -32,9 +32,4 @@ public class PayrollCaseQuery : PayrollQuery
     /// The cluster set name (optional)
     /// </summary>
     public string ClusterSetName { get; set; }
-
-    /// <summary>
-    /// The culture (optional)
-    /// </summary>
-    public string Culture { get; set; }
 }

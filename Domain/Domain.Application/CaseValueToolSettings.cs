@@ -10,6 +10,7 @@ namespace PayrollEngine.Domain.Application;
 public class CaseValueToolSettings : FunctionToolSettings
 {
     public Tenant Tenant { get; init; }
+    public string Culture { get; init; }
     public Calendar Calendar { get; init; }
     public Payroll Payroll { get; init; }
     public DateTime ValueDate { get; init; }

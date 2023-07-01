@@ -44,7 +44,6 @@ public abstract class DerivedCaseTool : FunctionToolBase
     protected User User { get; }
     protected Payroll Payroll { get; }
     private Employee Employee { get; }
-    protected string Culture { get; }
 
     // repositories
     protected IPayrollRepository PayrollRepository { get; }
@@ -54,6 +53,12 @@ public abstract class DerivedCaseTool : FunctionToolBase
     private INationalCaseValueRepository NationalCaseValueRepository { get; }
     private ICompanyCaseValueRepository CompanyCaseValueRepository { get; }
     private IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; }
+
+    // culture by priority: tool-setting > tenant > system
+    protected string Culture =>
+        Settings.Culture ??
+        Tenant.Culture ??
+        CultureInfo.CurrentCulture.Name;
 
     /// <summary>
     /// Constructor for derived global cases
@@ -96,14 +101,9 @@ public abstract class DerivedCaseTool : FunctionToolBase
                                     throw new ArgumentNullException(nameof(globalCaseValueRepository));
         NationalCaseValueRepository = nationalCaseValueRepository ??
                                       throw new ArgumentNullException(nameof(nationalCaseValueRepository));
-
-        // culture
-        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
-            CultureInfo.CurrentCulture :
-            new CultureInfo(Tenant.Culture);
-
         // local
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id, culture: culture, calendar: settings.Calendar);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
+            culture: new(Culture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -135,13 +135,9 @@ public abstract class DerivedCaseTool : FunctionToolBase
         CompanyCaseValueRepository = companyCaseValueRepository ??
                                      throw new ArgumentNullException(nameof(companyCaseValueRepository));
 
-        // culture
-        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
-            CultureInfo.CurrentCulture :
-            new CultureInfo(Tenant.Culture);
-
         // local
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id, culture: culture, calendar: settings.Calendar);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
+            culture: new(Culture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -179,14 +175,9 @@ public abstract class DerivedCaseTool : FunctionToolBase
         EmployeeCaseValueRepository = employeeCaseValueRepository ??
                                       throw new ArgumentNullException(nameof(employeeCaseValueRepository));
 
-        // culture
-        var culture = string.IsNullOrWhiteSpace(Tenant.Culture) ?
-            CultureInfo.CurrentCulture :
-            new CultureInfo(Tenant.Culture);
-
-
         // local
-        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id, culture: culture, calendar: settings.Calendar);
+        var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
+            culture: new(Culture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(Employee,
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -213,9 +204,6 @@ public abstract class DerivedCaseTool : FunctionToolBase
         User = settings.User ?? throw new ArgumentNullException(nameof(settings.User));
         Payroll = settings.Payroll ?? throw new ArgumentNullException(nameof(settings.Payroll));
 
-        // culture by priority: division > tenant > system
-        Culture = settings.Division.Culture ?? Tenant.Culture ?? CultureInfo.CurrentCulture.Name;
-
         // local
         if (!string.IsNullOrWhiteSpace(settings.ClusterSetName) && Payroll.ClusterSets != null)
         {
@@ -233,7 +221,6 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // repositories
         PayrollRepository = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(settings.PayrollRepository));
-        //     CaseRelationRepository = settings.CaseRelationRepository ?? throw new ArgumentNullException(nameof(settings.CaseRelationRepository));
         RegulationRepository = settings.RegulationRepository ?? throw new ArgumentNullException(nameof(settings.RegulationRepository));
         RegulationLookupSetRepository = settings.LookupSetRepository ?? throw new ArgumentNullException(nameof(settings.LookupSetRepository));
 

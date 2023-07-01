@@ -77,6 +77,11 @@ public class CaseFieldAudit : ApiObjectBase
     public CaseFieldCancellationMode CancellationMode { get; set; }
 
     /// <summary>
+    /// The case field culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// Mandatory case field
     /// </summary>
     [Required]

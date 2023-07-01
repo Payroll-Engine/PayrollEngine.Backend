@@ -630,6 +630,11 @@
             The case value creation mode
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CaseField.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CaseField.ValueMandatory">
             <summary>
             Mandatory case field value
@@ -771,6 +776,11 @@
         <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.CancellationMode">
             <summary>
             The cancellation mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Mandatory">

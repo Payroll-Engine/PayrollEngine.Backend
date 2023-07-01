@@ -74,6 +74,11 @@ public class CaseField : ApiObjectBase
     public CaseValueCreationMode ValueCreationMode { get; set; }
 
     /// <summary>
+    /// The case field culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// Mandatory case field value
     /// </summary>
     public bool ValueMandatory { get; set; }

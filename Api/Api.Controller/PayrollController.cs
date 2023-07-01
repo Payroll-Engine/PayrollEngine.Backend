@@ -160,7 +160,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
 
             // calendar
-            DomainObject.Calendar calendar = await GetCalendarAsync(tenant, division, employee);
+            DomainObject.Calendar calendar = await GetPayrollCalendarAsync(tenant, division, employee);
 
             // case collector
             var collectMoment = CurrentEvaluationDate;
@@ -171,9 +171,9 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 DbContext = Runtime.DbContext,
                 CaseType = query.CaseType,
                 Tenant = tenant,
+                Culture = query.Culture,
                 Calendar = calendar,
                 Payroll = payroll,
-                Division = division,
                 User = user,
                 PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
                 RegulationDate = query.RegulationDate.Value,
@@ -273,7 +273,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
 
             // calendar
-            DomainObject.Calendar calendar = await GetCalendarAsync(querySetup.Tenant, division, employee);
+            DomainObject.Calendar calendar = await GetPayrollCalendarAsync(querySetup.Tenant, division, employee);
 
             // resolver
             var collectMoment = CurrentEvaluationDate;
@@ -284,9 +284,9 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 DbContext = Runtime.DbContext,
                 CaseType = @case.CaseType,
                 Tenant = querySetup.Tenant,
+                Culture = query.Culture,
                 Calendar = calendar,
                 Payroll = querySetup.Payroll,
-                Division = querySetup.Division,
                 User = querySetup.User,
                 PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
                 RegulationDate = query.RegulationDate.Value,
@@ -454,23 +454,13 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
             var querySetup = setupQuery.Item1;
 
-            // employee
-            DomainObject.Employee employee = null;
-            if (query.EmployeeId.HasValue)
-            {
-                employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
-                if (employee == null)
-                {
-                    return BadRequest($"Unknown employee with id {query.EmployeeId}");
-                }
-            }
-
             // dates
             var caseValueDate = (valueDate ?? CurrentEvaluationDate).ToUtc();
             var caseEvaluationDate = (query.EvaluationDate ?? caseValueDate).ToUtc();
 
             // calendar
-            DomainObject.Calendar calendar = await GetCalendarAsync(querySetup.Tenant, querySetup.Division, employee);
+            DomainObject.Calendar calendar = await GetPayrollCalendarAsync(querySetup.Tenant,
+                querySetup.Division, querySetup.Employee);
 
             // server configuration
             var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
@@ -480,6 +470,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 DbContext = Runtime.DbContext,
                 Tenant = querySetup.Tenant,
+                Culture = querySetup.Culture,
                 Calendar = calendar,
                 Payroll = querySetup.Payroll,
                 TaskRepository = TaskService.Repository,
@@ -494,8 +485,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             };
 
             // get case value
-            var caseValueTool = employee != null
-                ? new(employee,
+            var caseValueTool = querySetup.Employee != null
+                ? new(querySetup.Employee,
                     globalCaseValueRepository: GlobalCaseValueService.Repository,
                     nationalCaseValueRepository: NationalCaseValueService.Repository,
                     companyCaseValueRepository: CompanyCaseValueService.Repository,
@@ -595,19 +586,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 return BadRequest($"Unknown payroll division with id {querySetup.Payroll.DivisionId}");
             }
 
-            // employee
-            DomainObject.Employee employee = null;
-            if (caseType == CaseType.Employee)
+            // employee check
+            if (caseType == CaseType.Employee && querySetup.Employee == null)
             {
-                if (!query.EmployeeId.HasValue)
-                {
-                    return BadRequest("Missing employee id on employee cases");
-                }
-                employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
+                return BadRequest("Employee case without employee id");
             }
 
             // calendar
-            DomainObject.Calendar calendar = await GetCalendarAsync(querySetup.Tenant, division, employee);
+            DomainObject.Calendar calendar = await GetPayrollCalendarAsync(querySetup.Tenant, division, querySetup.Employee);
 
             // resolver
             var collectMoment = CurrentEvaluationDate;
@@ -618,14 +604,14 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 DbContext = Runtime.DbContext,
                 CaseType = caseType,
                 Tenant = querySetup.Tenant,
+                Culture = query.Culture,
                 Calendar = calendar,
                 Payroll = querySetup.Payroll,
-                Division = querySetup.Division,
                 User = querySetup.User,
                 PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
                 RegulationDate = query.RegulationDate.Value,
                 EvaluationDate = query.EvaluationDate.Value,
-                Employee = employee
+                Employee = querySetup.Employee
             });
 
             // period values
@@ -684,10 +670,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var evaluationDate = query.EvaluationDate ?? valueDate;
             var regulationDate = query.RegulationDate ?? valueDate;
 
-            // calendar by priority: division > tenant
-            DomainObject.Calendar calendar = null;
-            var calendarName = querySetup.Division.Calendar ??
+            // calendar by priority: employee > division > tenant
+            var calendarName = querySetup.Employee?.Calendar ??
+                               querySetup.Division.Calendar ??
                                querySetup.Tenant.Calendar;
+            DomainObject.Calendar calendar = null;
             if (!string.IsNullOrWhiteSpace(calendarName))
             {
                 calendar = await CalendarService.GetByNameAsync(Runtime.DbContext, query.TenantId, calendarName);
@@ -791,13 +778,12 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                         break;
                     case CaseType.Employee:
                         {
-                            if (!query.EmployeeId.HasValue)
+                            if (querySetup.Employee == null)
                             {
                                 return BadRequest("Missing employee id to access employee data");
                             }
                             // employee case value periods
-                            var employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
-                            var caseValueTool = new CaseValueTool(employee,
+                            var caseValueTool = new CaseValueTool(querySetup.Employee,
                                 globalCaseValueRepository: Service.GlobalCaseValueRepository,
                                 nationalCaseValueRepository: Service.NationalCaseValueRepository,
                                 companyCaseValueRepository: Service.CompanyCaseValueRepository,
@@ -854,7 +840,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     private async Task<List<DomainObject.CaseValidationIssue>> ValidateCaseAsync(ValidateCaseSettings settings)
     {
         // calendar
-        DomainObject.Calendar calendar = await GetCalendarAsync(settings.Tenant, settings.Division, settings.Employee);
+        DomainObject.Calendar calendar = await GetPayrollCalendarAsync(settings.Tenant, settings.Division, settings.Employee);
 
         // setup validator
         var collectMoment = CurrentEvaluationDate;
@@ -865,9 +851,9 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             DbContext = Runtime.DbContext,
             CaseType = settings.CaseType,
             Tenant = settings.Tenant,
+            // currently no culture support
             Calendar = calendar,
             Payroll = settings.Payroll,
-            Division = settings.Division,
             User = settings.User,
             PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
             RegulationDate = settings.RegulationDate.Value,
@@ -891,10 +877,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
         return issues;
     }
-    
+
     // calendar by priority: employee > division > tenant
-    private async Task<DomainObject.Calendar> GetCalendarAsync(DomainObject.Tenant tenant, DomainObject.Division division,
-        DomainObject.Employee employee = null)
+    private async Task<DomainObject.Calendar> GetPayrollCalendarAsync(DomainObject.Tenant tenant,
+        DomainObject.Division division, DomainObject.Employee employee = null)
     {
         DomainObject.Calendar calendar = null;
         var calendarName = employee?.Calendar ??
@@ -1668,13 +1654,16 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     private sealed class QuerySetup
     {
         internal DomainObject.Tenant Tenant { get; set; }
+        internal string Culture { get; set; }
         internal DomainObject.Payroll Payroll { get; set; }
         internal DomainObject.Division Division { get; set; }
+        internal DomainObject.Employee Employee { get; set; }
         internal DomainObject.User User { get; set; }
         internal DomainObject.ClusterSet ClusterSet { get; set; }
     }
 
-    private async Task<Tuple<QuerySetup, ActionResult>> SetupQuery(DomainObject.PayrollQuery query, int? userId = null, string clusterSetName = null)
+    private async Task<Tuple<QuerySetup, ActionResult>> SetupQuery(DomainObject.PayrollQuery query,
+        int? userId = null, string clusterSetName = null)
     {
         var querySetup = new QuerySetup();
         try
@@ -1692,7 +1681,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var tenant = await ParentService.GetAsync(Runtime.DbContext, query.TenantId);
             if (tenant == null)
             {
-                return new(querySetup, BadRequest($"Unknown tenant with id {query.TenantId}"));
+                return new(querySetup, BadRequest($"Unknown query tenant with id {query.TenantId}"));
             }
             querySetup.Tenant = tenant;
 
@@ -1704,7 +1693,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var payroll = await Service.GetAsync(Runtime.DbContext, query.TenantId, query.PayrollId);
             if (payroll == null)
             {
-                return new(querySetup, BadRequest($"Unknown payroll with id {query.PayrollId}"));
+                return new(querySetup, BadRequest($"Unknown query payroll with id {query.PayrollId}"));
             }
             querySetup.Payroll = payroll;
 
@@ -1712,9 +1701,20 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             var division = await DivisionService.GetAsync(Runtime.DbContext, query.TenantId, payroll.DivisionId);
             if (division == null)
             {
-                return new(querySetup, BadRequest($"Unknown payroll payroll division id: {payroll.DivisionId}"));
+                return new(querySetup, BadRequest($"Unknown query division id: {payroll.DivisionId}"));
             }
             querySetup.Division = division;
+
+            // employee (optional)
+            if (query.EmployeeId.HasValue)
+            {
+                var employee = await EmployeeService.GetAsync(Runtime.DbContext, query.TenantId, query.EmployeeId.Value);
+                if (employee == null)
+                {
+                    return new(querySetup, BadRequest($"Unknown query employee id: {query.EmployeeId}"));
+                }
+                querySetup.Employee = employee;
+            }
 
             // user (optional)
             if (userId.HasValue)
@@ -1741,6 +1741,12 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 }
                 querySetup.ClusterSet = clusterSet;
             }
+
+            // culture by priority: query > tenant > system
+            querySetup.Culture =
+                query.Culture ??
+                tenant.Culture ??
+                CultureInfo.CurrentCulture.Name;
 
             return new(querySetup, null);
         }

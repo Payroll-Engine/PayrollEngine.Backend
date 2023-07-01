@@ -71,6 +71,7 @@ public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFie
         parameters.Add(nameof(caseField.OverrideType), caseField.OverrideType);
         parameters.Add(nameof(caseField.CancellationMode), caseField.CancellationMode);
         parameters.Add(nameof(caseField.ValueCreationMode), caseField.ValueCreationMode);
+        parameters.Add(nameof(caseField.Culture), caseField.Culture);
         parameters.Add(nameof(caseField.ValueMandatory), caseField.ValueMandatory);
         parameters.Add(nameof(caseField.Order), caseField.Order);
         parameters.Add(nameof(caseField.StartDateType), caseField.StartDateType);
