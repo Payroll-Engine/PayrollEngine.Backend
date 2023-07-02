@@ -9,7 +9,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payrun parameters")]
 [Route("api/tenants/{tenantId}/payruns/{payrunId}/parameters")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.PayrunParameter)]
 public class PayrunParameterController : Api.Controller.PayrunParameterController
 {
     /// <inheritdoc/>

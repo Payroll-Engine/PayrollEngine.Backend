@@ -1,7 +1,7 @@
-﻿using PayrollEngine.Domain.Model;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+using PayrollEngine.Domain.Model;
 
-namespace PayrollEngine.Api.Core;
+namespace PayrollEngine.Api.Model;
 
 /// <summary>
 /// Query for the payroll case controller
@@ -12,7 +12,7 @@ public class CaseBuildQuery : PayrollQuery, ICultureQuery
     /// The user id
     /// </summary>
     public int? UserId { get; set; }
-    
+
     /// <summary>
     /// The culture name based on RFC 4646
     /// </summary>

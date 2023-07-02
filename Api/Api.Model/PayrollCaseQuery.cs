@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using PayrollEngine.Domain.Model;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace PayrollEngine.Api.Core;
+namespace PayrollEngine.Api.Model;
 
 /// <summary>
 /// Query for the payroll case controller

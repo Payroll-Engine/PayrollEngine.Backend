@@ -10,7 +10,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("National case changes")]
 [Route("api/tenants/{tenantId}/nationalcases/changes")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.NationalCaseChange)]
 public class NationalCaseChangeController : Api.Controller.NationalCaseChangeController
 {
     /// <inheritdoc/>

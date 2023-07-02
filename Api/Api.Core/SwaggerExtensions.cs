@@ -6,7 +6,7 @@ namespace PayrollEngine.Api.Core;
 public static class SwaggerExtensions
 {
     // ReSharper disable once UnusedMethodReturnValue.Global
-    public static IApplicationBuilder UseSwagger(this IApplicationBuilder appBuilder, 
+    public static IApplicationBuilder UseSwagger(this IApplicationBuilder appBuilder,
         string apiDocumentationName, string apiName, string apiVersion, bool darkTheme)
     {
         appBuilder.UseSwagger();
@@ -19,7 +19,10 @@ public static class SwaggerExtensions
             // https://stackoverflow.com/a/64696778 (exception on AdditionalItems field/property?)
             setupAction.ConfigObject.AdditionalItems.Add("syntaxHighlight", false);
 
-            // dark theme
+            // custom css
+            setupAction.InjectStylesheet("/swagger-ui/Swagger.css");
+
+            // dark theme css
             if (darkTheme)
             {
                 setupAction.InjectStylesheet("/swagger-ui/SwaggerDark.css");

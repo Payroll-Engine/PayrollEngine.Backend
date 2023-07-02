@@ -10,7 +10,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Employees")]
 [Route("api/tenants/{tenantId}/employees")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Employee)]
 public class EmployeeController : Api.Controller.EmployeeController
 {
     /// <inheritdoc/>

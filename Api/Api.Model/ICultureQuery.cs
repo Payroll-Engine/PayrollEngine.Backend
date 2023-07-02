@@ -1,5 +1,5 @@
 ﻿// ReSharper disable UnusedMemberInSuper.Global
-namespace PayrollEngine.Api.Core;
+namespace PayrollEngine.Api.Model;
 
 /// <summary>
 /// Represents a culture query

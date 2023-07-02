@@ -9,7 +9,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Scripts")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/scripts")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Script)]
 public class ScriptController : Api.Controller.ScriptController
 {
     /// <inheritdoc/>

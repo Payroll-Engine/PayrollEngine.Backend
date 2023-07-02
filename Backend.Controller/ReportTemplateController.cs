@@ -11,7 +11,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Report templates")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/reports/{reportId}/templates")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.ReportTemplate)]
 public class ReportTemplateController : Api.Controller.ReportTemplateController
 {
     /// <inheritdoc/>

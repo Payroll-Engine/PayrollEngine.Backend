@@ -10,7 +10,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Collector audits")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/collectors/{collectorId}/audits")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.CollectorAudit)]
 public class CollectorAuditController : Api.Controller.CollectorAuditController
 {
     /// <inheritdoc/>

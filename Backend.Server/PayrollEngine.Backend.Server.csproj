@@ -42,7 +42,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\swagger-ui\" />
+		<None Include="wwwroot\*" />
+		<Folder Include="wwwroot\images\" />
+		<Folder Include="wwwroot\swagger-ui\" />
 	</ItemGroup>
 
 </Project>

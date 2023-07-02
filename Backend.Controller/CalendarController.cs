@@ -12,7 +12,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Calendars")]
 [Route("api/tenants/{tenantId}/calendars")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Calendar)]
 public class CalendarController : Api.Controller.CalendarController
 {
     /// <inheritdoc/>

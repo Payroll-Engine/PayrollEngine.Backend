@@ -1,0 +1,9 @@
+﻿/* see https://stackoverflow.com/a/62817980 */
+img[alt="Swagger UI"] {
+    display: block;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    content: url('/images/App.png');
+    max-width: 100%;
+    max-height: 100%;
+}

@@ -6,13 +6,16 @@
 		<Description>Payroll Engine Api Model</Description>
 	</PropertyGroup>
 
-	<!-- help file generation -->
 	<PropertyGroup>
 		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="PayrollEngine.Core" Version="0.5.0-pre-230701-2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Domain\Domain.Model\PayrollEngine.Domain.Model.csproj" />
 	</ItemGroup>
 
 </Project>

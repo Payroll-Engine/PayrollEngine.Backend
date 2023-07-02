@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -19,7 +21,7 @@ public static class LogExtensions
         // start
         appLifetime.ApplicationStarted.Register(() =>
         {
-            Log.Information($"{environment.ApplicationName} started");
+            Log.Information($"{environment.ApplicationName} started on port {GetApplicationPort(appBuilder)}");
             if (Log.IsEnabled(SystemInfoLogEventLevel))
             {
                 Log.Write(SystemInfoLogEventLevel, $"Current culture: {CultureInfo.CurrentCulture}");
@@ -45,6 +47,13 @@ public static class LogExtensions
                 opts.GetLevel = GetLevel(LogEventLevel.Verbose, "Health checks");
             });
         }
+    }
+
+    private static int? GetApplicationPort(IApplicationBuilder appBuilder)
+    {
+        var serverAddressesFeature = appBuilder.ServerFeatures.Get<IServerAddressesFeature>();
+        var address = serverAddressesFeature.Addresses.First().RemoveFromEnd("/");
+        return int.Parse(address.Split(':').Last());
     }
 
     private static void EnrichFromRequest(IDiagnosticContext diagnosticContext, HttpContext httpContext)

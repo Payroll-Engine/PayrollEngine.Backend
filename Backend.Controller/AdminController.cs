@@ -12,7 +12,6 @@ namespace PayrollEngine.Backend.Controller;
 [Produces(ContentType.Json)]
 [ApiControllerName("Administration")]
 [Route("api/admin")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Admin)]
 public class AdminController : PayrollEngine.Api.Core.AdminController
 {
     /// <inheritdoc />

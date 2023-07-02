@@ -14,7 +14,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payrolls")]
 [Route("api/tenants/{tenantId}/payrolls")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Payroll)]
 public class PayrollController : Api.Controller.PayrollController
 {
     /// <inheritdoc/>
@@ -189,7 +188,7 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [ApiOperationId("GetPayrollAvailableCases")]
     public async Task<ActionResult<ApiObject.Case[]>> GetPayrollAvailableCasesAsync(int tenantId,
-        int payrollId, [FromQuery][Required] PayrollCaseQuery query)
+        int payrollId, [FromQuery][Required] ApiObject.PayrollCaseQuery query)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -224,7 +223,7 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("BuildPayrollCase")]
     [QueryIgnore]
     public override async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseAsync(int tenantId, int payrollId,
-        string caseName, [FromQuery][Required] CaseBuildQuery query,
+        string caseName, [FromQuery][Required] ApiObject.CaseBuildQuery query,
         [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<ApiObject.CaseChangeSetup>))] ApiObject.CaseChangeSetup caseChangeSetup = null)
     {
         // tenant check

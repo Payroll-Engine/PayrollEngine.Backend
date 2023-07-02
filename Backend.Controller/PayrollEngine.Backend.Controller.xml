@@ -1341,7 +1341,7 @@
             <param name="evaluationDate">Creation date filter (default: UTC now)</param>
             <returns>The payroll regulations, including the shared regulations</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCasesAsync(System.Int32,System.Int32,PayrollEngine.Api.Core.PayrollCaseQuery)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCasesAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.PayrollCaseQuery)">
             <summary>
             Get active and available cases
             </summary>
@@ -1350,7 +1350,7 @@
             <param name="query">The payroll case query</param>
             <returns>All payroll cases</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.BuildPayrollCaseAsync(System.Int32,System.Int32,System.String,PayrollEngine.Api.Core.CaseBuildQuery,PayrollEngine.Api.Model.CaseChangeSetup)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.BuildPayrollCaseAsync(System.Int32,System.Int32,System.String,PayrollEngine.Api.Model.CaseBuildQuery,PayrollEngine.Api.Model.CaseChangeSetup)">
             <summary>
             Build case with fields and related cases
             </summary>

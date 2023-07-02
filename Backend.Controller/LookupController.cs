@@ -9,7 +9,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Lookups")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/lookups")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Lookup)]
 public class LookupController : Api.Controller.LookupController
 {
     /// <inheritdoc/>

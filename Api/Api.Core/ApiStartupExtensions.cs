@@ -87,7 +87,12 @@ public static class ApiStartupExtensions
         ApiFactory.SetupApiServices(services, configuration);
 
         // controllers
-        services.AddControllers();
+        services.AddControllers(setupAction =>
+        {
+            setupAction.Conventions.Add(new ControllerVisibilityConvention(
+                serverConfiguration.VisibleControllers,
+                serverConfiguration.HiddenControllers));
+        });
 
         // swagger
         services.AddSwaggerGen(setupAction =>
@@ -156,11 +161,8 @@ public static class ApiStartupExtensions
         // configuration
         var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
 
-        // static files used by swagger dark theme css
-        if (serverConfiguration.DarkTheme)
-        {
-            appBuilder.UseStaticFiles();
-        }
+        // dark theme and favicon css
+        appBuilder.UseStaticFiles();
 
         // dev support
         if (environment.IsDevelopment())

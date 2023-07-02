@@ -97,7 +97,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
 
     #region Cases
 
-    protected async Task<ActionResult<ApiObject.Case[]>> GetPayrollAvailableCasesAsync(PayrollCaseQuery query)
+    protected async Task<ActionResult<ApiObject.Case[]>> GetPayrollAvailableCasesAsync(ApiObject.PayrollCaseQuery query)
     {
         try
         {
@@ -205,7 +205,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     }
 
     public virtual async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseAsync(
-        int tenantId, int payrollId, string caseName, CaseBuildQuery query, ApiObject.CaseChangeSetup caseChangeSetup = null)
+        int tenantId, int payrollId, string caseName, ApiObject.CaseBuildQuery query, ApiObject.CaseChangeSetup caseChangeSetup = null)
     {
         // apply path ids to the query
         query.TenantId = tenantId;
@@ -1751,7 +1751,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
 
             string culture = null;
-            if (query is ICultureQuery cultureQuery)
+            if (query is ApiObject.ICultureQuery cultureQuery)
             {
                 culture = cultureQuery.Culture;
             }

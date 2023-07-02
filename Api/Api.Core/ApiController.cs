@@ -29,7 +29,6 @@ public abstract class ApiController : ControllerBase
 
     [HttpOptions]
     [OkResponse]
-    [ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.HttpOptions)]
     [ApiOperationId(nameof(GetOptions))]
     public IActionResult GetOptions()
     {

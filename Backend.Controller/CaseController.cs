@@ -9,7 +9,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Cases")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/cases")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.Case)]
 public class CaseController : Api.Controller.CaseController
 {
     /// <inheritdoc/>

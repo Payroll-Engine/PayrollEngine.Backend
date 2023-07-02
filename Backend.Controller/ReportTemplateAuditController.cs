@@ -10,8 +10,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Report template audits")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/reports/{reportId}/templates/{templateId}/audits")]
-// ReSharper restore StringLiteralTypo
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.ReportTemplateAudit)]
 public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditController
 {
     /// <inheritdoc/>

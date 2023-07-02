@@ -12,7 +12,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Global case values")]
 [Route("api/tenants/{tenantId}/globalcases")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.GlobalCaseValue)]
 public class GlobalCaseValueController : Api.Controller.GlobalCaseValueController
 {
     /// <inheritdoc/>

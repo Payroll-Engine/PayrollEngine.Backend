@@ -39,4 +39,10 @@ public class PayrollServerConfiguration
 
     /// <summary>The XML comment files</summary>
     public string[] XmlCommentFileNames { get; set; }
+
+    /// <summary>The visible controllers</summary>
+    public string[] VisibleControllers { get; set; }
+
+    /// <summary>The hidden controllers</summary>
+    public string[] HiddenControllers { get; set; }
 }

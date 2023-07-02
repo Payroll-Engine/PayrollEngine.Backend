@@ -382,6 +382,31 @@
         <member name="M:PayrollEngine.Api.Model.CaseAudit.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Api.Model.CaseBuildQuery">
+            <summary>
+            Query for the payroll case controller
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseBuildQuery.UserId">
+            <summary>
+            The user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseBuildQuery.Culture">
+            <summary>
+            The culture name based on RFC 4646
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseBuildQuery.CaseName">
+            <summary>
+            The case name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseBuildQuery.ClusterSetName">
+            <summary>
+            The cluster set name (optional)
+            </summary>
+        </member>
         <member name="T:PayrollEngine.Api.Model.CaseChange">
             <summary>
             Case change with multiple case values of one case type
@@ -1865,6 +1890,16 @@
         <member name="M:PayrollEngine.Api.Model.Employee.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Api.Model.ICultureQuery">
+            <summary>
+            Represents a culture query
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ICultureQuery.Culture">
+            <summary>
+            The culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="T:PayrollEngine.Api.Model.LocalizationAttribute">
             <summary>Localization attribute</summary>
         </member>
@@ -2243,6 +2278,36 @@
         </member>
         <member name="M:PayrollEngine.Api.Model.Payroll.ToString">
             <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.PayrollCaseQuery">
+            <summary>
+            Query for the payroll case controller
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.UserId">
+            <summary>
+            The user id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.CaseType">
+            <summary>
+            The case type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.Culture">
+            <summary>
+            The culture name based on RFC 4646
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.CaseNames">
+            <summary>
+            The case names (optional)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.ClusterSetName">
+            <summary>
+            The cluster set name (optional)
+            </summary>
         </member>
         <member name="T:PayrollEngine.Api.Model.PayrollLayer">
             <summary>

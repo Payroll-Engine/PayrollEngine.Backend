@@ -9,7 +9,6 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Webhook messages")]
 [Route("api/tenants/{tenantId}/webhooks/{webhookId}/messages")]
-[ApiExplorerSettings(IgnoreApi = ApiServiceIgnore.WebhookMessage)]
 public class WebhookMessageController : Api.Controller.WebhookMessageController
 {
     /// <inheritdoc/>
