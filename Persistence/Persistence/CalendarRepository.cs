@@ -22,7 +22,7 @@ public class CalendarRepository : ChildDomainRepository<Calendar>, ICalendarRepo
         parameters.Add(nameof(calendar.PeriodTimeUnit), calendar.PeriodTimeUnit);
         parameters.Add(nameof(calendar.TimeMap), calendar.TimeMap);
         parameters.Add(nameof(calendar.FirstMonthOfYear), calendar.FirstMonthOfYear);
-        parameters.Add(nameof(calendar.MonthDayCount), calendar.MonthDayCount);
+        parameters.Add(nameof(calendar.PeriodDayCount), calendar.PeriodDayCount);
         parameters.Add(nameof(calendar.YearWeekRule), calendar.YearWeekRule);
         parameters.Add(nameof(calendar.FirstDayOfWeek), calendar.FirstDayOfWeek);
         parameters.Add(nameof(calendar.WeekMode), calendar.WeekMode);

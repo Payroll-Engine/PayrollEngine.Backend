@@ -37,8 +37,8 @@ public class Calendar : DomainObjectBase, INamedObject, IDomainAttributeObject, 
     /// <summary>The first month of a year  (default: january)</summary>
     public Month? FirstMonthOfYear { get; set; } = Month.January;
 
-    /// <summary>Override the effective month day count</summary>
-    public decimal? MonthDayCount { get; set; }
+    /// <summary>Override the effective period day count</summary>
+    public decimal? PeriodDayCount { get; set; }
 
     /// <summary>Override the calendar year start week rule</summary>
     public CalendarWeekRule? YearWeekRule { get; set; }

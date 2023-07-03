@@ -105,7 +105,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // total days in year
-        var yearTotalDayCount = GetPeriodDayCount(period);
+        var yearTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
         if (yearTotalDayCount <= 0)
         {
             return null;
@@ -138,7 +138,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // total days in semi year
-        var semiYearTotalDayCount = GetPeriodDayCount(period);
+        var semiYearTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
         if (semiYearTotalDayCount <= 0)
         {
             return null;
@@ -171,7 +171,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // total days in quarter
-        var quarterTotalDayCount = GetPeriodDayCount(period);
+        var quarterTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
         if (quarterTotalDayCount <= 0)
         {
             return null;
@@ -204,7 +204,7 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // total days in bi month
-        var biMonthTotalDayCount = GetPeriodDayCount(period);
+        var biMonthTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
         if (biMonthTotalDayCount <= 0)
         {
             return null;
@@ -243,11 +243,8 @@ public class PayrollCalculator : IPayrollCalculator
         }
 
         // total days in month
-        var monthTotalDayCount = (decimal)DateTime.DaysInMonth(periodStart.Year, periodStart.Month);
-        if (Calendar.MonthDayCount.HasValue)
-        {
-            monthTotalDayCount = Calendar.MonthDayCount.Value;
-        }
+        var monthTotalDayCount = Calendar.PeriodDayCount ??
+                                 DateTime.DaysInMonth(periodStart.Year, periodStart.Month);
         if (monthTotalDayCount <= 0)
         {
             return null;
@@ -262,7 +259,7 @@ public class PayrollCalculator : IPayrollCalculator
     }
 
     /// <summary>
-    /// Calculate the semi month period value
+    /// Calculate the lunisolar month period value
     /// </summary>
     /// <param name="calculation">The calculation</param>
     /// <returns>The case semi month period value</returns>
@@ -279,11 +276,18 @@ public class PayrollCalculator : IPayrollCalculator
             return null;
         }
 
+        // total days in lunisolar month
+        var lunisolarMonthTotalDayCount = Calendar.PeriodDayCount ?? Date.DaysInLunisolarMonth;
+        if (lunisolarMonthTotalDayCount <= 0)
+        {
+            return null;
+        }
+
         // case value
         var caseValue = MapPeriodValue(calculation, Date.LunisolarMonthsInYear);
 
         // lunisolar month value: scale base value with the day factor
-        var monthValue = caseValue / Date.DaysInLunisolarMonth * monthDayCount;
+        var monthValue = caseValue / lunisolarMonthTotalDayCount * monthDayCount;
         return monthValue;
     }
 
@@ -309,11 +313,12 @@ public class PayrollCalculator : IPayrollCalculator
         // total semi month days
         var daysInMonth = DateTime.DaysInMonth(periodStart.Year, periodStart.Month);
         var secondHalfStartDay = Date.DaysInSemiMonth + 1;
-        var semiMonthTotalDayCount = periodStart.Day < secondHalfStartDay ?
-            // first half: always 15
-            Date.DaysInSemiMonth :
-            // second half: 13/14 (february) or 15 (months with 30 days) or 16 (months with 31 days)
-            daysInMonth - Date.DaysInSemiMonth;
+        var semiMonthTotalDayCount = Calendar.PeriodDayCount ??
+                                     (periodStart.Day < secondHalfStartDay ?
+                                        // first half: always 15
+                                        Date.DaysInSemiMonth :
+                                        // second half: 13/14 (february) or 15 (months with 30 days) or 16 (months with 31 days)
+                                        daysInMonth - Date.DaysInSemiMonth);
         if (semiMonthTotalDayCount <= 0)
         {
             return null;
@@ -328,15 +333,22 @@ public class PayrollCalculator : IPayrollCalculator
     }
 
     /// <summary>
-    /// Calculate the bi week period value
+    /// Calculate the bi-week period value
     /// </summary>
     /// <param name="calculation">The calculation</param>
-    /// <returns>The case bi week period value</returns>
+    /// <returns>The case bi-week period value</returns>
     private decimal? CalculateBiWeekValue(CaseValueCalculation calculation)
     {
-        // bi week days
+        // bi-week days
         var biWeekDayCount = GetPeriodWeekDayCount(calculation, Date.DaysInBiWeek);
         if (biWeekDayCount <= 0)
+        {
+            return null;
+        }
+
+        // total days in bi-week
+        var biWeekTotalDayCount = Calendar.PeriodDayCount ?? Date.DaysInBiWeek;
+        if (biWeekTotalDayCount <= 0)
         {
             return null;
         }
@@ -344,8 +356,8 @@ public class PayrollCalculator : IPayrollCalculator
         // case value
         var caseValue = MapPeriodValue(calculation, Date.BiWeeksInYear);
 
-        // bi week value: scale base value with the day factor
-        var biWeekValue = caseValue / Date.DaysInBiWeek * biWeekDayCount;
+        // bi-week value: scale base value with the day factor
+        var biWeekValue = caseValue / biWeekTotalDayCount * biWeekDayCount;
         return biWeekValue;
     }
 
@@ -363,11 +375,18 @@ public class PayrollCalculator : IPayrollCalculator
             return null;
         }
 
+        // total days in week
+        var weekTotalDayCount = Calendar.PeriodDayCount ?? Date.DaysInWeek;
+        if (weekTotalDayCount <= 0)
+        {
+            return null;
+        }
+
         // case value
         var caseValue = MapPeriodValue(calculation, Date.WeeksInYear);
 
         // week value: scale base value with the day factor
-        var weekValue = caseValue / Date.DaysInWeek * weekDayCount;
+        var weekValue = caseValue / weekTotalDayCount * weekDayCount;
         return weekValue;
     }
 

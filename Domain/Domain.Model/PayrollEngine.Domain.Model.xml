@@ -232,8 +232,8 @@
         <member name="P:PayrollEngine.Domain.Model.Calendar.FirstMonthOfYear">
             <summary>The first month of a year  (default: january)</summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Calendar.MonthDayCount">
-            <summary>Override the effective month day count</summary>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.PeriodDayCount">
+            <summary>Override the effective period day count</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Calendar.YearWeekRule">
             <summary>Override the calendar year start week rule</summary>
