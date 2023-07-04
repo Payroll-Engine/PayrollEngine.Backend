@@ -20,7 +20,7 @@ namespace PayrollEngine.Api.Core
         /// </summary>
         /// <param name="visibleControllers">List of visible controller name masks (wildcards: *?)</param>
         /// <param name="hiddenControllers">List of hidden controller name masks (wildcards: *?)</param>
-        public ControllerVisibilityConvention(IEnumerable<string> visibleControllers = null,
+        internal ControllerVisibilityConvention(IEnumerable<string> visibleControllers = null,
             IEnumerable<string> hiddenControllers = null)
         {
             VisibleControllers = visibleControllers != null ? new(visibleControllers) : new();

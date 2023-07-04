@@ -4423,7 +4423,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateLunisoralMonthValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <summary>
-            Calculate the semi month period value
+            Calculate the lunisolar month period value
             </summary>
             <param name="calculation">The calculation</param>
             <returns>The case semi month period value</returns>
@@ -4437,10 +4437,10 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateBiWeekValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <summary>
-            Calculate the bi week period value
+            Calculate the bi-week period value
             </summary>
             <param name="calculation">The calculation</param>
-            <returns>The case bi week period value</returns>
+            <returns>The case bi-week period value</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateWeekValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <summary>
