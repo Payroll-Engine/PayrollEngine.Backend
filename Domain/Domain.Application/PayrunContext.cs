@@ -42,23 +42,23 @@ internal sealed class PayrunContext
     #region Calendar and Culture
 
     internal string CalendarName { get; set; }
-    internal string Culture => cultures.Peek();
+    internal string PayrollCulture => payrollCultures.Peek();
 
-    private readonly Stack<string> cultures = new();
+    private readonly Stack<string> payrollCultures = new();
 
-    internal void PushCulture(string culture)
+    internal void PushPayrollCulture(string culture)
     {
-        cultures.Push(culture);
+        payrollCultures.Push(culture);
     }
 
     // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
-    internal void PopCulture(string culture)
+    internal void PopPayrollCulture(string culture)
     {
-        if (!cultures.Any() || !string.Equals(Culture, culture))
+        if (!payrollCultures.Any() || !string.Equals(PayrollCulture, culture))
         {
             throw new InvalidOperationException();
         }
-        cultures.Pop();
+        payrollCultures.Pop();
     }
 
     #endregion

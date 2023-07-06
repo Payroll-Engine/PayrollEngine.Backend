@@ -46,8 +46,8 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     public string ReportName => Report.Name;
 
     /// <inheritdoc />
-    public override string Culture => 
-        ReportRequest.Culture ?? base.Culture;
+    public override string UserCulture => 
+        ReportRequest.Culture ?? base.UserCulture;
 
     /// <inheritdoc />
     public object GetReportAttribute(string attributeName) =>
@@ -215,7 +215,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
         foreach (var lookupValue in lookupValues)
         {
             // localized lookup json value
-            var value = Culture.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
+            var value = UserCulture.GetLocalization(lookupValue.ValueLocalizations, lookupValue.Value);
             if (string.IsNullOrWhiteSpace(value))
             {
                 continue;

@@ -95,14 +95,14 @@ public class PayrunProcessor : FunctionToolBase
             Tenant.Culture ??
             // priority 3: system culture
             CultureInfo.CurrentCulture.Name;
-        context.PushCulture(cultureName);
+        context.PushPayrollCulture(cultureName);
 
         // calendar
         var calendarName = context.Division.Calendar ?? Tenant.Calendar;
         context.CalendarName = calendarName;
 
         // calculator
-        context.Calculator = await GetCalculatorAsync(Tenant.Id, context.User.Id, context.Culture, context.CalendarName);
+        context.Calculator = await GetCalculatorAsync(Tenant.Id, context.User.Id, context.PayrollCulture, context.CalendarName);
 
         // create payrun job and retro payrun jobs
         context.PayrunJob = PayrunJobFactory.CreatePayrunJob(jobInvocation, context.Division.Id, payrollId, context.Calculator);
@@ -547,7 +547,7 @@ public class PayrunProcessor : FunctionToolBase
             Tenant.Culture ??
             // priority 4: system culture
             CultureInfo.CurrentCulture.Name;
-        context.PushCulture(culture);
+        context.PushPayrollCulture(culture);
 
         // [calendar by priority]: employee > division > tenant</remarks>
         var calendarName =
@@ -560,7 +560,7 @@ public class PayrunProcessor : FunctionToolBase
         context.CalendarName = calendarName;
 
         // payroll calculator based on the employee culture and calendar
-        var employeeCalculator = await GetCalculatorAsync(Tenant.Id, context.User.Id, context.Culture, context.CalendarName);
+        var employeeCalculator = await GetCalculatorAsync(Tenant.Id, context.User.Id, context.PayrollCulture, context.CalendarName);
         var prevCalculator = context.Calculator;
         context.Calculator = employeeCalculator;
         caseValueProvider.PushCalculator(employeeCalculator);
@@ -639,7 +639,7 @@ public class PayrunProcessor : FunctionToolBase
                         !string.Equals(mostDerivedWageType.Calendar, context.CalendarName))
                     {
                         wageTypeCalculator = await GetCalculatorAsync(Tenant.Id, context.User.Id,
-                            context.Culture, mostDerivedWageType.Calendar);
+                            context.PayrollCulture, mostDerivedWageType.Calendar);
                         caseValueProvider.PushCalculator(wageTypeCalculator);
                         context.Calculator = wageTypeCalculator;
                     }
@@ -774,7 +774,7 @@ public class PayrunProcessor : FunctionToolBase
         context.Calculator = prevCalculator;
 
         // restore culture
-        context.PopCulture(culture);
+        context.PopPayrollCulture(culture);
 
         // set results creation date
         payrollResult.SetResultDate(context.EvaluationDate);
@@ -924,7 +924,7 @@ public class PayrunProcessor : FunctionToolBase
             var isAvailable = scriptController.IsEmployeeAvailable(new()
             {
                 DbContext = Settings.DbContext,
-                Culture = context.Culture,
+                PayrollCulture = context.PayrollCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,

@@ -461,7 +461,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             var valid = new CaseScriptController().CaseValidate(validateScripts, new()
             {
                 DbContext = Settings.DbContext,
-                Culture = Culture,
+                UserCulture = UserCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,
@@ -510,7 +510,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             var valid = new CaseRelationScriptController().CaseRelationValidate(validateScripts, new()
             {
                 DbContext = Settings.DbContext,
-                Culture = Culture,
+                UserCulture = UserCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,

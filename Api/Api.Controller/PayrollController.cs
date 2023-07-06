@@ -545,7 +545,6 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 // case field
                 var caseValueReference = new CaseValueReference(caseFieldName);
                 var caseFields = await Service.GetDerivedCaseFieldsAsync(Runtime.DbContext, query, new[] { caseValueReference.CaseFieldName });
-                //var caseFields = await CaseFieldService.GetRegulationCaseFieldsAsync(query.TenantId, new[] { caseValueReference.CaseFieldName });
                 var caseFieldId = caseFields.FirstOrDefault()?.Id;
                 if (!caseFieldId.HasValue)
                 {

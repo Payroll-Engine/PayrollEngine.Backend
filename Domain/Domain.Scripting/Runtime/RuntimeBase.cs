@@ -39,7 +39,7 @@ public abstract class RuntimeBase : IRuntime
     #region Culture
 
     /// <inheritdoc />
-    public virtual string Culture => Settings.Culture;
+    public virtual string UserCulture => Settings.UserCulture;
 
     #endregion
 

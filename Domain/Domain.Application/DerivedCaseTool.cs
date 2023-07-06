@@ -56,12 +56,14 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
     /// <summary>
     /// Case culture
-    /// <remarks>[culture by priority]: tool-setting > system</remarks>
+    /// <remarks>[culture by priority]: tool-setting > user > system</remarks>
     /// </summary>
-    protected string Culture =>
+    protected string UserCulture =>
         // priority 1: setting culture
         Settings.Culture ??
-        // priority 2: system culture
+        // priority 2: user culture
+        User.Culture ??
+        // priority 3: system culture
         CultureInfo.CurrentCulture.Name;
 
     /// <summary>
@@ -78,7 +80,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
-            culture: new(Culture), calendar: settings.Calendar);
+            culture: new(UserCulture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new()
@@ -107,7 +109,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                                       throw new ArgumentNullException(nameof(nationalCaseValueRepository));
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
-            culture: new(Culture), calendar: settings.Calendar);
+            culture: new(UserCulture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -141,7 +143,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
-            culture: new(Culture), calendar: settings.Calendar);
+            culture: new(UserCulture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
@@ -181,7 +183,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
-            culture: new(Culture), calendar: settings.Calendar);
+            culture: new(UserCulture), calendar: settings.Calendar);
         CaseValueProvider = new CaseValueProvider(Employee,
             new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
             new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),

@@ -227,7 +227,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             var caseBuild = new CaseScriptController().CaseBuild(buildScripts, new()
             {
                 DbContext = Settings.DbContext,
-                Culture = Culture,
+                UserCulture = UserCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,
@@ -264,7 +264,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             var build = new CaseRelationScriptController().CaseRelationBuild(buildScripts, new()
             {
                 DbContext = Settings.DbContext,
-                Culture = Culture,
+                UserCulture = UserCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = User,

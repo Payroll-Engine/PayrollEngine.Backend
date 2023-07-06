@@ -100,7 +100,7 @@ internal sealed class PayrunProcessorRegulation
             new()
             {
                 DbContext = Settings.DbContext,
-                Culture = context.Culture,
+                PayrollCulture = context.PayrollCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -166,7 +166,7 @@ internal sealed class PayrunProcessorRegulation
             var result = new WageTypeScriptController().GetValue(new()
             {
                 DbContext = Settings.DbContext,
-                Culture = context.Culture,
+                PayrollCulture = context.PayrollCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -232,7 +232,7 @@ internal sealed class PayrunProcessorRegulation
             var retroJobs = new WageTypeScriptController().Result(resultSet.Value, new()
             {
                 DbContext = Settings.DbContext,
-                Culture = context.Culture,
+                PayrollCulture = context.PayrollCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -298,7 +298,7 @@ internal sealed class PayrunProcessorRegulation
             var retroJobs = new CollectorScriptController().Start(new()
             {
                 DbContext = Settings.DbContext,
-                Culture = context.Culture,
+                PayrollCulture = context.PayrollCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -348,7 +348,7 @@ internal sealed class PayrunProcessorRegulation
             var result = new CollectorScriptController().ApplyValue(wageTypeResult, new()
             {
                 DbContext = Settings.DbContext,
-                Culture = context.Culture,
+                PayrollCulture = context.PayrollCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -407,7 +407,7 @@ internal sealed class PayrunProcessorRegulation
             var retroJobs = new CollectorScriptController().End(new()
             {
                 DbContext = Settings.DbContext,
-                Culture = context.Culture,
+                PayrollCulture = context.PayrollCulture,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,

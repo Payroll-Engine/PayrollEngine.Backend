@@ -382,7 +382,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     /// <param name="parentId">The parent id</param>
     /// <returns>Http bad request</returns>
     protected BadRequestObjectResult InvalidParentRequest(int parentId) =>
-        BadRequest($"Invalid {ParentObjectName} id {parentId}");
+        BadRequest($"Invalid {ParentObjectName.FirstCharacterToLower()} id {parentId}");
 
     /// <summary>
     /// Parent not available request
@@ -390,5 +390,5 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     /// <param name="parentId">The parent id</param>
     /// <returns>Http bad request</returns>
     protected BadRequestObjectResult ParentNotFoundRequest(int parentId) =>
-        BadRequest($"Not found {ParentObjectName} with id {parentId}");
+        BadRequest($"Not found {ParentObjectName.FirstCharacterToLower()} with id {parentId}");
 }

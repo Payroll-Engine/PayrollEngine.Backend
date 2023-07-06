@@ -206,7 +206,7 @@ public class DerivedCaseCollector : DerivedCaseTool
                 var available = new CaseScriptController().CaseAvailable(new()
                 {
                     DbContext = Settings.DbContext,
-                    Culture = Culture,
+                    UserCulture = culture,
                     FunctionHost = FunctionHost,
                     Tenant = Tenant,
                     User = User,

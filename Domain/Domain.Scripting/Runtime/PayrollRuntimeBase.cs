@@ -61,12 +61,6 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     public string EmployeeIdentifier => Employee?.Identifier;
 
     /// <inheritdoc />
-    public string EmployeeCulture => Employee?.Culture;
-
-    /// <inheritdoc />
-    public string EmployeeCalendar => Employee?.Calendar;
-
-    /// <inheritdoc />
     public object GetEmployeeAttribute(string attributeName) =>
         Employee?.Attributes?.GetValue<object>(attributeName);
 
@@ -76,6 +70,13 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
 
     /// <inheritdoc />
     public int PayrollId => Payroll.Id;
+
+    #endregion
+
+    #region Culture
+
+    /// <inheritdoc />
+    public virtual string PayrollCulture => Settings.PayrollCulture;
 
     #endregion
 

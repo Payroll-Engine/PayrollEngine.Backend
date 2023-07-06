@@ -183,17 +183,19 @@ public class ReportProcessor : ReportTool
     private ReportRuntimeSettings GetRuntimeSettings(User user, ReportSet report, ReportRequest request,
         IApiControllerContext controllerContext)
     {
-        // [culture by priority]: report-request > system</remarks>
+        // [culture by priority]: report-request > user> system</remarks>
         var culture =
             // priority 1: report request culture
             request.Culture ??
-            // priority 2: system culture
+            // priority 2: user culture
+            user.Culture ??
+            // priority 3: system culture
             CultureInfo.CurrentCulture.Name;
 
         return new()
         {
             DbContext = Settings.DbContext,
-            Culture = culture,
+            UserCulture = culture,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = user,
