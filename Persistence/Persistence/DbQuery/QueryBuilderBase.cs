@@ -4,6 +4,7 @@ using Microsoft.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.UriParser;
 using Microsoft.OData.UriParser.Aggregation;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence.DbQuery;
 
@@ -176,6 +177,29 @@ internal abstract class QueryBuilderBase
         try
         {
             selectClause = parser.ParseSelectAndExpand();
+            // ensure object id is always selected
+            if (selectClause != null && !selectClause.AllSelected)
+            {
+                var hasId = false;
+                foreach (var selectedItem in selectClause.SelectedItems)
+                {
+                    if (selectedItem is not PathSelectItem pathSelectItem)
+                    {
+                        continue;
+                    }
+                    var identifier = pathSelectItem.SelectedPath.FirstSegment.Identifier;
+                    if (!string.Equals(identifier, nameof(IDomainObject.Id), StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
+                    hasId = true;
+                    break;
+                }
+                if (!hasId)
+                {
+                    throw new QueryException($"Query select error: missing {nameof(IDomainObject.Id)}");
+                }
+            }
         }
         catch (ODataException exception)
         {
