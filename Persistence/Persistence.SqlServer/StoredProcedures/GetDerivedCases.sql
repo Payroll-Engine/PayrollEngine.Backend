@@ -34,7 +34,9 @@ CREATE PROCEDURE dbo.[GetDerivedCases]
   -- the include clusters: JSON array of cluster names VARCHAR(128)
   @includeClusters AS VARCHAR(MAX) = NULL,
   -- the exclude clusters: JSON array of cluster names VARCHAR(128)
-  @excludeClusters AS VARCHAR(MAX) = NULL
+  @excludeClusters AS VARCHAR(MAX) = NULL,
+  -- hidden case filter
+  @hidden AS bit = NULL
 AS
 BEGIN
   -- SET NOCOUNT ON added to prevent extra result sets from
@@ -84,12 +86,20 @@ BEGIN
   -- active cases only
   WHERE dbo.[Case].[Status] = 0
     AND dbo.[Case].[Created] < @createdBefore
+    -- hidden filter
+    AND (
+      @hidden IS NULL
+      OR dbo.[Case].[Hidden] = @hidden
+      )
+    -- case type filter
     AND (
       @caseType IS NULL
       OR dbo.[Case].[CaseType] = @caseType
       )
+    -- clusters filter
     AND ((@includeClusters IS NULL AND @excludeClusters IS NULL)
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[Case].[Clusters]) = 1)
+    -- case names filter
     AND (
       @caseNames IS NULL
       OR LOWER(dbo.[Case].[Name]) IN (

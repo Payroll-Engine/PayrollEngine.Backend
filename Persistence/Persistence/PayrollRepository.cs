@@ -64,9 +64,9 @@ public class PayrollRepository : ChildDomainRepository<Payroll>, IPayrollReposit
 
     /// <inheritdoc/>
     public async Task<IEnumerable<Case>> GetDerivedCasesAsync(IDbContext context, PayrollQuery query, CaseType? caseType = null,
-        IEnumerable<string> caseNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
+        IEnumerable<string> caseNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null, bool? hidden = null) =>
         await new PayrollRepositoryCaseCommand(context).GetDerivedCasesAsync(query, caseType,
-            caseNames, overrideType, clusterSet);
+            caseNames, overrideType, clusterSet, hidden);
 
     /// <inheritdoc/>
     public async Task<IEnumerable<ChildCaseField>> GetDerivedCaseFieldsAsync(IDbContext context, PayrollQuery query,

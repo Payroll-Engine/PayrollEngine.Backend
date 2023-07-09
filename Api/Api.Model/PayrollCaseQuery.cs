@@ -29,6 +29,11 @@ public class PayrollCaseQuery : PayrollQuery, ICultureQuery
     public string Culture { get; set; }
 
     /// <summary>
+    /// Hidden case (default: false)
+    /// </summary>
+    public bool? Hidden { get; set; }
+
+    /// <summary>
     /// The case names (optional)
     /// </summary>
     // ReSharper disable once CollectionNeverUpdated.Global

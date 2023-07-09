@@ -44,6 +44,16 @@ public class CaseAudit : ScriptAuditDomainObject, IDomainAttributeObject
     public Dictionary<string, string> DescriptionLocalizations { get; set; }
 
     /// <summary>
+    /// The default case change reason
+    /// </summary>
+    public string DefaultReason { get; set; }
+
+    /// <summary>
+    /// The localized default case change reasons
+    /// </summary>
+    public Dictionary<string, string> DefaultReasonLocalizations { get; set; }
+
+    /// <summary>
     /// The base case name
     /// </summary>
     public string BaseCase { get; set; }
@@ -62,16 +72,11 @@ public class CaseAudit : ScriptAuditDomainObject, IDomainAttributeObject
     /// The cancellation type
     /// </summary>
     public CaseCancellationType CancellationType { get; set; }
-
+    
     /// <summary>
-    /// The default case change reason
+    /// Hidden case (default: false)
     /// </summary>
-    public string DefaultReason { get; set; }
-
-    /// <summary>
-    /// The localized default case change reasons
-    /// </summary>
-    public Dictionary<string, string> DefaultReasonLocalizations { get; set; }
+    public bool Hidden { get; set; }
 
     /// <summary>
     /// The expression used to build a case

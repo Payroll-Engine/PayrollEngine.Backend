@@ -31,6 +31,7 @@ public class CaseAuditRepository : AuditChildDomainRepository<CaseAudit>, ICaseA
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.CancellationType), audit.CancellationType);
         parameters.Add(nameof(audit.AvailableExpression), audit.AvailableExpression);
+        parameters.Add(nameof(audit.Hidden), audit.Hidden);
         parameters.Add(nameof(audit.BuildExpression), audit.BuildExpression);
         parameters.Add(nameof(audit.ValidateExpression), audit.ValidateExpression);
         parameters.Add(nameof(audit.Lookups), JsonSerializer.SerializeList(audit.Lookups));

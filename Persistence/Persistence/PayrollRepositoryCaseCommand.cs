@@ -16,7 +16,8 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
     }
 
     internal async Task<IEnumerable<Case>> GetDerivedCasesAsync(PayrollQuery query, CaseType? caseType = null,
-        IEnumerable<string> caseNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null)
+        IEnumerable<string> caseNames = null, OverrideType? overrideType = null,
+        ClusterSet clusterSet = null, bool? hidden = null)
     {
         // query check
         if (query == null)
@@ -74,6 +75,10 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
         {
             parameters.Add(DbSchema.ParameterGetDerivedCases.CaseNames,
                 System.Text.Json.JsonSerializer.Serialize(names));
+        }
+        if (hidden.HasValue)
+        {
+            parameters.Add(DbSchema.ParameterGetDerivedCases.Hidden, hidden.Value);
         }
         parameters.Add(DbSchema.ParameterGetDerivedCases.RegulationDate, query.RegulationDate);
         parameters.Add(DbSchema.ParameterGetDerivedCases.CreatedBefore, query.EvaluationDate);

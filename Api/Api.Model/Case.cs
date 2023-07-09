@@ -74,6 +74,11 @@ public class Case : ApiObjectBase
     /// The cancellation type
     /// </summary>
     public CaseCancellationType CancellationType { get; set; }
+    
+    /// <summary>
+    /// Hidden case (default: false)
+    /// </summary>
+    public bool Hidden { get; set; }
 
     /// <summary>
     /// The expression used to build a case

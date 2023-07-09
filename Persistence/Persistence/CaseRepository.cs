@@ -65,6 +65,7 @@ public class CaseRepository : ScriptTrackChildDomainRepository<Case, CaseAudit>,
         parameters.Add(nameof(@case.BaseCaseFields), JsonSerializer.SerializeList(@case.BaseCaseFields));
         parameters.Add(nameof(@case.OverrideType), @case.OverrideType);
         parameters.Add(nameof(@case.CancellationType), @case.CancellationType);
+        parameters.Add(nameof(@case.Hidden), @case.Hidden);
         parameters.Add(nameof(@case.AvailableExpression), @case.AvailableExpression);
         parameters.Add(nameof(@case.BuildExpression), @case.BuildExpression);
         parameters.Add(nameof(@case.ValidateExpression), @case.ValidateExpression);

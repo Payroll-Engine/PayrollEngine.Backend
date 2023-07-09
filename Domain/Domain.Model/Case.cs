@@ -87,6 +87,11 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
     public CaseCancellationType CancellationType { get; set; }
 
     /// <summary>
+    /// Hidden case (default: false)
+    /// </summary>
+    public bool Hidden { get; set; }
+
+    /// <summary>
     /// The expression used to build a case
     /// </summary>
     public string AvailableExpression { get; set; }
@@ -176,6 +181,7 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
             BaseCaseFields = BaseCaseFields,
             OverrideType = OverrideType,
             CancellationType = CancellationType,
+            Hidden = Hidden,
             AvailableExpression = AvailableExpression,
             BuildExpression = BuildExpression,
             ValidateExpression = ValidateExpression,
@@ -214,6 +220,7 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
         BaseCaseFields = audit.BaseCaseFields;
         OverrideType = audit.OverrideType;
         CancellationType = audit.CancellationType;
+        Hidden = audit.Hidden;
         AvailableExpression = audit.AvailableExpression;
         BuildExpression = audit.BuildExpression;
         ValidateExpression = audit.ValidateExpression;

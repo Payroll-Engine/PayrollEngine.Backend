@@ -186,10 +186,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             query.Culture ??= CultureInfo.CurrentCulture.Name;
             var cases = query.CaseType switch
             {
-                CaseType.Global => await collector.GetAvailableGlobalCasesAsync(query.Culture, query.CaseNames),
-                CaseType.National => await collector.GetAvailableNationalCasesAsync(query.Culture, query.CaseNames),
-                CaseType.Company => await collector.GetAvailableCompanyCasesAsync(query.Culture, query.CaseNames),
-                CaseType.Employee => await collector.GetAvailableEmployeeCasesAsync(query.Culture, query.CaseNames),
+                CaseType.Global => await collector.GetAvailableGlobalCasesAsync(query.Culture, query.CaseNames, query.Hidden),
+                CaseType.National => await collector.GetAvailableNationalCasesAsync(query.Culture, query.CaseNames, query.Hidden),
+                CaseType.Company => await collector.GetAvailableCompanyCasesAsync(query.Culture, query.CaseNames, query.Hidden),
+                CaseType.Employee => await collector.GetAvailableEmployeeCasesAsync(query.Culture, query.CaseNames, query.Hidden),
                 _ => throw new ArgumentOutOfRangeException(nameof(query.CaseType), query.CaseType, null)
             };
             return new CaseMap().ToApi(cases);
@@ -905,8 +905,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     #region Payroll Regulation Items
 
     protected async Task<ActionResult<ApiObject.Case[]>> GetPayrollCasesAsync(
-        DomainObject.PayrollQuery query,
-        CaseType? caseType, string[] caseNames, OverrideType? overrideType, string clusterSetName)
+        DomainObject.PayrollQuery query, CaseType? caseType, string[] caseNames, 
+        OverrideType? overrideType, string clusterSetName, bool? hidden = null)
     {
         try
         {
@@ -942,7 +942,8 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
                 caseType: caseType,
                 caseNames: caseNames,
                 overrideType: overrideType,
-                clusterSet: querySetup.ClusterSet);
+                clusterSet: querySetup.ClusterSet,
+                hidden: hidden);
 
             // select the most derived collector by name
             var casesByNames = cases.ToLookup(c => c.Name, c => c);

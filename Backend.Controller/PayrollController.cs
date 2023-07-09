@@ -435,7 +435,7 @@ public class PayrollController : Api.Controller.PayrollController
         {
             return tenantResult;
         }
-        return await base.GetPayrollCasesAsync(
+        return await GetPayrollCasesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -443,8 +443,10 @@ public class PayrollController : Api.Controller.PayrollController
                 RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             },
-            caseType, caseNames,
-            overrideType, clusterSetName);
+            caseType: caseType,
+            caseNames: caseNames,
+            overrideType: overrideType,
+            clusterSetName: clusterSetName);
     }
 
     /// <summary>

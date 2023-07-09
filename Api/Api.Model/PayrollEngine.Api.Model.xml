@@ -226,6 +226,11 @@
             The cancellation type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Case.Hidden">
+            <summary>
+            Hidden case (default: false)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Case.AvailableExpression">
             <summary>
             The expression used to build a case
@@ -2297,6 +2302,11 @@
         <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.Culture">
             <summary>
             The culture name based on RFC 4646
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.Hidden">
+            <summary>
+            Hidden case (default: false)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollCaseQuery.CaseNames">

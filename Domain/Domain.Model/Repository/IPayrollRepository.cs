@@ -33,9 +33,11 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
     /// <param name="caseNames">The case names (default: all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
     /// <param name="clusterSet">The cluster set</param>
+    /// <param name="hidden">Hidden cases (default: all)</param>
     /// <returns>The derived cases</returns>
     Task<IEnumerable<Case>> GetDerivedCasesAsync(IDbContext context, PayrollQuery query,
-        CaseType? caseType = null, IEnumerable<string> caseNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null);
+        CaseType? caseType = null, IEnumerable<string> caseNames = null, 
+        OverrideType? overrideType = null, ClusterSet clusterSet = null, bool? hidden = null);
 
     /// <summary>
     /// Get a case field by his name, considering derived regulations

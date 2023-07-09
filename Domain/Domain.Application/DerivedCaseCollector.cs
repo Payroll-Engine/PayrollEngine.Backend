@@ -71,20 +71,20 @@ public class DerivedCaseCollector : DerivedCaseTool
         await CaseAvailableAsync(CaseType.Employee, caseName, culture);
 
     public async Task<IEnumerable<Case>> GetAvailableGlobalCasesAsync(string culture,
-        IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.Global, culture, caseNames);
+        IEnumerable<string> caseNames = null, bool? hidden = false) =>
+        await GetAvailableCasesAsync(CaseType.Global, culture, caseNames, hidden);
 
     public async Task<IEnumerable<Case>> GetAvailableNationalCasesAsync(string culture,
-        IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.National, culture, caseNames);
+        IEnumerable<string> caseNames = null, bool? hidden = false) =>
+        await GetAvailableCasesAsync(CaseType.National, culture, caseNames, hidden);
 
     public async Task<IEnumerable<Case>> GetAvailableCompanyCasesAsync(string culture,
-        IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.Company, culture, caseNames);
+        IEnumerable<string> caseNames = null, bool? hidden = false) =>
+        await GetAvailableCasesAsync(CaseType.Company, culture, caseNames, hidden);
 
     public async Task<IEnumerable<Case>> GetAvailableEmployeeCasesAsync(string culture,
-        IEnumerable<string> caseNames = null) =>
-        await GetAvailableCasesAsync(CaseType.Employee, culture, caseNames);
+        IEnumerable<string> caseNames = null, bool? hidden = false) =>
+        await GetAvailableCasesAsync(CaseType.Employee, culture, caseNames, hidden);
 
     /// <summary>
     /// Get case period values by date period and the case field names
@@ -134,9 +134,10 @@ public class DerivedCaseCollector : DerivedCaseTool
     /// <param name="caseType">Type of the case</param>
     /// <param name="caseNames">The case names (default: all)</param>
     /// <param name="culture">The culture</param>
+    /// <param name="hidden">Hidden cases (default: all)</param>
     /// <returns>List of available cases</returns>
     private async Task<IEnumerable<Case>> GetAvailableCasesAsync(CaseType caseType, string culture,
-        IEnumerable<string> caseNames = null)
+        IEnumerable<string> caseNames = null, bool? hidden = false)
     {
         var availableCases = new List<Case>();
 
@@ -152,7 +153,8 @@ public class DerivedCaseCollector : DerivedCaseTool
             caseType: caseType,
             caseNames: caseNames,
             clusterSet: ClusterSet,
-            overrideType: OverrideType.Active)).ToList();
+            overrideType: OverrideType.Active,
+            hidden: hidden)).ToList();
         if (allCases.Any())
         {
             // collect cases by case name

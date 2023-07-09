@@ -417,6 +417,11 @@
             The cancellation type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Case.Hidden">
+            <summary>
+            Hidden case (default: false)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Case.AvailableExpression">
             <summary>
             The expression used to build a case
@@ -557,6 +562,16 @@
             The localized case descriptions
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseAudit.DefaultReason">
+            <summary>
+            The default case change reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseAudit.DefaultReasonLocalizations">
+            <summary>
+            The localized default case change reasons
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CaseAudit.BaseCase">
             <summary>
             The base case name
@@ -577,14 +592,9 @@
             The cancellation type
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseAudit.DefaultReason">
+        <member name="P:PayrollEngine.Domain.Model.CaseAudit.Hidden">
             <summary>
-            The default case change reason
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseAudit.DefaultReasonLocalizations">
-            <summary>
-            The localized default case change reasons
+            Hidden case (default: false)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseAudit.AvailableExpression">
@@ -7333,7 +7343,7 @@
             <param name="query">The payroll query</param>
             <returns>The derived cases</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCasesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Nullable{PayrollEngine.CaseType},System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCasesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Nullable{PayrollEngine.CaseType},System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet,System.Nullable{System.Boolean})">
             <summary>
             Get all active derived cases, considering derived regulations
             </summary>
@@ -7343,6 +7353,7 @@
             <param name="caseNames">The case names (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
             <param name="clusterSet">The cluster set</param>
+            <param name="hidden">Hidden cases (default: all)</param>
             <returns>The derived cases</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedCaseFieldsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
