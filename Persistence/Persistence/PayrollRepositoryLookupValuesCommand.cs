@@ -119,6 +119,7 @@ internal sealed class PayrollRepositoryLookupValuesCommand : PayrollRepositoryCo
             {
                 // collect derived values
                 var derivedParameter = derivedParameters.First();
+                // non-derived fields: key
                 derivedParameter.RangeValue = CollectDerivedValue(derivedParameters, x => x.RangeValue);
                 derivedParameter.Value = CollectDerivedValue(derivedParameters, x => x.Value);
                 derivedParameter.ValueLocalizations = CollectDerivedValue(derivedParameters, x => x.ValueLocalizations);

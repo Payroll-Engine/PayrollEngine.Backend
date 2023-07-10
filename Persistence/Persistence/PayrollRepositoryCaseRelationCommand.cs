@@ -107,6 +107,7 @@ internal sealed class PayrollRepositoryCaseRelationCommand : PayrollRepositoryCo
             while (derivedCaseRelations.Count > 1)
             {
                 var derivedCaseRelation = derivedCaseRelations.First();
+                // non-derived fields: source/target case name/slot and all non-nullable and expressions
                 derivedCaseRelation.SourceCaseNameLocalizations = CollectDerivedValue(derivedCaseRelations, x => x.SourceCaseNameLocalizations);
                 derivedCaseRelation.SourceCaseSlotLocalizations = CollectDerivedValue(derivedCaseRelations, x => x.SourceCaseSlotLocalizations);
                 derivedCaseRelation.TargetCaseNameLocalizations = CollectDerivedValue(derivedCaseRelations, x => x.TargetCaseNameLocalizations);

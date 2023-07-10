@@ -111,11 +111,12 @@ internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryComma
             while (derivedCollectors.Count > 1)
             {
                 var derivedCollector = derivedCollectors.First();
+                // non-derived fields: name, collect mode. negated and all non-nullable and expressions
                 derivedCollector.NameLocalizations = CollectDerivedValue(derivedCollectors, x => x.NameLocalizations);
-                derivedCollector.CollectMode = CollectDerivedValue(derivedCollectors, x => x.CollectMode);
-                derivedCollector.Negated = CollectDerivedValue(derivedCollectors, x => x.Negated);
-                derivedCollector.ValueType = CollectDerivedValue(derivedCollectors, x => x.ValueType);
                 derivedCollector.CollectorGroups = CollectDerivedList(derivedCollectors, x => x.CollectorGroups);
+                derivedCollector.Threshold = CollectDerivedValue(derivedCollectors, x => x.Threshold);
+                derivedCollector.MinResult = CollectDerivedValue(derivedCollectors, x => x.MinResult);
+                derivedCollector.MaxResult = CollectDerivedValue(derivedCollectors, x => x.MaxResult);
                 derivedCollector.Attributes = CollectDerivedAttributes(derivedCollectors);
                 derivedCollector.Clusters = CollectDerivedList(derivedCollectors, x => x.Clusters);
                 // remove the current level for the next iteration

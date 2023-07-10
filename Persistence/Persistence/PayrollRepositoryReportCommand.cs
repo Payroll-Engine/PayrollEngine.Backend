@@ -142,11 +142,11 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
             {
                 // collect derived values
                 var derivedReport = derivedReports.First();
+                // non-derived fields: name and all non-nullable and expressions
                 derivedReport.NameLocalizations = CollectDerivedValue(derivedReports, x => x.NameLocalizations);
                 derivedReport.Description = CollectDerivedValue(derivedReports, x => x.Description);
                 derivedReport.DescriptionLocalizations = CollectDerivedValue(derivedReports, x => x.DescriptionLocalizations);
                 derivedReport.Category = CollectDerivedValue(derivedReports, x => x.Category);
-                derivedReport.AttributeMode = CollectDerivedValue(derivedReports, x => x.AttributeMode);
                 derivedReport.Queries = CollectDerivedDictionary(derivedReports, x => x.Queries);
                 derivedReport.Relations = CollectDerivedList(derivedReports, x => x.Relations);
                 derivedReport.Attributes = CollectDerivedAttributes(derivedReports);

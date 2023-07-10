@@ -125,16 +125,16 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
             while (derivedCases.Count > 1)
             {
                 var derivedCase = derivedCases.First();
+                // non-derived fields: case type, base case, base case fields, all non-nullable and expressions
                 derivedCase.NameLocalizations = CollectDerivedValue(derivedCases, x => x.NameLocalizations);
+                derivedCase.NameSynonyms = CollectDerivedList(derivedCases, x => x.NameSynonyms);
                 derivedCase.Description = CollectDerivedValue(derivedCases, x => x.Description);
                 derivedCase.DescriptionLocalizations = CollectDerivedValue(derivedCases, x => x.DescriptionLocalizations);
                 derivedCase.DefaultReason = CollectDerivedValue(derivedCases, x => x.DefaultReason);
                 derivedCase.DefaultReasonLocalizations = CollectDerivedValue(derivedCases, x => x.DefaultReasonLocalizations);
-                derivedCase.CancellationType = CollectDerivedValue(derivedCases, x => x.CancellationType);
-                derivedCase.Hidden = CollectDerivedValue(derivedCases, x => x.Hidden);
-                derivedCase.NameSynonyms = CollectDerivedList(derivedCases, x => x.NameSynonyms);
                 derivedCase.Lookups = CollectDerivedList(derivedCases, x => x.Lookups);
                 derivedCase.Slots = CollectDerivedList(derivedCases, x => x.Slots);
+                derivedCase.AvailableActions = CollectDerivedList(derivedCases, x => x.AvailableActions);
                 derivedCase.BuildActions = CollectDerivedList(derivedCases, x => x.BuildActions);
                 derivedCase.ValidateActions = CollectDerivedList(derivedCases, x => x.ValidateActions);
                 derivedCase.Attributes = CollectDerivedAttributes(derivedCases);

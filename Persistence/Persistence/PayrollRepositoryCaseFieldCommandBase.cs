@@ -47,17 +47,11 @@ internal abstract class PayrollRepositoryCaseFieldCommandBase : PayrollRepositor
             {
                 // collect values to the topmost case field
                 var derivedCaseField = derivedCaseFields.First();
+                // non-derived fields: name, all non-nullable and expressions
                 derivedCaseField.NameLocalizations = CollectDerivedValue(derivedCaseFields, x => x.NameLocalizations);
                 derivedCaseField.Description = CollectDerivedValue(derivedCaseFields, x => x.Description);
                 derivedCaseField.DescriptionLocalizations = CollectDerivedValue(derivedCaseFields, x => x.DescriptionLocalizations);
-                derivedCaseField.ValueType = CollectDerivedValue(derivedCaseFields, x => x.ValueType);
-                derivedCaseField.ValueScope = CollectDerivedValue(derivedCaseFields, x => x.ValueScope);
-                derivedCaseField.TimeType = CollectDerivedValue(derivedCaseFields, x => x.TimeType);
-                derivedCaseField.TimeUnit = CollectDerivedValue(derivedCaseFields, x => x.TimeUnit);
-                derivedCaseField.CancellationMode = CollectDerivedValue(derivedCaseFields, x => x.CancellationMode);
-                derivedCaseField.ValueCreationMode = CollectDerivedValue(derivedCaseFields, x => x.ValueCreationMode);
-                derivedCaseField.StartDateType = CollectDerivedValue(derivedCaseFields, x => x.StartDateType);
-                derivedCaseField.EndDateType = CollectDerivedValue(derivedCaseFields, x => x.EndDateType);
+                derivedCaseField.Culture = CollectDerivedValue(derivedCaseFields, x => x.Culture);
                 derivedCaseField.DefaultStart = CollectDerivedValue(derivedCaseFields, x => x.DefaultStart);
                 derivedCaseField.DefaultEnd = CollectDerivedValue(derivedCaseFields, x => x.DefaultEnd);
                 derivedCaseField.DefaultValue = CollectDerivedValue(derivedCaseFields, x => x.DefaultValue);

@@ -98,11 +98,10 @@ internal sealed class PayrollRepositoryReportParametersCommand : PayrollReposito
             {
                 // collect derived values
                 var derivedParameter = derivedParameters.First();
+                // non-derived fields: name, mandatory and all non-nullable and expressions
                 derivedParameter.NameLocalizations = CollectDerivedValue(derivedParameters, x => x.NameLocalizations);
                 derivedParameter.Description = CollectDerivedValue(derivedParameters, x => x.Description);
                 derivedParameter.DescriptionLocalizations = CollectDerivedValue(derivedParameters, x => x.DescriptionLocalizations);
-                derivedParameter.ValueType = CollectDerivedValue(derivedParameters, x => x.ValueType);
-                derivedParameter.ParameterType = CollectDerivedValue(derivedParameters, x => x.ParameterType);
                 derivedParameter.Value = CollectDerivedValue(derivedParameters, x => x.Value);
                 derivedParameter.Attributes = CollectDerivedAttributes(derivedParameters);
                 // remove the current level for the next iteration

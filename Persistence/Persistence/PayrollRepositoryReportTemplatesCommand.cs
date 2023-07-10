@@ -104,6 +104,7 @@ internal sealed class PayrollRepositoryReportTemplatesCommand : PayrollRepositor
                 // collect derived values
                 var derivedTemplate = derivedTemplates.First();
                 // language override
+                // non-derived fields: name and culture
                 derivedTemplate.Content = CollectDerivedValue(derivedTemplates, x => x.Content);
                 derivedTemplate.ContentType = CollectDerivedValue(derivedTemplates, x => x.ContentType);
                 derivedTemplate.Schema = CollectDerivedValue(derivedTemplates, x => x.Schema);

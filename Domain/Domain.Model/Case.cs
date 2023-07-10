@@ -27,11 +27,6 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
     private const string CaseValidateActionsScript = "Function\\CaseValidateActions.cs";
 
     /// <summary>
-    /// The type of he case (immutable)
-    /// </summary>
-    public CaseType CaseType { get; set; }
-
-    /// <summary>
     /// The case name (immutable)
     /// </summary>
     public string Name { get; set; }
@@ -65,6 +60,11 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
     /// The localized default case change reasons
     /// </summary>
     public Dictionary<string, string> DefaultReasonLocalizations { get; set; }
+
+    /// <summary>
+    /// The type of he case (immutable)
+    /// </summary>
+    public CaseType CaseType { get; set; }
 
     /// <summary>
     /// The base case name

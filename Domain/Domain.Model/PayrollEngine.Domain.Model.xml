@@ -357,11 +357,6 @@
             A national, company and employee case
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Case.CaseType">
-            <summary>
-            The type of he case (immutable)
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Domain.Model.Case.Name">
             <summary>
             The case name (immutable)
@@ -395,6 +390,11 @@
         <member name="P:PayrollEngine.Domain.Model.Case.DefaultReasonLocalizations">
             <summary>
             The localized default case change reasons
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Case.CaseType">
+            <summary>
+            The type of he case (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Case.BaseCase">
