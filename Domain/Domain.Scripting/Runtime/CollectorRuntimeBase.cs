@@ -42,16 +42,19 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     public decimal CollectorCount => Collector.Count;
 
     /// <inheritdoc />
-    public decimal CollectorSum => Collector.Sum;
+    public decimal CollectorSummary => Collector.Summary;
 
     /// <inheritdoc />
-    public decimal CollectorMin => Collector.Min;
+    public decimal CollectorMinimum => Collector.Minimum;
 
     /// <inheritdoc />
-    public decimal CollectorMax => Collector.Max;
+    public decimal CollectorMaximum => Collector.Maximum;
 
     /// <inheritdoc />
     public decimal CollectorAverage => Collector.Average;
+
+    /// <inheritdoc />
+    public decimal CollectorRange => Collector.Range;
 
     /// <inheritdoc />
     public List<string> GetResultTags() => CurrentCollectorResult.Tags;

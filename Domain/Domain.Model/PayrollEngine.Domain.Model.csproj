@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Core" Version="0.5.0-pre-230709-2" />
+		<PackageReference Include="PayrollEngine.Core" Version="0.5.0-pre-230710" />
 	</ItemGroup>
 
 </Project>

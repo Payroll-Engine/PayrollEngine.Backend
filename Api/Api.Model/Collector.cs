@@ -22,9 +22,8 @@ public class Collector : ApiObjectBase
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The collection type (immutable)
+    /// The collection type (immutable, default: summary)
     /// </summary>
-    [Required]
     public CollectType CollectType { get; set; }
 
     /// <summary>

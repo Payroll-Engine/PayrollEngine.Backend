@@ -1521,7 +1521,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Collector.CollectType">
             <summary>
-            The collection type (immutable)
+            The collection type (immutable, default: summary)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Collector.OverrideType">

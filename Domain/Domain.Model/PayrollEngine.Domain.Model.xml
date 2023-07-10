@@ -2422,24 +2422,29 @@
             Collected values count
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Collector.Sum">
+        <member name="P:PayrollEngine.Domain.Model.Collector.Summary">
             <summary>
-            The summary of the collected value
+            The summary of the collected values
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Collector.Min">
+        <member name="P:PayrollEngine.Domain.Model.Collector.Minimum">
             <summary>
-            The minimum collected value
+            The minimum collected values
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Collector.Max">
+        <member name="P:PayrollEngine.Domain.Model.Collector.Maximum">
             <summary>
             The maximum collected value
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.Average">
             <summary>
-            The average of the collected value
+            The average of the collected values
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.Range">
+            <summary>
+            The range of the collected values
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.Result">

@@ -147,22 +147,31 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     /// Collected values count
     /// </summary>
     public decimal Count => values.Count;
+
     /// <summary>
-    /// The summary of the collected value
+    /// The summary of the collected values
     /// </summary>
-    public decimal Sum => values.Sum();
+    public decimal Summary => values.Sum();
+
     /// <summary>
-    /// The minimum collected value
+    /// The minimum collected values
     /// </summary>
-    public decimal Min => values.Any() ? values.Max() : 0M;
+    public decimal Minimum => values.Any() ? values.Max() : 0M;
+
     /// <summary>
     /// The maximum collected value
     /// </summary>
-    public decimal Max => values.Any() ? values.Max() : 0M;
+    public decimal Maximum => values.Any() ? values.Max() : 0M;
+
     /// <summary>
-    /// The average of the collected value
+    /// The average of the collected values
     /// </summary>
     public decimal Average => values.Any() ? values.Average() : 0M;
+
+    /// <summary>
+    /// The range of the collected values
+    /// </summary>
+    public decimal Range => Maximum - Minimum;
 
     /// <summary>
     /// The collected result value
@@ -174,10 +183,11 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
             // collect
             var value = CollectType switch
             {
-                CollectType.Sum => Sum,
-                CollectType.Min => Min,
-                CollectType.Max => Max,
+                CollectType.Summary => Summary,
+                CollectType.Minimum => Minimum,
+                CollectType.Maximum => Maximum,
                 CollectType.Average => Average,
+                CollectType.Range => Range,
                 CollectType.Count => values.Count,
                 _ => throw new ArgumentOutOfRangeException()
             };
