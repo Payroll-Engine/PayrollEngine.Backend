@@ -24,7 +24,10 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     public string[] CollectorGroups => Collector.CollectorGroups?.ToArray();
 
     /// <inheritdoc />
-    public string CollectType => Enum.GetName(typeof(CollectType), Collector.CollectType);
+    public string CollectMode => Enum.GetName(typeof(CollectMode), Collector.CollectMode);
+
+    /// <inheritdoc />
+    public bool Negated  => Collector.Negated;
 
     /// <inheritdoc />
     public decimal? CollectorThreshold => Collector.Threshold;

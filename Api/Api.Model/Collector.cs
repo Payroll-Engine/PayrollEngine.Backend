@@ -22,9 +22,14 @@ public class Collector : ApiObjectBase
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The collection type (immutable, default: summary)
+    /// The collect mode (immutable, default: summary)
     /// </summary>
-    public CollectType CollectType { get; set; }
+    public CollectMode CollectMode { get; set; }
+
+    /// <summary>
+    /// Negated collector result (immutable, default: false)
+    /// </summary>
+    public bool Negated { get; set; }
 
     /// <summary>
     /// The override type

@@ -17,7 +17,8 @@ public class CollectorResultRepository : ChildDomainRepository<CollectorResult>,
         parameters.Add(nameof(result.CollectorName), result.CollectorName);
         parameters.Add(nameof(result.CollectorNameHash), result.CollectorNameHash);
         parameters.Add(nameof(result.CollectorNameLocalizations), JsonSerializer.SerializeNamedDictionary(result.CollectorNameLocalizations));
-        parameters.Add(nameof(result.CollectType), result.CollectType);
+        parameters.Add(nameof(result.CollectMode), result.CollectMode);
+        parameters.Add(nameof(result.Negated), result.Negated);
         parameters.Add(nameof(result.ValueType), result.ValueType);
         parameters.Add(nameof(result.Value), result.Value);
         parameters.Add(nameof(result.Start), result.Start);

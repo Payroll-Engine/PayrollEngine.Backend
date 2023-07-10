@@ -33,10 +33,16 @@ public class CollectorResult : ApiObjectBase
     public Dictionary<string, string> CollectorNameLocalizations { get; set; }
 
     /// <summary>
-    /// The collection type (immutable)
+    /// The collect mode (immutable)
     /// </summary>
     [Required]
-    public CollectType CollectType { get; set; }
+    public CollectMode CollectMode { get; set; }
+
+    /// <summary>
+    /// Negated collector result (immutable)
+    /// </summary>
+    [Required]
+    public bool Negated { get; set; }
 
     /// <summary>
     /// The value type (immutable)

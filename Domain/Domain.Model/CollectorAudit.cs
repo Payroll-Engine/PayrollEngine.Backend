@@ -14,11 +14,6 @@ public class CollectorAudit : ScriptAuditDomainObject, IDomainAttributeObject
     public int CollectorId { get; set; }
 
     /// <summary>
-    /// The collection type
-    /// </summary>
-    public CollectType CollectType { get; set; }
-
-    /// <summary>
     /// The collector name
     /// </summary>
     public string Name { get; set; }
@@ -27,6 +22,16 @@ public class CollectorAudit : ScriptAuditDomainObject, IDomainAttributeObject
     /// The localized collector names
     /// </summary>
     public Dictionary<string, string> NameLocalizations { get; set; }
+
+    /// <summary>
+    /// The collect mode
+    /// </summary>
+    public CollectMode CollectMode { get; set; }
+    
+    /// <summary>
+    /// Negated collector result
+    /// </summary>
+    public bool Negated { get; set; }
 
     /// <summary>
     /// The override type

@@ -610,7 +610,8 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
         dataTable.Columns.Add(nameof(CollectorResult.CollectorId), typeof(int));
         dataTable.Columns.Add(nameof(CollectorResult.CollectorName), typeof(string));
         dataTable.Columns.Add(nameof(CollectorResult.CollectorNameLocalizations), typeof(string));
-        dataTable.Columns.Add(nameof(CollectorResult.CollectType), typeof(CollectType));
+        dataTable.Columns.Add(nameof(CollectorResult.CollectMode), typeof(CollectMode));
+        dataTable.Columns.Add(nameof(CollectorResult.Negated), typeof(NetPipeStyleUriParser));
         dataTable.Columns.Add(nameof(CollectorResult.ValueType), typeof(ValueType));
         dataTable.Columns.Add(nameof(CollectorResult.Value), typeof(decimal));
         dataTable.Columns.Add(nameof(CollectorResult.Start), typeof(DateTime));
@@ -630,7 +631,8 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             row[nameof(CollectorResult.CollectorId)] = result.CollectorId;
             row[nameof(CollectorResult.CollectorName)] = result.CollectorName;
             row[nameof(CollectorResult.CollectorNameLocalizations)] = JsonSerializer.Serialize(result.CollectorNameLocalizations ?? new());
-            row[nameof(CollectorResult.CollectType)] = result.CollectType;
+            row[nameof(CollectorResult.CollectMode)] = result.CollectMode;
+            row[nameof(CollectorResult.Negated)] = result.Negated;
             row[nameof(CollectorResult.ValueType)] = result.ValueType;
             row[nameof(CollectorResult.Value)] = result.Value;
             row[nameof(CollectorResult.Start)] = result.Start;

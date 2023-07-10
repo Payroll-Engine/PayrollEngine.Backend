@@ -1519,9 +1519,14 @@
             The localized collector names
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.Collector.CollectType">
+        <member name="P:PayrollEngine.Api.Model.Collector.CollectMode">
             <summary>
-            The collection type (immutable, default: summary)
+            The collect mode (immutable, default: summary)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.Negated">
+            <summary>
+            Negated collector result (immutable, default: false)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Collector.OverrideType">
@@ -1602,9 +1607,14 @@
             The localized collector names
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectType">
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectMode">
             <summary>
-            The collection type
+            The collect mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.Negated">
+            <summary>
+            Negated collector result
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CollectorAudit.OverrideType">
@@ -1748,9 +1758,14 @@
             The localized collector names (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectType">
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectMode">
             <summary>
-            The collection type (immutable)
+            The collect mode (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.Negated">
+            <summary>
+            Negated collector result (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CollectorResult.ValueType">
@@ -2478,7 +2493,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollResultValue.KindName">
             <summary>
-            The kind name, wage type number or collect type
+            The kind name, wage type number or collect mode
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultStart">

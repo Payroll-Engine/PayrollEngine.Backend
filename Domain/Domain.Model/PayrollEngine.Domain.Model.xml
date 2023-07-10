@@ -2337,9 +2337,14 @@
             The localized collector names
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Collector.CollectType">
+        <member name="P:PayrollEngine.Domain.Model.Collector.CollectMode">
             <summary>
-            The collection type (immutable)
+            The collect mode (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.Negated">
+            <summary>
+            Negated collector result (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.OverrideType">
@@ -2519,11 +2524,6 @@
             The collector id
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CollectorAudit.CollectType">
-            <summary>
-            The collection type
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorAudit.Name">
             <summary>
             The collector name
@@ -2532,6 +2532,16 @@
         <member name="P:PayrollEngine.Domain.Model.CollectorAudit.NameLocalizations">
             <summary>
             The localized collector names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorAudit.CollectMode">
+            <summary>
+            The collect mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorAudit.Negated">
+            <summary>
+            Negated collector result
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorAudit.OverrideType">
@@ -2707,9 +2717,14 @@
             The localized collector names (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CollectorResult.CollectType">
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.CollectMode">
             <summary>
-            The collection type (immutable)
+            The collect mode type (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.Negated">
+            <summary>
+            Negated collector result (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorResult.ValueType">
@@ -4832,7 +4847,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.KindName">
             <summary>
-            The kind name, wage type number or collect type
+            The kind name, wage type number or collect mode
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.ResultStart">

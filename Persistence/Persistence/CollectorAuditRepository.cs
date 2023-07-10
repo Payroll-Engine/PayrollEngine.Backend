@@ -15,9 +15,10 @@ public class CollectorAuditRepository : AuditChildDomainRepository<CollectorAudi
     protected override void GetObjectCreateData(CollectorAudit audit, DbParameterCollection parameters)
     {
         parameters.Add(nameof(audit.CollectorId), audit.CollectorId);
-        parameters.Add(nameof(audit.CollectType), audit.CollectType);
         parameters.Add(nameof(audit.Name), audit.Name);
         parameters.Add(nameof(audit.NameLocalizations), JsonSerializer.SerializeNamedDictionary(audit.NameLocalizations));
+        parameters.Add(nameof(audit.CollectMode), audit.CollectMode);
+        parameters.Add(nameof(audit.Negated), audit.Negated);
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.ValueType), audit.ValueType);
         parameters.Add(nameof(audit.CollectorGroups), JsonSerializer.SerializeList(audit.CollectorGroups));

@@ -26,9 +26,14 @@ public class CollectorAudit : ApiObjectBase
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The collection type
+    /// The collect mode
     /// </summary>
-    public CollectType CollectType { get; set; }
+    public CollectMode CollectMode { get; set; }
+
+    /// <summary>
+    /// Negated collector result
+    /// </summary>
+    public bool Negated { get; set; }
 
     /// <summary>
     /// The override type

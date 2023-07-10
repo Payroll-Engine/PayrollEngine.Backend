@@ -43,9 +43,14 @@ public class CollectorResult : DomainObjectBase, ITagObject, IDomainAttributeObj
     public Dictionary<string, string> CollectorNameLocalizations { get; set; }
 
     /// <summary>
-    /// The collection type (immutable)
+    /// The collect mode type (immutable)
     /// </summary>
-    public CollectType CollectType { get; set; }
+    public CollectMode CollectMode { get; set; }
+
+    /// <summary>
+    /// Negated collector result (immutable)
+    /// </summary>
+    public bool Negated { get; set; }
 
     private ValueType valueType = ValueType.Decimal;
     /// <summary>

@@ -16,8 +16,9 @@ public class CollectorRepository : ScriptTrackChildDomainRepository<Collector, C
 
     protected override void GetObjectCreateData(Collector collector, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(collector.CollectType), collector.CollectType);
         parameters.Add(nameof(collector.Name), collector.Name);
+        parameters.Add(nameof(collector.CollectMode), collector.CollectMode);
+        parameters.Add(nameof(collector.Negated), collector.Negated);
         base.GetObjectCreateData(collector, parameters);
     }
 

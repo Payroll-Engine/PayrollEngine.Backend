@@ -44,7 +44,7 @@ public class PayrollResultValue : IEquatable<PayrollResultValue>
     public decimal ResultNumber { get; set; }
 
     /// <summary>
-    /// The kind name, wage type number or collect type
+    /// The kind name, wage type number or collect mode
     /// </summary>
     public string KindName { get; set; }
 

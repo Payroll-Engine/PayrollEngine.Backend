@@ -47,7 +47,7 @@ public class PayrollResultValue
     public decimal ResultNumber { get; set; }
 
     /// <summary>
-    /// The kind name, wage type number or collect type
+    /// The kind name, wage type number or collect mode
     /// </summary>
     [StringLength(128)]
     public string KindName { get; set; }

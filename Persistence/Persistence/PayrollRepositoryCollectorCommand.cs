@@ -112,7 +112,8 @@ internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryComma
             {
                 var derivedCollector = derivedCollectors.First();
                 derivedCollector.NameLocalizations = CollectDerivedValue(derivedCollectors, x => x.NameLocalizations);
-                derivedCollector.CollectType = CollectDerivedValue(derivedCollectors, x => x.CollectType);
+                derivedCollector.CollectMode = CollectDerivedValue(derivedCollectors, x => x.CollectMode);
+                derivedCollector.Negated = CollectDerivedValue(derivedCollectors, x => x.Negated);
                 derivedCollector.ValueType = CollectDerivedValue(derivedCollectors, x => x.ValueType);
                 derivedCollector.CollectorGroups = CollectDerivedList(derivedCollectors, x => x.CollectorGroups);
                 derivedCollector.Attributes = CollectDerivedAttributes(derivedCollectors);

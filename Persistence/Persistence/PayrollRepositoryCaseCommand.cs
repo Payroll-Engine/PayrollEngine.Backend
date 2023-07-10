@@ -131,6 +131,7 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
                 derivedCase.DefaultReason = CollectDerivedValue(derivedCases, x => x.DefaultReason);
                 derivedCase.DefaultReasonLocalizations = CollectDerivedValue(derivedCases, x => x.DefaultReasonLocalizations);
                 derivedCase.CancellationType = CollectDerivedValue(derivedCases, x => x.CancellationType);
+                derivedCase.Hidden = CollectDerivedValue(derivedCases, x => x.Hidden);
                 derivedCase.NameSynonyms = CollectDerivedList(derivedCases, x => x.NameSynonyms);
                 derivedCase.Lookups = CollectDerivedList(derivedCases, x => x.Lookups);
                 derivedCase.Slots = CollectDerivedList(derivedCases, x => x.Slots);

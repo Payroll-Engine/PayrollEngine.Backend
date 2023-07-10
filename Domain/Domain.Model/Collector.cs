@@ -37,9 +37,14 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
-    /// The collection type (immutable)
+    /// The collect mode (immutable)
     /// </summary>
-    public CollectType CollectType { get; set; }
+    public CollectMode CollectMode { get; set; }
+    
+    /// <summary>
+    /// Negated collector result (immutable)
+    /// </summary>
+    public bool Negated { get; set; }
 
     /// <summary>
     /// The override type
@@ -181,16 +186,22 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
         get
         {
             // collect
-            var value = CollectType switch
+            var value = CollectMode switch
             {
-                CollectType.Summary => Summary,
-                CollectType.Minimum => Minimum,
-                CollectType.Maximum => Maximum,
-                CollectType.Average => Average,
-                CollectType.Range => Range,
-                CollectType.Count => values.Count,
+                CollectMode.Summary => Summary,
+                CollectMode.Minimum => Minimum,
+                CollectMode.Maximum => Maximum,
+                CollectMode.Average => Average,
+                CollectMode.Range => Range,
+                CollectMode.Count => values.Count,
                 _ => throw new ArgumentOutOfRangeException()
             };
+
+            // negated
+            if (Negated)
+            {
+                value = decimal.Negate(value);
+            }
 
             // min range
             if (value < MinResult)
@@ -274,7 +285,8 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
             CollectorId = Id,
             Name = Name,
             NameLocalizations = NameLocalizations,
-            CollectType = CollectType,
+            CollectMode = CollectMode,
+            Negated = Negated,
             OverrideType = OverrideType,
             CollectorGroups = CollectorGroups,
             ValueType = ValueType,
@@ -301,7 +313,8 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
         Id = audit.CollectorId;
         Name = audit.Name;
         NameLocalizations = audit.NameLocalizations;
-        CollectType = audit.CollectType;
+        CollectMode = audit.CollectMode;
+        Negated = audit.Negated;
         OverrideType = audit.OverrideType;
         CollectorGroups = audit.CollectorGroups;
         ValueType = audit.ValueType;
@@ -353,6 +366,9 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     #endregion
 
     /// <inheritdoc/>
-    public override string ToString() =>
-        $"{Name}={Result} ({CollectType}) {base.ToString()}";
+    public override string ToString()
+    {
+        var negated = Negated ? " -" : string.Empty;
+        return $"{Name}={Result} ({CollectMode}{negated}) {base.ToString()}";
+    }
 }
