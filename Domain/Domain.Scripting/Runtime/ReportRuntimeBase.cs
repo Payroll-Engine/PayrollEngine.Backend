@@ -46,7 +46,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     public string ReportName => Report.Name;
 
     /// <inheritdoc />
-    public override string UserCulture => 
+    public override string UserCulture =>
         ReportRequest.Culture ?? base.UserCulture;
 
     /// <inheritdoc />
@@ -137,6 +137,27 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
         }
 
         return null;
+    }
+
+    /// <inheritdoc />
+    public bool ParameterHidden(string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(parameterName))
+        {
+            throw new ArgumentException(nameof(parameterName));
+        }
+
+        // report parameter
+        if (Report.Parameters == null)
+        {
+            throw new ArgumentException($"Invalid report parameter {parameterName}");
+        }
+        var reportParameter = Report.Parameters.FirstOrDefault(x => string.Equals(x.Name, parameterName));
+        if (reportParameter == null)
+        {
+            throw new ArgumentException($"Unknown report parameter {parameterName}");
+        }
+        return reportParameter.Hidden;
     }
 
     #endregion

@@ -23,6 +23,7 @@ public class ReportParameterRepository : TrackChildDomainRepository<ReportParame
         parameters.Add(nameof(parameter.Description), parameter.Description);
         parameters.Add(nameof(parameter.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(parameter.DescriptionLocalizations));
         parameters.Add(nameof(parameter.Mandatory), parameter.Mandatory);
+        parameters.Add(nameof(parameter.Hidden), parameter.Hidden);
         parameters.Add(nameof(parameter.Value), parameter.Value);
         parameters.Add(nameof(parameter.ValueType), parameter.ValueType);
         parameters.Add(nameof(parameter.ParameterType), parameter.ParameterType);

@@ -35,6 +35,11 @@ public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDerivab
     public bool Mandatory { get; set; }
 
     /// <summary>
+    /// Hidden parameter
+    /// </summary>
+    public bool Hidden { get; set; }
+
+    /// <summary>
     /// The parameter value (JSON)
     /// </summary>
     public string Value { get; set; }
@@ -96,6 +101,7 @@ public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDerivab
             Description = Description,
             DescriptionLocalizations = DescriptionLocalizations,
             Mandatory = Mandatory,
+            Hidden = Hidden,
             Value = Value,
             ValueType = ValueType,
             ParameterType = ParameterType,
@@ -115,6 +121,7 @@ public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDerivab
         Description = audit.Description;
         DescriptionLocalizations = audit.DescriptionLocalizations.Copy();
         Mandatory = audit.Mandatory;
+        Hidden = audit.Hidden;
         Value = audit.Value;
         ValueType = audit.ValueType;
         ParameterType = audit.ParameterType;

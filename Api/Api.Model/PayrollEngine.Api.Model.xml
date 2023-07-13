@@ -3414,6 +3414,11 @@
             The parameter mandatory state
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameter.Hidden">
+            <summary>
+            Hidden parameter
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.ReportParameter.Value">
             <summary>
             The parameter value (JSON)
@@ -3475,6 +3480,11 @@
         <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Mandatory">
             <summary>
             The parameter mandatory state
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Hidden">
+            <summary>
+            Hidden parameter
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportParameterAudit.Value">

@@ -6073,6 +6073,11 @@
             The parameter mandatory state
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportParameter.Hidden">
+            <summary>
+            Hidden parameter
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.ReportParameter.Value">
             <summary>
             The parameter value (JSON)
@@ -6156,6 +6161,11 @@
         <member name="P:PayrollEngine.Domain.Model.ReportParameterAudit.Mandatory">
             <summary>
             The parameter mandatory state
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportParameterAudit.Hidden">
+            <summary>
+            Hidden parameter
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportParameterAudit.Value">

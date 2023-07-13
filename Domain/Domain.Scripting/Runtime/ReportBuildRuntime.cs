@@ -69,6 +69,27 @@ public class ReportBuildRuntime : ReportRuntimeBase, IReportBuildRuntime
         }
     }
 
+    /// <inheritdoc />
+    public void SetParameterHidden(string parameterName, bool hidden)
+    {
+        if (string.IsNullOrWhiteSpace(parameterName))
+        {
+            throw new ArgumentException(nameof(parameterName));
+        }
+
+        // report parameter
+        if (Report.Parameters == null)
+        {
+            throw new ArgumentException($"Invalid report parameter {parameterName}");
+        }
+        var reportParameter = Report.Parameters.FirstOrDefault(x => string.Equals(x.Name, parameterName));
+        if (reportParameter == null)
+        {
+            throw new ArgumentException($"Unknown report parameter {parameterName}");
+        }
+        reportParameter.Hidden = hidden;
+    }
+
     /// <summary>
     /// Execute the report build script
     /// </summary>

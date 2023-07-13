@@ -42,6 +42,11 @@ public class ReportParameterAudit : ApiObjectBase
     /// The parameter mandatory state
     /// </summary>
     public bool Mandatory { get; set; }
+    
+    /// <summary>
+    /// Hidden parameter
+    /// </summary>
+    public bool Hidden { get; set; }
 
     /// <summary>
     /// The parameter value (JSON)

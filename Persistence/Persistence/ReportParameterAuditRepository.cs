@@ -18,6 +18,7 @@ public class ReportParameterAuditRepository : AuditChildDomainRepository<ReportP
         parameters.Add(nameof(audit.Description), audit.Description);
         parameters.Add(nameof(audit.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(audit.DescriptionLocalizations));
         parameters.Add(nameof(audit.Mandatory), audit.Mandatory);
+        parameters.Add(nameof(audit.Hidden), audit.Hidden);
         parameters.Add(nameof(audit.Value), audit.Value);
         parameters.Add(nameof(audit.ValueType), audit.ValueType);
         parameters.Add(nameof(audit.ParameterType), audit.ParameterType);
