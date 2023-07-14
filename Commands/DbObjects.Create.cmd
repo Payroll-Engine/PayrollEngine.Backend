@@ -1,3 +1,9 @@
 @echo off
+
+rem query tool
+set query=PayrollDbQuery
+if not "%PayrollDbQuery%" == "" set query=%PayrollDbQuery%
+
+@echo off
 echo query database create object script
-call DbQuery ../Database/Current/CreateObjectsDbScript.sql
+call %query% ../Database/Current/CreateObjectsDbScript.sql

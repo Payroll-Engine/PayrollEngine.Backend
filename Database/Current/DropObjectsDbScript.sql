@@ -1,6 +1,3 @@
-USE [PayrollEngine]
-GO
-
 /****** Object:  StoredProcedure [dbo].[GetWageTypeResults]    Script Date: 16.06.2023 19:51:53 ******/
 DROP PROCEDURE [dbo].[GetWageTypeResults]
 GO
@@ -948,12 +945,3 @@ GO
 /****** Object:  UserDefinedFunction [dbo].[BuildAttributeQuery]    Script Date: 16.06.2023 19:51:53 ******/
 DROP FUNCTION [dbo].[BuildAttributeQuery]
 GO
-
-USE [master]
-GO
-
-/****** Object:  Database [PayrollEngine]    Script Date: 16.06.2023 19:51:53 ******/
-DROP DATABASE [PayrollEngine]
-GO
-
-

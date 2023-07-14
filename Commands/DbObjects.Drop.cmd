@@ -1,3 +1,8 @@
 @echo off
+
+rem query tool
+set query=PayrollDbQuery
+if not "%PayrollDbQuery%" == "" set query=%PayrollDbQuery%
+
 echo query database drop object script
-call DbQuery ../Database/Current/DropObjectsDbScript.sql
+call %query% ../Database/Current/DropObjectsDbScript.sql
