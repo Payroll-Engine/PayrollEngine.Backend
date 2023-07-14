@@ -21,7 +21,7 @@ public static class LogExtensions
         // start
         appLifetime.ApplicationStarted.Register(() =>
         {
-            Log.Information($"{environment.ApplicationName} started on port {GetApplicationPort(appBuilder)}");
+            Log.Information($"{environment.ApplicationName} started on port {GetApplicationPort(appBuilder)}.");
             if (Log.IsEnabled(SystemInfoLogEventLevel))
             {
                 Log.Write(SystemInfoLogEventLevel, $"Current culture: {CultureInfo.CurrentCulture}");
@@ -35,7 +35,7 @@ public static class LogExtensions
         // stopped
         appLifetime.ApplicationStopped.Register(() =>
         {
-            Log.Information($"{environment.ApplicationName} stopped");
+            Log.Information($"{environment.ApplicationName} stopped.");
         });
 
         if (logRequests)
