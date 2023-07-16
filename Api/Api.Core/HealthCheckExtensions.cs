@@ -26,18 +26,23 @@ public static class HealthCheckExtensions
     /// </summary>
     public static void AddApiHealthCheck(this IServiceCollection services, IConfiguration configuration)
     {
-        var dbConnectionString = configuration.GetConnectionString(SystemSpecification.DatabaseConnectionString);
-        if (string.IsNullOrWhiteSpace(dbConnectionString))
+        // priority 1: application configuration
+        var connectionString = configuration.GetConnectionString(SystemSpecification.DatabaseConnectionVariable);
+        // priority 2: environment variable
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            Log.Error($"API health check setup: missing database connection string {SystemSpecification.DatabaseConnectionString}");
+            connectionString = Environment.GetEnvironmentVariable(SystemSpecification.DatabaseConnectionVariable);
         }
-        else
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            services.AddHealthChecks()
-                .AddSqlServer(dbConnectionString, failureStatus: HealthStatus.Unhealthy, tags: new[] { ReadyTag });
-            services.AddHealthChecksUI()
-                .AddInMemoryStorage();
+            Log.Error($"API health check setup: missing database connection string {SystemSpecification.DatabaseConnectionVariable}");
+            return;
         }
+
+        services.AddHealthChecks()
+            .AddSqlServer(connectionString, failureStatus: HealthStatus.Unhealthy, tags: new[] { ReadyTag });
+        services.AddHealthChecksUI()
+            .AddInMemoryStorage();
     }
 
     /// <summary>

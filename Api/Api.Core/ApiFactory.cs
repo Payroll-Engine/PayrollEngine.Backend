@@ -3,6 +3,7 @@ using PayrollEngine.Domain.Scripting;
 using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Persistence.SqlServer;
+using System;
 
 namespace PayrollEngine.Api.Core;
 
@@ -15,10 +16,16 @@ internal static class ApiFactory
         var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
 
         // database context
-        var connectionString = configuration.GetConnectionString(SystemSpecification.DatabaseConnectionString);
+        // priority 1: application configuration
+        var connectionString = configuration.GetConnectionString(SystemSpecification.DatabaseConnectionVariable);
+        // priority 2: environment variable
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new PayrollException($"Missing database connection string {SystemSpecification.DatabaseConnectionString}");
+            connectionString = Environment.GetEnvironmentVariable(SystemSpecification.DatabaseConnectionVariable);
+        }
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new PayrollException($"Missing database connection string {SystemSpecification.DatabaseConnectionVariable}");
         }
         services.AddTransient<IDbContext>((_) => new DbContext(connectionString, serverConfiguration.DbCommandTimeout));
 
