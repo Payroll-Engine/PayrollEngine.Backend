@@ -4,5 +4,5 @@ rem query tool
 set query=PayrollDbQuery
 if not "%PayrollDbQuery%" == "" set query=%PayrollDbQuery%
 
-echo query database create object script
-call %query% Query ../Database/Current/CreateObjectsDbScript.sql
+echo query database drop object script
+call %query% Query ../Database/Current/ModelDrop.sql /verbose

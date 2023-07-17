@@ -1,5 +1,6 @@
 -- --------------------------------------------------------------------------------
--- DatabaseVersion_1.0.0.sql
+-- Version.sql
+-- Update Payroll Engine Database Version to 1.0.0
 -- --------------------------------------------------------------------------------
 
 IF DB_NAME() <> 'PayrollEngine' BEGIN

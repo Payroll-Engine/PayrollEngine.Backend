@@ -2,6 +2,6 @@
 echo recreate database from scripts
 echo.
 
-call DbObjects.Drop
-call DbObjects.Create
+call Db.ModelDrop
+call Db.ModelCreate
 pause
