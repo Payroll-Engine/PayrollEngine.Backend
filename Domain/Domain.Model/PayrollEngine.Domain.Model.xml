@@ -3430,6 +3430,9 @@
         <member name="P:PayrollEngine.Domain.Model.IDbContext.DecimalType">
             <summary>The decimal type name</summary>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.TestVersionAsync">
+            <summary>Test the required database version</summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
             Execute a query asynchronously using Task.

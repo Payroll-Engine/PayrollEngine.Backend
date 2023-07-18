@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using PayrollEngine.Domain.Scripting;
 using Microsoft.Extensions.DependencyInjection;
-using PayrollEngine.Domain.Model;
 using PayrollEngine.Persistence.SqlServer;
-using System;
+using PayrollEngine.Domain.Model;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Api.Core;
 
@@ -12,20 +12,20 @@ internal static class ApiFactory
     // services setup
     internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
     {
-        // server config
+        // database connection string
+        var connectionString = Task.Run(configuration.GetConnectionStringAsync).Result;
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new PayrollException("Missing database connection string");
+        }
+        // database command timeout
         var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
 
-        // database context
-        // priority 1: application configuration
-        var connectionString = configuration.GetConnectionString(SystemSpecification.DatabaseConnectionVariable);
-        // priority 2: environment variable
-        if (string.IsNullOrWhiteSpace(connectionString))
+        // test database
+        var dbContext = new DbContext(connectionString, serverConfiguration.DbCommandTimeout);
+        if (!Task.Run(dbContext.TestVersionAsync).Result)
         {
-            connectionString = Environment.GetEnvironmentVariable(SystemSpecification.DatabaseConnectionVariable);
-        }
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            throw new PayrollException($"Missing database connection string {SystemSpecification.DatabaseConnectionVariable}");
+            throw new PayrollException("Invalid database version");
         }
         services.AddTransient<IDbContext>((_) => new DbContext(connectionString, serverConfiguration.DbCommandTimeout));
 

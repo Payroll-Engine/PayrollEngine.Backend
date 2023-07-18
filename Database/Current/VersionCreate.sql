@@ -1,6 +1,6 @@
 -- --------------------------------------------------------------------------------
 -- Version.sql
--- Update Payroll Engine Database Version to 1.0.0
+-- Update Payroll Engine Database Version
 -- --------------------------------------------------------------------------------
 
 IF DB_NAME() <> 'PayrollEngine' BEGIN
@@ -17,16 +17,16 @@ INSERT INTO [Version] (
 	[Owner],
 	[Description] )
 VALUES (
+	0,
+	5,
 	1,
-	0,
-	0,
 	CURRENT_USER,
-	'Payroll Engine: default database setup' )
+	'Payroll Engine: initial database setup' )
 SET @errorID = @@ERROR
 IF ( @errorID <> 0 ) BEGIN
 	PRINT 'Error while updating the Payroll Engine database version.'
 END
 ELSE BEGIN
-	PRINT 'Payroll Engine database version successfully updated to release 1.0.0'
+	PRINT 'Payroll Engine database version successfully updated to release 0.5.1'
 END
 

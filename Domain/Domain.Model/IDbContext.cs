@@ -14,6 +14,9 @@ public interface IDbContext
     /// <summary>The decimal type name</summary>
     string DecimalType { get; }
 
+    /// <summary>Test the required database version</summary>
+    Task<bool> TestVersionAsync();
+
     /// <summary>
     /// Execute a query asynchronously using Task.
     /// </summary>

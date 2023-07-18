@@ -10,16 +10,18 @@ namespace PayrollEngine.Persistence.SqlServer;
 
 public class DbContext : IDbContext
 {
-    /// <summary>The database connection string</summary>
-    private string ConnectionString { get; }
-
-    /// <summary>The default command timeout in seconds</summary>
-    private int DefaultCommendTimeout { get; }
+    private static System.Version MinVersion => new(0, 5, 1);
 
     // minimum command timeout is 30 seconds
     private const int MinCommandTimeout = 30;
     // maximum command timeout is 30 minutes
     private const int MaxCommandTimeout = 1800;
+
+    /// <summary>The database connection string</summary>
+    private string ConnectionString { get; }
+
+    /// <summary>The default command timeout in seconds</summary>
+    private int DefaultCommendTimeout { get; }
 
     /// <summary>
     /// New database connection
@@ -39,17 +41,13 @@ public class DbContext : IDbContext
         if (defaultCommendTimeout < MinCommandTimeout)
         {
             defaultCommendTimeout = MinCommandTimeout;
-        } else if (defaultCommendTimeout > MaxCommandTimeout)
+        }
+        else if (defaultCommendTimeout > MaxCommandTimeout)
         {
             defaultCommendTimeout = MaxCommandTimeout;
         }
         DefaultCommendTimeout = defaultCommendTimeout;
     }
-
-    /// <summary>New database connection for SQL Server</summary>
-    /// <returns>The connection</returns>
-    private IDbConnection NewConnection() =>
-        new SqlConnection(ConnectionString);
 
     /// <inheritdoc />
     public string DateTimeType =>
@@ -61,7 +59,47 @@ public class DbContext : IDbContext
 
     #region Operations
 
-    public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, 
+    /// <inheritdoc />
+    public async Task<bool> TestVersionAsync()
+    {
+        try
+        {
+            var connection = new SqlConnection(ConnectionString);
+            const string query = $"SELECT {nameof(Version.MajorVersion)}, {nameof(Version.MinorVersion)}, {nameof(Version.SubVersion)} FROM {nameof(Version)}";
+            await using (connection)
+            {
+                await using var command = new SqlCommand(query, connection);
+                command.CommandTimeout = 2;
+                await connection.OpenAsync();
+
+                var validVersion = false;
+                var reader = await command.ExecuteReaderAsync();
+                while (reader.Read())
+                {
+                    var major = reader.GetInt32(0);
+                    var minor = reader.GetInt32(1);
+                    var sub = reader.GetInt32(2);
+
+                    var curVersion = new System.Version(major, minor, sub);
+                    if (curVersion >= MinVersion)
+                    {
+                        validVersion = true;
+                        break;
+                    }
+                }
+                connection.Close();
+
+                return validVersion;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
@@ -69,7 +107,7 @@ public class DbContext : IDbContext
     }
 
     /// <inheritdoc />
-    public async Task<T> QueryFirstAsync<T>(string sql, object param = null, 
+    public async Task<T> QueryFirstAsync<T>(string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
@@ -77,7 +115,7 @@ public class DbContext : IDbContext
     }
 
     /// <inheritdoc />
-    public async Task<T> QuerySingleAsync<T>(string sql, object param = null, 
+    public async Task<T> QuerySingleAsync<T>(string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
@@ -93,7 +131,7 @@ public class DbContext : IDbContext
     }
 
     /// <inheritdoc />
-    public async Task<T> ExecuteScalarAsync<T>(string sql, object param = null, 
+    public async Task<T> ExecuteScalarAsync<T>(string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         using var connection = NewConnection();
@@ -125,4 +163,9 @@ public class DbContext : IDbContext
 
         return exception;
     }
+
+    /// <summary>New database connection for SQL Server</summary>
+    /// <returns>The connection</returns>
+    private IDbConnection NewConnection() =>
+        new SqlConnection(ConnectionString);
 }

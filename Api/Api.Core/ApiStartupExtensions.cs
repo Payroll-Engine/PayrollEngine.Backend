@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using PayrollEngine.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -80,7 +81,7 @@ public static class ApiStartupExtensions
         // health check
         if (serverConfiguration.UseHealthCheck)
         {
-            services.AddApiHealthCheck(configuration);
+            Task.Run(() => services.AddApiHealthCheckAsync(configuration));
         }
 
         // API services
