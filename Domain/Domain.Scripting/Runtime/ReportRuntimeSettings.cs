@@ -53,9 +53,6 @@ public class ReportRuntimeSettings : RuntimeSettings
     /// <summary>The payrun result repository</summary>
     public IPayrunResultRepository PayrunResultRepository { get; init; }
 
-    // <summary>The webhook dispatch service</summary>
-    public IWebhookDispatchService WebhookDispatchService { get; init; }
-
     /// <summary>The report</summary>
     public ReportSet Report { get; init; }
 

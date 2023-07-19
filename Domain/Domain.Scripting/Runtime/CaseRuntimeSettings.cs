@@ -6,7 +6,4 @@ public class CaseRuntimeSettings : PayrollRuntimeSettings
 {
     /// <summary>The case</summary>
     public Case Case { get; init; }
-
-    /// <summary>The webhook dispatch service</summary>
-    public IWebhookDispatchService WebhookDispatchService { get; init; }
 }

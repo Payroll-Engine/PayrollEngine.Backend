@@ -14,9 +14,6 @@ public abstract class CaseRuntimeBase : PayrollRuntimeBase, ICaseRuntime
     /// <summary>The case</summary>
     protected Case Case => Settings.Case;
 
-    /// <summary>The webhook dispatch service</summary>
-    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
-
     /// <inheritdoc />
     protected CaseRuntimeBase(CaseRuntimeSettings settings) :
         base(settings)
@@ -36,19 +33,4 @@ public abstract class CaseRuntimeBase : PayrollRuntimeBase, ICaseRuntime
     public object GetCaseAttribute(string attributeName) =>
         Case.Attributes?.GetValue<object>(attributeName);
 
-    /// <inheritdoc />
-    public string InvokeWebhook(string requestOperation, string requestMessage = null)
-    {
-        // invoke case function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
-            new()
-            {
-                Action = WebhookAction.CaseFunctionRequest,
-                RequestMessage = requestMessage,
-                RequestOperation = requestOperation,
-                TrackMessage = false
-            },
-            userId: UserId).Result;
-        return result;
-    }
 }

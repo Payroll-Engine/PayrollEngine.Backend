@@ -21,9 +21,6 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     protected IQueryService QueryService => Settings.QueryService;
     protected IApiControllerContext ControllerContext => Settings.ControllerContext;
 
-    /// <summary>The webhook dispatch service</summary>
-    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
-
     /// <summary>The report</summary>
     protected ReportSet Report => Settings.Report;
 
@@ -811,26 +808,6 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             Message = message,
             Key = key
         }).Result;
-    }
-
-    #endregion
-
-    #region Webhook
-
-    /// <inheritdoc />
-    public string InvokeWebhook(string requestOperation, string requestMessage = null)
-    {
-        // invoke report function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
-            new()
-            {
-                Action = WebhookAction.ReportFunctionRequest,
-                RequestMessage = requestMessage,
-                RequestOperation = requestOperation,
-                TrackMessage = false
-            },
-            userId: UserId).Result;
-        return result;
     }
 
     #endregion

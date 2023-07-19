@@ -4,9 +4,6 @@ namespace PayrollEngine.Domain.Scripting.Runtime;
 
 public class PayrunRuntimeSettings : PayrollRuntimeSettings
 {
-    /// <summary>The webhook dispatch service</summary>
-    public IWebhookDispatchService WebhookDispatchService { get; init; }
-
     /// <summary>The Payrun</summary>
     public Payrun Payrun { get; init; }
 

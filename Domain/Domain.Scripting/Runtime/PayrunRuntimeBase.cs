@@ -18,9 +18,6 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     /// </summary>
     protected new PayrunRuntimeSettings Settings => base.Settings as PayrunRuntimeSettings;
 
-    /// <summary>The webhook dispatch service</summary>
-    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
-
     /// <summary>The Payrun</summary>
     private Payrun Payrun => Settings.Payrun;
 
@@ -752,23 +749,4 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 
     #endregion
 
-    #region Webhook
-
-    /// <inheritdoc />
-    public string InvokeWebhook(string requestOperation, string requestMessage = null)
-    {
-        // invoke payrun function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
-            new()
-            {
-                Action = WebhookAction.PayrunFunctionRequest,
-                RequestMessage = requestMessage,
-                RequestOperation = requestOperation,
-                TrackMessage = false
-            },
-            userId: UserId).Result;
-        return result;
-    }
-
-    #endregion
 }

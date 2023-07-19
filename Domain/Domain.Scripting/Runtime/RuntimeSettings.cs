@@ -18,4 +18,7 @@ public class RuntimeSettings
 
     /// <summary>The user culture</summary>
     public string UserCulture { get; init; }
+
+    /// <summary>The webhook dispatch service</summary>
+    public IWebhookDispatchService WebhookDispatchService { get; init; }
 }

@@ -121,6 +121,29 @@ public abstract class RuntimeBase : IRuntime
 
     #endregion
 
+    #region Webhook
+
+    /// <summary>The webhook dispatch service</summary>
+    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
+
+    /// <inheritdoc />
+    public virtual string InvokeWebhook(string requestOperation, string requestMessage = null)
+    {
+        // invoke case function webhook without tracking
+        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
+            new()
+            {
+                Action = WebhookAction.CaseFunctionRequest,
+                RequestMessage = requestMessage,
+                RequestOperation = requestOperation,
+                TrackMessage = false
+            },
+            userId: UserId).Result;
+        return result;
+    }
+
+    #endregion
+
     /// <summary>
     /// Create a new script instance
     /// </summary>

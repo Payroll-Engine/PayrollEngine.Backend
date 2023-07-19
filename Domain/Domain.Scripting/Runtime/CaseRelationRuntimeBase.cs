@@ -16,9 +16,6 @@ public abstract class CaseRelationRuntimeBase : PayrollRuntimeBase, ICaseRelatio
     /// </summary>
     protected new CaseRelationRuntimeSettings Settings => base.Settings as CaseRelationRuntimeSettings;
 
-    /// <summary>The webhook dispatch service</summary>
-    private IWebhookDispatchService WebhookDispatchService => Settings.WebhookDispatchService;
-
     /// <summary>
     /// The case relation
     /// </summary>
@@ -313,26 +310,6 @@ public abstract class CaseRelationRuntimeBase : PayrollRuntimeBase, ICaseRelatio
     /// <inheritdoc />
     public virtual void CopyValue(string sourceFieldName, string targetFieldName) =>
         SetTargetValue(targetFieldName, GetSourceValue(sourceFieldName));
-
-    #endregion
-
-    #region Webhook
-
-    /// <inheritdoc />
-    public virtual string InvokeWebhook(string requestOperation, string requestMessage = null)
-    {
-        // invoke case function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
-            new()
-            {
-                Action = WebhookAction.CaseFunctionRequest,
-                RequestMessage = requestMessage,
-                RequestOperation = requestOperation,
-                TrackMessage = false
-            },
-            userId: UserId).Result;
-        return result;
-    }
 
     #endregion
 
