@@ -171,7 +171,15 @@ public class UserController : Api.Controller.UserController
         }
 
         // test password
-        return await TestUserPasswordAsync(tenantId, userId, password);
+        try
+        {
+            var valid = await Service.TestPasswordAsync(Runtime.DbContext, tenantId, userId, password);
+            return valid ? Ok() : BadRequest("Invalid password");
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
     }
 
     /// <summary>
