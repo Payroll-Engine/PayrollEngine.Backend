@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
@@ -33,7 +34,24 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
     }
 
     /// <inheritdoc />
-    public async System.Threading.Tasks.Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, string password)
+    public async Task<bool> TestPasswordAsync(IDbContext context, int tenantId, int userId, string password)
+    {
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            throw new ArgumentException(nameof(password));
+        }
+        var user = await GetAsync(context, tenantId, userId);
+        if (user == null)
+        {
+            throw new PayrollException($"Unknown user with id {userId}");
+        }
+
+        // compare password
+        return TestPassword(user, password);
+    }
+
+    /// <inheritdoc />
+    public async System.Threading.Tasks.Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, PasswordChangeRequest changeRequest)
     {
         var user = await GetAsync(context, tenantId, userId);
         if (user == null)
@@ -41,16 +59,36 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
             throw new PayrollException($"Unknown user with id {userId}");
         }
 
-        // password reset
-        if (password == null)
+        // existing password
+        if (!string.IsNullOrWhiteSpace(user.Password))
         {
-            user.Password = null;
-            await UpdateAsync(context, tenantId, user);
-            return;
+            // test existing password
+            if (string.IsNullOrWhiteSpace(changeRequest.ExistingPassword))
+            {
+                throw new PayrollException("Missing existing password");
+            }
+
+            // validate existing password
+            if (!TestPassword(user, changeRequest.ExistingPassword))
+            {
+                throw new PayrollException("Invalid password");
+            }
+
+            // password reset
+            if (string.IsNullOrWhiteSpace(changeRequest.NewPassword))
+            {
+                user.Password = null;
+                await UpdateAsync(context, tenantId, user);
+                return;
+            }
         }
 
-        // setup password
-        var hashSalt = password.ToHashSalt();
+        // password init or change
+        if (string.IsNullOrWhiteSpace(changeRequest.NewPassword))
+        {
+            return;
+        }
+        var hashSalt = changeRequest.NewPassword.ToHashSalt();
         user.Password = hashSalt.Hash;
         user.StoredSalt = hashSalt.Salt;
 
@@ -69,5 +107,12 @@ public class UserRepository : ChildDomainRepository<User>, IUserRepository
         // sql update
         await ExecuteAsync(context, sql, parameters);
         txScope.Complete();
+    }
+
+    private static bool TestPassword(User user, string password)
+    {
+        var existingHashSalt = new HashSalt(user.Password, user.StoredSalt);
+        var testHashSalt = password.ToHashSalt(user.StoredSalt);
+        return existingHashSalt.Equals(testHashSalt);
     }
 }

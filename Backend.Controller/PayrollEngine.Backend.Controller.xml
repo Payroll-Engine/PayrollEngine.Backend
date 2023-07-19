@@ -2840,13 +2840,17 @@
             <param name="password">The password to test</param>
             <returns>True for a valid password</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.UserController.UpdateUserPasswordAsync(System.Int32,System.Int32,System.String)">
+        <member name="M:PayrollEngine.Backend.Controller.UserController.UpdateUserPasswordAsync(System.Int32,System.Int32,PayrollEngine.PasswordChangeRequest)">
             <summary>
             Update the user password
+            Change request use cases:
+            - set initial password: new=required, existing=ignored
+            - change existing password: new=required, existing=required
+            - reset password: new=null, existing=required
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="userId">The id of the user</param>
-            <param name="password">The new user password, use null to reset the password</param>
+            <param name="changeRequest">The password change request including the new and existing password</param>
             <returns>The updated user</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.UserController.GetUserAttributeAsync(System.Int32,System.Int32,System.String)">

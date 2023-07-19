@@ -170,18 +170,20 @@ public class UserController : Api.Controller.UserController
             return ObjectNotFoundRequest(userId);
         }
 
-        // compare password
-        var existingHashSalt = new HashSalt(user.Password, user.StoredSalt);
-        var testHashSalt = password.ToHashSalt(user.StoredSalt);
-        return existingHashSalt.Equals(testHashSalt) ? Ok() : BadRequest("Invalid password");
+        // test password
+        return await TestUserPasswordAsync(tenantId, userId, password);
     }
 
     /// <summary>
     /// Update the user password
+    /// Change request use cases:
+    /// - set initial password: new=required, existing=ignored
+    /// - change existing password: new=required, existing=required
+    /// - reset password: new=null, existing=required
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="userId">The id of the user</param>
-    /// <param name="password">The new user password, use null to reset the password</param>
+    /// <param name="changeRequest">The password change request including the new and existing password</param>
     /// <returns>The updated user</returns>
     [HttpPut("{userId}/password")]
     [CreatedResponse]
@@ -189,7 +191,7 @@ public class UserController : Api.Controller.UserController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateUserPassword")]
     public async Task<ActionResult<ApiObject.User>> UpdateUserPasswordAsync(
-        int tenantId, int userId, [FromBody] string password)
+        int tenantId, int userId, [FromBody] PasswordChangeRequest changeRequest)
     {
         // tenant check
         var tenantResult = VerifyTenant(tenantId);
@@ -199,7 +201,7 @@ public class UserController : Api.Controller.UserController
         }
 
         // password
-        if (string.IsNullOrWhiteSpace(password))
+        if (string.IsNullOrWhiteSpace(changeRequest.NewPassword))
         {
             return Ok(false);
         }
@@ -207,7 +209,7 @@ public class UserController : Api.Controller.UserController
         // update password
         try
         {
-            await Service.UpdatePasswordAsync(Runtime.DbContext, tenantId, userId, password);
+            await Service.UpdatePasswordAsync(Runtime.DbContext, tenantId, userId, changeRequest);
         }
         catch (Exception exception)
         {

@@ -22,7 +22,7 @@ internal static class ApiFactory
         var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
 
         // test database
-        var dbContext = new DbContext(connectionString, serverConfiguration.DbCommandTimeout);
+        IDbContext dbContext = new DbContext(connectionString, serverConfiguration.DbCommandTimeout);
         if (!Task.Run(dbContext.TestVersionAsync).Result)
         {
             throw new PayrollException("Invalid database version");
