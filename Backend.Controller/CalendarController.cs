@@ -34,11 +34,11 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("QueryCalendars")]
     public async Task<ActionResult> QueryCalendarsAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -55,11 +55,11 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("GetCalendar")]
     public async Task<ActionResult<ApiObject.Calendar>> GetCalendarAsync(int tenantId, int calendarId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, calendarId);
     }
@@ -77,11 +77,11 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("CreateCalendar")]
     public async Task<ActionResult<ApiObject.Calendar>> CreateCalendarAsync(int tenantId, ApiObject.Calendar calendar)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // calendar check
@@ -106,11 +106,11 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("UpdateCalendar")]
     public async Task<ActionResult<ApiObject.Calendar>> UpdateCalendarAsync(int tenantId, ApiObject.Calendar calendar)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // calendar check
@@ -132,11 +132,11 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("DeleteCalendar")]
     public async Task<IActionResult> DeleteCalendarAsync(int tenantId, int calendarId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, calendarId);
     }
@@ -162,11 +162,11 @@ public class CalendarController : Api.Controller.CalendarController
         [FromQuery] string cultureName, [FromQuery] string calendarName,
         [FromQuery] DateTime? periodMoment, [FromQuery] int? offset)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.GetCalendarPeriodAsync(tenantId, cultureName, calendarName, periodMoment, offset);
     }
@@ -193,11 +193,11 @@ public class CalendarController : Api.Controller.CalendarController
         [FromQuery] DateTime? cycleMoment,
         [FromQuery] int? offset)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.GetCalendarCycleAsync(tenantId, cultureName, calendarName, cycleMoment, offset);
     }
@@ -223,11 +223,11 @@ public class CalendarController : Api.Controller.CalendarController
         [FromQuery] DateTime? evaluationDate, [FromQuery] DateTime? evaluationPeriodDate
        )
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.CalculateCalendarValueAsync(tenantId, value, cultureName, calendarName, evaluationDate, evaluationPeriodDate);
     }

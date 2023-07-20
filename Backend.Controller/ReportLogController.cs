@@ -31,11 +31,11 @@ public class ReportLogController : Api.Controller.ReportLogController
     [ApiOperationId("QueryReportLogs")]
     public async Task<ActionResult> QueryReportLogsAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -53,11 +53,11 @@ public class ReportLogController : Api.Controller.ReportLogController
     public async Task<ActionResult<ApiObject.ReportLog>> GetReportLogAsync(
         int tenantId, int logId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, logId);
     }
@@ -76,11 +76,11 @@ public class ReportLogController : Api.Controller.ReportLogController
     public async Task<ActionResult<ApiObject.ReportLog>> CreateReportLogAsync(
         int tenantId, ApiObject.ReportLog log)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(tenantId, log);
     }
@@ -95,11 +95,11 @@ public class ReportLogController : Api.Controller.ReportLogController
     [ApiOperationId("DeleteReportLog")]
     public async Task<IActionResult> DeleteReportLogAsync(int tenantId, int logId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, logId);
     }

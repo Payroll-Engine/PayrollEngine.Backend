@@ -38,11 +38,11 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
     public async Task<ActionResult> QueryReportParameterAuditsAsync(int tenantId,
         int regulationId, int reportId, int parameterId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(parameterId, query);
     }
@@ -63,11 +63,11 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
     public async Task<ActionResult<ApiObject.ReportParameterAudit>> GetReportParameterAuditAsync(
         int tenantId, int regulationId, int reportId, int parameterId, int auditId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(parameterId, auditId);
     }

@@ -33,11 +33,11 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [ApiOperationId("QueryCaseFields")]
     public async Task<ActionResult> QueryCaseFieldsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(caseId, query);
     }
@@ -57,11 +57,11 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [ApiOperationId("GetCaseField")]
     public async Task<ActionResult<ApiObject.CaseField>> GetCaseFieldAsync(int tenantId, int regulationId, int caseId, int caseFieldId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(caseId, caseFieldId);
     }
@@ -80,11 +80,11 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [ApiOperationId("CreateCaseField")]
     public async Task<ActionResult<ApiObject.CaseField>> CreateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(caseId, caseField);
     }
@@ -103,11 +103,11 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [ApiOperationId("UpdateCaseField")]
     public async Task<ActionResult<ApiObject.CaseField>> UpdateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(caseId, caseField);
     }
@@ -122,11 +122,11 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [ApiOperationId("DeleteCaseField")]
     public async Task<IActionResult> DeleteCaseFieldAsync(int tenantId, int caseId, int caseFieldId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(caseId, caseFieldId);
     }

@@ -35,11 +35,11 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
     public async Task<ActionResult> QueryWageTypeAuditsAsync(int tenantId,
         int regulationId, int wageTypeId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(wageTypeId, query);
     }
@@ -59,11 +59,11 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
     public async Task<ActionResult<ApiObject.WageTypeAudit>> GetWageTypeAuditAsync(
         int tenantId, int regulationId, int wageTypeId, int auditId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(wageTypeId, auditId);
     }

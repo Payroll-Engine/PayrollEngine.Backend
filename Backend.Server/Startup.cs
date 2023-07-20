@@ -39,7 +39,17 @@ public class Startup
     /// </summary>
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddApiServices(Configuration, apiSpecification);
+        // database connection string
+        var connectionString = System.Threading.Tasks.Task.Run(Configuration.GetSharedConnectionStringAsync).Result;
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new PayrollException("Missing database connection string");
+        }
+
+        // database command timeout
+        var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
+        var dbContext = new Persistence.SqlServer.DbContext(connectionString, serverConfiguration.DbCommandTimeout);
+        services.AddApiServices(Configuration, apiSpecification, dbContext);
         services.AddLocalApiServices();
     }
 

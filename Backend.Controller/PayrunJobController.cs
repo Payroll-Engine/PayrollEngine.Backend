@@ -33,11 +33,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [ApiOperationId("QueryPayrunJobs")]
     public async Task<ActionResult> QueryPayrunJobsAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -57,11 +57,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     public override async Task<ActionResult> QueryEmployeePayrunJobsAsync(
         int tenantId, int employeeId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.QueryEmployeePayrunJobsAsync(tenantId, employeeId, query);
     }
@@ -79,11 +79,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     public async Task<ActionResult<ApiObject.PayrunJob>> GetPayrunJobAsync(
         int tenantId, int payrunJobId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, payrunJobId);
     }
@@ -102,11 +102,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     public override async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunJobAsync(
         int tenantId, ApiObject.PayrunJobInvocation jobInvocation)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.StartPayrunJobAsync(tenantId, jobInvocation);
     }
@@ -155,11 +155,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [ApiOperationId("DeletePayrunJob")]
     public async Task<IActionResult> DeletePayrunJobAsync(int tenantId, int payrunJobId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, payrunJobId);
     }
@@ -180,11 +180,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     public virtual async Task<ActionResult<string>> GetPayrunJobAttributeAsync(
         int tenantId, int payrunJobId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(payrunJobId, attributeName);
     }
@@ -205,11 +205,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     public virtual async Task<ActionResult<string>> SetPayrunJobAttributeAsync(
         int tenantId, int payrunJobId, string attributeName, [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(payrunJobId, attributeName, value);
     }
@@ -226,11 +226,11 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     public virtual async Task<ActionResult<bool>> DeletePayrunJobAttributeAsync(
         int tenantId, int payrunJobId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(payrunJobId, attributeName);
     }

@@ -33,11 +33,11 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
     public async Task<ActionResult> QueryNationalCaseDocumentsAsync(int tenantId,
         int caseValueId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(caseValueId, query);
     }
@@ -56,11 +56,11 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
     public async Task<ActionResult<ApiObject.CaseDocument>> GetNationalCaseDocumentAsync(
         int tenantId, int caseValueId, int documentId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(caseValueId, documentId);
     }

@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using DomainModel = PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Core;
 
@@ -21,7 +22,7 @@ public static class ApiStartupExtensions
 {
     // ReSharper disable once UnusedMethodReturnValue.Global
     public static IServiceCollection AddApiServices(this IServiceCollection services,
-        IConfiguration configuration, ApiSpecification specification)
+        IConfiguration configuration, ApiSpecification specification, DomainModel.IDbContext dbContext)
     {
         if (services == null)
         {
@@ -34,6 +35,10 @@ public static class ApiStartupExtensions
         if (specification == null)
         {
             throw new ArgumentNullException(nameof(specification));
+        }
+        if (dbContext == null)
+        {
+            throw new ArgumentNullException(nameof(dbContext));
         }
 
         // IIS
@@ -85,7 +90,7 @@ public static class ApiStartupExtensions
         }
 
         // API services
-        ApiFactory.SetupApiServices(services, configuration);
+        ApiFactory.SetupApiServices(services, configuration, dbContext);
 
         // controllers
         services.AddControllers(setupAction =>

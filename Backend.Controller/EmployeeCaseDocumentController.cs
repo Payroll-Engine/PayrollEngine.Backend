@@ -34,11 +34,11 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
     public async Task<ActionResult> QueryEmployeeCaseDocumentsAsync(int tenantId, int employeeId, 
         int caseValueId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // employee check
@@ -72,11 +72,11 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
     public async Task<ActionResult<ApiObject.CaseDocument>> GetEmployeeCaseDocumentAsync(int tenantId, 
         int employeeId, int caseValueId, int documentId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // employee check

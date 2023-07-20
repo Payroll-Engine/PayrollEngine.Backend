@@ -34,11 +34,11 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     [ApiOperationId("QueryCollectorAudits")]
     public async Task<ActionResult> QueryCollectorAuditsAsync(int tenantId, int regulationId, int collectorId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(collectorId, query);
     }
@@ -57,11 +57,11 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     [ApiOperationId("GetCollectorAudit")]
     public async Task<ActionResult<ApiObject.CollectorAudit>> GetCollectorAuditAsync(int tenantId, int regulationId, int collectorId, int auditId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(collectorId, auditId);
     }

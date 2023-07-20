@@ -11,6 +11,5 @@ public interface IControllerRuntime
     IConfiguration Configuration { get; }
     LinkGenerator LinkGenerator { get; }
     IApiDescriptionGroupCollectionProvider ApiExplorer { get; }
-    ITenantManager Tenant { get; }
     IScriptProvider ScriptProvider { get; }
 }

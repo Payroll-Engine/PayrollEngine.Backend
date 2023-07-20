@@ -33,11 +33,11 @@ public class WageTypeController : Api.Controller.WageTypeController
     public async Task<ActionResult> QueryWageTypesAsync(int tenantId, int regulationId,
         [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(regulationId, query);
     }
@@ -56,11 +56,11 @@ public class WageTypeController : Api.Controller.WageTypeController
     public async Task<ActionResult<ApiObject.WageType>> GetWageTypeAsync(
         int tenantId, int regulationId, int wageTypeId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(regulationId, wageTypeId);
     }
@@ -80,11 +80,11 @@ public class WageTypeController : Api.Controller.WageTypeController
     public async Task<ActionResult<ApiObject.WageType>> CreateWageTypeAsync(
         int tenantId, int regulationId, ApiObject.WageType wageType)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(regulationId, wageType);
     }
@@ -104,11 +104,11 @@ public class WageTypeController : Api.Controller.WageTypeController
     public async Task<ActionResult<ApiObject.WageType>> UpdateWageTypeAsync(
         int tenantId, int regulationId, ApiObject.WageType wageType)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(regulationId, wageType);
     }
@@ -125,11 +125,11 @@ public class WageTypeController : Api.Controller.WageTypeController
     public async Task<ActionResult> RebuildWageTypeAsync(int tenantId,
         int regulationId, int wageTypeId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await RebuildAsync(regulationId, wageTypeId);
     }
@@ -145,11 +145,11 @@ public class WageTypeController : Api.Controller.WageTypeController
     public async Task<IActionResult> DeleteWageTypeAsync(int tenantId,
         int regulationId, int wageTypeId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(regulationId, wageTypeId);
     }

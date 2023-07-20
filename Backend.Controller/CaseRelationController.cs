@@ -32,11 +32,11 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [ApiOperationId("QueryCaseRelations")]
     public async Task<ActionResult> QueryCaseRelationsAsync(int tenantId, int regulationId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(regulationId, query);
     }
@@ -54,11 +54,11 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [ApiOperationId("GetCaseRelation")]
     public async Task<ActionResult<ApiObject.CaseRelation>> GetCaseRelationAsync(int tenantId, int regulationId, int relationId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(regulationId, relationId);
     }
@@ -78,11 +78,11 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     public async Task<ActionResult<ApiObject.CaseRelation>> CreateCaseRelationAsync(int tenantId,
         int regulationId, ApiObject.CaseRelation caseRelation)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(regulationId, caseRelation);
     }
@@ -102,11 +102,11 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     public async Task<ActionResult<ApiObject.CaseRelation>> UpdateCaseRelationAsync(int tenantId,
         int regulationId, ApiObject.CaseRelation caseRelation)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(regulationId, caseRelation);
     }
@@ -122,11 +122,11 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [ApiOperationId("RebuildCaseRelation")]
     public async Task<ActionResult> RebuildCaseRelationAsync(int tenantId, int regulationId, int relationId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await RebuildAsync(regulationId, relationId);
     }
@@ -141,11 +141,11 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [ApiOperationId("DeleteCaseRelation")]
     public async Task<IActionResult> DeleteCaseRelationAsync(int tenantId, int regulationId, int relationId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(regulationId, relationId);
     }

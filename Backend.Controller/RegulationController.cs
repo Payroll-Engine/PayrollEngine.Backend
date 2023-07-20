@@ -32,11 +32,11 @@ public class RegulationController : Api.Controller.RegulationController
     [ApiOperationId("QueryRegulations")]
     public async Task<ActionResult> QueryRegulationsAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -54,11 +54,11 @@ public class RegulationController : Api.Controller.RegulationController
     public async Task<ActionResult<ApiObject.Regulation>> GetRegulationAsync(
         int tenantId, int regulationId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, regulationId);
     }
@@ -76,11 +76,11 @@ public class RegulationController : Api.Controller.RegulationController
     public override async Task<ActionResult<string>> GetCaseOfCaseFieldAsync(
         int tenantId, [Required] string caseFieldName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.GetCaseOfCaseFieldAsync(tenantId, caseFieldName);
     }
@@ -99,11 +99,11 @@ public class RegulationController : Api.Controller.RegulationController
     public async Task<ActionResult<ApiObject.Regulation>> CreateRegulationAsync(
         int tenantId, ApiObject.Regulation regulation)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(tenantId, regulation);
     }
@@ -122,11 +122,11 @@ public class RegulationController : Api.Controller.RegulationController
     public async Task<ActionResult<ApiObject.Regulation>> UpdateRegulationAsync(
         int tenantId, ApiObject.Regulation regulation)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(tenantId, regulation);
     }
@@ -141,11 +141,11 @@ public class RegulationController : Api.Controller.RegulationController
     [ApiOperationId("DeleteRegulation")]
     public async Task<IActionResult> DeleteRegulationAsync(int tenantId, int regulationId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, regulationId);
     }
@@ -166,11 +166,11 @@ public class RegulationController : Api.Controller.RegulationController
     public virtual async Task<ActionResult<string>> GetRegulationAttributeAsync(
         int tenantId, int regulationId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(regulationId, attributeName);
     }
@@ -192,11 +192,11 @@ public class RegulationController : Api.Controller.RegulationController
         int tenantId, int regulationId, string attributeName,
         [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(regulationId, attributeName, value);
     }
@@ -213,11 +213,11 @@ public class RegulationController : Api.Controller.RegulationController
     public virtual async Task<ActionResult<bool>> DeleteRegulationAttributeAsync(
         int tenantId, int regulationId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(regulationId, attributeName);
     }

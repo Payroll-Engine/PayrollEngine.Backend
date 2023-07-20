@@ -70,11 +70,11 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     {
         try
         {
-            // tenant check
-            var tenantResult = VerifyTenant(tenantId);
-            if (tenantResult != null)
+            // authorization
+            var authResult = await AuthorizeAsync(tenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
             // parent check
             if (tenantId <= 0)
@@ -112,11 +112,11 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     {
         try
         {
-            // tenant check
-            var tenantResult = VerifyTenant(tenantId);
-            if (tenantResult != null)
+            // authorization
+            var authResult = await AuthorizeAsync(tenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
             // parent check
             if (tenantId <= 0)
@@ -176,11 +176,11 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     {
         try
         {
-            // tenant check
-            var tenantResult = VerifyTenant(tenantId);
-            if (tenantResult != null)
+            // authorization
+            var authResult = await AuthorizeAsync(tenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
             // parent check
             if (tenantId <= 0)
@@ -218,11 +218,11 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     {
         try
         {
-            // tenant check
-            var tenantResult = VerifyTenant(tenantId);
-            if (tenantResult != null)
+            // authorization
+            var authResult = await AuthorizeAsync(tenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
             // parent check
             if (tenantId <= 0)

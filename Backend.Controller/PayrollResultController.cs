@@ -36,11 +36,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [ApiOperationId("QueryPayrollResults")]
     public async Task<ActionResult> QueryPayrollResultsAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -58,11 +58,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.PayrollResult>> GetPayrollResultAsync(
         int tenantId, int payrollResultId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, payrollResultId);
     }
@@ -85,11 +85,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.CollectorResult[]>> QueryCollectorResultsAsync(
         int tenantId, int payrollResultId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         var results = await Service.QueryCollectorResultsAsync(Runtime.DbContext, payrollResultId, query);
         return new CollectorResultMap().ToApi(results);
@@ -110,11 +110,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.CollectorCustomResult[]>> QueryCollectorCustomResultsAsync(
         int tenantId, int payrollResultId, int collectorResultId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         var results = await Service.QueryCollectorCustomResultsAsync(Runtime.DbContext, collectorResultId, query);
         return new CollectorCustomResultMap().ToApi(results);
@@ -138,11 +138,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.WageTypeResult[]>> QueryWageTypeResultsAsync(
         int tenantId, int payrollResultId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         var results = await Service.QueryWageTypeResultsAsync(Runtime.DbContext, payrollResultId, query);
         return new WageTypeResultMap().ToApi(results);
@@ -163,11 +163,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.WageTypeCustomResult[]>> QueryWageTypeCustomResultsAsync(
         int tenantId, int payrollResultId, int wageTypeResultId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         var results = await Service.QueryWageTypeCustomResultsAsync(Runtime.DbContext, wageTypeResultId, query);
         return new WageTypeCustomResultMap().ToApi(results);
@@ -191,11 +191,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.PayrunResult[]>> QueryPayrunResultsAsync(
         int tenantId, int payrollResultId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         var results = await Service.QueryPayrunResultsAsync(Runtime.DbContext, payrollResultId, query);
         return new PayrunResultMap().ToApi(results);
@@ -219,11 +219,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public override async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId,
         [FromQuery] int? employeeId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.QueryPayrollResultValuesAsync(tenantId, employeeId, query);
     }
@@ -245,11 +245,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.PayrollResultSet[]>> QueryPayrollResultSetsAsync(
         int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         var resultSets = await Service.QueryResultSetsAsync(Runtime.DbContext, tenantId, query);
@@ -269,11 +269,11 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     public async Task<ActionResult<ApiObject.PayrollResultSet>> GetPayrollResultSetAsync(
         int tenantId, int payrollResultId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         var resultSet = await Service.GetResultSetAsync(Runtime.DbContext, tenantId, payrollResultId);
         if (resultSet == null)

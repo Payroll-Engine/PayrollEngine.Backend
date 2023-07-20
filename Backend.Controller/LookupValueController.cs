@@ -35,11 +35,11 @@ public class LookupValueController : Api.Controller.LookupValueController
     public async Task<ActionResult> QueryLookupValuesAsync(int tenantId,
         int regulationId, int lookupId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(lookupId, query);
     }
@@ -59,11 +59,11 @@ public class LookupValueController : Api.Controller.LookupValueController
     public override async Task<ActionResult<ApiObject.LookupValueData[]>> GetLookupValuesDataAsync(
         int tenantId, int regulationId, int lookupId, [FromQuery] string culture)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.GetLookupValuesDataAsync(tenantId, regulationId, lookupId, culture);
     }
@@ -83,11 +83,11 @@ public class LookupValueController : Api.Controller.LookupValueController
     public async Task<ActionResult<ApiObject.LookupValue>> GetLookupValueAsync(
         int tenantId, int regulationId, int lookupId, int lookupValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(lookupId, lookupValueId);
     }
@@ -108,11 +108,11 @@ public class LookupValueController : Api.Controller.LookupValueController
     public async Task<ActionResult<ApiObject.LookupValue>> CreateLookupValueAsync(
         int tenantId, int regulationId, int lookupId, ApiObject.LookupValue lookup)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(lookupId, lookup);
     }
@@ -133,11 +133,11 @@ public class LookupValueController : Api.Controller.LookupValueController
     public async Task<ActionResult<ApiObject.LookupValue>> UpdateLookupValueAsync(
         int tenantId, int regulationId, int lookupId, ApiObject.LookupValue lookup)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(lookupId, lookup);
     }
@@ -155,11 +155,11 @@ public class LookupValueController : Api.Controller.LookupValueController
     public async Task<IActionResult> DeleteLookupValueAsync(int tenantId,
         int regulationId, int lookupId, int lookupValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(lookupId, lookupValueId);
     }

@@ -43,11 +43,11 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] string forecast, [FromQuery] PayrunJobStatus? jobStatus,
         [FromQuery] string[] tags)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         var results = await Service.GetPayrollResultAsync(Runtime.DbContext,
@@ -86,11 +86,11 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] string[] collectorNames, [FromQuery] string forecast,
         [FromQuery] PayrunJobStatus? jobStatus, [FromQuery] string[] tags, [FromQuery] DateTime? evaluationDate)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // periods
@@ -137,11 +137,11 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] decimal[] wageTypeNumbers, [FromQuery] string forecast,
         [FromQuery] string[] tags, [FromQuery] DateTime? evaluationDate, [FromQuery] PayrunJobStatus? jobStatus)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // periods
@@ -188,11 +188,11 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] string[] resultNames, [FromQuery] string forecast,
         [FromQuery] string[] tags, [FromQuery] DateTime? evaluationDate, [FromQuery] PayrunJobStatus? jobStatus)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // periods

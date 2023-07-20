@@ -3433,6 +3433,14 @@
         <member name="M:PayrollEngine.Domain.Model.IDbContext.TestVersionAsync">
             <summary>Test the required database version</summary>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.TestTenantAsync(System.String,System.Int32)">
+            <summary>Test for valid tenant</summary>
+            <param name="tenantIdentifier">The tenant identifier</param>
+            <param name="tenantId">The tenant id</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.TransformException(System.Exception)">
+            <summary>Transform a database exception</summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
             Execute a query asynchronously using Task.
@@ -3492,9 +3500,6 @@
             <param name="commandTimeout">Number of seconds before command execution timeout.</param>
             <param name="commandType">Is it a stored proc or a batch?</param>
             <returns>The first cell returned, as <typeparamref name="T"/>.</returns>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.IDbContext.TransformException(System.Exception)">
-            <summary>Transform a database exception</summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IDerivableObject">
             <summary>

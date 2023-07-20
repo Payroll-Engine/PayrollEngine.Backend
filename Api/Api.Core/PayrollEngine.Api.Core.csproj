@@ -20,7 +20,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Domain\Domain.Application\PayrollEngine.Domain.Application.csproj" />
-		<ProjectReference Include="..\..\Persistence\Persistence.SqlServer\PayrollEngine.Persistence.SqlServer.csproj" />
+		<ProjectReference Include="..\..\Persistence\Persistence\PayrollEngine.Persistence.csproj" />
 		<ProjectReference Include="..\Api.Model\PayrollEngine.Api.Model.csproj" />
 	</ItemGroup>
 

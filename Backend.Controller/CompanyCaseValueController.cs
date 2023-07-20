@@ -35,11 +35,11 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     [ApiOperationId("QueryCompanyCaseValues")]
     public async Task<ActionResult> QueryCompanyCaseValuesAsync(int tenantId, [FromQuery] CaseValueQuery query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -55,11 +55,11 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     [ApiOperationId("GetCompanyCaseValueSlots")]
     public async Task<ActionResult<IEnumerable<string>>> GetCompanyCaseValueSlotsAsync(int tenantId, [Required] string caseFieldName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
         {
@@ -80,11 +80,11 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     [ApiOperationId("GetCompanyCaseValue")]
     public async Task<ActionResult<ApiObject.CaseValue>> GetCompanyCaseValue(int tenantId, int caseValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, caseValueId);
     }

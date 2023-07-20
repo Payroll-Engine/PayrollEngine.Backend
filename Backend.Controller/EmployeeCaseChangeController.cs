@@ -33,11 +33,11 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     [ApiOperationId("QueryEmployeeCaseChanges")]
     public async Task<ActionResult> QueryEmployeeCaseChangesAsync(int tenantId, int employeeId, [FromQuery] DomainObject.CaseChangeQuery query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         return await QueryAsync(tenantId, employeeId, query);
@@ -56,11 +56,11 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     [ApiOperationId("GetEmployeeCaseChange")]
     public async Task<ActionResult<ApiObject.CaseChange>> GetEmployeeCaseChangeAsync(int tenantId, int employeeId, int caseChangeId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         if (await ParentService.GetParentIdAsync(Runtime.DbContext, employeeId) != tenantId)
         {
@@ -103,11 +103,11 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     [ApiOperationId("DeleteEmployeeCaseChange")]
     public async Task<IActionResult> DeleteEmployeeCaseChangeAsync(int tenantId, int employeeId, int caseValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(employeeId, caseValueId);
     }

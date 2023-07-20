@@ -33,11 +33,11 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     public async Task<ActionResult> QueryPayrunParametersAsync(int tenantId, int payrunId, 
         [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(payrunId, query);
     }
@@ -56,11 +56,11 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     public async Task<ActionResult<ApiObject.PayrunParameter>> GetPayrunParameterAsync(
         int tenantId, int payrunId, int parameterId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(payrunId, parameterId);
     }
@@ -80,11 +80,11 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     public async Task<ActionResult<ApiObject.PayrunParameter>> CreatePayrunParameterAsync(
         int tenantId, int payrunId, ApiObject.PayrunParameter parameter)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(payrunId, parameter);
     }
@@ -104,11 +104,11 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     public async Task<ActionResult<ApiObject.PayrunParameter>> UpdatePayrunAsync(
         int tenantId, int payrunId, ApiObject.PayrunParameter parameter)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(payrunId, parameter);
     }
@@ -124,11 +124,11 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     [ApiOperationId("DeletePayrun")]
     public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId, int parameterId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(payrunId, parameterId);
     }

@@ -32,11 +32,11 @@ public class WebhookController : Api.Controller.WebhookController
     public async Task<ActionResult> QueryWebhooksAsync(int tenantId,
         [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -54,11 +54,11 @@ public class WebhookController : Api.Controller.WebhookController
     public async Task<ActionResult<ApiObject.Webhook>> GetWebhookAsync(
         int tenantId, int webhookId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, webhookId);
     }
@@ -77,11 +77,11 @@ public class WebhookController : Api.Controller.WebhookController
     public async Task<ActionResult<ApiObject.Webhook>> CreateWebhookAsync(
         int tenantId, ApiObject.Webhook webhook)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(tenantId, webhook);
     }
@@ -100,11 +100,11 @@ public class WebhookController : Api.Controller.WebhookController
     public async Task<ActionResult<ApiObject.Webhook>> UpdateWebhookAsync(
         int tenantId, ApiObject.Webhook webhook)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(tenantId, webhook);
     }
@@ -119,11 +119,11 @@ public class WebhookController : Api.Controller.WebhookController
     [ApiOperationId("DeleteWebhook")]
     public async Task<IActionResult> DeleteWebhookAsync(int tenantId, int webhookId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, webhookId);
     }
@@ -144,11 +144,11 @@ public class WebhookController : Api.Controller.WebhookController
     public virtual async Task<ActionResult<string>> GetWebhookAttributeAsync(
         int tenantId, int webhookId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(webhookId, attributeName);
     }
@@ -169,11 +169,11 @@ public class WebhookController : Api.Controller.WebhookController
     public virtual async Task<ActionResult<string>> SetWebhookAttributeAsync(
         int tenantId, int webhookId, string attributeName, [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(webhookId, attributeName, value);
     }
@@ -190,11 +190,11 @@ public class WebhookController : Api.Controller.WebhookController
     public virtual async Task<ActionResult<bool>> DeleteWebhookAttributeAsync(
         int tenantId, int webhookId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(webhookId, attributeName);
     }

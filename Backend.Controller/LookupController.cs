@@ -33,11 +33,11 @@ public class LookupController : Api.Controller.LookupController
     public async Task<ActionResult> QueryLookupsAsync(int tenantId, 
         int regulationId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(regulationId, query);
     }
@@ -56,11 +56,11 @@ public class LookupController : Api.Controller.LookupController
     public async Task<ActionResult<ApiObject.Lookup>> GetLookupAsync(int tenantId,
         int regulationId, int lookupId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(regulationId, lookupId);
     }
@@ -80,11 +80,11 @@ public class LookupController : Api.Controller.LookupController
     public async Task<ActionResult<ApiObject.Lookup>> CreateLookupAsync(int tenantId,
         int regulationId, ApiObject.Lookup lookup)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(regulationId, lookup);
     }
@@ -104,11 +104,11 @@ public class LookupController : Api.Controller.LookupController
     public async Task<ActionResult<ApiObject.Lookup>> UpdateLookupAsync(int tenantId,
         int regulationId, ApiObject.Lookup lookup)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(regulationId, lookup);
     }
@@ -124,11 +124,11 @@ public class LookupController : Api.Controller.LookupController
     [ApiOperationId("DeleteLookup")]
     public async Task<IActionResult> DeleteLookupAsync(int tenantId, int regulationId, int lookupId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(regulationId, lookupId);
     }
@@ -150,11 +150,11 @@ public class LookupController : Api.Controller.LookupController
     public override async Task<ActionResult> QueryLookupSetsAsync(int tenantId,
         int regulationId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.QueryLookupSetsAsync(tenantId, regulationId, query);
     }
@@ -173,11 +173,11 @@ public class LookupController : Api.Controller.LookupController
     public async Task<ActionResult<ApiObject.LookupSet>> GetLookupSetAsync(int tenantId,
         int regulationId, int lookupId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetSetAsync(tenantId, regulationId, lookupId);
     }
@@ -196,11 +196,11 @@ public class LookupController : Api.Controller.LookupController
     public async Task<ActionResult> CreateLookupSetsAsync(int tenantId,
         int regulationId, ApiObject.LookupSet[] lookupSets)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateSetsAsync(regulationId, lookupSets);
     }
@@ -215,11 +215,11 @@ public class LookupController : Api.Controller.LookupController
     [ApiOperationId("DeleteLookupSet")]
     public async Task<ActionResult> DeleteLookupSetAsync(int tenantId, int regulationId, int lookupId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteSetAsync(regulationId, lookupId);
     }

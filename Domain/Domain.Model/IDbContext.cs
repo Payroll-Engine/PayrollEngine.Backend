@@ -8,6 +8,9 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>Database context</summary>
 public interface IDbContext
 {
+
+    #region Control
+
     /// <summary>The date time type name</summary>
     string DateTimeType { get; }
 
@@ -16,6 +19,18 @@ public interface IDbContext
 
     /// <summary>Test the required database version</summary>
     Task<bool> TestVersionAsync();
+
+    /// <summary>Test for valid tenant</summary>
+    /// <param name="tenantIdentifier">The tenant identifier</param>
+    /// <param name="tenantId">The tenant id</param>
+    Task<bool> TestTenantAsync(string tenantIdentifier, int tenantId);
+
+    /// <summary>Transform a database exception</summary>
+    Exception TransformException(Exception exception);
+
+    #endregion
+
+    #region Requests
 
     /// <summary>
     /// Execute a query asynchronously using Task.
@@ -82,6 +97,6 @@ public interface IDbContext
     Task<T> ExecuteScalarAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
         int? commandTimeout = null, CommandType? commandType = null);
 
-    /// <summary>Transform a database exception</summary>
-    Exception TransformException(Exception exception);
+    #endregion
+
 }

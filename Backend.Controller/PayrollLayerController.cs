@@ -34,11 +34,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public async Task<ActionResult> QueryPayrollLayersAsync(int tenantId, int payrollId,
         [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(payrollId, query);
     }
@@ -57,11 +57,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public async Task<ActionResult<ApiObject.PayrollLayer>> GetPayrollLayerAsync(
         int tenantId, int payrollId, int layerId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(payrollId, layerId);
     }
@@ -81,11 +81,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public async Task<ActionResult<ApiObject.PayrollLayer>> CreatePayrollLayerAsync(
         int tenantId, int payrollId, ApiObject.PayrollLayer layer)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(payrollId, layer);
     }
@@ -105,11 +105,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public async Task<ActionResult<ApiObject.PayrollLayer>> UpdatePayrollLayerAsync(
         int tenantId, int payrollId, ApiObject.PayrollLayer layer)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(payrollId, layer);
     }
@@ -124,11 +124,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [ApiOperationId("DeletePayrollLayer")]
     public async Task<IActionResult> DeletePayrollLayerAsync(int tenantId, int payrollId, int layerId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(payrollId, layerId);
     }
@@ -150,11 +150,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public virtual async Task<ActionResult<string>> GetPayrollLayerAttributeAsync(
         int tenantId, int payrollId, int layerId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(layerId, attributeName);
     }
@@ -176,11 +176,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public virtual async Task<ActionResult<string>> SetPayrollLayerAttributeAsync(
         int tenantId, int payrollId, int layerId, string attributeName, [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(layerId, attributeName, value);
     }
@@ -198,11 +198,11 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public virtual async Task<ActionResult<bool>> DeletePayrollLayerAttributeAsync(
         int tenantId, int payrollId, int layerId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(layerId, attributeName);
     }

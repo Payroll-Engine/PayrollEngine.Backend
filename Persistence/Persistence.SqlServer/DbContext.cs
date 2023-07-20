@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using Dapper;
@@ -49,6 +50,8 @@ public class DbContext : IDbContext
         DefaultCommendTimeout = defaultCommendTimeout;
     }
 
+    #region Control
+
     /// <inheritdoc />
     public string DateTimeType =>
         $"DATETIME2({SystemSpecification.DateTimeFractionalSecondsPrecision}";
@@ -57,46 +60,93 @@ public class DbContext : IDbContext
     public string DecimalType =>
         $"DECIMAL({SystemSpecification.DecimalPrecision}, {SystemSpecification.DecimalScale})";
 
-    #region Operations
-
     /// <inheritdoc />
     public async Task<bool> TestVersionAsync()
     {
         try
         {
+            // version sql query
+            const string sql = $"SELECT COUNT(*) " +
+                               $"FROM {nameof(Version)} " +
+                               $"WHERE {nameof(Version.MajorVersion)} >= @major" +
+                               $"  AND {nameof(Version.MinorVersion)} >= @minor " +
+                               $"  AND {nameof(Version.SubVersion)} >= @build";
+
+            // count greater versions
             var connection = new SqlConnection(ConnectionString);
-            const string query = $"SELECT {nameof(Version.MajorVersion)}, {nameof(Version.MinorVersion)}, {nameof(Version.SubVersion)} FROM {nameof(Version)}";
-            await using (connection)
+            var count = await connection.QueryFirstAsync<int>(sql, new
             {
-                await using var command = new SqlCommand(query, connection);
-                command.CommandTimeout = 2;
-                await connection.OpenAsync();
+                major = MinVersion.Major,
+                minor = MinVersion.Major,
+                build = MinVersion.Build
+            });
 
-                var validVersion = false;
-                var reader = await command.ExecuteReaderAsync();
-                while (reader.Read())
-                {
-                    var major = reader.GetInt32(0);
-                    var minor = reader.GetInt32(1);
-                    var sub = reader.GetInt32(2);
-
-                    var curVersion = new System.Version(major, minor, sub);
-                    if (curVersion >= MinVersion)
-                    {
-                        validVersion = true;
-                        break;
-                    }
-                }
-                connection.Close();
-
-                return validVersion;
-            }
+            // at least one version is required
+            return count > 0;
         }
         catch
         {
             return false;
         }
     }
+
+    /// <inheritdoc />
+    public async Task<bool> TestTenantAsync(string tenantIdentifier, int tenantId)
+    {
+        if (string.IsNullOrWhiteSpace(tenantIdentifier))
+        {
+            return true;
+        }
+
+        try
+        {
+            // tenant sql query
+            var sql = $"SELECT {nameof(Tenant.Identifier)} " +
+                      $"FROM {nameof(Tenant)} " +
+                      $"WHERE {nameof(Tenant.Id)} = @id";
+
+            // get test tenant identifier
+            var connection = new SqlConnection(ConnectionString);
+            var testTenant = (await connection.QueryAsync<Tenant>(sql, new { id = tenantId })).
+                    FirstOrDefault();
+
+            // compare tenant identifiers
+            var valid = string.Equals(testTenant?.Identifier, tenantIdentifier);
+            return valid;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <inheritdoc />
+    public Exception TransformException(Exception exception)
+    {
+        if (exception is SqlException sqlException)
+        {
+            var message = exception.GetBaseMessage();
+
+            // sql 2601: Cannot insert duplicate key row
+            // see http://www.sql-server-helper.com/error-messages/msg-2601.aspx
+            if (sqlException.Number == 2601)
+            {
+                var startIndex = message.IndexOf("(", StringComparison.InvariantCultureIgnoreCase);
+                var endIndex = message.IndexOf(")", StringComparison.InvariantCultureIgnoreCase);
+                if (startIndex > 0 && endIndex > startIndex)
+                {
+                    message = $"Unique index key already exists [{message.Substring(startIndex + 1, endIndex - startIndex - 1)}]";
+                }
+            }
+            return new PersistenceException(message, PersistenceErrorType.UniqueConstraint, exception);
+        }
+
+        return exception;
+    }
+
+    #endregion
+
+    #region Requests
 
     /// <inheritdoc />
     public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null,
@@ -138,34 +188,11 @@ public class DbContext : IDbContext
         return await connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
     }
 
-    #endregion
-
-    /// <inheritdoc />
-    public Exception TransformException(Exception exception)
-    {
-        if (exception is SqlException sqlException)
-        {
-            var message = exception.GetBaseMessage();
-
-            // sql 2601: Cannot insert duplicate key row
-            // see http://www.sql-server-helper.com/error-messages/msg-2601.aspx
-            if (sqlException.Number == 2601)
-            {
-                var startIndex = message.IndexOf("(", StringComparison.InvariantCultureIgnoreCase);
-                var endIndex = message.IndexOf(")", StringComparison.InvariantCultureIgnoreCase);
-                if (startIndex > 0 && endIndex > startIndex)
-                {
-                    message = $"Unique index key already exists [{message.Substring(startIndex + 1, endIndex - startIndex - 1)}]";
-                }
-            }
-            return new PersistenceException(message, PersistenceErrorType.UniqueConstraint, exception);
-        }
-
-        return exception;
-    }
-
     /// <summary>New database connection for SQL Server</summary>
     /// <returns>The connection</returns>
     private IDbConnection NewConnection() =>
         new SqlConnection(ConnectionString);
+
+    #endregion
+
 }

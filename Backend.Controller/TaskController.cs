@@ -32,11 +32,11 @@ public class TaskController : Api.Controller.TaskController
     [ApiOperationId("QueryTasks")]
     public async Task<ActionResult> QueryTasksAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -53,11 +53,11 @@ public class TaskController : Api.Controller.TaskController
     [ApiOperationId("GetTask")]
     public async Task<ActionResult<ApiObject.Task>> GetTaskAsync(int tenantId, int taskId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, taskId);
     }
@@ -75,11 +75,11 @@ public class TaskController : Api.Controller.TaskController
     [ApiOperationId("CreateTask")]
     public async Task<ActionResult<ApiObject.Task>> CreateTaskAsync(int tenantId, ApiObject.Task task)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(tenantId, task);
     }
@@ -97,11 +97,11 @@ public class TaskController : Api.Controller.TaskController
     [ApiOperationId("UpdateTask")]
     public async Task<ActionResult<ApiObject.Task>> UpdateTaskAsync(int tenantId, ApiObject.Task task)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(tenantId, task);
     }
@@ -116,11 +116,11 @@ public class TaskController : Api.Controller.TaskController
     [ApiOperationId("DeleteTask")]
     public async Task<IActionResult> DeleteTaskAsync(int tenantId, int taskId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, taskId);
     }
@@ -141,11 +141,11 @@ public class TaskController : Api.Controller.TaskController
     public virtual async Task<ActionResult<string>> GetTaskAttributeAsync(
         int tenantId, int taskId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(taskId, attributeName);
     }
@@ -167,11 +167,11 @@ public class TaskController : Api.Controller.TaskController
         int tenantId, int taskId, string attributeName,
         [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(taskId, attributeName, value);
     }
@@ -188,11 +188,11 @@ public class TaskController : Api.Controller.TaskController
     public virtual async Task<ActionResult<bool>> DeleteTaskAttributeAsync(
         int tenantId, int taskId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(taskId, attributeName);
     }

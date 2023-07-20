@@ -32,11 +32,11 @@ public class UserController : Api.Controller.UserController
     [ApiOperationId("QueryUsers")]
     public async Task<ActionResult> QueryUsersAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -53,11 +53,11 @@ public class UserController : Api.Controller.UserController
     [ApiOperationId("GetUser")]
     public async Task<ActionResult<ApiObject.User>> GetUserAsync(int tenantId, int userId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, userId);
     }
@@ -75,11 +75,11 @@ public class UserController : Api.Controller.UserController
     [ApiOperationId("CreateUser")]
     public async Task<ActionResult<ApiObject.User>> CreateUserAsync(int tenantId, ApiObject.User user)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         // unique user by identifier
         if (await Service.ExistsAnyAsync(Runtime.DbContext, tenantId, user.Identifier))
@@ -102,11 +102,11 @@ public class UserController : Api.Controller.UserController
     [ApiOperationId("UpdateUser")]
     public async Task<ActionResult<ApiObject.User>> UpdateUserAsync(int tenantId, ApiObject.User user)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(tenantId, user);
     }
@@ -121,11 +121,11 @@ public class UserController : Api.Controller.UserController
     [ApiOperationId("DeleteUser")]
     public async Task<IActionResult> DeleteUserAsync(int tenantId, int userId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, userId);
     }
@@ -150,11 +150,11 @@ public class UserController : Api.Controller.UserController
     [QueryIgnore]
     public async Task<ActionResult> TestUserPasswordAsync(int tenantId, int userId, [FromBody] string password)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // password
@@ -201,11 +201,11 @@ public class UserController : Api.Controller.UserController
     public async Task<ActionResult<ApiObject.User>> UpdateUserPasswordAsync(
         int tenantId, int userId, [FromBody] PasswordChangeRequest changeRequest)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // password
@@ -246,11 +246,11 @@ public class UserController : Api.Controller.UserController
     public virtual async Task<ActionResult<string>> GetUserAttributeAsync(
         int tenantId, int userId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(userId, attributeName);
     }
@@ -271,11 +271,11 @@ public class UserController : Api.Controller.UserController
     public virtual async Task<ActionResult<string>> SetUserAttributeAsync(
         int tenantId, int userId, string attributeName, [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(userId, attributeName, value);
     }
@@ -292,11 +292,11 @@ public class UserController : Api.Controller.UserController
     public virtual async Task<ActionResult<bool>> DeleteUserAttributeAsync(
         int tenantId, int userId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(userId, attributeName);
     }

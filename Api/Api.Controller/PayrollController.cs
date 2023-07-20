@@ -103,10 +103,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         {
             // tenant
             query.TenantId = query.TenantId;
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
             var tenant = await ParentService.GetAsync(Runtime.DbContext, query.TenantId);
             if (tenant == null)
@@ -645,11 +645,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             return BadRequest("Missing case field names");
         }
 
-        // tenant check
-        var tenantResult = VerifyTenant(query.TenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(query.TenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         try
@@ -815,10 +815,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(tenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(tenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             var builder = new PayrollControllerCaseBuilder(this);
@@ -911,10 +911,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -969,10 +969,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1027,11 +1027,11 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
     {
         try
         {
-            // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            // authorization
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1088,10 +1088,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1144,10 +1144,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1200,10 +1200,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1253,10 +1253,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1301,10 +1301,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1389,10 +1389,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         string lookupName, string lookupKey, decimal? rangeValue, string culture)
     {
         // verify tenant
-        var tenantResult = VerifyTenant(query.TenantId);
-        if (tenantResult != null)
+        var authResult = await AuthorizeAsync(query.TenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         // verify lookup key, optional with range value
         if (!rangeValue.HasValue && string.IsNullOrWhiteSpace(lookupKey))
@@ -1433,10 +1433,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1479,10 +1479,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1521,10 +1521,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1565,10 +1565,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1610,10 +1610,10 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // query setup
@@ -1681,10 +1681,12 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             {
                 return new(querySetup, BadRequest($"Invalid query tenant id {query.TenantId}"));
             }
-            var tenantResult = VerifyTenant(query.TenantId);
-            if (tenantResult != null)
+
+            // authorization
+            var authResult = await AuthorizeAsync(query.TenantId);
+            if(authResult != null)
             {
-                return new(querySetup, tenantResult);
+                return new(querySetup, authResult);
             }
             var tenant = await ParentService.GetAsync(Runtime.DbContext, query.TenantId);
             if (tenant == null)

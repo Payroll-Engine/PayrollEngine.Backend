@@ -35,11 +35,11 @@ public class ScriptAuditController : Api.Controller.ScriptAuditController
     public async Task<ActionResult> QueryScriptAuditsAsync(int tenantId,
         int regulationId, int scriptId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(scriptId, query);
     }
@@ -59,11 +59,11 @@ public class ScriptAuditController : Api.Controller.ScriptAuditController
     public async Task<ActionResult<ApiObject.ScriptAudit>> GetScriptAuditAsync(
         int tenantId, int regulationId, int scriptId, int auditId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(scriptId, auditId);
     }

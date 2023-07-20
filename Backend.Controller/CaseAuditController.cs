@@ -33,11 +33,11 @@ public class CaseAuditController : Api.Controller.CaseAuditController
     [ApiOperationId("QueryCaseAudits")]
     public async Task<ActionResult> QueryCaseAuditsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(caseId, query);
     }
@@ -57,11 +57,11 @@ public class CaseAuditController : Api.Controller.CaseAuditController
     [ApiOperationId("GetCaseAudit")]
     public async Task<ActionResult<ApiObject.CaseAudit>> GetCaseAuditAsync(int tenantId, int regulationId, int caseId, int auditId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(caseId, auditId);
     }

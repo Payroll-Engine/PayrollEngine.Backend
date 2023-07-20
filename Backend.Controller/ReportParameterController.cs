@@ -34,11 +34,11 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     [ApiOperationId("QueryReportParameters")]
     public async Task<ActionResult> QueryReportParametersAsync(int tenantId, int regulationId, int reportId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(reportId, query);
     }
@@ -58,11 +58,11 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     public async Task<ActionResult<ApiObject.ReportParameter>> GetReportParameterAsync(
         int tenantId, int regulationId, int reportId, int parameterId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(reportId, parameterId);
     }
@@ -83,11 +83,11 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     public async Task<ActionResult<ApiObject.ReportParameter>> CreateReportParameterAsync(
         int tenantId, int regulationId, int reportId, ApiObject.ReportParameter parameter)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(reportId, parameter);
     }
@@ -108,11 +108,11 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     public async Task<ActionResult<ApiObject.ReportParameter>> UpdateReportParameterAsync(
         int tenantId, int regulationId, int reportId, ApiObject.ReportParameter parameter)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(reportId, parameter);
     }
@@ -130,11 +130,11 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     public async Task<IActionResult> DeleteReportParameterAsync(int tenantId,
         int regulationId, int reportId, int parameterId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(reportId, parameterId);
     }

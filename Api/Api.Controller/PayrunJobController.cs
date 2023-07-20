@@ -57,11 +57,11 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
     private async Task<ActionResult<ApiObject.PayrunJob[]>> QueryEmployeeJobsAsync(int tenantId,
         int employeeId, Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         return Map.ToApi(await Service.QueryEmployeePayrunJobsAsync(Runtime.DbContext, tenantId, employeeId, query));
@@ -69,11 +69,11 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
 
     private async Task<ActionResult<long>> QueryEmployeeJobsCountAsync(int tenantId, int employeeId, Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         return await Service.QueryEmployeePayrunJobsCountAsync(Runtime.DbContext, tenantId, employeeId, query);

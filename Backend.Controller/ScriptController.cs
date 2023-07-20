@@ -33,11 +33,11 @@ public class ScriptController : Api.Controller.ScriptController
     public async Task<ActionResult> QueryScriptsAsync(int tenantId, int regulationId, 
         [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(regulationId, query);
     }
@@ -56,11 +56,11 @@ public class ScriptController : Api.Controller.ScriptController
     public async Task<ActionResult<ApiObject.Script>> GetScriptAsync(int tenantId,
         int regulationId, int scriptId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(regulationId, scriptId);
     }
@@ -80,11 +80,11 @@ public class ScriptController : Api.Controller.ScriptController
     public async Task<ActionResult<ApiObject.Script>> CreateScriptAsync(int tenantId,
         int regulationId, ApiObject.Script script)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(regulationId, script);
     }
@@ -104,11 +104,11 @@ public class ScriptController : Api.Controller.ScriptController
     public async Task<ActionResult<ApiObject.Script>> UpdateScriptAsync(int tenantId,
         int regulationId, ApiObject.Script script)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(regulationId, script);
     }
@@ -124,11 +124,11 @@ public class ScriptController : Api.Controller.ScriptController
     public async Task<IActionResult> DeleteScriptAsync(int tenantId, 
         int regulationId, int scriptId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(regulationId, scriptId);
     }

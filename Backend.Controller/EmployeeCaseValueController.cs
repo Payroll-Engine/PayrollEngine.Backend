@@ -35,11 +35,11 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     [ApiOperationId("QueryEmployeeCaseValues")]
     public async Task<ActionResult> QueryEmployeeCaseValuesAsync(int tenantId, int employeeId, [FromQuery] CaseValueQuery query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // employee with tenant check
@@ -65,11 +65,11 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     public async Task<ActionResult<IEnumerable<string>>> GetEmployeeCaseValueSlotsAsync(int tenantId, int employeeId,
         [Required] string caseFieldName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // employee check
@@ -94,11 +94,11 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     [ApiOperationId("GetEmployeeCaseValue")]
     public async Task<ActionResult<ApiObject.CaseValue>> GetEmployeeCaseValueAsync(int tenantId, int employeeId, int caseValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
 
         // employee check

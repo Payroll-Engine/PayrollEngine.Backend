@@ -32,11 +32,11 @@ public class CompanyCaseChangeController : Api.Controller.CompanyCaseChangeContr
     [ApiOperationId("QueryCompanyCaseChanges")]
     public async Task<ActionResult> QueryCompanyCaseChangesAsync(int tenantId, [FromQuery] DomainObject.CaseChangeQuery query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryAsync(tenantId, tenantId, query);
     }
@@ -53,11 +53,11 @@ public class CompanyCaseChangeController : Api.Controller.CompanyCaseChangeContr
     [ApiOperationId("GetCompanyCaseChange")]
     public async Task<ActionResult<ApiObject.CaseChange>> GetCompanyCaseChangeAsync(int tenantId, int caseChangeId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, caseChangeId);
     }
@@ -86,11 +86,11 @@ public class CompanyCaseChangeController : Api.Controller.CompanyCaseChangeContr
     [ApiOperationId("DeleteCompanyCaseChange")]
     public async Task<IActionResult> DeleteCompanyCaseChangeAsync(int tenantId, int caseValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, caseValueId);
     }

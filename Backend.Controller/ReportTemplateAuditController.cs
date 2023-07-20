@@ -36,11 +36,11 @@ public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditC
     public async Task<ActionResult> QueryReportTemplateAuditsAsync(int tenantId, 
         int regulationId, int reportId, int templateId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(templateId, query);
     }
@@ -61,11 +61,11 @@ public class ReportTemplateAuditController : Api.Controller.ReportTemplateAuditC
     public async Task<ActionResult<ApiObject.ReportTemplateAudit>> GetReportTemplateAuditAsync(
         int tenantId, int regulationId, int reportId, int templateId, int auditId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(templateId, auditId);
     }

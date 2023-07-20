@@ -16,16 +16,19 @@ namespace PayrollEngine.Api.Core
         /// The current API version
         /// <remarks>Version to change on updates</remarks>
         /// </summary>
-        public static Version CurrentApiVersion { get; } = DefaultApiVersion;
+        public static Version CurrentApiVersion => DefaultApiVersion;
 
         /// <summary>
         /// The API description
         /// </summary>
-        public static string ApiDescription { get; } = "Payroll Engine API";
+        public static string ApiDescription => "Payroll Engine API";
 
         /// <summary>
         /// The API name
         /// </summary>
-        public static string ApiName { get; } = "Payroll Engine Backend API";
+        public static string ApiName => "Payroll Engine Backend API";
+
+        /// <summary>Tenant authorization header</summary>
+        public static string TenantAuthorizationHeader => "Auth-Tenant";
     }
 }

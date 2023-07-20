@@ -30,11 +30,11 @@ public class DivisionController : Api.Controller.DivisionController
     [ApiOperationId("QueryDivisions")]
     public async Task<ActionResult> QueryDivisionsAsync(int tenantId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(tenantId, query);
     }
@@ -51,11 +51,11 @@ public class DivisionController : Api.Controller.DivisionController
     [ApiOperationId("GetDivision")]
     public async Task<ActionResult<ApiObject.Division>> GetDivisionAsync(int tenantId, int divisionId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, divisionId);
     }
@@ -73,11 +73,11 @@ public class DivisionController : Api.Controller.DivisionController
     [ApiOperationId("CreateDivision")]
     public async Task<ActionResult<ApiObject.Division>> CreateDivisionAsync(int tenantId, ApiObject.Division division)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(tenantId, division);
     }
@@ -95,11 +95,11 @@ public class DivisionController : Api.Controller.DivisionController
     [ApiOperationId("UpdateDivision")]
     public async Task<ActionResult<ApiObject.Division>> UpdateDivisionAsync(int tenantId, ApiObject.Division division)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(tenantId, division);
     }
@@ -114,11 +114,11 @@ public class DivisionController : Api.Controller.DivisionController
     [ApiOperationId("DeleteDivision")]
     public async Task<IActionResult> DeleteDivisionAsync(int tenantId, int divisionId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, divisionId);
     }
@@ -138,11 +138,11 @@ public class DivisionController : Api.Controller.DivisionController
     [ApiOperationId("GetDivisionAttribute")]
     public virtual async Task<ActionResult<string>> GetDivisionAttributeAsync(int tenantId, int divisionId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(divisionId, attributeName);
     }
@@ -163,11 +163,11 @@ public class DivisionController : Api.Controller.DivisionController
     public virtual async Task<ActionResult<string>> SetDivisionAttributeAsync(int tenantId, int divisionId, string attributeName,
         [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(divisionId, attributeName, value);
     }
@@ -183,11 +183,11 @@ public class DivisionController : Api.Controller.DivisionController
     [ApiOperationId("DeleteDivisionAttribute")]
     public virtual async Task<ActionResult<bool>> DeleteDivisionAttributeAsync(int tenantId, int divisionId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(divisionId, attributeName);
     }

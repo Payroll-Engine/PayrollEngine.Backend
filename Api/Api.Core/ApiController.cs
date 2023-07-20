@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -70,13 +71,17 @@ public abstract class ApiController : ControllerBase
 
     #region Tenant
 
-    protected BadRequestObjectResult VerifyTenant(int tenantId)
+    protected async Task<UnauthorizedObjectResult> AuthorizeAsync(int tenantId)
     {
-        if (!Runtime.Tenant.IsValid(tenantId))
+        // tenant authorization header
+        if (!Request.Headers.TryGetValue(BackendSpecification.TenantAuthorizationHeader, out var authTenant))
         {
-            return BadRequest($"Invalid tenant with id {tenantId}");
+            return null;
         }
-        return null;
+
+        // db service test tenant
+        var valid = await Runtime.DbContext.TestTenantAsync(authTenant, tenantId);
+        return !valid ? Unauthorized($"Invalid tenant with id {tenantId}") : null;
     }
 
     #endregion

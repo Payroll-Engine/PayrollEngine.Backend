@@ -31,11 +31,11 @@ public class CollectorController : Api.Controller.CollectorController
     [ApiOperationId("QueryCollectors")]
     public async Task<ActionResult> QueryCollectorsAsync(int tenantId, int regulationId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(regulationId, query);
     }
@@ -54,11 +54,11 @@ public class CollectorController : Api.Controller.CollectorController
     [ApiOperationId("GetCollector")]
     public async Task<ActionResult<ApiObject.Collector>> GetCollectorAsync(int tenantId, int regulationId, int collectorId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(regulationId, collectorId);
     }
@@ -78,11 +78,11 @@ public class CollectorController : Api.Controller.CollectorController
     public async Task<ActionResult<ApiObject.Collector>> CreateCollectorAsync(int tenantId,
         int regulationId, ApiObject.Collector collector)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(regulationId, collector);
     }
@@ -102,11 +102,11 @@ public class CollectorController : Api.Controller.CollectorController
     public async Task<ActionResult<ApiObject.Collector>> UpdateCollectorAsync(int tenantId,
         int regulationId, ApiObject.Collector collector)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(regulationId, collector);
     }
@@ -122,11 +122,11 @@ public class CollectorController : Api.Controller.CollectorController
     [ApiOperationId("RebuildCollector")]
     public async Task<ActionResult> RebuildCollectorAsync(int tenantId, int regulationId, int collectorId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await RebuildAsync(regulationId, collectorId);
     }
@@ -141,11 +141,11 @@ public class CollectorController : Api.Controller.CollectorController
     [ApiOperationId("DeleteCollector")]
     public async Task<IActionResult> DeleteCollectorAsync(int tenantId, int regulationId, int collectorId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(regulationId, collectorId);
     }

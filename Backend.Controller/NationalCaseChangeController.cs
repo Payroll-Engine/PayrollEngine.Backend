@@ -34,11 +34,11 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     public async Task<ActionResult> QueryNationalCaseChangesAsync(int tenantId,
         [FromQuery] DomainObject.CaseChangeQuery query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryAsync(tenantId, tenantId, query);
     }
@@ -56,11 +56,11 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     public async Task<ActionResult<ApiObject.CaseChange>> GetNationalCaseChangeAsync(
         int tenantId, int caseChangeId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, caseChangeId);
     }
@@ -90,11 +90,11 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     [ApiOperationId("DeleteNationalCaseChange")]
     public async Task<IActionResult> DeleteNationalCaseChangeAsync(int tenantId, int caseValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(tenantId, caseValueId);
     }

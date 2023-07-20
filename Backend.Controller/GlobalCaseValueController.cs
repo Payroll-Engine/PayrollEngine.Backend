@@ -36,11 +36,11 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     public async Task<ActionResult> QueryGlobalCaseValuesAsync(int tenantId, 
         [FromQuery] CaseValueQuery query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
         {
@@ -61,11 +61,11 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     public async Task<ActionResult<IEnumerable<string>>> GetGlobalCaseValueSlotsAsync(
         int tenantId, [Required] string caseFieldName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return Ok(await GetCaseValueSlotsAsync(tenantId, caseFieldName));
     }
@@ -83,11 +83,11 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     public async Task<ActionResult<ApiObject.CaseValue>> GetGlobalCaseValueAsync(
         int tenantId, int caseValueId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(tenantId, caseValueId);
     }

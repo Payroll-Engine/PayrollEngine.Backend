@@ -35,11 +35,11 @@ public class ReportController : Api.Controller.ReportController
     public async Task<ActionResult> QueryReportsAsync(int tenantId, int regulationId,
         [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(regulationId, query);
     }
@@ -58,11 +58,11 @@ public class ReportController : Api.Controller.ReportController
     public async Task<ActionResult<ApiObject.Report>> GetReportAsync(int tenantId,
         int regulationId, int reportId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(regulationId, reportId);
     }
@@ -87,11 +87,11 @@ public class ReportController : Api.Controller.ReportController
     public override async Task<ActionResult<ApiObject.ReportResponse>> ExecuteReportAsync(
         int tenantId, int regulationId, int reportId, [FromBody][Required] ApiObject.ReportRequest request)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.ExecuteReportAsync(tenantId, regulationId, reportId, request);
     }
@@ -111,11 +111,11 @@ public class ReportController : Api.Controller.ReportController
     public async Task<ActionResult<ApiObject.Report>> CreateReportAsync(int tenantId,
         int regulationId, ApiObject.Report report)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(regulationId, report);
     }
@@ -135,11 +135,11 @@ public class ReportController : Api.Controller.ReportController
     public async Task<ActionResult<ApiObject.Report>> UpdateReportAsync(int tenantId,
         int regulationId, ApiObject.Report report)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(regulationId, report);
     }
@@ -155,11 +155,11 @@ public class ReportController : Api.Controller.ReportController
     [ApiOperationId("DeleteReport")]
     public async Task<IActionResult> DeleteReportAsync(int tenantId, int regulationId, int reportId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(regulationId, reportId);
     }
@@ -185,11 +185,11 @@ public class ReportController : Api.Controller.ReportController
     public override async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
         int tenantId, int regulationId, int reportId, [FromBody] ApiObject.ReportRequest reportRequest = null)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.GetReportSetAsync(tenantId, regulationId, reportId, reportRequest);
     }
@@ -209,11 +209,11 @@ public class ReportController : Api.Controller.ReportController
     public async Task<ActionResult<ApiObject.ReportSet>> CreateReportSetAsync(int tenantId,
         int regulationId, ApiObject.ReportSet report)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.CreateReportSetAsync(regulationId, report);
     }
@@ -229,11 +229,11 @@ public class ReportController : Api.Controller.ReportController
     [ApiOperationId("RebuildReport")]
     public async Task<ActionResult> RebuildReportAsync(int tenantId, int regulationId, int reportId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await RebuildAsync(regulationId, reportId);
     }
@@ -248,11 +248,11 @@ public class ReportController : Api.Controller.ReportController
     [ApiOperationId("DeleteReportSet")]
     public async Task<IActionResult> DeleteReportSetAsync(int tenantId, int regulationId, int reportId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteReportSetAsync(regulationId, reportId);
     }
@@ -276,11 +276,11 @@ public class ReportController : Api.Controller.ReportController
     public virtual async Task<ActionResult<string>> GetReportAttributeAsync(
         int tenantId, int regulationId, int reportId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(reportId, attributeName);
     }
@@ -302,11 +302,11 @@ public class ReportController : Api.Controller.ReportController
     public virtual async Task<ActionResult<string>> SetReportAttributeAsync(int tenantId,
         int regulationId, int reportId, string attributeName, [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(reportId, attributeName, value);
     }
@@ -324,11 +324,11 @@ public class ReportController : Api.Controller.ReportController
     public virtual async Task<ActionResult<bool>> DeleteReportAttributeAsync(int tenantId,
         int regulationId, int reportId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(reportId, attributeName);
     }

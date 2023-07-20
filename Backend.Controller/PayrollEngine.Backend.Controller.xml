@@ -2701,14 +2701,15 @@
             <summary>
             Add a new tenant
             </summary>
+            <remarks>No authorization check</remarks>
             <param name="tenant">The tenant to add</param>
             <returns>The newly created tenant</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.TenantController.UpdateTenantAsync(System.Int32,PayrollEngine.Api.Model.Tenant)">
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.UpdateTenantAsync(PayrollEngine.Api.Model.Tenant)">
             <summary>
             Update a tenant
             </summary>
-            <param name="tenantId">The tenant id</param>
+            <remarks>No authorization check</remarks>
             <param name="tenant">The tenant with updated values</param>
             <returns>The modified tenant</returns>
         </member>
@@ -2716,6 +2717,7 @@
             <summary>
             Delete a tenant including all tenant data
             </summary>
+            <remarks>No authorization check</remarks>
             <param name="tenantId">The tenant id</param>
             <returns></returns>
         </member>
@@ -2723,6 +2725,7 @@
             <summary>
             Get a tenant
             </summary>
+            <remarks>No authorization check</remarks>
             <param name="tenantId">The tenant id</param>
             <returns></returns>
         </member>

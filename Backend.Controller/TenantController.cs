@@ -37,6 +37,7 @@ public class TenantController : Api.Controller.TenantController
     /// <summary>
     /// Add a new tenant
     /// </summary>
+    /// <remarks>No authorization check</remarks>
     /// <param name="tenant">The tenant to add</param>
     /// <returns>The newly created tenant</returns>
     [HttpPost]
@@ -57,7 +58,7 @@ public class TenantController : Api.Controller.TenantController
     /// <summary>
     /// Update a tenant
     /// </summary>
-    /// <param name="tenantId">The tenant id</param>
+    /// <remarks>No authorization check</remarks>
     /// <param name="tenant">The tenant with updated values</param>
     /// <returns>The modified tenant</returns>
     [HttpPut("{tenantId}")]
@@ -65,20 +66,13 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateTenant")]
-    public async Task<ActionResult<ApiObject.Tenant>> UpdateTenantAsync(int tenantId, ApiObject.Tenant tenant)
-    {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
-        {
-            return tenantResult;
-        }
-        return await UpdateAsync(tenant);
-    }
+    public async Task<ActionResult<ApiObject.Tenant>> UpdateTenantAsync(ApiObject.Tenant tenant) =>
+        await UpdateAsync(tenant);
 
     /// <summary>
     /// Delete a tenant including all tenant data
     /// </summary>
+    /// <remarks>No authorization check</remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <returns></returns>
     [HttpDelete("{tenantId}")]
@@ -89,6 +83,7 @@ public class TenantController : Api.Controller.TenantController
     /// <summary>
     /// Get a tenant
     /// </summary>
+    /// <remarks>No authorization check</remarks>
     /// <param name="tenantId">The tenant id</param>
     /// <returns></returns>
     [HttpGet("{tenantId}")]
@@ -96,16 +91,8 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetTenant")]
-    public async Task<ActionResult<ApiObject.Tenant>> GetTenantAsync(int tenantId)
-    {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
-        {
-            return tenantResult;
-        }
-        return await GetAsync(tenantId);
-    }
+    public async Task<ActionResult<ApiObject.Tenant>> GetTenantAsync(int tenantId) =>
+        await GetAsync(tenantId);
 
     /// <summary>
     /// Get tenant shared regulations
@@ -120,11 +107,11 @@ public class TenantController : Api.Controller.TenantController
     public override async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(
         int tenantId, [FromQuery] int? divisionId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.GetSharedRegulationsAsync(tenantId, divisionId);
     }
@@ -140,8 +127,16 @@ public class TenantController : Api.Controller.TenantController
     [ApiOperationId("GetSystemScriptActions")]
     [QueryIgnore]
     public override async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionsAsync(
-        int tenantId, FunctionType functionType = FunctionType.All) =>
-        await base.GetSystemScriptActionsAsync(tenantId, functionType);
+        int tenantId, FunctionType functionType = FunctionType.All)
+    {
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
+        {
+            return authResult;
+        }
+        return await base.GetSystemScriptActionsAsync(tenantId, functionType);
+    }
 
     /// <summary>
     /// Execute a report query
@@ -164,11 +159,11 @@ public class TenantController : Api.Controller.TenantController
         [FromQuery] string methodName, [FromQuery] string culture,
         [FromBody] Dictionary<string, string> parameters = null)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await base.ExecuteReportQueryAsync(tenantId, methodName, culture, parameters);
     }
@@ -189,11 +184,11 @@ public class TenantController : Api.Controller.TenantController
     public virtual async Task<ActionResult<string>> GetTenantAttributeAsync(
         int tenantId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAttributeAsync(tenantId, attributeName);
     }
@@ -213,11 +208,11 @@ public class TenantController : Api.Controller.TenantController
     public virtual async Task<ActionResult<string>> SetTenantAttributeAsync(
         int tenantId, string attributeName, [FromBody] string value)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await SetAttributeAsync(tenantId, attributeName, value);
     }
@@ -233,11 +228,11 @@ public class TenantController : Api.Controller.TenantController
     public virtual async Task<ActionResult<bool>> DeleteTenantAttributeAsync(
         int tenantId, string attributeName)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAttributeAsync(tenantId, attributeName);
     }

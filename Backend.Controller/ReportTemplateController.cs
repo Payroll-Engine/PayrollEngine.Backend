@@ -36,11 +36,11 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     public async Task<ActionResult> QueryReportTemplatesAsync(int tenantId,
         int regulationId, int reportId, [FromQuery] ReportTemplateQuery query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(reportId, query);
     }
@@ -60,11 +60,11 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     public async Task<ActionResult<ApiObject.ReportTemplate>> GetReportTemplateAsync(
         int tenantId, int regulationId, int reportId, int templateId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(reportId, templateId);
     }
@@ -85,11 +85,11 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     public async Task<ActionResult<ApiObject.ReportTemplate>> CreateReportTemplateAsync(
         int tenantId, int regulationId, int reportId, ApiObject.ReportTemplate template)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await CreateAsync(reportId, template);
     }
@@ -110,11 +110,11 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     public async Task<ActionResult<ApiObject.ReportTemplate>> UpdateReportTemplateAsync(
         int tenantId, int regulationId, int reportId, ApiObject.ReportTemplate template)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await UpdateAsync(reportId, template);
     }
@@ -132,11 +132,11 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     public async Task<IActionResult> DeleteReportTemplateAsync(int tenantId,
         int regulationId, int reportId, int templateId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await DeleteAsync(reportId, templateId);
     }

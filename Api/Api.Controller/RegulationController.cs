@@ -34,10 +34,10 @@ public abstract class RegulationController : RepositoryChildObjectController<ITe
         try
         {
             // tenant
-            var tenantResult = VerifyTenant(tenantId);
-            if (tenantResult != null)
+            var authResult = await AuthorizeAsync(tenantId);
+            if(authResult != null)
             {
-                return tenantResult;
+                return authResult;
             }
 
             // case field

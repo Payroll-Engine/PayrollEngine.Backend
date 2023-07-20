@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using PayrollEngine.Domain.Scripting;
 using Microsoft.Extensions.DependencyInjection;
-using PayrollEngine.Persistence.SqlServer;
 using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
 
@@ -10,27 +10,37 @@ namespace PayrollEngine.Api.Core;
 internal static class ApiFactory
 {
     // services setup
-    internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
+    internal static void SetupApiServices(IServiceCollection services, 
+        IConfiguration configuration, IDbContext dbContext)
     {
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+        if (configuration == null)
+        {
+            throw new ArgumentNullException(nameof(configuration));
+        }
+        if (dbContext == null)
+        {
+            throw new ArgumentNullException(nameof(dbContext));
+        }
+
         // database connection string
         var connectionString = Task.Run(configuration.GetSharedConnectionStringAsync).Result;
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new PayrollException("Missing database connection string");
         }
-        // database command timeout
-        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
 
         // test database
-        IDbContext dbContext = new DbContext(connectionString, serverConfiguration.DbCommandTimeout);
         if (!Task.Run(dbContext.TestVersionAsync).Result)
         {
             throw new PayrollException("Invalid database version");
         }
-        services.AddTransient<IDbContext>((_) => new DbContext(connectionString, serverConfiguration.DbCommandTimeout));
+        services.AddTransient(_ => dbContext);
 
-        // tenant management and api controller runtime context
-        services.AddScoped<ITenantManager, TenantManager>();
+        // api controller runtime context
         services.AddScoped<IControllerRuntime, ControllerRuntime>();
         // api query service: singleton to reduce assembly reflection on each query
         services.AddSingleton<IQueryService, QueryService>();

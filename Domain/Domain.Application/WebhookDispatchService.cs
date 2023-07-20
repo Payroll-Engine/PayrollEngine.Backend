@@ -11,7 +11,7 @@ using Task = System.Threading.Tasks.Task;
 namespace PayrollEngine.Domain.Application;
 
 /// <summary>
-/// Simple webhook dispatcher without support of any authentication and security requirements
+/// Simple webhook dispatcher
 /// The default webhook timeout is 5 seconds
 /// </summary>
 public class WebhookDispatchService : IWebhookDispatchService

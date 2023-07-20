@@ -35,11 +35,11 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     public async Task<ActionResult> QueryLookupAuditsAsync(int tenantId, int regulationId,
         int lookupId, [FromQuery] Query query)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await QueryItemsAsync(lookupId, query);
     }
@@ -59,11 +59,11 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     public async Task<ActionResult<ApiObject.LookupAudit>> GetLookupAuditAsync(int tenantId,
         int regulationId, int lookupId, int auditId)
     {
-        // tenant check
-        var tenantResult = VerifyTenant(tenantId);
-        if (tenantResult != null)
+        // authorization
+        var authResult = await AuthorizeAsync(tenantId);
+        if(authResult != null)
         {
-            return tenantResult;
+            return authResult;
         }
         return await GetAsync(lookupId, auditId);
     }
