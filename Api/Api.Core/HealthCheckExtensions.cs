@@ -27,7 +27,7 @@ public static class HealthCheckExtensions
     public static async Task AddApiHealthCheckAsync(this IServiceCollection services, IConfiguration configuration)
     {
         // database connection string
-        var connectionString = await configuration.GetConnectionStringAsync();
+        var connectionString = await configuration.GetSharedConnectionStringAsync();
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             Log.Error("API health check setup: missing database connection string");

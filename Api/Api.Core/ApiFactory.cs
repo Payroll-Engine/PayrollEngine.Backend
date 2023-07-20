@@ -13,7 +13,7 @@ internal static class ApiFactory
     internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
     {
         // database connection string
-        var connectionString = Task.Run(configuration.GetConnectionStringAsync).Result;
+        var connectionString = Task.Run(configuration.GetSharedConnectionStringAsync).Result;
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new PayrollException("Missing database connection string");
