@@ -22,19 +22,19 @@ public class PayrollServerConfiguration
     /// <summary>Use health check (default: false)</summary>
     public bool UseHealthCheck { get; set; }
 
-    /// <summary>Database command timeout in seconds (default: 120)</summary>
-    public int DbCommandTimeout { get; set; } = 120;
+    /// <summary>Database command timeout in seconds (default: 2 minutes)</summary>
+    public TimeSpan DbCommandTimeout { get; set; } = TimeSpan.FromMinutes(2);
 
-    /// <summary>Webhook timeout</summary>
+    /// <summary>Database transaction timeout</summary>
+    public TimeSpan DbTransactionTimeout { get; set; }
+
+    /// <summary>Webhook timeout (default: 1 minutes)</summary>
     public TimeSpan WebhookTimeout { get; set; } = TimeSpan.FromMinutes(1);
 
     /// <summary>Function log timeout</summary>
     public TimeSpan FunctionLogTimeout { get; set; }
 
-    /// <summary>Transaction timeout</summary>
-    public TimeSpan TransactionTimeout { get; set; }
-
-    /// <summary>Assembly cache timeout</summary>
+    /// <summary>Assembly cache timeout (default: 30 minutes)</summary>
     public TimeSpan AssemblyCacheTimeout { get; set; } = TimeSpan.FromMinutes(30);
 
     /// <summary>The XML comment files</summary>

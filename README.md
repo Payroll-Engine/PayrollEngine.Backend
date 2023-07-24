@@ -1,49 +1,37 @@
 <h1>Payroll Engine Backend</h1>
 
-Das Backend ist die zentrale Komponente des Lohnrechners, welches über eine REST API gesteuert wird. Die Anwendung ist als Hintergrunddienst in einem geschlossenen Systeme konzipiert (Security). Neben den Enpunkten sind Webhooks die einzige Schnittpunkte zur Aussenwelt.
-
-<br />
-
-## Backed Server Hosting
-Für den Betrieb des Backend-Servers muss der Webhoster die Ausführung von .NET Core Applikationen unterstützen. Für die lokale Entwicklung dient [IIS Express](https://learn.microsoft.com/en-us/iis/extensions/introduction-to-iis-express/iis-express-overview) als Host in zwei Ausführungsvarianten:
-- [CLI dotnet command](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the command:
-```
-PayrollEngine\Commands\Backend.Server.Start.cmd
-```
-- Using Visual Studio Solution ***PayrollEngine\PayrollEngine.Backend\PayrollEngine.Backend.sln*** using the debugger
-
-<br/>
-
 ## Open API
-Die Payroll Engine API unterstützt die [Open API](https://www.openapis.org/) Spezifikation und beschreibt die Schnittstelle mit dem Tool [Swagger](https://swagger.io/). Das Dokument [REST Service Endpoints](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrollRestServicesEndpoints.pdf) beschreibt die vefügbaren Endpunkte.
+The Payroll Engine API supports the [Open API](https://www.openapis.org/) specification and describes the interface to the [Swagger](https://swagger.io/) tool. The document [REST Service Endpoints](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrollRestServicesEndpoints.pdf) describes the available endpoints.
 
-<br/>
+> Payroll Engine [swagger.json](docs/swagger.json)
 
-## Configuration
-The server configuration *Server\appsetings.json* contains the following settings:
-- Application Culture
-- The database connection
-- Set timeouts for webhooks, transactions and assembly-cache
-- Control the script compiler behaviour
-- Systemlog with [Serilog](https://serilog.net/) (other loggers are supported)
-- Use REST HTTP logs
-- Use the API Health Check
+## API Versioning
+In the first version 1.0 of the REST API, no version header is required in the HTTP request. For future version changes, the HTTP header **X-Version** must be present with the version number.
+
+## API Conent Type
+The Payroll REST API supports HTTP requests in `JSON` format.
+
+## Application Settings
+The server configuration `Backend.Server\appsetings.json` contains the following settings:
+| Setting      | Description            | Default |
+|:--|:--|:--|
+| `StartupCulture` | The backend process culture (string) | System culture |
+| `LogHttpRequests` | Log http request to the log file (bool) | `false` |
+| `InitializeScriptCompiler` | Initialize the script compiler to reduce first execution time (bool) | `false` |
+| `DbTransactionTimeout` | Database transaction timeout (timespan) | 10 minutes |
+| `DbCommandTimeout` | Database command timeout (seconds) | 2 minutes |
+| `WebhookTimeout` | Webhook timeout (timespan) | 1 minute |
+| `Serilog` | Serilog settings | file and console log |
+| `FunctionLogTimeout` | Timeout to track long function exections (timespan) | off |
+| `AssemblyCacheTimeout` | Timeout for cached assemblies (timespan) | 30 minuts |
+| `VisibleControllers` | Name of visible API controllers (string[]) <sup>1) 2)</sup> | all |
+| `HiddenControllers` | Name of hidden API controllers (string[]) <sup>1) 2)</sup> | none |
+
+<sup>1)</sup> Wildcard support wildcard support `*` and `?`<br />
+<sup>2)</sup> `HiddenControllers` setting can not combined with `VisibleControllers` setting
 
 > It is recommended to save the server settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 
-<br/>
-
-## API Versioning
-In der ersten Version 1.0 der REST API ist im HTTP-Request keine Versions-Header notwendig.
-Bei zukünftigen Versionswechsel muss der HTTTP Header **X-Version** mit der Versionsnummer vorhanden sein.
-
-<br/>
-
-## API Conent Type
-Die Payroll REST API unterstützt HTTP-Requests im **JSON** Format.
-
-<br/>
-
 ## Script Compiler
-Die vom Business definierte Businesslogik in C# wird vom Backend mit [Roslyn](https://github.com/dotnet/roslyn) in Binärdateien (Assemblies) kompiliert. Dieser Ansatz wirkt sich positiv auf die Laufzeitpeformance aus, so dass auch umfangreichere Berechnungen genügend schnell erfolgen.
-Zur Laufzeit führt das Backend die Assemblies in einem Cache. Zur Speicheroptimierung werden ungenutzte Assemblies periodisch entfernt.
+The business logic defined by the business in C# is compiled into binary files (assemblies) by the backend using [Roslyn](https://github.com/dotnet/roslyn). This procedure has a positive effect on runtime performance, so that even extensive calculations can be performed sufficiently quickly.
+At runtime, the backend keeps the assemblies in a cache. For memory optimization, unused assemblies are periodically deleted.

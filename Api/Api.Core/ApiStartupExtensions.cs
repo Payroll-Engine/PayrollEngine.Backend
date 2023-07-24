@@ -187,9 +187,9 @@ public static class ApiStartupExtensions
             specification.ApiVersion, serverConfiguration.DarkTheme);
 
         // database
-        if (serverConfiguration.TransactionTimeout > TimeSpan.Zero)
+        if (serverConfiguration.DbTransactionTimeout > TimeSpan.Zero)
         {
-            TransactionFactory.Timeout = serverConfiguration.TransactionTimeout;
+            TransactionFactory.Timeout = serverConfiguration.DbTransactionTimeout;
         }
 
         // routing

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,7 +49,8 @@ public class Startup
 
         // database command timeout
         var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
-        var dbContext = new Persistence.SqlServer.DbContext(connectionString, serverConfiguration.DbCommandTimeout);
+        var dbContext = new Persistence.SqlServer.DbContext(connectionString,
+            Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds));
         services.AddApiServices(Configuration, apiSpecification, dbContext);
         services.AddLocalApiServices();
     }
