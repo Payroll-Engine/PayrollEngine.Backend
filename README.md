@@ -21,7 +21,7 @@ The server configuration `Backend.Server\appsetings.json` contains the following
 | `DbTransactionTimeout` | Database transaction timeout (timespan) | 10 minutes |
 | `DbCommandTimeout` | Database command timeout (seconds) | 2 minutes |
 | `WebhookTimeout` | Webhook timeout (timespan) | 1 minute |
-| `Serilog` | Serilog settings | file and console log |
+| `Serilog` | Serilog settings | file and console log with [Serilog](https://serilog.net/) |
 | `FunctionLogTimeout` | Timeout to track long function exections (timespan) | off |
 | `AssemblyCacheTimeout` | Timeout for cached assemblies (timespan) | 30 minuts |
 | `VisibleControllers` | Name of visible API controllers (string[]) <sup>1) 2)</sup> | all |
