@@ -11,6 +11,15 @@ In the first version 1.0 of the REST API, no version header is required in the H
 ## API Conent Type
 The Payroll REST API supports HTTP requests in `JSON` format.
 
+## Web Application Server
+To run the backend server, the web host must support the execution of .NET Core applications. For local development, [IIS Express](https://learn.microsoft.com/en-us/iis/extensions/introduction-to-iis-express/iis-express-overview) serves as host in two execution variants:
+- [CLI dotnet command](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the command within the binary folder:
+```
+start "" dotnet PayrollEngine.Backend.Server.dll --urls=https://localhost:44354/
+```
+
+- Visual Studio Solution `PayrollEngine.Backend.sln` using the debugger.
+
 ## Application Settings
 The server configuration `Backend.Server\appsetings.json` contains the following settings:
 | Setting      | Description            | Default |
