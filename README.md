@@ -41,6 +41,32 @@ The server configuration `Backend.Server\appsetings.json` contains the following
 
 > It is recommended to save the server settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 
-## Script Compiler
+## Database Scripts
+Das Datenbankmodell wird in T-SQL Scripts geführt. Anpassungen am Modell erfolgen im SQL-Sever management Studio und werden in Dateien exportiert.
+
+### Database Script Export
+Steps to build the T-SQL **create** script:
+1. Start command `Db.ExportModelCreate.cmd`
+    - starts the [mssql-scripter](https://github.com/microsoft/mssql-scripter)
+    - start the SQL code [formatter](https://github.com/TaoK/PoorMansTSqlFormatter)
+2. Manual edit of [ModelCreate.sql](../Database/Current/ModelCreate.sql)
+    - remove `CREATE DATABASE` and `ALTER DATABASE` statements from the top (until the function `BuildAttributeQuery`)
+    - remove `ALTER DATABASE` and `SET READ_WRITE` statements from the bottom
+
+Steps to build the T-SQL **drop** script:
+1. Start command `Db.ExportModelDrop.cmd`
+    - starts the [mssql-scripter](https://github.com/microsoft/mssql-scripter)
+    - start the SQL code [formatter](https://github.com/TaoK/PoorMansTSqlFormatter)
+2. Manual edit of [ModelDrop.sql](../Database/Current/ModelDrop.sql)
+    - remove `USE [PayrollEngine]` statements from the top
+    - remove `USE [Master]` and `DROP DATABASE [PayrollEngine]` statements from the bottom
+
+### Database Script Import
+Commands to import t-SQL script files to the database:
+- `Db.ModelCreate.cmd` - created the datatabase
+- `Db.ModelDrop.cmd` - drop the datatabase
+- `Db.ModelUpdate.cmd` - updet the datatabase: frist drop tand the create
+
+## C# Script Compiler
 The business logic defined by the business in C# is compiled into binary files (assemblies) by the backend using [Roslyn](https://github.com/dotnet/roslyn). This procedure has a positive effect on runtime performance, so that even extensive calculations can be performed sufficiently quickly.
 At runtime, the backend keeps the assemblies in a cache. For memory optimization, unused assemblies are periodically deleted.
