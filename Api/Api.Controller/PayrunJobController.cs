@@ -136,8 +136,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
             var openJobs = await ServiceSettings.PayrunJobRepository.QueryAsync(Runtime.DbContext, tenantId, query);
             if (openJobs.Any())
             {
-                // TODO payrun job status test
-                //  return BadRequest($"Payroll with id {jobInvocation.PayrollId} has already a payrun job with status {PayrunJobStatus.Draft}");
+                return BadRequest($"Payrun with id {jobInvocation.PayrunId} has already a payrun job with status {PayrunJobStatus.Draft}");
             }
         }
 
