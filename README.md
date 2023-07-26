@@ -176,3 +176,11 @@ Backend:
 Client services:
 - Create client object in [Client.Model]
 - Update client JSON schema (build of PayrollEngine.Client.Core)
+
+## Third party components
+- Object mapping with [AutoMapper](https://github.com/AutoMapper/AutoMapper/) - licence `MIT`
+- OpenAPI with [Swashbuggle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/) - licence `MIT`
+- Database query builder with [SqlKata](https://github.com/sqlkata/querybuilder/) - licence `MIT`
+- Database object mapping with [Dapper](https://github.com/DapperLib/Dapper/) - licence `Apache 2.0`
+- Logging with [Serilog](https://github.com/serilog/serilog/) - licence `Apache 2.0`
+- Tests with [xunit](https://github.com/xunit) - licence `Apache 2.0`
