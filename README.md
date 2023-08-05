@@ -48,9 +48,9 @@ Under Windows, the backend server stores its logs in the system folder `%Program
 The business logic defined by the business in C# is compiled into binary files (assemblies) by the backend using [Roslyn](https://github.com/dotnet/roslyn). This procedure has a positive effect on the runtime performance, so that even extensive calculations can be performed sufficiently quickly. At runtime, the backend keeps the assemblies in a cache. To optimize memory usage, unused assemblies are periodically deleted (application setting `AssemblyCacheTimeout`).
 
 ## Further documents
-- [OData](OData) queries
-- [Database](Database) Management
-- [Developer Guidelines](Dev-Guidelines)
+- [OData](OData.md) queries
+- [Database](Database.md) Management
+- [Developer Guidelines](Dev-Guidelines.md)
 
 ## Third party components
 - Object mapping with [AutoMapper](https://github.com/AutoMapper/AutoMapper/) - licence `MIT`
