@@ -10,7 +10,7 @@ namespace PayrollEngine.Api.Core
     /// API controller visibility conventions
     /// <remarks>source https://joonasw.net/view/hide-actions-from-swagger-openapi-documentation-in-aspnet-core</remarks>
     /// </summary>
-    internal sealed class ControllerVisibilityConvention : IControllerModelConvention
+    internal sealed class ControllerVisibilityConvention : IActionModelConvention
     {
         private List<string> VisibleControllers { get; }
         private List<string> HiddenControllers { get; }
@@ -27,24 +27,19 @@ namespace PayrollEngine.Api.Core
             HiddenControllers = hiddenControllers != null ? new(hiddenControllers) : new();
         }
 
-        public void Apply(ControllerModel controller)
+        public void Apply(ActionModel action)
         {
-            if (VisibleControllers.Count == 0 && HiddenControllers.Count == 0)
-            {
-                return;
-            }
-
             // visible
             if (VisibleControllers.Count > 0)
             {
-                controller.ApiExplorer.IsVisible =
-                    VisibleControllers.Any(x => FitsMask(controller.ControllerName, x));
+                action.ApiExplorer.IsVisible =
+                    VisibleControllers.Any(x => FitsMask(action.Controller.ControllerName, x));
             }
             // hidden
             else if (HiddenControllers.Count > 0)
             {
-                controller.ApiExplorer.IsVisible =
-                    !HiddenControllers.Any(x => FitsMask(controller.ControllerName, x));
+                action.ApiExplorer.IsVisible = 
+                           !HiddenControllers.Any(x => FitsMask(action.Controller.ControllerName, x));
             }
         }
 

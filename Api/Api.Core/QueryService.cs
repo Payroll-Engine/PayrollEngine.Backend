@@ -305,23 +305,32 @@ public class QueryService : IQueryService
         {
             return null;
         }
+        var actionResult = resultProperty.GetValue(methodResult);
+        return actionResult == null ? null : GetActionResult(actionResult);
+    }
 
-        var methodResultValue = resultProperty.GetValue(methodResult);
-        if (methodResultValue is IConvertToActionResult actionResult)
+    private static IList<object> GetActionResult(object actionResult)
+    {
+        if (actionResult == null)
         {
-            var value = actionResult.GetPropertyValue("Value");
-            if (value == null)
-            {
-                return null;
-            }
-            if (value is IEnumerable<object> array)
-            {
-                return new List<object>(array);
-            }
-            return new List<object> { value };
+            return null;
         }
 
-        if (methodResultValue is ObjectResult objectResult)
+        // action result
+        if (actionResult is IConvertToActionResult convertToActionResult)
+        {
+            // recursive call
+            var result = GetActionResult(convertToActionResult.Convert());
+            return result;
+        }
+
+        if (actionResult is IEnumerable<object> resultList)
+        {
+            return new List<object>(resultList);
+        }
+
+        // object result
+        if (actionResult is ObjectResult objectResult)
         {
             if (objectResult.StatusCode == 500)
             {
@@ -329,11 +338,18 @@ public class QueryService : IQueryService
             }
             if (objectResult.StatusCode is null or < 200 or >= 300)
             {
-                return null;
+                throw new PayrollException($"{objectResult.Value} [{objectResult.StatusCode}]");
             }
-            return objectResult.Value as IList<object>;
+
+            if (objectResult.Value is IEnumerable<object> array)
+            {
+                return new List<object>(array);
+            }
+            return new List<object> { objectResult.Value };
         }
-        return null;
+
+        // single item
+        return new List<object> { actionResult };
     }
 
     private void ApplyLocalizations(IList<object> items, string culture)
