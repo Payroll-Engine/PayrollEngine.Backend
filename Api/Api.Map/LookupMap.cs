@@ -1,4 +1,4 @@
-﻿using PayrollEngine.Api.Core;
+﻿using Riok.Mapperly.Abstractions;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 
@@ -7,15 +7,9 @@ namespace PayrollEngine.Api.Map;
 /// <summary>
 /// Map a domain object with an api object
 /// </summary>
-public class LookupMap : LookupMap<DomainObject.Lookup, ApiObject.Lookup>
+[Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName, EnumMappingIgnoreCase = true)]
+public partial class LookupMap : ApiMapBase<DomainObject.Lookup, ApiObject.Lookup>
 {
-}
-
-/// <summary>
-/// Map a domain object with an api object
-/// </summary>
-public class LookupMap<TDomain, TApi> : ApiMapBase<TDomain, TApi>
-    where TDomain : DomainObject.Lookup, new()
-    where TApi : ApiObject.Lookup, new()
-{
+    public override partial ApiObject.Lookup ToApi(DomainObject.Lookup domainObject);
+    public override partial DomainObject.Lookup ToDomain(ApiObject.Lookup apiObject);
 }

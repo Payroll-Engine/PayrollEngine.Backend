@@ -1,25 +1,15 @@
-﻿using AutoMapper;
-using DomainObject = PayrollEngine.Domain.Model;
+﻿using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using Riok.Mapperly.Abstractions;
 
 namespace PayrollEngine.Api.Map;
 
 /// <summary>
 /// Map a domain object with an api object
 /// </summary>
-public class CaseSetMap : CaseMapBase<DomainObject.CaseSet, ApiObject.CaseSet>
+[Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName, EnumMappingIgnoreCase = true)]
+public partial class CaseSetMap : ApiMapBase<DomainObject.CaseSet, ApiObject.CaseSet>
 {
-    protected override void SetupDomainToApiMapper(IMapperConfigurationExpression configuration)
-    {
-        base.SetupDomainToApiMapper(configuration);
-        configuration.CreateMap<DomainObject.CaseFieldSet, ApiObject.CaseFieldSet>();
-        configuration.CreateMap<DomainObject.LookupSettings, ApiObject.LookupSettings>();
-    }
-
-    protected override void SetupApiToDomainMapper(IMapperConfigurationExpression configuration)
-    {
-        base.SetupApiToDomainMapper(configuration);
-        configuration.CreateMap<ApiObject.CaseFieldSet, DomainObject.CaseFieldSet>();
-        configuration.CreateMap<ApiObject.LookupSettings, DomainObject.LookupSettings>();
-    }
+    public override partial ApiObject.CaseSet ToApi(DomainObject.CaseSet domainObject);
+    public override partial DomainObject.CaseSet ToDomain(ApiObject.CaseSet apiObject);
 }

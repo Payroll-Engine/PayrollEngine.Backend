@@ -3,15 +3,17 @@ using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using PayrollEngine.Api.Core;
 using PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using Microsoft.AspNetCore.Mvc;
-using PayrollEngine.Domain.Application.Service;
 
-namespace PayrollEngine.Api.Core;
+namespace PayrollEngine.Api.Controller;
 
-public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi> : ObjectController<TDomain, TApi>
+public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi> :
+    ObjectController<TDomain, TApi>
     where TService : class, IRepositoryApplicationService<TRepo>
     where TRepo : class, IDomainRepository
     where TDomain : class, IDomainObject, new()

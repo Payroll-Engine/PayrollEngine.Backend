@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using PayrollEngine.Api.Core;
 using PayrollEngine.Api.Model;
 using PayrollEngine.Domain.Model;
-using Microsoft.AspNetCore.Mvc;
 
-namespace PayrollEngine.Api.Core;
+namespace PayrollEngine.Api.Controller;
 
 public abstract class ObjectController<TDomain, TApi> : ApiController
     where TDomain : class, IDomainObject, new()

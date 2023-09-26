@@ -68,7 +68,7 @@ public class PayrollResult : DomainObjectBase, IEquatable<PayrollResult>
     }
 
     /// <inheritdoc/>
-    public PayrollResult(PayrollResult copySource) :
+    protected PayrollResult(PayrollResult copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);

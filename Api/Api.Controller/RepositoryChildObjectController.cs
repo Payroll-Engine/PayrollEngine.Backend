@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using PayrollEngine.Api.Core;
 using PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
-using Microsoft.AspNetCore.Mvc;
-using PayrollEngine.Domain.Application.Service;
+
 // ReSharper disable UnusedParameter.Global
 
-namespace PayrollEngine.Api.Core;
+namespace PayrollEngine.Api.Controller;
 
 public abstract class RepositoryChildObjectController<TParentService, TService, TParentRepo, TRepo, TParent, TDomain, TApi> :
     RepositoryObjectController<TService, TRepo, TDomain, TApi>

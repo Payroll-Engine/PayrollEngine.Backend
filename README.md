@@ -53,7 +53,7 @@ The business logic defined by the business in C# is compiled into binary files (
 - [Developer Guidelines](Dev-Guidelines.md)
 
 ## Third party components
-- Object mapping with [AutoMapper](https://github.com/AutoMapper/AutoMapper/) - licence `MIT`
+- Object mapping with [Mapperly](https://github.com/riok/mapperly/) - licence `Apache 2.0`
 - OpenAPI with [Swashbuggle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/) - licence `MIT`
 - Database query builder with [SqlKata](https://github.com/sqlkata/querybuilder/) - licence `MIT`
 - Database object mapping with [Dapper](https://github.com/DapperLib/Dapper/) - licence `Apache 2.0`

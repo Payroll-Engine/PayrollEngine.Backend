@@ -1,24 +1,15 @@
-﻿using PayrollEngine.Api.Core;
-using AutoMapper;
-using DomainObject = PayrollEngine.Domain.Model;
+﻿using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using Riok.Mapperly.Abstractions;
 
 namespace PayrollEngine.Api.Map;
 
 /// <summary>
 /// Map a domain object with an api object
 /// </summary>
-public class LookupDataMap : ApiMapBase<DomainObject.LookupData, ApiObject.LookupData>
+[Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName, EnumMappingIgnoreCase = true)]
+public partial class LookupDataMap : ApiMapBase<DomainObject.LookupData, ApiObject.LookupData>
 {
-    protected override void SetupDomainToApiMapper(IMapperConfigurationExpression configuration)
-    {
-        base.SetupDomainToApiMapper(configuration);
-        configuration.CreateMap<DomainObject.LookupValueData, ApiObject.LookupValueData>();
-    }
-
-    protected override void SetupApiToDomainMapper(IMapperConfigurationExpression configuration)
-    {
-        base.SetupApiToDomainMapper(configuration);
-        configuration.CreateMap<ApiObject.LookupValueData, DomainObject.LookupValueData>();
-    }
+    public override partial ApiObject.LookupData ToApi(DomainObject.LookupData domainObject);
+    public override partial DomainObject.LookupData ToDomain(ApiObject.LookupData apiObject);
 }

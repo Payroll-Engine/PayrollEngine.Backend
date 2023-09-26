@@ -126,7 +126,7 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
     }
 
     /// <inheritdoc/>
-    public CaseValue(CaseValue copySource) :
+    protected CaseValue(CaseValue copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);
