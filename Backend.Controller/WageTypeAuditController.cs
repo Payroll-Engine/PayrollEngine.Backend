@@ -36,7 +36,7 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
         int regulationId, int wageTypeId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -60,7 +60,7 @@ public class WageTypeAuditController : Api.Controller.WageTypeAuditController
         int tenantId, int regulationId, int wageTypeId, int auditId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

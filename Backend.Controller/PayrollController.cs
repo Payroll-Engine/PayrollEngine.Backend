@@ -38,7 +38,7 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult> QueryPayrollsAsync(int tenantId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -59,7 +59,7 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult<ApiObject.Payroll>> GetPayrollAsync(int tenantId, int payrollId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -110,7 +110,7 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult<ApiObject.Payroll>> UpdatePayrollAsync(int tenantId, ApiObject.Payroll payroll)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -129,7 +129,7 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<IActionResult> DeletePayrollAsync(int tenantId, int payrollId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -157,7 +157,7 @@ public class PayrollController : Api.Controller.PayrollController
         int payrollId, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -191,7 +191,7 @@ public class PayrollController : Api.Controller.PayrollController
         int payrollId, [FromQuery][Required] ApiObject.PayrollCaseQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -227,7 +227,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<ApiObject.CaseChangeSetup>))] ApiObject.CaseChangeSetup caseChangeSetup = null)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -255,7 +255,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] PayrollCaseChangeQuery query = null)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -288,7 +288,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] int? employeeId = null, [FromQuery] string caseSlot = null)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -326,7 +326,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate = null, [FromQuery] DateTime? evaluationDate = null)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -368,7 +368,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? evaluationDate = null, string culture = null)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -430,7 +430,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -469,7 +469,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -506,7 +506,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -542,7 +542,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -578,7 +578,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -613,7 +613,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -648,7 +648,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -683,7 +683,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -720,7 +720,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -756,7 +756,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -789,7 +789,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] string[] reportNames, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -824,7 +824,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -859,7 +859,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -895,7 +895,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -929,7 +929,7 @@ public class PayrollController : Api.Controller.PayrollController
     public virtual async Task<ActionResult<string>> GetPayrollAttributeAsync(int tenantId, int payrollId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -954,7 +954,7 @@ public class PayrollController : Api.Controller.PayrollController
         [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -974,7 +974,7 @@ public class PayrollController : Api.Controller.PayrollController
     public virtual async Task<ActionResult<bool>> DeletePayrollAttributeAsync(int tenantId, int payrollId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

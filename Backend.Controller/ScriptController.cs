@@ -34,7 +34,7 @@ public class ScriptController : Api.Controller.ScriptController
         [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -57,7 +57,7 @@ public class ScriptController : Api.Controller.ScriptController
         int regulationId, int scriptId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -81,7 +81,7 @@ public class ScriptController : Api.Controller.ScriptController
         int regulationId, ApiObject.Script script)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -105,7 +105,7 @@ public class ScriptController : Api.Controller.ScriptController
         int regulationId, ApiObject.Script script)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -125,7 +125,7 @@ public class ScriptController : Api.Controller.ScriptController
         int regulationId, int scriptId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

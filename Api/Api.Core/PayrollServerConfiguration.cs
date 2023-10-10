@@ -19,9 +19,6 @@ public class PayrollServerConfiguration
     /// <summary>Initialize the script compiler to reduce first execution time (default: false)</summary>
     public bool InitializeScriptCompiler { get; set; }
 
-    /// <summary>Use health check (default: false)</summary>
-    public bool UseHealthCheck { get; set; }
-
     /// <summary>Database command timeout in seconds (default: 2 minutes)</summary>
     public TimeSpan DbCommandTimeout { get; set; } = TimeSpan.FromMinutes(2);
 

@@ -21,9 +21,9 @@ public interface IDbContext
     Task<bool> TestVersionAsync();
 
     /// <summary>Test for valid tenant</summary>
-    /// <param name="tenantIdentifier">The tenant identifier</param>
     /// <param name="tenantId">The tenant id</param>
-    Task<bool> TestTenantAsync(string tenantIdentifier, int tenantId);
+    /// <param name="tenantIdentifier">The tenant identifier</param>
+    Task<Tenant> GetTenantAsync(int tenantId, string tenantIdentifier = null);
 
     /// <summary>Transform a database exception</summary>
     Exception TransformException(Exception exception);

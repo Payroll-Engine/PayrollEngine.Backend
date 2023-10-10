@@ -1395,10 +1395,9 @@
             <param name="compare">The object to compare with this</param>
             <returns>True for objects with the same data</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CaseFieldSet.GetValue">
-            <summary>
-            Get native value
-            </summary>
+        <member name="M:PayrollEngine.Domain.Model.CaseFieldSet.GetValue(System.Globalization.CultureInfo)">
+            <summary>Get native value</summary>
+            <param name="culture">The culture</param>
             <returns>The .net value</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseFieldSet.SetValue(System.Object)">
@@ -3433,10 +3432,10 @@
         <member name="M:PayrollEngine.Domain.Model.IDbContext.TestVersionAsync">
             <summary>Test the required database version</summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IDbContext.TestTenantAsync(System.String,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.GetTenantAsync(System.Int32,System.String)">
             <summary>Test for valid tenant</summary>
-            <param name="tenantIdentifier">The tenant identifier</param>
             <param name="tenantId">The tenant id</param>
+            <param name="tenantIdentifier">The tenant identifier</param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.IDbContext.TransformException(System.Exception)">
             <summary>Transform a database exception</summary>

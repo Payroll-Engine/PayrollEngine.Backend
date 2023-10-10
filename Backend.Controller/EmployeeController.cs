@@ -33,7 +33,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     public async Task<ActionResult> QueryEmployeesAsync(int tenantId, [FromQuery] DivisionQuery query = null)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -54,7 +54,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     public async Task<ActionResult<ApiObject.Employee>> GetEmployeeAsync(int tenantId, int employeeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -76,7 +76,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     public async Task<ActionResult<ApiObject.Employee>> CreateEmployeeAsync(int tenantId, ApiObject.Employee employee)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -103,7 +103,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     public async Task<ActionResult<ApiObject.Employee>> UpdateEmployeeAsync(int tenantId, ApiObject.Employee employee)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -122,7 +122,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     public async Task<IActionResult> DeleteEmployeeAsync(int tenantId, int employeeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -146,7 +146,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     public virtual async Task<ActionResult<string>> GetEmployeeAttributeAsync(int tenantId, int employeeId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -171,7 +171,7 @@ public class EmployeeController : Api.Controller.EmployeeController
         [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -191,7 +191,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     public virtual async Task<ActionResult<bool>> DeleteEmployeeAttributeAsync(int tenantId, int employeeId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

@@ -35,7 +35,7 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
         [FromQuery] DomainObject.CaseChangeQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -57,7 +57,7 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
         int tenantId, int caseChangeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -91,7 +91,7 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     public async Task<IActionResult> DeleteNationalCaseChangeAsync(int tenantId, int caseValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

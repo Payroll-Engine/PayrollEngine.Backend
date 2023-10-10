@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -8,6 +9,8 @@ namespace PayrollEngine.Domain.Model;
 /// </summary>
 public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<CaseValue>
 {
+    private CultureInfo Culture => CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+
     /// <summary>
     /// The division id (immutable)
     /// Mandatory for case values with local value scope <see cref="CaseField.ValueScope"/>
@@ -78,7 +81,7 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
     }
 
     private void UpdateNumericValue() =>
-        NumericValue = ValueConvert.ToNumber(Value, ValueType);
+        NumericValue = ValueConvert.ToNumber(Value, ValueType, Culture);
 
     /// <summary>
     /// The case numeric value
@@ -143,7 +146,7 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
     /// </summary>
     /// <returns>The .net value</returns>
     public object GetValue() =>
-        ValueConvert.ToValue(Value, ValueType);
+        ValueConvert.ToValue(Value, ValueType, Culture);
 
     /// <summary>
     /// Set native value

@@ -32,7 +32,7 @@ public class CollectorController : Api.Controller.CollectorController
     public async Task<ActionResult> QueryCollectorsAsync(int tenantId, int regulationId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -55,7 +55,7 @@ public class CollectorController : Api.Controller.CollectorController
     public async Task<ActionResult<ApiObject.Collector>> GetCollectorAsync(int tenantId, int regulationId, int collectorId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -79,7 +79,7 @@ public class CollectorController : Api.Controller.CollectorController
         int regulationId, ApiObject.Collector collector)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -103,7 +103,7 @@ public class CollectorController : Api.Controller.CollectorController
         int regulationId, ApiObject.Collector collector)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -123,7 +123,7 @@ public class CollectorController : Api.Controller.CollectorController
     public async Task<ActionResult> RebuildCollectorAsync(int tenantId, int regulationId, int collectorId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -142,7 +142,7 @@ public class CollectorController : Api.Controller.CollectorController
     public async Task<IActionResult> DeleteCollectorAsync(int tenantId, int regulationId, int collectorId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

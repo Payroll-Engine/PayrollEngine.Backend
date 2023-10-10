@@ -113,8 +113,7 @@ public static class SwaggerTool
         return null;
     }
 
-    public static OpenApiInfo CreateInfo(string apiName, string apiVersion, string apiDescription,
-        string healthChecksUri = null)
+    public static OpenApiInfo CreateInfo(string apiName, string apiVersion, string apiDescription)
     {
         var assemblyInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
         var info = new OpenApiInfo
@@ -123,15 +122,6 @@ public static class SwaggerTool
             Version = apiVersion,
             Description = $"{apiDescription} v{assemblyInfo.ProductVersion}"
         };
-        if (!string.IsNullOrWhiteSpace(healthChecksUri))
-        {
-            info.Contact = new()
-            {
-                Name = "Health Check",
-                Url = new(healthChecksUri)
-            };
-        }
-
         return info;
     }
 }

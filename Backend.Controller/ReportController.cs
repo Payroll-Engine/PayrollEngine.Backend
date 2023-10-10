@@ -36,7 +36,7 @@ public class ReportController : Api.Controller.ReportController
         [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -59,7 +59,7 @@ public class ReportController : Api.Controller.ReportController
         int regulationId, int reportId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -88,7 +88,7 @@ public class ReportController : Api.Controller.ReportController
         int tenantId, int regulationId, int reportId, [FromBody][Required] ApiObject.ReportRequest request)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -112,7 +112,7 @@ public class ReportController : Api.Controller.ReportController
         int regulationId, ApiObject.Report report)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -136,7 +136,7 @@ public class ReportController : Api.Controller.ReportController
         int regulationId, ApiObject.Report report)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -156,7 +156,7 @@ public class ReportController : Api.Controller.ReportController
     public async Task<IActionResult> DeleteReportAsync(int tenantId, int regulationId, int reportId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -186,7 +186,7 @@ public class ReportController : Api.Controller.ReportController
         int tenantId, int regulationId, int reportId, [FromBody] ApiObject.ReportRequest reportRequest = null)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -210,7 +210,7 @@ public class ReportController : Api.Controller.ReportController
         int regulationId, ApiObject.ReportSet report)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -230,7 +230,7 @@ public class ReportController : Api.Controller.ReportController
     public async Task<ActionResult> RebuildReportAsync(int tenantId, int regulationId, int reportId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -249,7 +249,7 @@ public class ReportController : Api.Controller.ReportController
     public async Task<IActionResult> DeleteReportSetAsync(int tenantId, int regulationId, int reportId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -277,7 +277,7 @@ public class ReportController : Api.Controller.ReportController
         int tenantId, int regulationId, int reportId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -303,7 +303,7 @@ public class ReportController : Api.Controller.ReportController
         int regulationId, int reportId, string attributeName, [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -325,7 +325,7 @@ public class ReportController : Api.Controller.ReportController
         int regulationId, int reportId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

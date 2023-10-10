@@ -58,7 +58,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
         int employeeId, Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -70,7 +70,7 @@ public abstract class PayrunJobController : RepositoryChildObjectController<ITen
     private async Task<ActionResult<long>> QueryEmployeeJobsCountAsync(int tenantId, int employeeId, Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

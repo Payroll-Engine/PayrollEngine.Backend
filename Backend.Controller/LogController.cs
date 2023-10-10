@@ -31,7 +31,7 @@ public class LogController : Api.Controller.LogController
     public async Task<ActionResult> QueryLogsAsync(int tenantId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -52,7 +52,7 @@ public class LogController : Api.Controller.LogController
     public async Task<ActionResult<ApiObject.Log>> GetLogAsync(int tenantId, int logId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -74,7 +74,7 @@ public class LogController : Api.Controller.LogController
     public async Task<ActionResult<ApiObject.Log>> CreateLogAsync(int tenantId, ApiObject.Log log)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -93,7 +93,7 @@ public class LogController : Api.Controller.LogController
     public async Task<IActionResult> DeleteLogAsync(int tenantId, int logId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

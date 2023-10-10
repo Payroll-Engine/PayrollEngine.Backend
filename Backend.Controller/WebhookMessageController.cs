@@ -34,7 +34,7 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
         int webhookId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -57,7 +57,7 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
         int tenantId, int webhookId, int webhookMessageId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -81,7 +81,7 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
         int tenantId, int webhookId, ApiObject.WebhookMessage webhookMessage)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -105,7 +105,7 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
         int tenantId, int webhookId, ApiObject.WebhookMessage webhookMessage)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -126,7 +126,7 @@ public class WebhookMessageController : Api.Controller.WebhookMessageController
         int webhookId, int webhookMessageId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

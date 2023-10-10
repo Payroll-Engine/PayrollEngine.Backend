@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -71,17 +72,29 @@ public abstract class ApiController : ControllerBase
 
     #region Tenant
 
-    protected async Task<UnauthorizedObjectResult> AuthorizeAsync(int tenantId)
+    protected async Task<UnauthorizedObjectResult> TenantRequestAsync(int tenantId)
     {
         // tenant authorization header
-        if (!Request.Headers.TryGetValue(BackendSpecification.TenantAuthorizationHeader, out var authTenant))
+        Request.Headers.TryGetValue(BackendSpecification.TenantAuthorizationHeader, out var authTenant);
+
+        // tenant
+        var tenant = await Runtime.DbContext.GetTenantAsync(tenantId, authTenant);
+        if (tenant == null)
         {
-            return null;
+            return Unauthorized($"Invalid tenant with id {tenantId}");
         }
 
-        // db service test tenant
-        var valid = await Runtime.DbContext.TestTenantAsync(authTenant, tenantId);
-        return !valid ? Unauthorized($"Invalid tenant with id {tenantId}") : null;
+        // apply tenant culture to the current thread
+        if (!string.IsNullOrWhiteSpace(tenant.Culture))
+        {
+            var currentCulture = Thread.CurrentThread.CurrentCulture.Name;
+            if (!string.Equals(currentCulture, tenant.Culture))
+            {
+                Thread.CurrentThread.CurrentCulture = new(tenant.Culture);
+            }
+
+        }
+        return null;
     }
 
     #endregion

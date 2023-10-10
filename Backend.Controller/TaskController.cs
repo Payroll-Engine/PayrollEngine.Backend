@@ -33,7 +33,7 @@ public class TaskController : Api.Controller.TaskController
     public async Task<ActionResult> QueryTasksAsync(int tenantId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -54,7 +54,7 @@ public class TaskController : Api.Controller.TaskController
     public async Task<ActionResult<ApiObject.Task>> GetTaskAsync(int tenantId, int taskId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -76,7 +76,7 @@ public class TaskController : Api.Controller.TaskController
     public async Task<ActionResult<ApiObject.Task>> CreateTaskAsync(int tenantId, ApiObject.Task task)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -98,7 +98,7 @@ public class TaskController : Api.Controller.TaskController
     public async Task<ActionResult<ApiObject.Task>> UpdateTaskAsync(int tenantId, ApiObject.Task task)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -117,7 +117,7 @@ public class TaskController : Api.Controller.TaskController
     public async Task<IActionResult> DeleteTaskAsync(int tenantId, int taskId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -142,7 +142,7 @@ public class TaskController : Api.Controller.TaskController
         int tenantId, int taskId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -168,7 +168,7 @@ public class TaskController : Api.Controller.TaskController
         [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -189,7 +189,7 @@ public class TaskController : Api.Controller.TaskController
         int tenantId, int taskId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

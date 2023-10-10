@@ -31,7 +31,7 @@ public class DivisionController : Api.Controller.DivisionController
     public async Task<ActionResult> QueryDivisionsAsync(int tenantId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -52,7 +52,7 @@ public class DivisionController : Api.Controller.DivisionController
     public async Task<ActionResult<ApiObject.Division>> GetDivisionAsync(int tenantId, int divisionId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -74,7 +74,7 @@ public class DivisionController : Api.Controller.DivisionController
     public async Task<ActionResult<ApiObject.Division>> CreateDivisionAsync(int tenantId, ApiObject.Division division)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -96,7 +96,7 @@ public class DivisionController : Api.Controller.DivisionController
     public async Task<ActionResult<ApiObject.Division>> UpdateDivisionAsync(int tenantId, ApiObject.Division division)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -115,7 +115,7 @@ public class DivisionController : Api.Controller.DivisionController
     public async Task<IActionResult> DeleteDivisionAsync(int tenantId, int divisionId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -139,7 +139,7 @@ public class DivisionController : Api.Controller.DivisionController
     public virtual async Task<ActionResult<string>> GetDivisionAttributeAsync(int tenantId, int divisionId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -164,7 +164,7 @@ public class DivisionController : Api.Controller.DivisionController
         [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -184,7 +184,7 @@ public class DivisionController : Api.Controller.DivisionController
     public virtual async Task<ActionResult<bool>> DeleteDivisionAttributeAsync(int tenantId, int divisionId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

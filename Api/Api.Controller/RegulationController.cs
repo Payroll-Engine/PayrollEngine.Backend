@@ -34,7 +34,7 @@ public abstract class RegulationController : RepositoryChildObjectController<ITe
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(tenantId);
+            var authResult = await TenantRequestAsync(tenantId);
             if(authResult != null)
             {
                 return authResult;

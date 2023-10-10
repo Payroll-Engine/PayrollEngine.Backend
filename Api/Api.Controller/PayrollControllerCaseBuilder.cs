@@ -10,6 +10,7 @@ using PayrollEngine.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Domain.Application.Service;
+using System.Globalization;
 
 namespace PayrollEngine.Api.Controller;
 
@@ -39,6 +40,7 @@ internal sealed class PayrollControllerCaseBuilder
             {
                 return ActionResultFactory.BadRequest($"Unknown tenant with id {tenantId}");
             }
+            var culture = CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
 
             // payroll
             var payroll = await Context.PayrollService.GetAsync(context, tenantId, payrollId);
@@ -158,7 +160,7 @@ internal sealed class PayrollControllerCaseBuilder
                         }
 
                         // case value access test
-                        if (!ValueConvert.TryToValue(caseValue.Value, caseField.ValueType, out _))
+                        if (!ValueConvert.TryToValue(caseValue.Value, caseField.ValueType, culture, out _))
                         {
                             return ActionResultFactory.BadRequest(
                                 $"Invalid value for case field {caseValue.CaseFieldName} ({caseField.ValueType}): {caseValue.Value}");
@@ -237,7 +239,7 @@ internal sealed class PayrollControllerCaseBuilder
                     // case value
                     var cancellationMode = GetCaseFieldCancellationMode(caseField);
                     caseValue.Value = await GetCancellationCaseValueAsync(tenantId, payrollId,
-                        caseChangeSetup, caseValue, cancellationMode, caseType.Value);
+                        caseChangeSetup, caseValue, cancellationMode, caseType.Value, culture);
 
                     // ensure newer case value using the next second as creation date
                     caseValue.Created = GetCancellationDate(caseValue.Created);
@@ -398,7 +400,7 @@ internal sealed class PayrollControllerCaseBuilder
 
     private async Task<string> GetCancellationCaseValueAsync(int tenantId, int payrollId,
         Model.CaseChangeSetup caseChangeSetup, Domain.Model.CaseValue caseValue,
-        CaseFieldCancellationMode cancellationMode, CaseType caseType)
+        CaseFieldCancellationMode cancellationMode, CaseType caseType, CultureInfo culture)
     {
         var cancellationCaseValue = caseValue.Value;
         switch (cancellationMode)
@@ -411,7 +413,7 @@ internal sealed class PayrollControllerCaseBuilder
                 cancellationCaseValue = ResetCaseValue(caseValue.Value, caseValue.ValueType);
                 break;
             case CaseFieldCancellationMode.Invert:
-                cancellationCaseValue = InvertCaseValue(caseValue.Value, caseValue.ValueType);
+                cancellationCaseValue = InvertCaseValue(caseValue.Value, caseValue.ValueType, culture);
                 break;
             case CaseFieldCancellationMode.Keep:
                 break;
@@ -569,8 +571,8 @@ internal sealed class PayrollControllerCaseBuilder
         return inputValue;
     }
 
-    private static string InvertCaseValue(string inputValue, ValueType valueType) =>
-        ValueConvert.InvertValue(inputValue, valueType);
+    private static string InvertCaseValue(string inputValue, ValueType valueType, CultureInfo culture) =>
+        ValueConvert.InvertValue(inputValue, valueType, culture);
 
     private async Task<List<Case>> GetDerivedCaseAsync(IDbContext context, int tenantId, int payrollId, string caseName)
     {

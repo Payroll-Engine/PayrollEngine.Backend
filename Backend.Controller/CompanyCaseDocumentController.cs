@@ -33,7 +33,7 @@ public class CompanyCaseDocumentController : Api.Controller.CompanyCaseDocumentC
     public async Task<ActionResult> QueryCompanyCaseDocumentsAsync(int tenantId, int caseValueId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -55,7 +55,7 @@ public class CompanyCaseDocumentController : Api.Controller.CompanyCaseDocumentC
     public async Task<ActionResult<ApiObject.CaseDocument>> GetCompanyCaseDocument(int tenantId, int caseValueId, int documentId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

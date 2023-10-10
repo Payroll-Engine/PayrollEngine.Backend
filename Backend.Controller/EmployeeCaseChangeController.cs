@@ -34,7 +34,7 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     public async Task<ActionResult> QueryEmployeeCaseChangesAsync(int tenantId, int employeeId, [FromQuery] DomainObject.CaseChangeQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -57,7 +57,7 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     public async Task<ActionResult<ApiObject.CaseChange>> GetEmployeeCaseChangeAsync(int tenantId, int employeeId, int caseChangeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -104,7 +104,7 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     public async Task<IActionResult> DeleteEmployeeCaseChangeAsync(int tenantId, int employeeId, int caseValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

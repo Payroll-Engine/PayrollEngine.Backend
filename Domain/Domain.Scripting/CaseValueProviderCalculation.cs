@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using PayrollEngine.Domain.Model;
 
@@ -33,8 +34,10 @@ internal sealed class CaseValueProviderCalculation
         object value = null;
         if (caseValue != null)
         {
+            var culture = CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+
             // value
-            value = ValueConvert.ToValue(caseValue.Value, caseValue.ValueType);
+            value = ValueConvert.ToValue(caseValue.Value, caseValue.ValueType, culture);
 
             // calendar scaling
             if (caseField.ValueType.IsDecimal() && caseField.TimeType.IsCalendarPeriod() && value != null)

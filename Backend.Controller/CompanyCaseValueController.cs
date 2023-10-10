@@ -36,7 +36,7 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     public async Task<ActionResult> QueryCompanyCaseValuesAsync(int tenantId, [FromQuery] CaseValueQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -56,7 +56,7 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     public async Task<ActionResult<IEnumerable<string>>> GetCompanyCaseValueSlotsAsync(int tenantId, [Required] string caseFieldName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -81,7 +81,7 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     public async Task<ActionResult<ApiObject.CaseValue>> GetCompanyCaseValue(int tenantId, int caseValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

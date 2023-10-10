@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace PayrollEngine.Domain.Model;
@@ -88,12 +89,11 @@ public class CaseFieldSet : CaseField, IEquatable<CaseFieldSet>
     public bool Equals(CaseFieldSet compare) =>
         CompareTool.EqualProperties(this, compare);
 
-    /// <summary>
-    /// Get native value
-    /// </summary>
+    /// <summary>Get native value</summary>
+    /// <param name="culture">The culture</param>
     /// <returns>The .net value</returns>
-    public object GetValue() =>
-        ValueConvert.ToValue(Value, ValueType);
+    public object GetValue(CultureInfo culture) =>
+        ValueConvert.ToValue(Value, ValueType, culture);
 
     /// <summary>
     /// Set native value

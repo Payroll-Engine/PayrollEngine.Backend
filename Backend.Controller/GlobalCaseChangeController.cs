@@ -34,7 +34,7 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
         [FromQuery] DomainObject.CaseChangeQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -56,7 +56,7 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
         int tenantId, int caseChangeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -90,7 +90,7 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     public async Task<IActionResult> DeleteGlobalCaseChangeAsync(int tenantId, int caseValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

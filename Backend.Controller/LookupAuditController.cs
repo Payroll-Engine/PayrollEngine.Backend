@@ -36,7 +36,7 @@ public class LookupAuditController : Api.Controller.LookupAuditController
         int lookupId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -60,7 +60,7 @@ public class LookupAuditController : Api.Controller.LookupAuditController
         int regulationId, int lookupId, int auditId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

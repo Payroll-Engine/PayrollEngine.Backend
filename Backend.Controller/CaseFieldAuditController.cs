@@ -37,7 +37,7 @@ public class CaseFieldAuditController : Api.Controller.CaseFieldAuditController
         int caseId, int fieldId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -62,7 +62,7 @@ public class CaseFieldAuditController : Api.Controller.CaseFieldAuditController
         int regulationId, int caseId, int fieldId, int auditId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

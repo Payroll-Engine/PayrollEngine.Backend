@@ -35,7 +35,7 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     public async Task<ActionResult> QueryCollectorAuditsAsync(int tenantId, int regulationId, int collectorId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -58,7 +58,7 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     public async Task<ActionResult<ApiObject.CollectorAudit>> GetCollectorAuditAsync(int tenantId, int regulationId, int collectorId, int auditId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

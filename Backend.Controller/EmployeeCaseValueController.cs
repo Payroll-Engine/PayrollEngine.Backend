@@ -36,7 +36,7 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     public async Task<ActionResult> QueryEmployeeCaseValuesAsync(int tenantId, int employeeId, [FromQuery] CaseValueQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -66,7 +66,7 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
         [Required] string caseFieldName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -95,7 +95,7 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     public async Task<ActionResult<ApiObject.CaseValue>> GetEmployeeCaseValueAsync(int tenantId, int employeeId, int caseValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

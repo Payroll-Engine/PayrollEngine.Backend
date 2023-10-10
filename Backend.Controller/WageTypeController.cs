@@ -34,7 +34,7 @@ public class WageTypeController : Api.Controller.WageTypeController
         [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -57,7 +57,7 @@ public class WageTypeController : Api.Controller.WageTypeController
         int tenantId, int regulationId, int wageTypeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -81,7 +81,7 @@ public class WageTypeController : Api.Controller.WageTypeController
         int tenantId, int regulationId, ApiObject.WageType wageType)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -105,7 +105,7 @@ public class WageTypeController : Api.Controller.WageTypeController
         int tenantId, int regulationId, ApiObject.WageType wageType)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -126,7 +126,7 @@ public class WageTypeController : Api.Controller.WageTypeController
         int regulationId, int wageTypeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -146,7 +146,7 @@ public class WageTypeController : Api.Controller.WageTypeController
         int regulationId, int wageTypeId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using PayrollEngine.Client.Scripting.Runtime;
 using PayrollEngine.Domain.Model;
@@ -24,7 +25,7 @@ public abstract class RuntimeBase : IRuntime
     /// <summary>
     /// Function execution timeout <see cref="BackendScriptingSpecification.ScriptFunctionTimeout"/>/>
     /// </summary>
-    protected virtual TimeSpan Timeout => 
+    protected virtual TimeSpan Timeout =>
         TimeSpan.FromMilliseconds(BackendScriptingSpecification.ScriptFunctionTimeout);
 
     /// <summary>
@@ -45,10 +46,23 @@ public abstract class RuntimeBase : IRuntime
 
     #region Tenant
 
-    /// <summary>
-    /// The tenant
-    /// </summary>
+    /// <summary>The tenant</summary>
     private Tenant Tenant => Settings.Tenant;
+
+    /// <summary>The tenant culture</summary>
+    protected CultureInfo TenantCulture
+    {
+        get
+        {
+            var culture = CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+            if (!string.IsNullOrWhiteSpace(Tenant?.Culture) &&
+                !string.Equals(culture.Name, Tenant.Culture))
+            {
+                culture = new CultureInfo(Tenant.Culture);
+            }
+            return culture;
+        }
+    }
 
     /// <inheritdoc />
     public int TenantId => Tenant.Id;

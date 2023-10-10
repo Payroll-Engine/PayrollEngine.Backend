@@ -34,7 +34,7 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
         int caseValueId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -57,7 +57,7 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
         int tenantId, int caseValueId, int documentId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

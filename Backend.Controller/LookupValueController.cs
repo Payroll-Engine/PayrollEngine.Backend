@@ -36,7 +36,7 @@ public class LookupValueController : Api.Controller.LookupValueController
         int regulationId, int lookupId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -60,7 +60,7 @@ public class LookupValueController : Api.Controller.LookupValueController
         int tenantId, int regulationId, int lookupId, [FromQuery] string culture)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -84,7 +84,7 @@ public class LookupValueController : Api.Controller.LookupValueController
         int tenantId, int regulationId, int lookupId, int lookupValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -109,7 +109,7 @@ public class LookupValueController : Api.Controller.LookupValueController
         int tenantId, int regulationId, int lookupId, ApiObject.LookupValue lookup)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -134,7 +134,7 @@ public class LookupValueController : Api.Controller.LookupValueController
         int tenantId, int regulationId, int lookupId, ApiObject.LookupValue lookup)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -156,7 +156,7 @@ public class LookupValueController : Api.Controller.LookupValueController
         int regulationId, int lookupId, int lookupValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

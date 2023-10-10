@@ -33,7 +33,7 @@ public class WebhookController : Api.Controller.WebhookController
         [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -55,7 +55,7 @@ public class WebhookController : Api.Controller.WebhookController
         int tenantId, int webhookId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -78,7 +78,7 @@ public class WebhookController : Api.Controller.WebhookController
         int tenantId, ApiObject.Webhook webhook)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -101,7 +101,7 @@ public class WebhookController : Api.Controller.WebhookController
         int tenantId, ApiObject.Webhook webhook)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -120,7 +120,7 @@ public class WebhookController : Api.Controller.WebhookController
     public async Task<IActionResult> DeleteWebhookAsync(int tenantId, int webhookId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -145,7 +145,7 @@ public class WebhookController : Api.Controller.WebhookController
         int tenantId, int webhookId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -170,7 +170,7 @@ public class WebhookController : Api.Controller.WebhookController
         int tenantId, int webhookId, string attributeName, [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -191,7 +191,7 @@ public class WebhookController : Api.Controller.WebhookController
         int tenantId, int webhookId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

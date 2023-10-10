@@ -37,7 +37,7 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
         [FromQuery] CaseValueQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -62,7 +62,7 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
         int tenantId, [Required] string caseFieldName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -84,7 +84,7 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
         int tenantId, int caseValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

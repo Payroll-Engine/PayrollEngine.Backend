@@ -35,7 +35,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -58,7 +58,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         int tenantId, int payrollId, int layerId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -82,7 +82,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         int tenantId, int payrollId, ApiObject.PayrollLayer layer)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -106,7 +106,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         int tenantId, int payrollId, ApiObject.PayrollLayer layer)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -125,7 +125,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     public async Task<IActionResult> DeletePayrollLayerAsync(int tenantId, int payrollId, int layerId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -151,7 +151,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         int tenantId, int payrollId, int layerId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -177,7 +177,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         int tenantId, int payrollId, int layerId, string attributeName, [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -199,7 +199,7 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
         int tenantId, int payrollId, int layerId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

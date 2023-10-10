@@ -177,7 +177,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
 
     /// <inheritdoc />
     public object GetValue(string caseFieldName) =>
-        GetCaseFieldSet(caseFieldName).GetValue();
+        GetCaseFieldSet(caseFieldName).GetValue(TenantCulture);
 
     /// <inheritdoc />
     public void SetValue(string caseFieldName, object value) =>

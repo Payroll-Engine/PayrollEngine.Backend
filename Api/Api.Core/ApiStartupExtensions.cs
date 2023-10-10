@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using PayrollEngine.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -76,17 +76,11 @@ public static class ApiStartupExtensions
         }
 
         // culture
-        var culture = serverConfiguration.StartupCulture;
-        if (!string.IsNullOrWhiteSpace(culture) && !CultureInfo.CurrentCulture.Name.Equals(culture))
+        var cultureName = serverConfiguration.StartupCulture;
+        if (!string.IsNullOrWhiteSpace(cultureName) && !CultureInfo.CurrentCulture.Name.Equals(cultureName))
         {
-            Log.Trace($"Changing application culture from {CultureInfo.CurrentCulture.Name} to {culture}");
-            CultureInfo.CurrentCulture = new(culture);
-        }
-
-        // health check
-        if (serverConfiguration.UseHealthCheck)
-        {
-            Task.Run(() => services.AddApiHealthCheckAsync(configuration));
+            Thread.CurrentThread.CurrentCulture = new(cultureName);
+            Log.Trace($"Changing application culture from {CultureInfo.CurrentCulture.Name} to {cultureName}");
         }
 
         // API services
@@ -112,8 +106,7 @@ public static class ApiStartupExtensions
                 SwaggerTool.CreateInfo(
                     specification.ApiName,
                     specification.ApiVersion,
-                    specification.ApiDescription,
-                    configuration["HealthChecksUI:Uri"]));
+                    specification.ApiDescription));
 
             // shared setup
             setupAction.SetupSwagger();
@@ -179,9 +172,6 @@ public static class ApiStartupExtensions
         // logs
         appLifetime.UseLog(appBuilder, environment, serverConfiguration.LogHttpRequests);
 
-        // https
-        appBuilder.UseHttps(useHttpRedirection: serverConfiguration.UseHealthCheck);
-
         // swagger
         appBuilder.UseSwagger(specification.ApiDocumentationName, specification.ApiName,
             specification.ApiVersion, serverConfiguration.DarkTheme);
@@ -198,12 +188,6 @@ public static class ApiStartupExtensions
         {
             endpoints.MapControllers();
         });
-
-        // health check
-        if (serverConfiguration.UseHealthCheck)
-        {
-            appBuilder.UseHealthCheck();
-        }
 
         // dapper
         DapperTypes.AddTypeHandlers();

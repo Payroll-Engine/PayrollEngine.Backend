@@ -91,32 +91,35 @@ public class DbContext : IDbContext
     }
 
     /// <inheritdoc />
-    public async Task<bool> TestTenantAsync(string tenantIdentifier, int tenantId)
+    public async Task<Tenant> GetTenantAsync(int tenantId, string tenantIdentifier = null)
     {
-        if (string.IsNullOrWhiteSpace(tenantIdentifier))
+        if (tenantId <= 0)
         {
-            return true;
+            return null;
         }
 
         try
         {
             // tenant sql query
-            var sql = $"SELECT {nameof(Tenant.Identifier)} " +
-                      $"FROM {nameof(Tenant)} " +
+            var sql = $"SELECT * FROM {nameof(Tenant)} " +
                       $"WHERE {nameof(Tenant.Id)} = @id";
+            if (!string.IsNullOrWhiteSpace(tenantIdentifier))
+            {
+                sql += $" AND {nameof(Tenant.Identifier)} = @identifier";
+            }
 
             // get test tenant identifier
             var connection = new SqlConnection(ConnectionString);
-            var testTenant = (await connection.QueryAsync<Tenant>(sql, new { id = tenantId })).
-                    FirstOrDefault();
-
-            // compare tenant identifiers
-            var valid = string.Equals(testTenant?.Identifier, tenantIdentifier);
-            return valid;
+            var tenant = (await connection.QueryAsync<Tenant>(sql, new
+                {
+                    id = tenantId,
+                    identifier = tenantIdentifier
+                })).FirstOrDefault();
+            return tenant;
         }
         catch
         {
-            return false;
+            return null;
         }
     }
 

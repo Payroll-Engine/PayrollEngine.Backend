@@ -36,7 +36,7 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
             [FromQuery] CaseValueQuery query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -61,7 +61,7 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
         int tenantId, [Required] string caseFieldName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -83,7 +83,7 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
         int tenantId, int caseValueId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

@@ -71,7 +71,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
         try
         {
             // authorization
-            var authResult = await AuthorizeAsync(tenantId);
+            var authResult = await TenantRequestAsync(tenantId);
             if (authResult != null)
             {
                 return authResult;
@@ -113,7 +113,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
         try
         {
             // authorization
-            var authResult = await AuthorizeAsync(tenantId);
+            var authResult = await TenantRequestAsync(tenantId);
             if (authResult != null)
             {
                 return authResult;
@@ -177,7 +177,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
         try
         {
             // authorization
-            var authResult = await AuthorizeAsync(tenantId);
+            var authResult = await TenantRequestAsync(tenantId);
             if (authResult != null)
             {
                 return authResult;
@@ -219,7 +219,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
         try
         {
             // authorization
-            var authResult = await AuthorizeAsync(tenantId);
+            var authResult = await TenantRequestAsync(tenantId);
             if (authResult != null)
             {
                 return authResult;

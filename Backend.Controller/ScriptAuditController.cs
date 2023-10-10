@@ -36,7 +36,7 @@ public class ScriptAuditController : Api.Controller.ScriptAuditController
         int regulationId, int scriptId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -60,7 +60,7 @@ public class ScriptAuditController : Api.Controller.ScriptAuditController
         int tenantId, int regulationId, int scriptId, int auditId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

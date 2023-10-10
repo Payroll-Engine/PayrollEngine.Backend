@@ -33,7 +33,7 @@ public class RegulationController : Api.Controller.RegulationController
     public async Task<ActionResult> QueryRegulationsAsync(int tenantId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -55,7 +55,7 @@ public class RegulationController : Api.Controller.RegulationController
         int tenantId, int regulationId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -77,7 +77,7 @@ public class RegulationController : Api.Controller.RegulationController
         int tenantId, [Required] string caseFieldName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -100,7 +100,7 @@ public class RegulationController : Api.Controller.RegulationController
         int tenantId, ApiObject.Regulation regulation)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -123,7 +123,7 @@ public class RegulationController : Api.Controller.RegulationController
         int tenantId, ApiObject.Regulation regulation)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -142,7 +142,7 @@ public class RegulationController : Api.Controller.RegulationController
     public async Task<IActionResult> DeleteRegulationAsync(int tenantId, int regulationId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -167,7 +167,7 @@ public class RegulationController : Api.Controller.RegulationController
         int tenantId, int regulationId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -193,7 +193,7 @@ public class RegulationController : Api.Controller.RegulationController
         [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -214,7 +214,7 @@ public class RegulationController : Api.Controller.RegulationController
         int tenantId, int regulationId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

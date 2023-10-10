@@ -35,7 +35,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     public async Task<ActionResult> QueryReportParametersAsync(int tenantId, int regulationId, int reportId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -59,7 +59,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
         int tenantId, int regulationId, int reportId, int parameterId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -84,7 +84,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
         int tenantId, int regulationId, int reportId, ApiObject.ReportParameter parameter)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -109,7 +109,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
         int tenantId, int regulationId, int reportId, ApiObject.ReportParameter parameter)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -131,7 +131,7 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
         int regulationId, int reportId, int parameterId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

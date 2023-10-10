@@ -35,7 +35,7 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
         int caseValueId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -73,7 +73,7 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
         int employeeId, int caseValueId, int documentId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

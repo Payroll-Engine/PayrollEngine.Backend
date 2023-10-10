@@ -33,7 +33,7 @@ public class UserController : Api.Controller.UserController
     public async Task<ActionResult> QueryUsersAsync(int tenantId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -54,7 +54,7 @@ public class UserController : Api.Controller.UserController
     public async Task<ActionResult<ApiObject.User>> GetUserAsync(int tenantId, int userId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -76,7 +76,7 @@ public class UserController : Api.Controller.UserController
     public async Task<ActionResult<ApiObject.User>> CreateUserAsync(int tenantId, ApiObject.User user)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -103,7 +103,7 @@ public class UserController : Api.Controller.UserController
     public async Task<ActionResult<ApiObject.User>> UpdateUserAsync(int tenantId, ApiObject.User user)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -122,7 +122,7 @@ public class UserController : Api.Controller.UserController
     public async Task<IActionResult> DeleteUserAsync(int tenantId, int userId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -151,7 +151,7 @@ public class UserController : Api.Controller.UserController
     public async Task<ActionResult> TestUserPasswordAsync(int tenantId, int userId, [FromBody] string password)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -202,7 +202,7 @@ public class UserController : Api.Controller.UserController
         int tenantId, int userId, [FromBody] PasswordChangeRequest changeRequest)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -247,7 +247,7 @@ public class UserController : Api.Controller.UserController
         int tenantId, int userId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -272,7 +272,7 @@ public class UserController : Api.Controller.UserController
         int tenantId, int userId, string attributeName, [FromBody] string value)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -293,7 +293,7 @@ public class UserController : Api.Controller.UserController
         int tenantId, int userId, string attributeName)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

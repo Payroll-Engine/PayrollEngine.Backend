@@ -41,6 +41,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
     // global
     protected Tenant Tenant { get; }
+    protected CultureInfo TenantCulture { get; }
     protected User User { get; }
     protected Payroll Payroll { get; }
     private Employee Employee { get; }
@@ -207,6 +208,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
     {
         // global
         Tenant = settings.Tenant ?? throw new ArgumentNullException(nameof(settings.Tenant));
+        TenantCulture = GetTenantCulture(Tenant);
         User = settings.User ?? throw new ArgumentNullException(nameof(settings.User));
         Payroll = settings.Payroll ?? throw new ArgumentNullException(nameof(settings.Payroll));
 
@@ -232,6 +234,17 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // services
         WebhookDispatchService = settings.WebhookDispatchService ?? throw new ArgumentNullException(nameof(settings.WebhookDispatchService));
+    }
+
+    private static CultureInfo GetTenantCulture(Tenant tenant)
+    {
+        var culture = CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+        if (!string.IsNullOrWhiteSpace(tenant.Culture) &&
+            !string.Equals(culture.Name, tenant.Culture))
+        {
+            culture = new CultureInfo(tenant.Culture);
+        }
+        return culture;
     }
 
     protected async Task<IRegulationLookupProvider> NewRegulationLookupProviderAsync()

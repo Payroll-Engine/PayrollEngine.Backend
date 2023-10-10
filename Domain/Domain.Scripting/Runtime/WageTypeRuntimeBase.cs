@@ -191,7 +191,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
             Slot = slot,
             ValueType = (ValueType)valueType,
             Value = value,
-            NumericValue = ValueConvert.ToNumber(value, (ValueType)valueType),
+            NumericValue = ValueConvert.ToNumber(value, (ValueType)valueType, TenantCulture),
             Start = startDate,
             End = endDate,
             Tags = tags,

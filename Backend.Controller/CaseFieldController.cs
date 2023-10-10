@@ -34,7 +34,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     public async Task<ActionResult> QueryCaseFieldsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -58,7 +58,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     public async Task<ActionResult<ApiObject.CaseField>> GetCaseFieldAsync(int tenantId, int regulationId, int caseId, int caseFieldId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -81,7 +81,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     public async Task<ActionResult<ApiObject.CaseField>> CreateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -104,7 +104,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     public async Task<ActionResult<ApiObject.CaseField>> UpdateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -123,7 +123,7 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     public async Task<IActionResult> DeleteCaseFieldAsync(int tenantId, int caseId, int caseFieldId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

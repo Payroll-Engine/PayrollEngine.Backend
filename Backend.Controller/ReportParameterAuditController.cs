@@ -39,7 +39,7 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
         int regulationId, int reportId, int parameterId, [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -64,7 +64,7 @@ public class ReportParameterAuditController : Api.Controller.ReportParameterAudi
         int tenantId, int regulationId, int reportId, int parameterId, int auditId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

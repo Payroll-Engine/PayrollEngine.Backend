@@ -103,7 +103,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         {
             // tenant
             query.TenantId = query.TenantId;
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -646,7 +646,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         }
 
         // authorization
-        var authResult = await AuthorizeAsync(query.TenantId);
+        var authResult = await TenantRequestAsync(query.TenantId);
         if(authResult != null)
         {
             return authResult;
@@ -815,7 +815,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(tenantId);
+            var authResult = await TenantRequestAsync(tenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -911,7 +911,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -969,7 +969,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1028,7 +1028,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // authorization
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1088,7 +1088,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1144,7 +1144,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1200,7 +1200,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1253,7 +1253,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1301,7 +1301,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1389,7 +1389,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         string lookupName, string lookupKey, decimal? rangeValue, string culture)
     {
         // verify tenant
-        var authResult = await AuthorizeAsync(query.TenantId);
+        var authResult = await TenantRequestAsync(query.TenantId);
         if(authResult != null)
         {
             return authResult;
@@ -1433,7 +1433,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1479,7 +1479,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1521,7 +1521,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1565,7 +1565,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1610,7 +1610,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
         try
         {
             // tenant
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return authResult;
@@ -1683,7 +1683,7 @@ public abstract class PayrollController : RepositoryChildObjectController<ITenan
             }
 
             // authorization
-            var authResult = await AuthorizeAsync(query.TenantId);
+            var authResult = await TenantRequestAsync(query.TenantId);
             if(authResult != null)
             {
                 return new(querySetup, authResult);

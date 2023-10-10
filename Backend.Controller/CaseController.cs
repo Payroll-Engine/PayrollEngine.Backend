@@ -34,7 +34,7 @@ public class CaseController : Api.Controller.CaseController
         [FromQuery] Query query)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -56,7 +56,7 @@ public class CaseController : Api.Controller.CaseController
     public async Task<ActionResult<ApiObject.Case>> GetCaseAsync(int tenantId, int regulationId, int caseId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -79,7 +79,7 @@ public class CaseController : Api.Controller.CaseController
     public async Task<ActionResult<ApiObject.Case>> CreateCaseAsync(int tenantId, int regulationId, ApiObject.Case @case)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -102,7 +102,7 @@ public class CaseController : Api.Controller.CaseController
     public async Task<ActionResult<ApiObject.Case>> UpdateCaseAsync(int tenantId, int regulationId, ApiObject.Case @case)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -122,7 +122,7 @@ public class CaseController : Api.Controller.CaseController
     public async Task<ActionResult> RebuildCaseAsync(int tenantId, int regulationId, int caseId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;
@@ -141,7 +141,7 @@ public class CaseController : Api.Controller.CaseController
     public async Task<IActionResult> DeleteCaseAsync(int tenantId, int regulationId, int caseId)
     {
         // authorization
-        var authResult = await AuthorizeAsync(tenantId);
+        var authResult = await TenantRequestAsync(tenantId);
         if(authResult != null)
         {
             return authResult;

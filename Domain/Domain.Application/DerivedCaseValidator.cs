@@ -310,7 +310,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         // weekday value
         if (caseFieldSet.ValueType == ValueType.Weekday && caseFieldSet.HasValue)
         {
-            if (!(caseFieldSet.GetValue() is int value) || !Enum.IsDefined(typeof(DayOfWeek), value))
+            if (!(caseFieldSet.GetValue(TenantCulture) is int value) || !Enum.IsDefined(typeof(DayOfWeek), value))
             {
                 issues.Add(new()
                 {
@@ -322,7 +322,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                     CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
                     CaseFieldName = caseFieldSet.Name,
                     CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
-                    Message = $"Case field {caseFieldSet.Name} with invalid weekday: {caseFieldSet.GetValue()}"
+                    Message = $"Case field {caseFieldSet.Name} with invalid weekday: {caseFieldSet.GetValue(TenantCulture)}"
                 });
             }
         }
@@ -330,7 +330,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         // month value
         if (caseFieldSet.ValueType == ValueType.Month && caseFieldSet.HasValue)
         {
-            if (!(caseFieldSet.GetValue() is int value) || !Enum.IsDefined(typeof(Month), value))
+            if (!(caseFieldSet.GetValue(TenantCulture) is int value) || !Enum.IsDefined(typeof(Month), value))
             {
                 issues.Add(new()
                 {
@@ -342,7 +342,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                     CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
                     CaseFieldName = caseFieldSet.Name,
                     CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
-                    Message = $"Case field {caseFieldSet.Name} with invalid month: {caseFieldSet.GetValue()}"
+                    Message = $"Case field {caseFieldSet.Name} with invalid month: {caseFieldSet.GetValue(TenantCulture)}"
                 });
             }
         }
