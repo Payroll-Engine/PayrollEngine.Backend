@@ -1,6 +1,4 @@
 ﻿
 namespace PayrollEngine.Persistence;
 
-internal abstract class DomainRepositoryCommandBase
-{
-}
+internal abstract class DomainRepositoryCommandBase;

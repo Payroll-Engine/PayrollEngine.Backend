@@ -4,10 +4,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class GlobalCaseChangeService : CaseChangeService<IGlobalCaseChangeRepository, CaseChange>, IGlobalCaseChangeService
-{
-    public GlobalCaseChangeService(IWebhookDispatchService webhookDispatcher, IGlobalCaseChangeRepository globalCaseChangeRepository) :
-        base(webhookDispatcher, globalCaseChangeRepository)
-    {
-    }
-}
+public class GlobalCaseChangeService(IWebhookDispatchService webhookDispatcher,
+        IGlobalCaseChangeRepository globalCaseChangeRepository)
+    : CaseChangeService<IGlobalCaseChangeRepository, CaseChange>(webhookDispatcher, globalCaseChangeRepository),
+        IGlobalCaseChangeService;

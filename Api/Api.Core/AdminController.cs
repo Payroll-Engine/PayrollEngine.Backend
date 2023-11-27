@@ -6,15 +6,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace PayrollEngine.Api.Core;
 
-public abstract class AdminController : ApiController
+public abstract class AdminController(IControllerRuntime runtime, IHostApplicationLifetime appLifetime)
+    : ApiController(runtime)
 {
-    private IHostApplicationLifetime ApplicationLifetime { get; }
-
-    protected AdminController(IControllerRuntime runtime, IHostApplicationLifetime appLifetime) :
-        base(runtime)
-    {
-        ApplicationLifetime = appLifetime ?? throw new ArgumentNullException(nameof(appLifetime));
-    }
+    private IHostApplicationLifetime ApplicationLifetime { get; } = appLifetime ?? throw new ArgumentNullException(nameof(appLifetime));
 
     /// <summary>
     /// Requests termination of the API application

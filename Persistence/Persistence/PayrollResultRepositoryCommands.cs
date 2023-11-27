@@ -6,14 +6,9 @@ using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
-internal abstract class ResultCommandBase
+internal abstract class ResultCommandBase(IDbContext dbContext)
 {
-    internal IDbContext DbContext { get; }
-
-    protected ResultCommandBase(IDbContext dbContext)
-    {
-        DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-    }
+    internal IDbContext DbContext { get; } = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
     /// <summary>Apply the tag filter</summary>
     /// <param name="tagObjects">The tagged objects</param>

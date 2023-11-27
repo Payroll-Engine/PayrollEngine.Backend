@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payroll script audits
 /// </summary>
-public interface IScriptAuditRepository : IAuditChildDomainRepository<ScriptAudit>
-{
-}
+public interface IScriptAuditRepository : IAuditChildDomainRepository<ScriptAudit>;

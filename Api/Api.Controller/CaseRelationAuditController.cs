@@ -10,13 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation case relation audits
 /// </summary>
-public abstract class CaseRelationAuditController : RepositoryChildObjectController<ICaseRelationService, ICaseRelationAuditService,
+public abstract class CaseRelationAuditController(ICaseRelationService caseRelationService,
+        ICaseRelationAuditService caseRelationAuditService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<ICaseRelationService, ICaseRelationAuditService,
     ICaseRelationRepository, ICaseRelationAuditRepository,
-    DomainObject.CaseRelation, DomainObject.CaseRelationAudit, ApiObject.CaseRelationAudit>
-{
-    protected CaseRelationAuditController(ICaseRelationService caseRelationService,
-        ICaseRelationAuditService caseRelationAuditService, IControllerRuntime runtime) :
-        base(caseRelationService, caseRelationAuditService, runtime, new CaseRelationAuditMap())
-    {
-    }
-}
+    DomainObject.CaseRelation, DomainObject.CaseRelationAudit, ApiObject.CaseRelationAudit>(caseRelationService, caseRelationAuditService, runtime, new CaseRelationAuditMap());

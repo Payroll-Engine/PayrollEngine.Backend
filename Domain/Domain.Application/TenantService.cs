@@ -8,13 +8,9 @@ using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Domain.Application;
 
-public class TenantService : RootApplicationService<ITenantRepository, Tenant>, ITenantService
+public class TenantService
+    (ITenantRepository repository) : RootApplicationService<ITenantRepository, Tenant>(repository), ITenantService
 {
-    public TenantService(ITenantRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
         await Repository.ExistsAsync(context, identifier);
 

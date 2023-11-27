@@ -13,18 +13,13 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for calendars
 /// </summary>
-public abstract class CalendarController : RepositoryChildObjectController<ITenantService, ICalendarService,
+public abstract class CalendarController(ITenantService tenantService, ICalendarService calendarService,
+        IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, ICalendarService,
     ITenantRepository, ICalendarRepository,
-    Tenant, Calendar, ApiObject.Calendar>
+    Tenant, Calendar, ApiObject.Calendar>(tenantService, calendarService, runtime, new CalendarMap())
 {
-    private IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
-
-    protected CalendarController(ITenantService tenantService, ICalendarService calendarService,
-        IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime) :
-        base(tenantService, calendarService, runtime, new CalendarMap())
-    {
-        PayrollCalculatorProvider = payrollCalculatorProvider ?? throw new ArgumentNullException(nameof(payrollCalculatorProvider));
-    }
+    private IPayrollCalculatorProvider PayrollCalculatorProvider { get; } = payrollCalculatorProvider ?? throw new ArgumentNullException(nameof(payrollCalculatorProvider));
 
     /// <summary>
     /// Get tenant calendar period

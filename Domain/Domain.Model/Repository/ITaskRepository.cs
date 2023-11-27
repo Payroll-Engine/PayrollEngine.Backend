@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for tasks
 /// </summary>
-public interface ITaskRepository : IChildDomainRepository<Task>
-{
-}
+public interface ITaskRepository : IChildDomainRepository<Task>;

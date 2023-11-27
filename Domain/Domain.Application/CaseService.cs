@@ -6,13 +6,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class CaseService : ScriptTrackChildApplicationService<ICaseRepository, Case, CaseAudit>, ICaseService
+public class CaseService
+    (ICaseRepository repository) : ScriptTrackChildApplicationService<ICaseRepository, Case, CaseAudit>(repository),
+        ICaseService
 {
-    public CaseService(ICaseRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task<Case> GetAsync(IDbContext context, int tenantId, int regulationId, string name) =>
         (await Repository.QueryAsync(context, tenantId, name, regulationId)).FirstOrDefault();
 }

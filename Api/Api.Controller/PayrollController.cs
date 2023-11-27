@@ -19,59 +19,36 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for payrolls
 /// </summary>
-public abstract class PayrollController : RepositoryChildObjectController<ITenantService, IPayrollService,
-    ITenantRepository, IPayrollRepository,
-    DomainObject.Tenant, DomainObject.Payroll, ApiObject.Payroll>, IPayrollControllerServices
+public abstract class PayrollController(IPayrollContextService context, IControllerRuntime runtime) :
+    RepositoryChildObjectController<ITenantService, IPayrollService,
+        ITenantRepository, IPayrollRepository,
+        DomainObject.Tenant, DomainObject.Payroll, ApiObject.Payroll>(context.TenantService, context.PayrollService,
+        runtime, new PayrollMap()), IPayrollControllerServices
 {
-    public IPayrollContextService Context { get; }
+    public IPayrollContextService Context { get; } = context;
     public DomainObject.IScriptProvider ScriptProvider => Runtime.ScriptProvider;
 
-    internal IRegulationService RegulationService { get; }
-    internal ILookupSetService RegulationLookupSetService { get; }
-    internal ITaskService TaskService { get; }
-    internal ILogService LogService { get; }
+    internal IRegulationService RegulationService { get; } = context.RegulationService ?? throw new ArgumentNullException(nameof(IPayrollContextService.RegulationService));
+    internal ILookupSetService RegulationLookupSetService { get; } = context.RegulationLookupSetService ?? throw new ArgumentNullException(nameof(IPayrollContextService.RegulationLookupSetService));
+    internal ITaskService TaskService { get; } = context.TaskService ?? throw new ArgumentNullException(nameof(IPayrollContextService.TaskService));
+    internal ILogService LogService { get; } = context.LogService ?? throw new ArgumentNullException(nameof(IPayrollContextService.LogService));
     internal IPayrollService PayrollService => Service;
-    internal DomainObject.IWebhookDispatchService WebhookDispatchService { get; }
+    internal DomainObject.IWebhookDispatchService WebhookDispatchService { get; } = context.WebhookDispatchService ?? throw new ArgumentNullException(nameof(IPayrollContextService.WebhookDispatchService));
 
-    private ICaseService CaseService { get; }
-    private ICalendarService CalendarService { get; }
-    private IUserService UserService { get; }
-    private IDivisionService DivisionService { get; }
-    private ICaseFieldService CaseFieldService { get; }
-    private IGlobalCaseChangeService GlobalChangeService { get; }
-    private IGlobalCaseValueService GlobalCaseValueService { get; }
-    private INationalCaseChangeService NationalChangeService { get; }
-    private INationalCaseValueService NationalCaseValueService { get; }
-    private ICompanyCaseChangeService CompanyChangeService { get; }
-    private ICompanyCaseValueService CompanyCaseValueService { get; }
-    private IEmployeeService EmployeeService { get; }
-    private IEmployeeCaseChangeService EmployeeChangeService { get; }
-    private IEmployeeCaseValueService EmployeeCaseValueService { get; }
-
-    protected PayrollController(IPayrollContextService context, IControllerRuntime runtime) :
-        base(context.TenantService, context.PayrollService, runtime, new PayrollMap())
-    {
-        Context = context;
-        CalendarService = context.CalendarService ?? throw new ArgumentNullException(nameof(context.CalendarService));
-        RegulationService = context.RegulationService ?? throw new ArgumentNullException(nameof(context.RegulationService));
-        RegulationLookupSetService = context.RegulationLookupSetService ?? throw new ArgumentNullException(nameof(context.RegulationLookupSetService));
-        DivisionService = context.DivisionService ?? throw new ArgumentNullException(nameof(context.DivisionService));
-        CaseService = context.CaseService ?? throw new ArgumentNullException(nameof(context.CaseService));
-        CaseFieldService = context.CaseFieldService ?? throw new ArgumentNullException(nameof(context.CaseFieldService));
-        UserService = context.UserService ?? throw new ArgumentNullException(nameof(context.UserService));
-        TaskService = context.TaskService ?? throw new ArgumentNullException(nameof(context.TaskService));
-        LogService = context.LogService ?? throw new ArgumentNullException(nameof(context.LogService));
-        GlobalChangeService = context.GlobalChangeService ?? throw new ArgumentNullException(nameof(context.GlobalChangeService));
-        GlobalCaseValueService = context.GlobalCaseValueService ?? throw new ArgumentNullException(nameof(context.GlobalCaseValueService));
-        NationalChangeService = context.NationalChangeService ?? throw new ArgumentNullException(nameof(context.NationalChangeService));
-        NationalCaseValueService = context.NationalCaseValueService ?? throw new ArgumentNullException(nameof(context.NationalCaseValueService));
-        CompanyChangeService = context.CompanyChangeService ?? throw new ArgumentNullException(nameof(context.CompanyChangeService));
-        CompanyCaseValueService = context.CompanyCaseValueService ?? throw new ArgumentNullException(nameof(context.CompanyCaseValueService));
-        EmployeeService = context.EmployeeService ?? throw new ArgumentNullException(nameof(context.EmployeeService));
-        EmployeeChangeService = context.EmployeeChangeService ?? throw new ArgumentNullException(nameof(context.EmployeeChangeService));
-        EmployeeCaseValueService = context.EmployeeCaseValueService ?? throw new ArgumentNullException(nameof(context.EmployeeCaseValueService));
-        WebhookDispatchService = context.WebhookDispatchService ?? throw new ArgumentNullException(nameof(context.WebhookDispatchService));
-    }
+    private ICaseService CaseService { get; } = context.CaseService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CaseService));
+    private ICalendarService CalendarService { get; } = context.CalendarService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CalendarService));
+    private IUserService UserService { get; } = context.UserService ?? throw new ArgumentNullException(nameof(IPayrollContextService.UserService));
+    private IDivisionService DivisionService { get; } = context.DivisionService ?? throw new ArgumentNullException(nameof(IPayrollContextService.DivisionService));
+    private ICaseFieldService CaseFieldService { get; } = context.CaseFieldService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CaseFieldService));
+    private IGlobalCaseChangeService GlobalChangeService { get; } = context.GlobalChangeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.GlobalChangeService));
+    private IGlobalCaseValueService GlobalCaseValueService { get; } = context.GlobalCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.GlobalCaseValueService));
+    private INationalCaseChangeService NationalChangeService { get; } = context.NationalChangeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.NationalChangeService));
+    private INationalCaseValueService NationalCaseValueService { get; } = context.NationalCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.NationalCaseValueService));
+    private ICompanyCaseChangeService CompanyChangeService { get; } = context.CompanyChangeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CompanyChangeService));
+    private ICompanyCaseValueService CompanyCaseValueService { get; } = context.CompanyCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CompanyCaseValueService));
+    private IEmployeeService EmployeeService { get; } = context.EmployeeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.EmployeeService));
+    private IEmployeeCaseChangeService EmployeeChangeService { get; } = context.EmployeeChangeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.EmployeeChangeService));
+    private IEmployeeCaseValueService EmployeeCaseValueService { get; } = context.EmployeeCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.EmployeeCaseValueService));
 
     #region Payroll Regulations
 

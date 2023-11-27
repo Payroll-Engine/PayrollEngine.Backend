@@ -4,13 +4,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseFieldAuditRepository : AuditChildDomainRepository<CaseFieldAudit>, ICaseFieldAuditRepository
+public class CaseFieldAuditRepository() : AuditChildDomainRepository<CaseFieldAudit>(DbSchema.Tables.CaseFieldAudit,
+    DbSchema.CaseFieldAuditColumn.CaseFieldId), ICaseFieldAuditRepository
 {
-    public CaseFieldAuditRepository() : 
-        base(DbSchema.Tables.CaseFieldAudit, DbSchema.CaseFieldAuditColumn.CaseFieldId)
-    {
-    }
-
     protected override void GetObjectCreateData(CaseFieldAudit audit, DbParameterCollection parameters)
     {
         // local fields

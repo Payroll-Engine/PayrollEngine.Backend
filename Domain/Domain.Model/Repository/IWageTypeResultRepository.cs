@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for wage type results
 /// </summary>
-public interface IWageTypeResultRepository : IChildDomainRepository<WageTypeResult>
-{
-}
+public interface IWageTypeResultRepository : IChildDomainRepository<WageTypeResult>;

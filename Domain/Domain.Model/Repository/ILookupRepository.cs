@@ -6,9 +6,7 @@ namespace PayrollEngine.Domain.Model.Repository;
 /// <summary>
 /// Repository for lookups
 /// </summary>
-public interface ILookupRepository : ILookupRepository<Lookup>
-{
-}
+public interface ILookupRepository : ILookupRepository<Lookup>;
 
 /// <summary>
 /// Repository for lookups

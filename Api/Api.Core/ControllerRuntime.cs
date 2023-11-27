@@ -6,21 +6,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace PayrollEngine.Api.Core;
 
-public class ControllerRuntime : IControllerRuntime
-{
-    public IDbContext DbContext { get; }
-    public IConfiguration Configuration { get; }
-    public LinkGenerator LinkGenerator { get; }
-    public IApiDescriptionGroupCollectionProvider ApiExplorer { get; }
-    public IScriptProvider ScriptProvider { get; }
-
-    public ControllerRuntime(IDbContext dbContext, IConfiguration configuration, LinkGenerator linkGenerator,
+public class ControllerRuntime(IDbContext dbContext, IConfiguration configuration, LinkGenerator linkGenerator,
         IApiDescriptionGroupCollectionProvider apiExplorer, IScriptProvider scriptProvider)
-    {
-        DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        LinkGenerator = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
-        ApiExplorer = apiExplorer ?? throw new ArgumentNullException(nameof(apiExplorer));
-        ScriptProvider = scriptProvider ?? throw new ArgumentNullException(nameof(scriptProvider));
-    }
+    : IControllerRuntime
+{
+    public IDbContext DbContext { get; } = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    public IConfiguration Configuration { get; } = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    public LinkGenerator LinkGenerator { get; } = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
+    public IApiDescriptionGroupCollectionProvider ApiExplorer { get; } = apiExplorer ?? throw new ArgumentNullException(nameof(apiExplorer));
+    public IScriptProvider ScriptProvider { get; } = scriptProvider ?? throw new ArgumentNullException(nameof(scriptProvider));
 }

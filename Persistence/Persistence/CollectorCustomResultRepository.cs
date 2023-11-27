@@ -6,13 +6,10 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class CollectorCustomResultRepository : ChildDomainRepository<CollectorCustomResult>, ICollectorCustomResultRepository
+public class CollectorCustomResultRepository() : ChildDomainRepository<CollectorCustomResult>(
+        DbSchema.Tables.CollectorCustomResult, DbSchema.CollectorCustomResultColumn.CollectorResultId),
+    ICollectorCustomResultRepository
 {
-    public CollectorCustomResultRepository() :
-        base(DbSchema.Tables.CollectorCustomResult, DbSchema.CollectorCustomResultColumn.CollectorResultId)
-    {
-    }
-
     protected override void GetObjectCreateData(CollectorCustomResult result, DbParameterCollection parameters)
     {
         parameters.Add(nameof(result.CollectorName), result.CollectorName);

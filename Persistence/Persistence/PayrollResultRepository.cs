@@ -8,13 +8,9 @@ using PayrollEngine.Persistence.DbQuery;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollResultRepository : ChildDomainRepository<PayrollResult>, IPayrollResultRepository
+public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(DbSchema.Tables.PayrollResult,
+    DbSchema.PayrollResultColumn.TenantId), IPayrollResultRepository
 {
-    public PayrollResultRepository() :
-        base(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId)
-    {
-    }
-
     #region Result Values
 
     /// <inheritdoc />

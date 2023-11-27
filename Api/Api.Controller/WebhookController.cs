@@ -10,12 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the web hooks
 /// </summary>
-public abstract class WebhookController : RepositoryChildObjectController<ITenantService, IWebhookService,
+public abstract class WebhookController(ITenantService tenantService, IWebhookService webhookService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IWebhookService,
     ITenantRepository, IWebhookRepository,
-    DomainObject.Tenant, DomainObject.Webhook, ApiObject.Webhook>
-{
-    protected WebhookController(ITenantService tenantService, IWebhookService webhookService, IControllerRuntime runtime) :
-        base(tenantService, webhookService, runtime, new WebhookMap())
-    {
-    }
-}
+    DomainObject.Tenant, DomainObject.Webhook, ApiObject.Webhook>(tenantService, webhookService, runtime, new WebhookMap());

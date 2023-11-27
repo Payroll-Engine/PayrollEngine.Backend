@@ -4,10 +4,6 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class DivisionService : ChildApplicationService<IDivisionRepository, Division>, IDivisionService
-{
-    public DivisionService(IDivisionRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class DivisionService
+    (IDivisionRepository repository) : ChildApplicationService<IDivisionRepository, Division>(repository),
+        IDivisionService;

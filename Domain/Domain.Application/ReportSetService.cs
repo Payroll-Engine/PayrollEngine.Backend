@@ -7,17 +7,11 @@ using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Domain.Application;
 
-public class ReportSetService : ChildApplicationService<IReportSetRepository, ReportSet>, IReportSetService
+public class ReportSetService(IReportSetRepository repository, IQueryService queryService, ReportToolSettings settings)
+    : ChildApplicationService<IReportSetRepository, ReportSet>(repository), IReportSetService
 {
-    private IQueryService QueryService { get; }
-    private ReportToolSettings Settings { get; }
-
-    public ReportSetService(IReportSetRepository repository, IQueryService queryService, ReportToolSettings settings) :
-        base(repository)
-    {
-        QueryService = queryService ?? throw new ArgumentNullException(nameof(queryService));
-        Settings = settings ?? throw new ArgumentNullException(nameof(settings));
-    }
+    private IQueryService QueryService { get; } = queryService ?? throw new ArgumentNullException(nameof(queryService));
+    private ReportToolSettings Settings { get; } = settings ?? throw new ArgumentNullException(nameof(settings));
 
     public async Task<ReportSet> GetReportAsync(Tenant tenant, ReportSet report, IApiControllerContext controllerContext,
         ReportRequest reportRequest = null)

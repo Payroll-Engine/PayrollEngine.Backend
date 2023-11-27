@@ -6,13 +6,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrunResultRepository : ChildDomainRepository<PayrunResult>, IPayrunResultRepository
+public class PayrunResultRepository() : ChildDomainRepository<PayrunResult>(DbSchema.Tables.PayrunResult,
+    DbSchema.PayrunResultColumn.PayrollResultId), IPayrunResultRepository
 {
-    public PayrunResultRepository() :
-        base(DbSchema.Tables.PayrunResult, DbSchema.PayrunResultColumn.PayrollResultId)
-    {
-    }
-
     protected override void GetObjectCreateData(PayrunResult result, DbParameterCollection parameters)
     {
         parameters.Add(nameof(result.Source), result.Source);

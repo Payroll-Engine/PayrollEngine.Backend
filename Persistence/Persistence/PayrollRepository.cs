@@ -7,24 +7,17 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollRepository : ChildDomainRepository<Payroll>, IPayrollRepository
+public class PayrollRepository(IPayrollLayerRepository payrollLayerRepository,
+        IRegulationRepository regulationRepository,
+        ICaseFieldRepository caseFieldRepository, IReportSetRepository reportRepository,
+        IScriptRepository scriptRepository)
+    : ChildDomainRepository<Payroll>(DbSchema.Tables.Payroll, DbSchema.PayrollColumn.TenantId), IPayrollRepository
 {
-    private IPayrollLayerRepository PayrollLayerRepository { get; }
-    private IRegulationRepository RegulationRepository { get; }
-    private ICaseFieldRepository CaseFieldRepository { get; }
-    private IReportSetRepository ReportRepository { get; }
-    private IScriptRepository ScriptRepository { get; }
-
-    public PayrollRepository(IPayrollLayerRepository payrollLayerRepository, IRegulationRepository regulationRepository,
-        ICaseFieldRepository caseFieldRepository, IReportSetRepository reportRepository, IScriptRepository scriptRepository) :
-        base(DbSchema.Tables.Payroll, DbSchema.PayrollColumn.TenantId)
-    {
-        PayrollLayerRepository = payrollLayerRepository ?? throw new ArgumentNullException(nameof(payrollLayerRepository));
-        RegulationRepository = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
-        CaseFieldRepository = caseFieldRepository ?? throw new ArgumentNullException(nameof(caseFieldRepository));
-        ReportRepository = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
-        ScriptRepository = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
-    }
+    private IPayrollLayerRepository PayrollLayerRepository { get; } = payrollLayerRepository ?? throw new ArgumentNullException(nameof(payrollLayerRepository));
+    private IRegulationRepository RegulationRepository { get; } = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
+    private ICaseFieldRepository CaseFieldRepository { get; } = caseFieldRepository ?? throw new ArgumentNullException(nameof(caseFieldRepository));
+    private IReportSetRepository ReportRepository { get; } = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
+    private IScriptRepository ScriptRepository { get; } = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
 
     protected override void GetObjectCreateData(Payroll payroll, DbParameterCollection parameters)
     {

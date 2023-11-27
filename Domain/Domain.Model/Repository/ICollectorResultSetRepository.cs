@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for collector results
 /// </summary>
-public interface ICollectorResultSetRepository : IChildDomainRepository<CollectorResultSet>
-{
-}
+public interface ICollectorResultSetRepository : IChildDomainRepository<CollectorResultSet>;

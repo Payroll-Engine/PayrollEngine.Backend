@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payroll regulations
 /// </summary>
-public interface IRegulationRepository : IChildDomainRepository<Regulation>
-{
-}
+public interface IRegulationRepository : IChildDomainRepository<Regulation>;

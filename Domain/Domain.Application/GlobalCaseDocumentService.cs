@@ -3,10 +3,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class GlobalCaseDocumentService : CaseDocumentService<IGlobalCaseDocumentRepository>, IGlobalCaseDocumentService
-{
-    public GlobalCaseDocumentService(IGlobalCaseDocumentRepository globalCaseDocumentRepository) :
-        base(globalCaseDocumentRepository)
-    {
-    }
-}
+public class GlobalCaseDocumentService(IGlobalCaseDocumentRepository globalCaseDocumentRepository) :
+    CaseDocumentService<IGlobalCaseDocumentRepository>(globalCaseDocumentRepository), IGlobalCaseDocumentService;

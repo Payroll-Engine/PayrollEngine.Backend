@@ -7,17 +7,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class CaseValueSetupRepository : CaseValueRepositoryBase<CaseValueSetup>, ICaseValueSetupRepository
-{
-    private ICaseDocumentRepository CaseDocumentRepository { get; }
-
-    protected CaseValueSetupRepository(string tableName, string parentFieldName,
+public abstract class CaseValueSetupRepository(string tableName, string parentFieldName,
         ICaseFieldRepository caseFieldRepository,
-        ICaseDocumentRepository caseDocumentRepository) :
-        base(tableName, parentFieldName, caseFieldRepository)
-    {
-        CaseDocumentRepository = caseDocumentRepository ?? throw new ArgumentNullException(nameof(caseDocumentRepository));
-    }
+        ICaseDocumentRepository caseDocumentRepository)
+    : CaseValueRepositoryBase<CaseValueSetup>(tableName, parentFieldName, caseFieldRepository),
+        ICaseValueSetupRepository
+{
+    private ICaseDocumentRepository CaseDocumentRepository { get; } = caseDocumentRepository ?? throw new ArgumentNullException(nameof(caseDocumentRepository));
 
     protected override async Task OnRetrieved(IDbContext context, int parentId, CaseValueSetup caseValueSetup)
     {

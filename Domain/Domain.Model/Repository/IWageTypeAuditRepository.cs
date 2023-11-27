@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payroll wage type audits
 /// </summary>
-public interface IWageTypeAuditRepository : IAuditChildDomainRepository<WageTypeAudit>
-{
-}
+public interface IWageTypeAuditRepository : IAuditChildDomainRepository<WageTypeAudit>;

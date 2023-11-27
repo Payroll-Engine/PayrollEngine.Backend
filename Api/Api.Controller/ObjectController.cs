@@ -8,22 +8,17 @@ using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
 
-public abstract class ObjectController<TDomain, TApi> : ApiController
+public abstract class ObjectController<TDomain, TApi>
+    (IControllerRuntime runtime, IApiMap<TDomain, TApi> map) : ApiController(runtime)
     where TDomain : class, IDomainObject, new()
     where TApi : ApiObjectBase, new()
 {
-    protected IApiMap<TDomain, TApi> Map { get; }
+    protected IApiMap<TDomain, TApi> Map { get; } = map ?? throw new ArgumentNullException(nameof(map));
 
     protected string GetObjectName(Type type) => type.Name;
     protected string ObjectName => GetObjectName(typeof(TApi));
     private string GetObjectName(ApiObjectBase apiObject) =>
         apiObject != null ? GetObjectName(apiObject.GetType()) : null;
-
-    protected ObjectController(IControllerRuntime runtime, IApiMap<TDomain, TApi> map) :
-        base(runtime)
-    {
-        Map = map ?? throw new ArgumentNullException(nameof(map));
-    }
 
     #region Mapping
 

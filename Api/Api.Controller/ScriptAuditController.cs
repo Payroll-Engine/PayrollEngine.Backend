@@ -10,12 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation script audits
 /// </summary>
-public abstract class ScriptAuditController : RepositoryChildObjectController<IScriptService, IScriptAuditService, 
+public abstract class ScriptAuditController(IScriptService scriptService, IScriptAuditService scriptAuditService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<IScriptService, IScriptAuditService, 
     IScriptRepository, IScriptAuditRepository,
-    DomainObject.Script, DomainObject.ScriptAudit, ApiObject.ScriptAudit>
-{
-    protected ScriptAuditController(IScriptService scriptService, IScriptAuditService scriptAuditService, IControllerRuntime runtime) :
-        base(scriptService, scriptAuditService, runtime, new ScriptAuditMap())
-    {
-    }
-}
+    DomainObject.Script, DomainObject.ScriptAudit, ApiObject.ScriptAudit>(scriptService, scriptAuditService, runtime, new ScriptAuditMap());

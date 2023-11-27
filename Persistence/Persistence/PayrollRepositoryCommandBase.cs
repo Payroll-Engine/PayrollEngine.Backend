@@ -6,14 +6,9 @@ using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
-internal abstract class PayrollRepositoryCommandBase
+internal abstract class PayrollRepositoryCommandBase(IDbContext dbContext)
 {
-    internal IDbContext DbContext { get; }
-
-    protected PayrollRepositoryCommandBase(IDbContext dbContext)
-    {
-        DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-    }
+    internal IDbContext DbContext { get; } = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
 
     protected static void ApplyOverrideFilter<TKey, TBuild>(IEnumerable<IGrouping<TKey, TBuild>> derivedItemsByKey,

@@ -13,18 +13,13 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payruns
 /// </summary>
-public abstract class PayrunController : RepositoryChildObjectController<ITenantService, IPayrunService,
+public abstract class PayrunController(ITenantService tenantService, IPayrunService payrunService,
+        IPayrollService payrollService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IPayrunService,
     ITenantRepository, IPayrunRepository,
-    DomainObject.Tenant, DomainObject.Payrun, ApiObject.Payrun>
+    DomainObject.Tenant, DomainObject.Payrun, ApiObject.Payrun>(tenantService, payrunService, runtime, new PayrunMap())
 {
-    private IPayrollService PayrollService { get; }
-
-    protected PayrunController(ITenantService tenantService, IPayrunService payrunService,
-        IPayrollService payrollService, IControllerRuntime runtime) :
-        base(tenantService, payrunService, runtime, new PayrunMap())
-    {
-        PayrollService = payrollService ?? throw new ArgumentNullException(nameof(payrollService));
-    }
+    private IPayrollService PayrollService { get; } = payrollService ?? throw new ArgumentNullException(nameof(payrollService));
 
     protected override async Task<ActionResult<ApiObject.Payrun>> CreateAsync(int regulationId, ApiObject.Payrun payrun)
     {

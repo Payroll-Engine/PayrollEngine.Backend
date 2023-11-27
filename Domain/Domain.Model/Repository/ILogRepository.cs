@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for logs
 /// </summary>
-public interface ILogRepository : IChildDomainRepository<Log>
-{
-}
+public interface ILogRepository : IChildDomainRepository<Log>;

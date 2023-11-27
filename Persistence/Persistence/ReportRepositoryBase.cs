@@ -5,16 +5,12 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class ReportRepositoryBase<T> : ScriptTrackChildDomainRepository<T, ReportAudit>, IReportRepository<T>
+public abstract class ReportRepositoryBase<T>(IScriptRepository scriptRepository,
+        IReportAuditRepository auditRepository)
+    : ScriptTrackChildDomainRepository<T, ReportAudit>(DbSchema.Tables.Report, DbSchema.ReportColumn.RegulationId,
+        scriptRepository, auditRepository), IReportRepository<T>
     where T : Report, new()
 {
-    protected ReportRepositoryBase(IScriptRepository scriptRepository,
-        IReportAuditRepository auditRepository) :
-        base(DbSchema.Tables.Report, DbSchema.ReportColumn.RegulationId,
-            scriptRepository, auditRepository)
-    {
-    }
-
     protected override void GetObjectCreateData(T report, DbParameterCollection parameters)
     {
         parameters.Add(nameof(report.Name), report.Name);

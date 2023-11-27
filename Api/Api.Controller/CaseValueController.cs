@@ -14,26 +14,22 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the case value
 /// </summary>
-public abstract class CaseValueController<TParentService, TParentRepo, TRepo, TParent> :
-    RepositoryChildObjectController<TParentService, ICaseValueService<TRepo, DomainObject.CaseValue>, TParentRepo, TRepo, TParent, DomainObject.CaseValue, ApiObject.CaseValue>
+public abstract class CaseValueController<TParentService, TParentRepo, TRepo, TParent>(TParentService parentService,
+        ICaseValueService<TRepo, DomainObject.CaseValue> caseValueService,
+        IPayrollService payrollsService, IRegulationService regulationService, ILookupSetService lookupSetService,
+        IControllerRuntime runtime)
+    :
+        RepositoryChildObjectController<TParentService, ICaseValueService<TRepo, DomainObject.CaseValue>, TParentRepo,
+            TRepo, TParent, DomainObject.CaseValue, ApiObject.CaseValue>(parentService, caseValueService, runtime,
+            new CaseValueMap())
     where TParentService : class, IRepositoryApplicationService<TParentRepo>
     where TParentRepo : class, IDomainRepository
     where TRepo : class, IChildDomainRepository<DomainObject.CaseValue>
     where TParent : class, DomainObject.IDomainObject, new()
 {
-    private IPayrollService PayrollsService { get; }
-    private IRegulationService RegulationService { get; }
-    private ILookupSetService LookupSetService { get; }
-
-    protected CaseValueController(TParentService parentService, ICaseValueService<TRepo, DomainObject.CaseValue> caseValueService,
-        IPayrollService payrollsService, IRegulationService regulationService, ILookupSetService lookupSetService,
-        IControllerRuntime runtime) :
-        base(parentService, caseValueService, runtime, new CaseValueMap())
-    {
-        PayrollsService = payrollsService ?? throw new ArgumentNullException(nameof(payrollsService));
-        RegulationService = regulationService ?? throw new ArgumentNullException(nameof(regulationService));
-        LookupSetService = lookupSetService ?? throw new ArgumentNullException(nameof(lookupSetService));
-    }
+    private IPayrollService PayrollsService { get; } = payrollsService ?? throw new ArgumentNullException(nameof(payrollsService));
+    private IRegulationService RegulationService { get; } = regulationService ?? throw new ArgumentNullException(nameof(regulationService));
+    private ILookupSetService LookupSetService { get; } = lookupSetService ?? throw new ArgumentNullException(nameof(lookupSetService));
 
     protected async Task<IEnumerable<string>> GetCaseValueSlotsAsync(int parentId, string caseFieldName) =>
         await Service.GetCaseValueSlotsAsync(Runtime.DbContext, parentId, caseFieldName);

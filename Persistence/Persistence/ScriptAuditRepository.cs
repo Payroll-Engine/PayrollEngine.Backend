@@ -3,13 +3,9 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class ScriptAuditRepository : AuditChildDomainRepository<ScriptAudit>, IScriptAuditRepository
+public class ScriptAuditRepository() : AuditChildDomainRepository<ScriptAudit>(DbSchema.Tables.ScriptAudit,
+    DbSchema.ScriptAuditColumn.ScriptId), IScriptAuditRepository
 {
-    public ScriptAuditRepository() :
-        base(DbSchema.Tables.ScriptAudit, DbSchema.ScriptAuditColumn.ScriptId)
-    {
-    }
-
     protected override void GetObjectCreateData(ScriptAudit audit, DbParameterCollection parameters)
     {
         parameters.Add(nameof(audit.ScriptId), audit.ScriptId);

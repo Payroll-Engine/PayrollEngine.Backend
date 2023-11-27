@@ -8,11 +8,7 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll national case documents
 /// </summary>
-public abstract class NationalCaseDocumentController : CaseDocumentController<INationalCaseValueService, INationalCaseValueRepository, INationalCaseDocumentRepository, DomainObject.Tenant>
-{
-    protected NationalCaseDocumentController(INationalCaseValueService caseValueService, ICaseDocumentService<INationalCaseDocumentRepository, 
-        DomainObject.CaseDocument> caseDocumentService, IControllerRuntime runtime) :
-        base(caseValueService, caseDocumentService, runtime)
-    {
-    }
-}
+public abstract class NationalCaseDocumentController(INationalCaseValueService caseValueService,
+        ICaseDocumentService<INationalCaseDocumentRepository,
+            DomainObject.CaseDocument> caseDocumentService, IControllerRuntime runtime)
+    : CaseDocumentController<INationalCaseValueService, INationalCaseValueRepository, INationalCaseDocumentRepository, DomainObject.Tenant>(caseValueService, caseDocumentService, runtime);

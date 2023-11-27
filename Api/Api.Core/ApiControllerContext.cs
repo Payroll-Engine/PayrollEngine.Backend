@@ -3,14 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PayrollEngine.Api.Core;
 
-public class ApiControllerContext : IApiControllerContext
+public class ApiControllerContext(ControllerContext context) : IApiControllerContext
 {
-    private ControllerContext Context { get; }
-
-    public ApiControllerContext(ControllerContext context)
-    {
-        Context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    private ControllerContext Context { get; } = context ?? throw new ArgumentNullException(nameof(context));
 
     public object Activate(Type targetType)
     {

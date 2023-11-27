@@ -8,12 +8,9 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll global cases
 /// </summary>
-public abstract class GlobalCaseValueController : CaseValueController<ITenantService, ITenantRepository, IGlobalCaseValueRepository, DomainObject.Tenant>
-{
-    protected GlobalCaseValueController(ITenantService tenantService, ICaseValueService<IGlobalCaseValueRepository, 
-            DomainObject.CaseValue> caseValueService, IPayrollService payrollsService, IRegulationService regulationService,
-        ILookupSetService lookupSetService, IControllerRuntime runtime) :
-        base(tenantService, caseValueService, payrollsService, regulationService, lookupSetService, runtime)
-    {
-    }
-}
+public abstract class GlobalCaseValueController(ITenantService tenantService,
+        ICaseValueService<IGlobalCaseValueRepository,
+            DomainObject.CaseValue> caseValueService, IPayrollService payrollsService,
+        IRegulationService regulationService,
+        ILookupSetService lookupSetService, IControllerRuntime runtime)
+    : CaseValueController<ITenantService, ITenantRepository, IGlobalCaseValueRepository, DomainObject.Tenant>(tenantService, caseValueService, payrollsService, regulationService, lookupSetService, runtime);

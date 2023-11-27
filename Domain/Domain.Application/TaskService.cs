@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class TaskService : ChildApplicationService<ITaskRepository, Task>, ITaskService
-{
-    public TaskService(ITaskRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class TaskService(ITaskRepository repository) : ChildApplicationService<ITaskRepository, Task>(repository),
+    ITaskService;

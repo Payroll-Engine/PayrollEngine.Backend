@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for report parameter
 /// </summary>
-public interface IReportParameterRepository : ITrackChildDomainRepository<ReportParameter, ReportParameterAudit>
-{
-}
+public interface IReportParameterRepository : ITrackChildDomainRepository<ReportParameter, ReportParameterAudit>;

@@ -2,10 +2,5 @@
 
 namespace PayrollEngine.Persistence;
 
-public class CompanyCaseValueChangeRepository : CaseValueChangeRepository, ICompanyCaseValueChangeRepository
-{
-    public CompanyCaseValueChangeRepository() :
-        base(DbSchema.Tables.CompanyCaseValueChange, DbSchema.CompanyCaseValueChangeColumn.CaseChangeId)
-    {
-    }
-}
+public class CompanyCaseValueChangeRepository() : CaseValueChangeRepository(DbSchema.Tables.CompanyCaseValueChange,
+    DbSchema.CompanyCaseValueChangeColumn.CaseChangeId), ICompanyCaseValueChangeRepository;

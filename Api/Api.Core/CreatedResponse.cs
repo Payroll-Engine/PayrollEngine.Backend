@@ -3,10 +3,4 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PayrollEngine.Api.Core;
 
-public sealed class CreatedResponseAttribute : ProducesResponseTypeAttribute
-{
-    public CreatedResponseAttribute() :
-        base(StatusCodes.Status201Created)
-    {
-    }
-}
+public sealed class CreatedResponseAttribute() : ProducesResponseTypeAttribute(StatusCodes.Status201Created);

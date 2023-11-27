@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class CaseFieldAuditService : ChildApplicationService<ICaseFieldAuditRepository, CaseFieldAudit>, ICaseFieldAuditService
-{
-    public CaseFieldAuditService(ICaseFieldAuditRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class CaseFieldAuditService(ICaseFieldAuditRepository repository) :
+    ChildApplicationService<ICaseFieldAuditRepository, CaseFieldAudit>(repository), ICaseFieldAuditService;

@@ -2,10 +2,5 @@
 
 namespace PayrollEngine.Persistence;
 
-public class GlobalCaseDocumentRepository : CaseDocumentRepository, IGlobalCaseDocumentRepository
-{
-    public GlobalCaseDocumentRepository() :
-        base(DbSchema.Tables.GlobalCaseDocument, DbSchema.GlobalCaseDocumentColumn.CaseValueId)
-    {
-    }
-}
+public class GlobalCaseDocumentRepository() : CaseDocumentRepository(DbSchema.Tables.GlobalCaseDocument,
+    DbSchema.GlobalCaseDocumentColumn.CaseValueId), IGlobalCaseDocumentRepository;

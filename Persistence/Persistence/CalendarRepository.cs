@@ -7,13 +7,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CalendarRepository : ChildDomainRepository<Calendar>, ICalendarRepository
+public class CalendarRepository() : ChildDomainRepository<Calendar>(DbSchema.Tables.Calendar,
+    DbSchema.CalendarColumn.TenantId), ICalendarRepository
 {
-    public CalendarRepository() :
-        base(DbSchema.Tables.Calendar, DbSchema.CalendarColumn.TenantId)
-    {
-    }
-
     protected override void GetObjectData(Calendar calendar, DbParameterCollection parameters)
     {
         parameters.Add(nameof(calendar.Name), calendar.Name);

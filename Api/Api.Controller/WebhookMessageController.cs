@@ -10,12 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the web hook messages
 /// </summary>
-public abstract class WebhookMessageController : RepositoryChildObjectController<IWebhookService, IWebhookMessageService,
+public abstract class WebhookMessageController(IWebhookService webhookService,
+        IWebhookMessageService webhookMessageService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<IWebhookService, IWebhookMessageService,
     IWebhookRepository, IWebhookMessageRepository,
-    DomainObject.Webhook, DomainObject.WebhookMessage, ApiObject.WebhookMessage>
-{
-    protected WebhookMessageController(IWebhookService webhookService, IWebhookMessageService webhookMessageService, IControllerRuntime runtime) :
-        base(webhookService, webhookMessageService, runtime, new WebhookMessageMap())
-    {
-    }
-}
+    DomainObject.Webhook, DomainObject.WebhookMessage, ApiObject.WebhookMessage>(webhookService, webhookMessageService, runtime, new WebhookMessageMap());

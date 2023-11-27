@@ -4,14 +4,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class RegulationRepository : ChildDomainRepository<Regulation>, IRegulationRepository
+public class RegulationRepository() : ChildDomainRepository<Regulation>(DbSchema.Tables.Regulation,
+    DbSchema.RegulationColumn.TenantId), IRegulationRepository
 {
-    public RegulationRepository() :
-        base(DbSchema.Tables.Regulation, DbSchema.RegulationColumn.TenantId)
-    {
-    }
-
-
     protected override void GetObjectCreateData(Regulation regulation, DbParameterCollection parameters)
     {
         parameters.Add(nameof(regulation.SharedRegulation), regulation.SharedRegulation);

@@ -6,14 +6,11 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class AuditChildDomainRepository<T> : ChildDomainRepository<T>, IAuditChildDomainRepository<T>
+public abstract class AuditChildDomainRepository<T>
+    (string tableName, string parentFieldName) : ChildDomainRepository<T>(tableName, parentFieldName),
+        IAuditChildDomainRepository<T>
     where T : AuditDomainObject
 {
-    protected AuditChildDomainRepository(string tableName, string parentFieldName) :
-        base(tableName, parentFieldName)
-    {
-    }
-
     public virtual async Task<T> GetCurrentAuditAsync(IDbContext context, int trackObjectId)
     {
         // query: last created audit before the tracking object

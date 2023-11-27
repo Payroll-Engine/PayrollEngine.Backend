@@ -3,6 +3,4 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface ILookupValueAuditService : IChildApplicationService<ILookupValueAuditRepository, LookupValueAudit>
-{
-}
+public interface ILookupValueAuditService : IChildApplicationService<ILookupValueAuditRepository, LookupValueAudit>;

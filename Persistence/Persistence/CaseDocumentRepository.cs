@@ -3,13 +3,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class CaseDocumentRepository : ChildDomainRepository<CaseDocument>, ICaseDocumentRepository
+public abstract class CaseDocumentRepository
+    (string tableName, string parentFieldName) : ChildDomainRepository<CaseDocument>(tableName, parentFieldName),
+        ICaseDocumentRepository
 {
-    protected CaseDocumentRepository(string tableName, string parentFieldName) :
-        base(tableName, parentFieldName)
-    {
-    }
-
     /// <inheritdoc />
     protected override void GetObjectData(CaseDocument parameter, DbParameterCollection parameters)
     {

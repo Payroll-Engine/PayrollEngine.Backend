@@ -9,16 +9,11 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class LookupSetRepository : LookupRepositoryBase<LookupSet>, ILookupSetRepository
+public class LookupSetRepository(ILookupValueRepository valueRepository,
+        ILookupAuditRepository auditRepository)
+    : LookupRepositoryBase<LookupSet>(auditRepository), ILookupSetRepository
 {
-    private ILookupValueRepository ValueRepository { get; }
-
-    public LookupSetRepository(ILookupValueRepository valueRepository,
-        ILookupAuditRepository auditRepository) :
-        base(auditRepository)
-    {
-        ValueRepository = valueRepository ?? throw new ArgumentNullException(nameof(valueRepository));
-    }
+    private ILookupValueRepository ValueRepository { get; } = valueRepository ?? throw new ArgumentNullException(nameof(valueRepository));
 
     protected override async Task OnRetrieved(IDbContext context, int regulationId, LookupSet lookupSet)
     {

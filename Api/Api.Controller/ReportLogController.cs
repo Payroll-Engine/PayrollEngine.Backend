@@ -10,13 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the report logs
 /// </summary>
-public abstract class ReportLogController : RepositoryChildObjectController<ITenantService, IReportLogService,
+public abstract class ReportLogController(ITenantService tenantService, IReportLogService reportLogService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IReportLogService,
     ITenantRepository, IReportLogRepository,
-    DomainObject.Tenant, DomainObject.ReportLog, ApiObject.ReportLog>
-{
-    protected ReportLogController(ITenantService tenantService, IReportLogService reportLogService,
-        IControllerRuntime runtime) :
-        base(tenantService, reportLogService, runtime, new ReportLogMap())
-    {
-    }
-}
+    DomainObject.Tenant, DomainObject.ReportLog, ApiObject.ReportLog>(tenantService, reportLogService, runtime, new ReportLogMap());

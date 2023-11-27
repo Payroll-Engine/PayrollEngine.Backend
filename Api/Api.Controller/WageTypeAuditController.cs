@@ -11,12 +11,8 @@ namespace PayrollEngine.Api.Controller;
 /// API controller for the regulation wage type audits
 /// </summary>
 // ReSharper disable StringLiteralTypo
-public abstract class WageTypeAuditController : RepositoryChildObjectController<IWageTypeService, IWageTypeAuditService,
+public abstract class WageTypeAuditController(IWageTypeService wageTypeService,
+        IWageTypeAuditService wageTypeAuditService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<IWageTypeService, IWageTypeAuditService,
     IWageTypeRepository, IWageTypeAuditRepository,
-    DomainObject.WageType, DomainObject.WageTypeAudit, ApiObject.WageTypeAudit>
-{
-    protected WageTypeAuditController(IWageTypeService wageTypeService, IWageTypeAuditService wageTypeAuditService, IControllerRuntime runtime) :
-        base(wageTypeService, wageTypeAuditService, runtime, new WageTypeAuditMap())
-    {
-    }
-}
+    DomainObject.WageType, DomainObject.WageTypeAudit, ApiObject.WageTypeAudit>(wageTypeService, wageTypeAuditService, runtime, new WageTypeAuditMap());

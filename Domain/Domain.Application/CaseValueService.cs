@@ -6,15 +6,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public abstract class CaseValueService<TRepo> :
-    ChildApplicationService<TRepo, CaseValue>, ICaseValueService<TRepo, CaseValue>
+public abstract class CaseValueService<TRepo>(TRepo caseValueRepository) :
+    ChildApplicationService<TRepo, CaseValue>(caseValueRepository), ICaseValueService<TRepo, CaseValue>
     where TRepo : class, ICaseValueRepository
 {
-    protected CaseValueService(TRepo caseValueRepository) :
-        base(caseValueRepository)
-    {
-    }
-
     public Task<IEnumerable<string>> GetCaseValueSlotsAsync(IDbContext context, int parentId, string caseFieldName) =>
         Repository.GetCaseValueSlotsAsync(context, parentId, caseFieldName);
 }

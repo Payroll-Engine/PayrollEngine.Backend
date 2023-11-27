@@ -15,8 +15,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the case value
 /// </summary>
-public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, TParent, TDomain, TApi> :
-    RepositoryChildObjectController<TParentService, ICaseChangeService<TRepo, TDomain>, TParentRepo, TRepo, TParent, TDomain, TApi>
+public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, TParent, TDomain, TApi>(
+        TParentService parentService, ICaseChangeService<TRepo, TDomain> caseChangeService,
+        IControllerRuntime runtime)
+    :
+        RepositoryChildObjectController<TParentService, ICaseChangeService<TRepo, TDomain>, TParentRepo, TRepo, TParent,
+            TDomain, TApi>(parentService, caseChangeService, runtime, new CaseChangeMap<TDomain, TApi>())
     where TParentService : class, IRepositoryApplicationService<TParentRepo>
     where TParentRepo : class, IDomainRepository
     where TRepo : class, IChildDomainRepository<TDomain>
@@ -24,12 +28,6 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     where TDomain : CaseChange, new()
     where TApi : ApiObject.CaseChange, new()
 {
-    protected CaseChangeController(TParentService parentService, ICaseChangeService<TRepo, TDomain> caseChangeService,
-        IControllerRuntime runtime) :
-        base(parentService, caseChangeService, runtime, new CaseChangeMap<TDomain, TApi>())
-    {
-    }
-
     /// <summary>
     /// Query case change values
     /// </summary>

@@ -5,13 +5,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
 
-public class PayrunService : ChildApplicationService<IPayrunRepository, Payrun>, IPayrunService
+public class PayrunService
+    (IPayrunRepository repository) : ChildApplicationService<IPayrunRepository, Payrun>(repository), IPayrunService
 {
-    public PayrunService(IPayrunRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task RebuildAsync(IDbContext context, int parentId, int itemId) =>
         await Repository.RebuildAsync(context, parentId, itemId);
 }

@@ -9,15 +9,10 @@ using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Domain.Application;
 
-public class ReportService : ScriptTrackChildApplicationService<IReportRepository, Report, ReportAudit>, IReportService
+public class ReportService(IReportRepository repository, IQueryService queryService) :
+    ScriptTrackChildApplicationService<IReportRepository, Report, ReportAudit>(repository), IReportService
 {
-    private IQueryService QueryService { get; }
-
-    public ReportService(IReportRepository repository, IQueryService queryService) :
-        base(repository)
-    {
-        QueryService = queryService ?? throw new ArgumentNullException(nameof(queryService));
-    }
+    private IQueryService QueryService { get; } = queryService ?? throw new ArgumentNullException(nameof(queryService));
 
     public async Task<DataTable> ExecuteQueryAsync(Tenant tenant, string methodName, string culture,
         Dictionary<string, string> parameters, IApiControllerContext controllerContext)

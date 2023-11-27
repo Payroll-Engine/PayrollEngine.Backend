@@ -5,6 +5,4 @@ namespace PayrollEngine.Domain.Application;
 /// <summary>
 /// Setting for the <see cref="DerivedCaseTool"/>
 /// </summary>
-public class FunctionToolSettings : FunctionHostSettings
-{
-}
+public class FunctionToolSettings : FunctionHostSettings;

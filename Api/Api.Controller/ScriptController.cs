@@ -12,15 +12,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation scripts
 /// </summary>
-public abstract class ScriptController : RepositoryChildObjectController<IRegulationService, IScriptService,
+public abstract class ScriptController(IRegulationService regulationService, IScriptService scriptService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<IRegulationService, IScriptService,
     IRegulationRepository, IScriptRepository,
-    DomainObject.Regulation, DomainObject.Script, ApiObject.Script>
+    DomainObject.Regulation, DomainObject.Script, ApiObject.Script>(regulationService, scriptService, runtime, new ScriptMap())
 {
-    protected ScriptController(IRegulationService regulationService, IScriptService scriptService, IControllerRuntime runtime) :
-        base(regulationService, scriptService, runtime, new ScriptMap())
-    {
-    }
-
     protected override async Task<ActionResult<ApiObject.Script>> CreateAsync(int regulationId, ApiObject.Script script)
     {
         if (string.IsNullOrWhiteSpace(script.Name))

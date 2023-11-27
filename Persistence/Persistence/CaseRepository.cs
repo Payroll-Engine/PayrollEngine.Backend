@@ -8,13 +8,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseRepository : ScriptTrackChildDomainRepository<Case, CaseAudit>, ICaseRepository
+public class CaseRepository(IScriptRepository scriptRepository, ICaseAuditRepository auditRepository)
+    : ScriptTrackChildDomainRepository<Case, CaseAudit>(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId,
+        scriptRepository, auditRepository), ICaseRepository
 {
-    public CaseRepository(IScriptRepository scriptRepository, ICaseAuditRepository auditRepository) :
-        base(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId, scriptRepository, auditRepository)
-    {
-    }
-
     public async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
     {
         if (tenantId <= 0)

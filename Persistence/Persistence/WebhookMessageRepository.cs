@@ -3,13 +3,9 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class WebhookMessageRepository : ChildDomainRepository<WebhookMessage>, IWebhookMessageRepository
+public class WebhookMessageRepository() : ChildDomainRepository<WebhookMessage>(DbSchema.Tables.WebhookMessage,
+    DbSchema.WebhookMessageColumn.WebhookId), IWebhookMessageRepository
 {
-    public WebhookMessageRepository() :
-        base(DbSchema.Tables.WebhookMessage, DbSchema.WebhookMessageColumn.WebhookId)
-    {
-    }
-
     protected override void GetObjectCreateData(WebhookMessage message, DbParameterCollection parameters)
     {
         parameters.Add(nameof(message.ActionName), message.ActionName);

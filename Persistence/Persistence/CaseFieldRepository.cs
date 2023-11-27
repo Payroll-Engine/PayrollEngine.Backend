@@ -7,13 +7,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseFieldRepository : TrackChildDomainRepository<CaseField, CaseFieldAudit>, ICaseFieldRepository
+public class CaseFieldRepository(ICaseFieldAuditRepository auditRepository) :
+    TrackChildDomainRepository<CaseField, CaseFieldAudit>(DbSchema.Tables.CaseField, DbSchema.CaseFieldColumn.CaseId,
+        auditRepository), ICaseFieldRepository
 {
-    public CaseFieldRepository(ICaseFieldAuditRepository auditRepository) :
-        base(DbSchema.Tables.CaseField, DbSchema.CaseFieldColumn.CaseId, auditRepository)
-    {
-    }
-
     public async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
         await ExistsAnyAsync(context, DbSchema.CaseFieldColumn.CaseId, caseId, DbSchema.CaseFieldColumn.Name, caseFieldNames);
 

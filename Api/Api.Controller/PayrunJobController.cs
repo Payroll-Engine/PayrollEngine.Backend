@@ -18,19 +18,14 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payrun jobs
 /// </summary>
-public abstract class PayrunJobController : RepositoryChildObjectController<ITenantService, IPayrunJobService,
+public abstract class PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
+        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IPayrunJobService,
     ITenantRepository, IPayrunJobRepository,
-    Tenant, PayrunJob, ApiObject.PayrunJob>
+    Tenant, PayrunJob, ApiObject.PayrunJob>(tenantService, payrunJobService, runtime, new PayrunJobMap())
 {
-    private IWebhookDispatchService WebhookDispatcher { get; }
+    private IWebhookDispatchService WebhookDispatcher { get; } = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
     private PayrunJobServiceSettings ServiceSettings => Service.Settings;
-
-    protected PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
-        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
-        base(tenantService, payrunJobService, runtime, new PayrunJobMap())
-    {
-        WebhookDispatcher = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
-    }
 
     public virtual async Task<ActionResult> QueryEmployeePayrunJobsAsync(int tenantId, int employeeId, Query query)
     {

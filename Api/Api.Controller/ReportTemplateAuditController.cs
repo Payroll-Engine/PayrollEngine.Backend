@@ -10,12 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation report templates audits
 /// </summary>
-public abstract class ReportTemplateAuditController : RepositoryChildObjectController<IReportTemplateService, IReportTemplateAuditService,
+public abstract class ReportTemplateAuditController(IReportTemplateService reportTemplateService,
+        IReportTemplateAuditService reportAuditService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<IReportTemplateService, IReportTemplateAuditService,
     IReportTemplateRepository, IReportTemplateAuditRepository,
-    DomainObject.ReportTemplate, DomainObject.ReportTemplateAudit, ApiObject.ReportTemplateAudit>
-{
-    protected ReportTemplateAuditController(IReportTemplateService reportTemplateService, IReportTemplateAuditService reportAuditService, IControllerRuntime runtime) :
-        base(reportTemplateService, reportAuditService, runtime, new ReportTemplateAuditMap())
-    {
-    }
-}
+    DomainObject.ReportTemplate, DomainObject.ReportTemplateAudit, ApiObject.ReportTemplateAudit>(reportTemplateService, reportAuditService, runtime, new ReportTemplateAuditMap());

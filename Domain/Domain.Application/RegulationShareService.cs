@@ -4,11 +4,6 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class RegulationShareService : RootApplicationService<IRegulationShareRepository, RegulationShare>,
-    IRegulationShareService
-{
-    public RegulationShareService(IRegulationShareRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class RegulationShareService(IRegulationShareRepository repository) :
+    RootApplicationService<IRegulationShareRepository, RegulationShare>(repository),
+    IRegulationShareService;

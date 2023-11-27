@@ -6,14 +6,11 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class LookupRepositoryBase<T> : TrackChildDomainRepository<T, LookupAudit>
+public abstract class LookupRepositoryBase<T>(ILookupAuditRepository auditRepository) :
+    TrackChildDomainRepository<T, LookupAudit>(DbSchema.Tables.Lookup, DbSchema.LookupColumn.RegulationId,
+        auditRepository)
     where T : Lookup, new()
 {
-    protected LookupRepositoryBase(ILookupAuditRepository auditRepository) :
-        base(DbSchema.Tables.Lookup, DbSchema.LookupColumn.RegulationId, auditRepository)
-    {
-    }
-
     protected override void GetObjectCreateData(T lookup, DbParameterCollection parameters)
     {
         parameters.Add(nameof(lookup.Name), lookup.Name);

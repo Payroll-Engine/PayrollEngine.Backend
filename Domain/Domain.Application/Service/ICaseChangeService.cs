@@ -5,21 +5,13 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface IGlobalCaseChangeService : ICaseChangeService<IGlobalCaseChangeRepository, CaseChange>
-{
-}
+public interface IGlobalCaseChangeService : ICaseChangeService<IGlobalCaseChangeRepository, CaseChange>;
 
-public interface INationalCaseChangeService : ICaseChangeService<INationalCaseChangeRepository, CaseChange>
-{
-}
+public interface INationalCaseChangeService : ICaseChangeService<INationalCaseChangeRepository, CaseChange>;
 
-public interface ICompanyCaseChangeService : ICaseChangeService<ICompanyCaseChangeRepository, CaseChange>
-{
-}
+public interface ICompanyCaseChangeService : ICaseChangeService<ICompanyCaseChangeRepository, CaseChange>;
 
-public interface IEmployeeCaseChangeService : ICaseChangeService<IEmployeeCaseChangeRepository, CaseChange>
-{
-}
+public interface IEmployeeCaseChangeService : ICaseChangeService<IEmployeeCaseChangeRepository, CaseChange>;
 
 public interface ICaseChangeService<out TRepo, TDomain> : IChildApplicationService<TRepo, TDomain>
     where TRepo : class, IChildDomainRepository<TDomain>

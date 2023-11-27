@@ -6,19 +6,14 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class TrackChildDomainRepository<TDomain, TAudit> : ChildDomainRepository<TDomain>,
-    ITrackChildDomainRepository<TDomain, TAudit>
+public abstract class TrackChildDomainRepository<TDomain, TAudit>(string tableName, string parentFieldName,
+        IAuditChildDomainRepository<TAudit> auditRepository)
+    : ChildDomainRepository<TDomain>(tableName, parentFieldName),
+        ITrackChildDomainRepository<TDomain, TAudit>
     where TDomain : TrackDomainObject<TAudit>, new()
     where TAudit : AuditDomainObject
 {
-    private IAuditChildDomainRepository<TAudit> AuditRepository { get; }
-
-    protected TrackChildDomainRepository(string tableName, string parentFieldName,
-        IAuditChildDomainRepository<TAudit> auditRepository ) :
-        base(tableName, parentFieldName)
-    {
-        AuditRepository = auditRepository ?? throw new ArgumentNullException(nameof(auditRepository));
-    }
+    private IAuditChildDomainRepository<TAudit> AuditRepository { get; } = auditRepository ?? throw new ArgumentNullException(nameof(auditRepository));
 
     #region Audit
 

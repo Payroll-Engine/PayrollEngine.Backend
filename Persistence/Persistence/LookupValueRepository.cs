@@ -7,13 +7,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class LookupValueRepository : TrackChildDomainRepository<LookupValue, LookupValueAudit>, ILookupValueRepository
+public class LookupValueRepository(ILookupValueAuditRepository auditRepository) :
+    TrackChildDomainRepository<LookupValue, LookupValueAudit>(DbSchema.Tables.LookupValue,
+        DbSchema.LookupValueColumn.LookupId, auditRepository), ILookupValueRepository
 {
-    public LookupValueRepository(ILookupValueAuditRepository auditRepository) :
-        base(DbSchema.Tables.LookupValue, DbSchema.LookupValueColumn.LookupId, auditRepository)
-    {
-    }
-
     public async Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null)
     {
         var conditions = new Dictionary<string, object>

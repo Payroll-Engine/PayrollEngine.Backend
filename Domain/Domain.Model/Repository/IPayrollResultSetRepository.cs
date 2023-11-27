@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payroll results
 /// </summary>
-public interface IPayrollResultSetRepository : IChildDomainRepository<PayrollResultSet>
-{
-}
+public interface IPayrollResultSetRepository : IChildDomainRepository<PayrollResultSet>;

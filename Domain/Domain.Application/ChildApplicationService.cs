@@ -7,15 +7,11 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
 
-public abstract class ChildApplicationService<TRepo, TDomain> : RepositoryApplicationServiceBase<TRepo>, IChildApplicationService<TRepo, TDomain>
+public abstract class ChildApplicationService<TRepo, TDomain>
+    (TRepo repository) : RepositoryApplicationServiceBase<TRepo>(repository), IChildApplicationService<TRepo, TDomain>
     where TRepo : class, IChildDomainRepository<TDomain>
     where TDomain : IDomainObject, new()
 {
-    protected ChildApplicationService(TRepo repository) :
-        base(repository)
-    {
-    }
-    
     public virtual async Task<bool> ExistsAsync(IDbContext context, int parentId, int itemId) =>
         await Repository.ExistsAsync(context, parentId, itemId);
 

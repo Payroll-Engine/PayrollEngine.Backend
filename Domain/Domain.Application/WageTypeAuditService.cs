@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class WageTypeAuditService : ChildApplicationService<IWageTypeAuditRepository, WageTypeAudit>, IWageTypeAuditService
-{
-    public WageTypeAuditService(IWageTypeAuditRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class WageTypeAuditService(IWageTypeAuditRepository repository) :
+    ChildApplicationService<IWageTypeAuditRepository, WageTypeAudit>(repository), IWageTypeAuditService;

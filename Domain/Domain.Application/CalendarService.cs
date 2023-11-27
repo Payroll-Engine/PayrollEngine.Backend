@@ -5,13 +5,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class CalendarService : ChildApplicationService<ICalendarRepository, Calendar>, ICalendarService
+public class CalendarService
+    (ICalendarRepository repository) : ChildApplicationService<ICalendarRepository, Calendar>(repository),
+        ICalendarService
 {
-    public CalendarService(ICalendarRepository repository) :
-        base(repository)
-    {
-    }
-
     /// <inheritdoc />
     public async Task<Calendar> GetByNameAsync(IDbContext context, int tenantId, string name) =>
         await Repository.GetByNameAsync(context, tenantId, name);

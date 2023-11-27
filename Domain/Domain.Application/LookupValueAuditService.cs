@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class LookupValueAuditService : ChildApplicationService<ILookupValueAuditRepository, LookupValueAudit>, ILookupValueAuditService
-{
-    public LookupValueAuditService(ILookupValueAuditRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class LookupValueAuditService(ILookupValueAuditRepository repository) :
+    ChildApplicationService<ILookupValueAuditRepository, LookupValueAudit>(repository), ILookupValueAuditService;

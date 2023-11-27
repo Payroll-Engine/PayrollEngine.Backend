@@ -7,22 +7,17 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportSetRepository : ReportRepositoryBase<ReportSet>, IReportSetRepository
+public class ReportSetRepository(ReportSetRepositorySettings settings) : ReportRepositoryBase<ReportSet>(
+    settings.ScriptRepository, settings.AuditRepository), IReportSetRepository
 {
-    private ReportSetRepositorySettings Settings { get; }
-    private IReportParameterRepository ReportParameterRepository { get; }
-    private IReportTemplateRepository ReportTemplateRepository { get; }
-    private bool BulkInsert => Settings.BulkInsert;
+    private ReportSetRepositorySettings Settings { get; } = settings;
+    private IReportParameterRepository ReportParameterRepository { get; } = settings.ReportParameterRepository ??
+                                                                            throw new ArgumentNullException(nameof(ReportSetRepositorySettings.ReportParameterRepository));
 
-    public ReportSetRepository(ReportSetRepositorySettings settings) :
-        base(settings.ScriptRepository, settings.AuditRepository)
-    {
-        Settings = settings;
-        ReportParameterRepository = settings.ReportParameterRepository ??
-                                    throw new ArgumentNullException(nameof(settings.ReportParameterRepository));
-        ReportTemplateRepository = settings.ReportTemplateRepository ??
-                                   throw new ArgumentNullException(nameof(settings.ReportTemplateRepository));
-    }
+    private IReportTemplateRepository ReportTemplateRepository { get; } = settings.ReportTemplateRepository ??
+                                                                          throw new ArgumentNullException(nameof(ReportSetRepositorySettings.ReportTemplateRepository));
+
+    private bool BulkInsert => Settings.BulkInsert;
 
     protected override async Task OnRetrieved(IDbContext context, int regulationId, ReportSet reportSet)
     {

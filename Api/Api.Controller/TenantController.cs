@@ -15,22 +15,15 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll tenants
 /// </summary>
-public abstract class TenantController : RepositoryRootObjectController<ITenantService, ITenantRepository,
-    Tenant, ApiObject.Tenant>
-{
-    private IRegulationService RegulationService { get; }
-    private IRegulationShareService RegulationShareService { get; }
-    private IReportService ReportService { get; }
-
-    protected TenantController(ITenantService tenantService, IRegulationService regulationService,
+public abstract class TenantController(ITenantService tenantService, IRegulationService regulationService,
         IRegulationShareService regulationShareService, IReportService reportService,
-        IControllerRuntime runtime) :
-        base(tenantService, runtime, new TenantMap())
-    {
-        RegulationService = regulationService ?? throw new ArgumentNullException(nameof(regulationService));
-        RegulationShareService = regulationShareService ?? throw new ArgumentNullException(nameof(regulationShareService));
-        ReportService = reportService ?? throw new ArgumentNullException(nameof(reportService));
-    }
+        IControllerRuntime runtime)
+    : RepositoryRootObjectController<ITenantService, ITenantRepository,
+    Tenant, ApiObject.Tenant>(tenantService, runtime, new TenantMap())
+{
+    private IRegulationService RegulationService { get; } = regulationService ?? throw new ArgumentNullException(nameof(regulationService));
+    private IRegulationShareService RegulationShareService { get; } = regulationShareService ?? throw new ArgumentNullException(nameof(regulationShareService));
+    private IReportService ReportService { get; } = reportService ?? throw new ArgumentNullException(nameof(reportService));
 
     public virtual async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(
         int tenantId, int? divisionId)

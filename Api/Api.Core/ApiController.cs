@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -12,17 +13,12 @@ namespace PayrollEngine.Api.Core;
 
 [ApiController]
 [Produces(ContentType.Json)]
-public abstract class ApiController : ControllerBase
+public abstract class ApiController(IControllerRuntime runtime) : ControllerBase
 {
-    public IControllerRuntime Runtime { get; }
+    public IControllerRuntime Runtime { get; } = runtime ?? throw new ArgumentNullException(nameof(runtime));
     public IConfiguration Configuration => Runtime.Configuration;
     protected LinkGenerator LinkGenerator => Runtime.LinkGenerator;
     private IApiDescriptionGroupCollectionProvider ApiExplorer => Runtime.ApiExplorer;
-
-    protected ApiController(IControllerRuntime runtime)
-    {
-        Runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
-    }
 
     protected ActionResult InternalServerError(Exception exception) =>
         ActionResultFactory.InternalServerError(exception);
@@ -63,8 +59,8 @@ public abstract class ApiController : ControllerBase
             return NotFound();
         }
 
-        Response.Headers.Add("Access-Control-Allow-Origin", "*");
-        Response.Headers.Add("Access-Control-Allow-Methods", string.Join(",", supportedMethods));
+        Response.Headers.Append("Access-Control-Allow-Origin", "*");
+        Response.Headers.Append("Access-Control-Allow-Methods", string.Join(",", supportedMethods));
         return Ok();
     }
 

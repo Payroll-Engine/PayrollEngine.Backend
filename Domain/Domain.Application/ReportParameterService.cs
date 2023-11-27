@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class ReportParameterService : ChildApplicationService<IReportParameterRepository, ReportParameter>, IReportParameterService
-{
-    public ReportParameterService(IReportParameterRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class ReportParameterService(IReportParameterRepository repository) :
+    ChildApplicationService<IReportParameterRepository, ReportParameter>(repository), IReportParameterService;

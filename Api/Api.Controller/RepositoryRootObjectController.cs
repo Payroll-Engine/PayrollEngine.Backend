@@ -11,18 +11,15 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Api.Controller;
 
-public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, TApi> : RepositoryObjectController<TService, TRepo, TDomain, TApi>
+public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, TApi>(TService service,
+        IControllerRuntime runtime,
+        IApiMap<TDomain, TApi> map)
+    : RepositoryObjectController<TService, TRepo, TDomain, TApi>(service, runtime, map)
     where TService : class, IRootApplicationService<TRepo, TDomain>
     where TRepo : class, IRootDomainRepository<TDomain>
     where TDomain : class, IDomainObject, new()
     where TApi : ApiObjectBase, new()
 {
-    protected RepositoryRootObjectController(TService service, IControllerRuntime runtime,
-        IApiMap<TDomain, TApi> map) :
-        base(service, runtime, map)
-    {
-    }
-
     /// <summary>
     /// Query items
     /// </summary>

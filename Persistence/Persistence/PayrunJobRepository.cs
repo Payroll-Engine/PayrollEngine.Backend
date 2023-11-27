@@ -11,15 +11,10 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrunJobRepository : ChildDomainRepository<PayrunJob>, IPayrunJobRepository
+public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeRepository) : ChildDomainRepository<PayrunJob>(
+    DbSchema.Tables.PayrunJob, DbSchema.PayrunJobColumn.TenantId), IPayrunJobRepository
 {
-    private IPayrunJobEmployeeRepository JobEmployeeRepository { get; }
-
-    public PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeRepository) :
-        base(DbSchema.Tables.PayrunJob, DbSchema.PayrunJobColumn.TenantId)
-    {
-        JobEmployeeRepository = jobEmployeeRepository ?? throw new ArgumentNullException(nameof(jobEmployeeRepository));
-    }
+    private IPayrunJobEmployeeRepository JobEmployeeRepository { get; } = jobEmployeeRepository ?? throw new ArgumentNullException(nameof(jobEmployeeRepository));
 
     protected override void GetObjectCreateData(PayrunJob payrunJob, DbParameterCollection parameters)
     {

@@ -4,11 +4,6 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class CaseRelationService : ScriptTrackChildApplicationService<ICaseRelationRepository, CaseRelation, CaseRelationAudit>,
-    ICaseRelationService
-{
-    public CaseRelationService(ICaseRelationRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class CaseRelationService(ICaseRelationRepository repository) :
+    ScriptTrackChildApplicationService<ICaseRelationRepository, CaseRelation, CaseRelationAudit>(repository),
+    ICaseRelationService;

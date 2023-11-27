@@ -10,13 +10,7 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll users
 /// </summary>
-public abstract class UserController : RepositoryChildObjectController<ITenantService, IUserService,
+public abstract class UserController(ITenantService tenantService, IUserService userService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IUserService,
     ITenantRepository, IUserRepository,
-    DomainObject.Tenant, DomainObject.User, ApiObject.User>
-{
-    protected UserController(ITenantService tenantService, IUserService userService, IControllerRuntime runtime) :
-        base(tenantService, userService, runtime, new UserMap())
-    {
-    }
-
-}
+    DomainObject.Tenant, DomainObject.User, ApiObject.User>(tenantService, userService, runtime, new UserMap());

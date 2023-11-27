@@ -7,15 +7,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class RegulationShareRepository : RootDomainRepository<RegulationShare>, IRegulationShareRepository
+public class RegulationShareRepository(IRegulationRepository regulationRepository) :
+    RootDomainRepository<RegulationShare>(DbSchema.Tables.RegulationShare), IRegulationShareRepository
 {
-    private IRegulationRepository RegulationRepository { get; }
-
-    public RegulationShareRepository(IRegulationRepository regulationRepository) :
-        base(DbSchema.Tables.RegulationShare)
-    {
-        RegulationRepository = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
-    }
+    private IRegulationRepository RegulationRepository { get; } = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
 
     protected override void GetObjectData(RegulationShare share, DbParameterCollection parameters)
     {

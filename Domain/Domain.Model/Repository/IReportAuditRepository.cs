@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for report audits
 /// </summary>
-public interface IReportAuditRepository : IAuditChildDomainRepository<ReportAudit>
-{
-}
+public interface IReportAuditRepository : IAuditChildDomainRepository<ReportAudit>;

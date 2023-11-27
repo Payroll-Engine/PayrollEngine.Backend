@@ -2,10 +2,5 @@
 
 namespace PayrollEngine.Persistence;
 
-public class NationalCaseValueChangeRepository : CaseValueChangeRepository, INationalCaseValueChangeRepository
-{
-    public NationalCaseValueChangeRepository() :
-        base(DbSchema.Tables.NationalCaseValueChange, DbSchema.NationalCaseValueChangeColumn.CaseChangeId)
-    {
-    }
-}
+public class NationalCaseValueChangeRepository() : CaseValueChangeRepository(DbSchema.Tables.NationalCaseValueChange,
+    DbSchema.NationalCaseValueChangeColumn.CaseChangeId), INationalCaseValueChangeRepository;

@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for web hook messages
 /// </summary>
-public interface IWebhookMessageRepository : IChildDomainRepository<WebhookMessage>
-{
-}
+public interface IWebhookMessageRepository : IChildDomainRepository<WebhookMessage>;

@@ -8,17 +8,13 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Domain.Application;
 
-public abstract class CaseChangeService<TRepo, TDomain> : ChildApplicationService<TRepo, TDomain>, ICaseChangeService<TRepo, TDomain>
+public abstract class CaseChangeService<TRepo, TDomain>(IWebhookDispatchService webhookDispatcher,
+        TRepo caseChangeRepository)
+    : ChildApplicationService<TRepo, TDomain>(caseChangeRepository), ICaseChangeService<TRepo, TDomain>
     where TRepo : class, ICaseChangeRepository<TDomain>
     where TDomain : CaseChange, new()
 {
-    private IWebhookDispatchService WebhookDispatcher { get; }
-
-    protected CaseChangeService(IWebhookDispatchService webhookDispatcher, TRepo caseChangeRepository) :
-        base(caseChangeRepository)
-    {
-        WebhookDispatcher = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
-    }
+    private IWebhookDispatchService WebhookDispatcher { get; } = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
 
     public virtual async Task<IEnumerable<TDomain>> QueryAsync(IDbContext context, int tenantId, int parentId, Query query = null) =>
         await Repository.QueryAsync(context, tenantId, parentId, query);

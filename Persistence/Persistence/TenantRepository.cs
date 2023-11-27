@@ -7,13 +7,8 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class TenantRepository : RootDomainRepository<Tenant>, ITenantRepository
+public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.Tenant), ITenantRepository
 {
-    public TenantRepository() :
-        base(DbSchema.Tables.Tenant)
-    {
-    }
-
     public async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
         await ExistsAsync(context, DbSchema.TenantColumn.Identifier, identifier);
 

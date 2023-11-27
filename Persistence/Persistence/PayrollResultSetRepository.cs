@@ -7,23 +7,16 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollResultSetRepository : ChildDomainRepository<PayrollResultSet>, IPayrollResultSetRepository
-{
-    private IWageTypeResultSetRepository WageTypeResultSetRepository { get; }
-    private ICollectorResultSetRepository CollectorResultSetRepository { get; }
-    private IPayrunResultRepository PayrunResultRepository { get; }
-    private bool BulkInsert { get; }
-
-    public PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeResultSetRepository,
+public class PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeResultSetRepository,
         ICollectorResultSetRepository collectorResultSetRepository,
-        IPayrunResultRepository payrunResultRepository, bool bulkInsert) :
-        base(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId)
-    {
-        WageTypeResultSetRepository = wageTypeResultSetRepository ?? throw new ArgumentNullException(nameof(wageTypeResultSetRepository));
-        CollectorResultSetRepository = collectorResultSetRepository ?? throw new ArgumentNullException(nameof(collectorResultSetRepository));
-        PayrunResultRepository = payrunResultRepository ?? throw new ArgumentNullException(nameof(payrunResultRepository));
-        BulkInsert = bulkInsert;
-    }
+        IPayrunResultRepository payrunResultRepository, bool bulkInsert)
+    : ChildDomainRepository<PayrollResultSet>(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId),
+        IPayrollResultSetRepository
+{
+    private IWageTypeResultSetRepository WageTypeResultSetRepository { get; } = wageTypeResultSetRepository ?? throw new ArgumentNullException(nameof(wageTypeResultSetRepository));
+    private ICollectorResultSetRepository CollectorResultSetRepository { get; } = collectorResultSetRepository ?? throw new ArgumentNullException(nameof(collectorResultSetRepository));
+    private IPayrunResultRepository PayrunResultRepository { get; } = payrunResultRepository ?? throw new ArgumentNullException(nameof(payrunResultRepository));
+    private bool BulkInsert { get; } = bulkInsert;
 
     protected override void GetObjectCreateData(PayrollResultSet resultSet, DbParameterCollection parameters)
     {

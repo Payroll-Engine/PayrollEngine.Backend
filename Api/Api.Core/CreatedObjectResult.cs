@@ -11,10 +11,4 @@ namespace PayrollEngine.Api.Core;
 /// see https://stackoverflow.com/questions/47939945/how-to-use-created-or-createdataction-createdatroute-in-an-asp-net-core-api
 /// and https://github.com/aspnet/AspNetCore/issues/7098#issuecomment-486448014
 /// </remarks>
-public class CreatedObjectResult : CreatedResult
-{
-    public CreatedObjectResult(string path, ApiObjectBase created) :
-        base(new Uri($"{path}/{created.Id}", UriKind.Relative), created)
-    {
-    }
-}
+public class CreatedObjectResult(string path, ApiObjectBase created) : CreatedResult(new Uri($"{path}/{created.Id}", UriKind.Relative), created);

@@ -16,16 +16,11 @@ using Task = System.Threading.Tasks.Task;
 namespace PayrollEngine.Api.Core;
 
 /// <inheritdoc />
-public class QueryService : IQueryService
+public class QueryService(IServiceProvider serviceProvider) : IQueryService
 {
     private Dictionary<string, QueryMethodInfo> queryMethods;
 
-    private IServiceProvider ServiceProvider { get; }
-
-    public QueryService(IServiceProvider serviceProvider)
-    {
-        ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-    }
+    private IServiceProvider ServiceProvider { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     /// <inheritdoc />
     public bool ExistsQuery(string methodName) =>

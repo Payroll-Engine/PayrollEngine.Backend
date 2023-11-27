@@ -3,13 +3,9 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportLogRepository : ChildDomainRepository<ReportLog>, IReportLogRepository
+public class ReportLogRepository() : ChildDomainRepository<ReportLog>(DbSchema.Tables.ReportLog,
+    DbSchema.ReportLogColumn.TenantId), IReportLogRepository
 {
-    public ReportLogRepository() :
-        base(DbSchema.Tables.ReportLog, DbSchema.ReportLogColumn.TenantId)
-    {
-    }
-
     protected override void GetObjectCreateData(ReportLog log, DbParameterCollection parameters)
     {
         parameters.Add(nameof(log.ReportName), log.ReportName);

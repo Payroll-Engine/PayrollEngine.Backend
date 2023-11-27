@@ -15,22 +15,17 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation lookups
 /// </summary>
-public abstract class LookupController : RepositoryChildObjectController<IRegulationService, ILookupService,
+public abstract class LookupController(IRegulationService regulationService, ILookupService lookupService,
+        ILookupSetService lookupSetService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<IRegulationService, ILookupService,
     IRegulationRepository, ILookupRepository,
-    DomainObject.Regulation, DomainObject.Lookup, ApiObject.Lookup>
+    DomainObject.Regulation, DomainObject.Lookup, ApiObject.Lookup>(regulationService, lookupService, runtime, new LookupMap())
 {
     private IApiMap<DomainObject.Lookup, ApiObject.Lookup> LookupMap { get; } = new LookupMap();
     private IApiMap<DomainObject.LookupSet, ApiObject.LookupSet> LookupSetMap { get; } = new LookupSetMap();
 
     protected ILookupService LookupService => Service;
-    private ILookupSetService LookupSetService { get; }
-
-    protected LookupController(IRegulationService regulationService, ILookupService lookupService,
-        ILookupSetService lookupSetService, IControllerRuntime runtime) :
-        base(regulationService, lookupService, runtime, new LookupMap())
-    {
-        LookupSetService = lookupSetService ?? throw new ArgumentNullException(nameof(lookupSetService));
-    }
+    private ILookupSetService LookupSetService { get; } = lookupSetService ?? throw new ArgumentNullException(nameof(lookupSetService));
 
     protected override async Task<ActionResult<ApiObject.Lookup>> CreateAsync(int regulationId, ApiObject.Lookup lookup)
     {

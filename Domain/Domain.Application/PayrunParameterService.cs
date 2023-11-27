@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class PayrunParameterService : ChildApplicationService<IPayrunParameterRepository, PayrunParameter>, IPayrunParameterService
-{
-    public PayrunParameterService(IPayrunParameterRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class PayrunParameterService(IPayrunParameterRepository repository) :
+    ChildApplicationService<IPayrunParameterRepository, PayrunParameter>(repository), IPayrunParameterService;

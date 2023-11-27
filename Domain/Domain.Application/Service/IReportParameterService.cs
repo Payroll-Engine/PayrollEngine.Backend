@@ -3,6 +3,4 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface IReportParameterService : IChildApplicationService<IReportParameterRepository, ReportParameter>
-{
-}
+public interface IReportParameterService : IChildApplicationService<IReportParameterRepository, ReportParameter>;

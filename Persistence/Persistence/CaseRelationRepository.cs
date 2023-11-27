@@ -5,13 +5,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseRelationRepository : ScriptTrackChildDomainRepository<CaseRelation, CaseRelationAudit>, ICaseRelationRepository
+public class CaseRelationRepository(IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository)
+    : ScriptTrackChildDomainRepository<CaseRelation, CaseRelationAudit>(DbSchema.Tables.CaseRelation,
+        DbSchema.CaseRelationColumn.RegulationId, scriptRepository, auditRepository), ICaseRelationRepository
 {
-    public CaseRelationRepository(IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository) :
-        base(DbSchema.Tables.CaseRelation, DbSchema.CaseRelationColumn.RegulationId, scriptRepository, auditRepository)
-    {
-    }
-
     protected override void GetObjectCreateData(CaseRelation relation, DbParameterCollection parameters)
     {
         parameters.Add(nameof(relation.SourceCaseName), relation.SourceCaseName);

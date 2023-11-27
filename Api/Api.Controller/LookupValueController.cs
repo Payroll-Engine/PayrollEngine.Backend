@@ -14,15 +14,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation lookup values
 /// </summary>
-public abstract class LookupValueController : RepositoryChildObjectController<ILookupService, ILookupValueService,
+public abstract class LookupValueController(ILookupService lookupService, ILookupValueService lookupValueService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<ILookupService, ILookupValueService,
     ILookupRepository, ILookupValueRepository,
-    Lookup, LookupValue, ApiObject.LookupValue>
+    Lookup, LookupValue, ApiObject.LookupValue>(lookupService, lookupValueService, runtime, new LookupValueMap())
 {
-    protected LookupValueController(ILookupService lookupService, ILookupValueService lookupValueService, IControllerRuntime runtime) :
-        base(lookupService, lookupValueService, runtime, new LookupValueMap())
-    {
-    }
-
     public virtual async Task<ActionResult<ApiObject.LookupValueData[]>> GetLookupValuesDataAsync(
         int tenantId, int regulationId, int lookupId, string culture)
     {

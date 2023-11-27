@@ -3,10 +3,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class NationalCaseValueService : CaseValueService<INationalCaseValueRepository>, INationalCaseValueService
-{
-    public NationalCaseValueService(INationalCaseValueRepository nationalCaseValueRepository) :
-        base(nationalCaseValueRepository)
-    {
-    }
-}
+public class NationalCaseValueService(INationalCaseValueRepository nationalCaseValueRepository) :
+    CaseValueService<INationalCaseValueRepository>(nationalCaseValueRepository), INationalCaseValueService;

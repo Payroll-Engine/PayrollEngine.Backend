@@ -15,20 +15,14 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for tasks
 /// </summary>
-public abstract class TaskController : RepositoryChildObjectController<ITenantService, ITaskService,
+public abstract class TaskController(ITenantService tenantService, ITaskService taskService,
+        IUserService userService, IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, ITaskService,
     ITenantRepository, ITaskRepository,
-    Tenant, DomainObject.Task, ApiObject.Task>
+    Tenant, DomainObject.Task, ApiObject.Task>(tenantService, taskService, runtime, new TaskMap())
 {
-    private IUserService UserService { get; }
-    private IWebhookDispatchService WebhookDispatcher { get; }
-
-    protected TaskController(ITenantService tenantService, ITaskService taskService,
-        IUserService userService, IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
-        base(tenantService, taskService, runtime, new TaskMap())
-    {
-        UserService = userService ?? throw new ArgumentNullException(nameof(userService));
-        WebhookDispatcher = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
-    }
+    private IUserService UserService { get; } = userService ?? throw new ArgumentNullException(nameof(userService));
+    private IWebhookDispatchService WebhookDispatcher { get; } = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
 
     protected override async Task<ActionResult<ApiObject.Task>> CreateAsync(int tenantId, ApiObject.Task task)
     {

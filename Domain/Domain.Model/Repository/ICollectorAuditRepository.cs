@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payroll collector audits
 /// </summary>
-public interface ICollectorAuditRepository : IAuditChildDomainRepository<CollectorAudit>
-{
-}
+public interface ICollectorAuditRepository : IAuditChildDomainRepository<CollectorAudit>;

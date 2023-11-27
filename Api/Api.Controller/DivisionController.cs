@@ -10,12 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for divisions
 /// </summary>
-public abstract class DivisionController : RepositoryChildObjectController<ITenantService, IDivisionService,
+public abstract class DivisionController(ITenantService tenantService, IDivisionService divisionService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IDivisionService,
     ITenantRepository, IDivisionRepository,
-    DomainObject.Tenant, DomainObject.Division, ApiObject.Division>
-{
-    protected DivisionController(ITenantService tenantService, IDivisionService divisionService, IControllerRuntime runtime) :
-        base(tenantService, divisionService, runtime, new DivisionMap())
-    {
-    }
-}
+    DomainObject.Tenant, DomainObject.Division, ApiObject.Division>(tenantService, divisionService, runtime, new DivisionMap());

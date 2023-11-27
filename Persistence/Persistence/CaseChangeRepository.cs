@@ -8,27 +8,17 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class CaseChangeRepository<T> : ChildDomainRepository<T>, ICaseChangeRepository<T>
+public abstract class CaseChangeRepository<T>(string tableName, string parentFieldName,
+        CaseChangeRepositorySettings settings)
+    : ChildDomainRepository<T>(tableName, parentFieldName), ICaseChangeRepository<T>
     where T : CaseChange
 {
-    private IPayrollRepository PayrollRepository { get; }
-    private ICaseRepository CaseRepository { get; }
-    private ICaseFieldRepository CaseFieldRepository { get; }
-    private ICaseValueRepository CaseValueRepository { get; }
-    private ICaseValueSetupRepository CaseValueSetupRepository { get; }
-    private ICaseValueChangeRepository CaseValueChangeRepository { get; }
-
-    protected CaseChangeRepository(string tableName, string parentFieldName,
-        CaseChangeRepositorySettings settings) :
-        base(tableName, parentFieldName)
-    {
-        PayrollRepository = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(settings.PayrollRepository));
-        CaseRepository = settings.CaseRepository ?? throw new ArgumentNullException(nameof(settings.CaseRepository));
-        CaseFieldRepository = settings.CaseFieldRepository ?? throw new ArgumentNullException(nameof(settings.CaseFieldRepository));
-        CaseValueRepository = settings.CaseValueRepository ?? throw new ArgumentNullException(nameof(settings.CaseValueRepository));
-        CaseValueSetupRepository = settings.CaseValueSetupRepository ?? throw new ArgumentNullException(nameof(settings.CaseValueSetupRepository));
-        CaseValueChangeRepository = settings.CaseValueChangeRepository ?? throw new ArgumentNullException(nameof(settings.CaseValueChangeRepository));
-    }
+    private IPayrollRepository PayrollRepository { get; } = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.PayrollRepository));
+    private ICaseRepository CaseRepository { get; } = settings.CaseRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.CaseRepository));
+    private ICaseFieldRepository CaseFieldRepository { get; } = settings.CaseFieldRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.CaseFieldRepository));
+    private ICaseValueRepository CaseValueRepository { get; } = settings.CaseValueRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.CaseValueRepository));
+    private ICaseValueSetupRepository CaseValueSetupRepository { get; } = settings.CaseValueSetupRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.CaseValueSetupRepository));
+    private ICaseValueChangeRepository CaseValueChangeRepository { get; } = settings.CaseValueChangeRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.CaseValueChangeRepository));
 
     protected override void GetObjectCreateData(T caseChange, DbParameterCollection parameters)
     {

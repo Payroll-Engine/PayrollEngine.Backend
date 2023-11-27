@@ -2,13 +2,9 @@
 
 namespace PayrollEngine.Persistence;
 
-public class LogRepository : ChildDomainRepository<Domain.Model.Log>, ILogRepository
+public class LogRepository
+    () : ChildDomainRepository<Domain.Model.Log>(DbSchema.Tables.Log, DbSchema.LogColumn.TenantId), ILogRepository
 {
-    public LogRepository() : 
-        base(DbSchema.Tables.Log, DbSchema.LogColumn.TenantId)
-    {
-    }
-
     protected override void GetObjectData(Domain.Model.Log log, DbParameterCollection parameters)
     {
         parameters.Add(nameof(log.Level), log.Level);

@@ -8,13 +8,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class DivisionRepository : ChildDomainRepository<Division>, IDivisionRepository
+public class DivisionRepository() : ChildDomainRepository<Division>(DbSchema.Tables.Division,
+    DbSchema.DivisionColumn.TenantId), IDivisionRepository
 {
-    public DivisionRepository() :
-        base(DbSchema.Tables.Division, DbSchema.DivisionColumn.TenantId)
-    {
-    }
-
     protected override void GetObjectData(Division division, DbParameterCollection parameters)
     {
         parameters.Add(nameof(division.Name), division.Name);

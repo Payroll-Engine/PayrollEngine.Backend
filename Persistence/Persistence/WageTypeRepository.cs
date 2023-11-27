@@ -7,13 +7,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class WageTypeRepository : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>, IWageTypeRepository
+public class WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository)
+    : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>(DbSchema.Tables.WageType,
+        DbSchema.WageTypeColumn.RegulationId, scriptRepository, auditRepository), IWageTypeRepository
 {
-    public WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository) :
-        base(DbSchema.Tables.WageType, DbSchema.WageTypeColumn.RegulationId, scriptRepository, auditRepository)
-    {
-    }
-
     protected override void GetObjectCreateData(WageType wageType, DbParameterCollection parameters)
     {
         parameters.Add(nameof(wageType.WageTypeNumber), wageType.WageTypeNumber);

@@ -9,22 +9,17 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class CaseValueRepositoryBase<TDomain> : ChildDomainRepository<TDomain>, ICaseValueRepository<TDomain>
+public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string parentFieldName,
+        ICaseFieldRepository caseFieldRepository)
+    : ChildDomainRepository<TDomain>(tableName, parentFieldName), ICaseValueRepository<TDomain>
     where TDomain : CaseValue, new()
 {
-    private ICaseFieldRepository CaseFieldRepository { get; }
+    private ICaseFieldRepository CaseFieldRepository { get; } = caseFieldRepository ?? throw new ArgumentNullException(nameof(caseFieldRepository));
 
     /// <summary>The table name</summary>
     protected abstract string CaseValueTableName { get; }
     /// <summary>The query stored procedure</summary>
     protected abstract string CaseValueQueryProcedure { get; }
-
-    protected CaseValueRepositoryBase(string tableName, string parentFieldName,
-        ICaseFieldRepository caseFieldRepository) :
-        base(tableName, parentFieldName)
-    {
-        CaseFieldRepository = caseFieldRepository ?? throw new ArgumentNullException(nameof(caseFieldRepository));
-    }
 
     protected override void GetCreateData(int parentId, TDomain caseValue, DbParameterCollection parameters)
     {

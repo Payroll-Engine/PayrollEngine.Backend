@@ -15,17 +15,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation case relations
 /// </summary>
-public abstract class CaseRelationController : ScriptTrackChildObjectController<IRegulationService, ICaseRelationService,
-    IRegulationRepository, ICaseRelationRepository, Regulation, CaseRelation, CaseRelationAudit, ApiObject.CaseRelation>
+public abstract class CaseRelationController(IRegulationService regulationService, ICaseService caseService,
+        ICaseRelationService caseRelationService, IControllerRuntime runtime)
+    : ScriptTrackChildObjectController<IRegulationService, ICaseRelationService,
+    IRegulationRepository, ICaseRelationRepository, Regulation, CaseRelation, CaseRelationAudit, ApiObject.CaseRelation>(regulationService, caseRelationService, runtime, new CaseRelationMap())
 {
-    private ICaseService CaseService { get; }
-
-    protected CaseRelationController(IRegulationService regulationService, ICaseService caseService,
-        ICaseRelationService caseRelationService, IControllerRuntime runtime) :
-        base(regulationService, caseRelationService, runtime, new CaseRelationMap())
-    {
-        CaseService = caseService ?? throw new ArgumentNullException(nameof(caseService));
-    }
+    private ICaseService CaseService { get; } = caseService ?? throw new ArgumentNullException(nameof(caseService));
 
     protected override async Task<ActionResult<ApiObject.CaseRelation>> CreateAsync(
         int regulationId, ApiObject.CaseRelation apiCaseRelation)

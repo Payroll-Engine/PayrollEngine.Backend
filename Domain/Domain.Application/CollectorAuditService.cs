@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class CollectorAuditService : ChildApplicationService<ICollectorAuditRepository, CollectorAudit>, ICollectorAuditService
-{
-    public CollectorAuditService(ICollectorAuditRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class CollectorAuditService(ICollectorAuditRepository repository) :
+    ChildApplicationService<ICollectorAuditRepository, CollectorAudit>(repository), ICollectorAuditService;

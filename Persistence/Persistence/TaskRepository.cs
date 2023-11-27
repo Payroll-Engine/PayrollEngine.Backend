@@ -4,13 +4,9 @@ using Task = PayrollEngine.Domain.Model.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class TaskRepository : ChildDomainRepository<Task>, ITaskRepository
+public class TaskRepository() : ChildDomainRepository<Task>(DbSchema.Tables.Task, DbSchema.TaskColumn.TenantId),
+    ITaskRepository
 {
-    public TaskRepository() :
-        base(DbSchema.Tables.Task, DbSchema.TaskColumn.TenantId)
-    {
-    }
-
     protected override void GetObjectData(Task task, DbParameterCollection parameters)
     {
         parameters.Add(nameof(task.Name), task.Name);

@@ -7,13 +7,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class UserRepository : ChildDomainRepository<User>, IUserRepository
+public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User, DbSchema.UserColumn.TenantId),
+    IUserRepository
 {
-    public UserRepository() :
-        base(DbSchema.Tables.User, DbSchema.UserColumn.TenantId)
-    {
-    }
-
     public async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
         await ExistsAnyAsync(context, DbSchema.UserColumn.TenantId, tenantId, DbSchema.UserColumn.Identifier, identifier);
 

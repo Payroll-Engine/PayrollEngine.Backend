@@ -7,13 +7,9 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollConsolidatedResultRepository : ChildDomainRepository<PayrollResult>, IPayrollConsolidatedResultRepository
+public class PayrollConsolidatedResultRepository() : ChildDomainRepository<PayrollResult>(DbSchema.Tables.PayrollResult,
+    DbSchema.PayrollResultColumn.TenantId), IPayrollConsolidatedResultRepository
 {
-    public PayrollConsolidatedResultRepository() :
-        base(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId)
-    {
-    }
-
     /// <inheritdoc />
     public async Task<ConsolidatedPayrollResult> GetPayrollResultAsync(IDbContext context, PayrollResultQuery query)
     {

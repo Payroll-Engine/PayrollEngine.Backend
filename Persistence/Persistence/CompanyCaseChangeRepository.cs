@@ -7,13 +7,10 @@ using PayrollEngine.Persistence.DbQuery;
 
 namespace PayrollEngine.Persistence;
 
-public class CompanyCaseChangeRepository : CaseChangeRepository<CaseChange>, ICompanyCaseChangeRepository
+public class CompanyCaseChangeRepository(CaseChangeRepositorySettings settings) : CaseChangeRepository<CaseChange>(
+        DbSchema.Tables.CompanyCaseChange, DbSchema.CompanyCaseChangeColumn.TenantId, settings),
+    ICompanyCaseChangeRepository
 {
-    public CompanyCaseChangeRepository(CaseChangeRepositorySettings settings) :
-        base(DbSchema.Tables.CompanyCaseChange, DbSchema.CompanyCaseChangeColumn.TenantId, settings)
-    {
-    }
-
     protected override async Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(IDbContext context,
         int tenantId, int parentId, Query query = null)
     {

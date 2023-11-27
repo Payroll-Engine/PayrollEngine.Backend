@@ -12,15 +12,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation collectors
 /// </summary>
-public abstract class CollectorController : ScriptTrackChildObjectController<IRegulationService, ICollectorService,
+public abstract class CollectorController(IRegulationService regulationService, ICollectorService collectorService,
+        IControllerRuntime runtime)
+    : ScriptTrackChildObjectController<IRegulationService, ICollectorService,
     IRegulationRepository, ICollectorRepository,
-    DomainObject.Regulation, DomainObject.Collector, DomainObject.CollectorAudit, ApiObject.Collector>
+    DomainObject.Regulation, DomainObject.Collector, DomainObject.CollectorAudit, ApiObject.Collector>(regulationService, collectorService, runtime, new CollectorMap())
 {
-    protected CollectorController(IRegulationService regulationService, ICollectorService collectorService, IControllerRuntime runtime) :
-        base(regulationService, collectorService, runtime, new CollectorMap())
-    {
-    }
-
     protected override async Task<ActionResult<ApiObject.Collector>> CreateAsync(int regulationId, ApiObject.Collector collector)
     {
         if (string.IsNullOrWhiteSpace(collector.Name))

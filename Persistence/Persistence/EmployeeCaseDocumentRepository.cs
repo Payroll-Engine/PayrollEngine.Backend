@@ -2,10 +2,5 @@
 
 namespace PayrollEngine.Persistence;
 
-public class EmployeeCaseDocumentRepository : CaseDocumentRepository, IEmployeeCaseDocumentRepository
-{
-    public EmployeeCaseDocumentRepository() :
-        base(DbSchema.Tables.EmployeeCaseDocument, DbSchema.EmployeeCaseDocumentColumn.CaseValueId)
-    {
-    }
-}
+public class EmployeeCaseDocumentRepository() : CaseDocumentRepository(DbSchema.Tables.EmployeeCaseDocument,
+    DbSchema.EmployeeCaseDocumentColumn.CaseValueId), IEmployeeCaseDocumentRepository;

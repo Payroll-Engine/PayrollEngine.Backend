@@ -2,14 +2,11 @@
 
 namespace PayrollEngine.Persistence;
 
-public class CompanyCaseValueSetupRepository : CaseValueSetupRepository, ICompanyCaseValueSetupRepository
+public class CompanyCaseValueSetupRepository(ICaseFieldRepository caseFieldRepository,
+        ICompanyCaseDocumentRepository caseDocumentRepository)
+    : CaseValueSetupRepository(DbSchema.Tables.CompanyCaseValue, DbSchema.CompanyCaseValueColumn.TenantId,
+        caseFieldRepository, caseDocumentRepository), ICompanyCaseValueSetupRepository
 {
-    public CompanyCaseValueSetupRepository(ICaseFieldRepository caseFieldRepository, 
-        ICompanyCaseDocumentRepository caseDocumentRepository) :
-        base(DbSchema.Tables.CompanyCaseValue, DbSchema.CompanyCaseValueColumn.TenantId,
-            caseFieldRepository, caseDocumentRepository)
-    {
-    }
     protected override string CaseValueTableName => DbSchema.Tables.CompanyCaseValuePivot;
     protected override string CaseValueQueryProcedure => DbSchema.Procedures.GetCompanyCaseValues;
 }

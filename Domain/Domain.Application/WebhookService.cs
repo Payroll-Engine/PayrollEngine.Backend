@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class WebhookService : ChildApplicationService<IWebhookRepository, Webhook>, IWebhookService
-{
-    public WebhookService(IWebhookRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class WebhookService
+    (IWebhookRepository repository) : ChildApplicationService<IWebhookRepository, Webhook>(repository), IWebhookService;

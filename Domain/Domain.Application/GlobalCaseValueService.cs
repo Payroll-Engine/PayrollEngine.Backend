@@ -3,10 +3,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class GlobalCaseValueService : CaseValueService<IGlobalCaseValueRepository>, IGlobalCaseValueService
-{
-    public GlobalCaseValueService(IGlobalCaseValueRepository globalCaseValueRepository) :
-        base(globalCaseValueRepository)
-    {
-    }
-}
+public class GlobalCaseValueService(IGlobalCaseValueRepository globalCaseValueRepository) :
+    CaseValueService<IGlobalCaseValueRepository>(globalCaseValueRepository), IGlobalCaseValueService;

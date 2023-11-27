@@ -5,13 +5,8 @@ using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
-internal abstract class WageTypeResultCommandBase : ResultCommandBase
+internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCommandBase(context)
 {
-    protected WageTypeResultCommandBase(IDbContext context) :
-        base(context)
-    {
-    }
-
     /// <summary>
     /// Get query parameters for wage type results
     /// </summary>

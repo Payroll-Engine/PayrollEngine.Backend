@@ -7,16 +7,11 @@ using PayrollEngine.Domain.Scripting.Controller;
 
 namespace PayrollEngine.Domain.Application;
 
-public class ReportBuilder : ReportTool
+public class ReportBuilder(Tenant tenant, IQueryService queryService, ReportToolSettings settings)
+    : ReportTool(tenant, settings)
 {
     // query
-    private IQueryService QueryService { get; }
-
-    public ReportBuilder(Tenant tenant, IQueryService queryService, ReportToolSettings settings) :
-        base(tenant, settings)
-    {
-        QueryService = queryService ?? throw new ArgumentNullException(nameof(queryService));
-    }
+    private IQueryService QueryService { get; } = queryService ?? throw new ArgumentNullException(nameof(queryService));
 
     public async Task<ReportSet> BuildAsync(ReportSet report, IApiControllerContext controllerContext, ReportRequest reportRequest)
     {

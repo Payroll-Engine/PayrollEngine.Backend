@@ -6,15 +6,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public abstract class RepositoryApplicationServiceBase<TRepo> : IRepositoryApplicationService<TRepo>
+public abstract class RepositoryApplicationServiceBase<TRepo>(TRepo repository) : IRepositoryApplicationService<TRepo>
     where TRepo : class, IDomainRepository
 {
-    public TRepo Repository { get; }
-
-    protected RepositoryApplicationServiceBase(TRepo repository)
-    {
-        Repository = repository ?? throw new ArgumentNullException(nameof(repository));
-    }
+    public TRepo Repository { get; } = repository ?? throw new ArgumentNullException(nameof(repository));
 
     public virtual async Task<bool> ExistsAsync(IDbContext context, int itemId) =>
         await Repository.ExistsAsync(context, itemId);

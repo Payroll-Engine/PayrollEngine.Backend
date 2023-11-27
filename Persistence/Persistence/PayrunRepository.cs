@@ -7,13 +7,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrunRepository : ScriptChildDomainRepository<Payrun>, IPayrunRepository
+public class PayrunRepository(IScriptRepository scriptRepository) : ScriptChildDomainRepository<Payrun>(
+    DbSchema.Tables.Payrun, DbSchema.PayrunColumn.TenantId, scriptRepository), IPayrunRepository
 {
-    public PayrunRepository(IScriptRepository scriptRepository) :
-        base(DbSchema.Tables.Payrun, DbSchema.PayrunColumn.TenantId, scriptRepository)
-    {
-    }
-
     // duplicated in ScriptTrackChildDomainRepository!
     public async Task RebuildAsync(IDbContext context, int tenantId, int payrunId)
     {

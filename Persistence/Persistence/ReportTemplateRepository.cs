@@ -7,13 +7,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportTemplateRepository : TrackChildDomainRepository<ReportTemplate, ReportTemplateAudit>, IReportTemplateRepository
+public class ReportTemplateRepository(IReportTemplateAuditRepository auditRepository) :
+    TrackChildDomainRepository<ReportTemplate, ReportTemplateAudit>(DbSchema.Tables.ReportTemplate,
+        DbSchema.ReportTemplateColumn.ReportId, auditRepository), IReportTemplateRepository
 {
-    public ReportTemplateRepository(IReportTemplateAuditRepository auditRepository) :
-        base(DbSchema.Tables.ReportTemplate, DbSchema.ReportTemplateColumn.ReportId, auditRepository)
-    {
-    }
-
     /// <inheritdoc />
     protected override void GetObjectCreateData(ReportTemplate template, DbParameterCollection parameters)
     {

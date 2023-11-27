@@ -4,13 +4,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CollectorResultRepository : ChildDomainRepository<CollectorResult>, ICollectorResultRepository
+public class CollectorResultRepository() : ChildDomainRepository<CollectorResult>(DbSchema.Tables.CollectorResult,
+    DbSchema.CollectorResultColumn.PayrollResultId), ICollectorResultRepository
 {
-    public CollectorResultRepository() : 
-        base(DbSchema.Tables.CollectorResult, DbSchema.CollectorResultColumn.PayrollResultId)
-    {
-    }
-
     protected override void GetObjectCreateData(CollectorResult result, DbParameterCollection parameters)
     {
         parameters.Add(nameof(result.CollectorId), result.CollectorId);

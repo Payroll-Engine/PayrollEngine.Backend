@@ -5,13 +5,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class PayrollLayerService : ChildApplicationService<IPayrollLayerRepository, PayrollLayer>, IPayrollLayerService
+public class PayrollLayerService
+    (IPayrollLayerRepository repository) : ChildApplicationService<IPayrollLayerRepository, PayrollLayer>(repository),
+        IPayrollLayerService
 {
-    public PayrollLayerService(IPayrollLayerRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task<bool> ExistsAsync(IDbContext context, int payrollId, int level, int priority) =>
         await Repository.ExistsAsync(context, payrollId, level, priority);
 }

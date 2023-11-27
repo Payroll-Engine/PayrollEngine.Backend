@@ -9,17 +9,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class ScriptChildDomainRepository<TDomain> : ChildDomainRepository<TDomain>
+public abstract class ScriptChildDomainRepository<TDomain>(string tableName, string parentFieldName,
+        IScriptRepository scriptRepository)
+    : ChildDomainRepository<TDomain>(tableName, parentFieldName)
     where TDomain : DomainObjectBase, new()
 {
     // used in derived types to access the derived scripts
-    private IScriptRepository ScriptRepository { get; }
-
-    protected ScriptChildDomainRepository(string tableName, string parentFieldName, IScriptRepository scriptRepository) :
-        base(tableName, parentFieldName)
-    {
-        ScriptRepository = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
-    }
+    private IScriptRepository ScriptRepository { get; } = scriptRepository ?? throw new ArgumentNullException(nameof(scriptRepository));
 
     public override async Task<TDomain> CreateAsync(IDbContext context, int parentId, TDomain item)
     {

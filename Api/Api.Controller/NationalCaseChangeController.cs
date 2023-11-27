@@ -9,13 +9,9 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll national case changes
 /// </summary>
-public abstract class NationalCaseChangeController : CaseChangeController<ITenantService,
+public abstract class NationalCaseChangeController(ITenantService tenantService,
+        INationalCaseChangeService caseChangeService,
+        IControllerRuntime runtime)
+    : CaseChangeController<ITenantService,
     ITenantRepository, INationalCaseChangeRepository,
-    DomainObject.Tenant, DomainObject.CaseChange, ApiObject.CaseChange>
-{
-    protected NationalCaseChangeController(ITenantService tenantService, INationalCaseChangeService caseChangeService,
-        IControllerRuntime runtime) :
-        base(tenantService, caseChangeService, runtime)
-    {
-    }
-}
+    DomainObject.Tenant, DomainObject.CaseChange, ApiObject.CaseChange>(tenantService, caseChangeService, runtime);

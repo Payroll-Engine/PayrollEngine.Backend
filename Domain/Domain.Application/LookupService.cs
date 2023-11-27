@@ -6,13 +6,9 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class LookupService : ChildApplicationService<ILookupRepository, Lookup>, ILookupService
+public class LookupService
+    (ILookupRepository repository) : ChildApplicationService<ILookupRepository, Lookup>(repository), ILookupService
 {
-    public LookupService(ILookupRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> lookupNames) =>
         await Repository.ExistsAnyAsync(context, regulationId, lookupNames);
 }

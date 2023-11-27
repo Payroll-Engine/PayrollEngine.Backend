@@ -6,14 +6,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollLayerRepository : ChildDomainRepository<PayrollLayer>, IPayrollLayerRepository
+public class PayrollLayerRepository() : ChildDomainRepository<PayrollLayer>(DbSchema.Tables.PayrollLayer,
+    DbSchema.PayrollLayerColumn.PayrollId), IPayrollLayerRepository
 {
-
-    public PayrollLayerRepository() :
-        base(DbSchema.Tables.PayrollLayer, DbSchema.PayrollLayerColumn.PayrollId)
-    {
-    }
-
     protected override void GetObjectData(PayrollLayer payrollLayer, DbParameterCollection parameters)
     {
         parameters.Add(nameof(payrollLayer.Level), payrollLayer.Level);

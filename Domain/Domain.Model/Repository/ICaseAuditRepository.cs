@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for case audits
 /// </summary>
-public interface ICaseAuditRepository : IAuditChildDomainRepository<CaseAudit>
-{
-}
+public interface ICaseAuditRepository : IAuditChildDomainRepository<CaseAudit>;

@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for webhooks
 /// </summary>
-public interface IWebhookRepository : IChildDomainRepository<Webhook>
-{
-}
+public interface IWebhookRepository : IChildDomainRepository<Webhook>;

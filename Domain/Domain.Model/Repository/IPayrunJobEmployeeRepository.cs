@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payrun job employees
 /// </summary>
-public interface IPayrunJobEmployeeRepository : IChildDomainRepository<PayrunJobEmployee>
-{
-}
+public interface IPayrunJobEmployeeRepository : IChildDomainRepository<PayrunJobEmployee>;

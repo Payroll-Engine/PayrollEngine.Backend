@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payroll case relation audits
 /// </summary>
-public interface ICaseRelationAuditRepository : IAuditChildDomainRepository<CaseRelationAudit>
-{
-}
+public interface ICaseRelationAuditRepository : IAuditChildDomainRepository<CaseRelationAudit>;

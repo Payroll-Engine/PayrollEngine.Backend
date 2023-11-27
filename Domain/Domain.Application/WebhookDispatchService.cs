@@ -14,7 +14,9 @@ namespace PayrollEngine.Domain.Application;
 /// Simple webhook dispatcher
 /// The default webhook timeout is 5 seconds
 /// </summary>
-public class WebhookDispatchService : IWebhookDispatchService
+public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRepository userRepository,
+        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository)
+    : IWebhookDispatchService
 {
     private static HttpClient HttpClient { get; }
 
@@ -24,10 +26,10 @@ public class WebhookDispatchService : IWebhookDispatchService
         set => HttpClient.Timeout = value;
     }
 
-    private ITenantRepository TenantRepository { get; }
-    private IUserRepository UserRepository { get; }
-    private IWebhookRepository WebhookRepository { get; }
-    private IWebhookMessageRepository MessageRepository { get; }
+    private ITenantRepository TenantRepository { get; } = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
+    private IUserRepository UserRepository { get; } = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+    private IWebhookRepository WebhookRepository { get; } = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
+    private IWebhookMessageRepository MessageRepository { get; } = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
 
     /// <summary>
     /// Only one http client
@@ -37,15 +39,6 @@ public class WebhookDispatchService : IWebhookDispatchService
     static WebhookDispatchService()
     {
         HttpClient = new();
-    }
-
-    public WebhookDispatchService(ITenantRepository tenantRepository, IUserRepository userRepository,
-        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository)
-    {
-        TenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
-        UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        WebhookRepository = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
-        MessageRepository = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
     }
 
     /// <inheritdoc />

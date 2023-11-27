@@ -6,13 +6,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class PayrollConsolidatedResultService : ChildApplicationService<IPayrollConsolidatedResultRepository, PayrollResult>, IPayrollConsolidatedResultService
+public class PayrollConsolidatedResultService(IPayrollResultContextService context) :
+    ChildApplicationService<IPayrollConsolidatedResultRepository, PayrollResult>(context.ConsolidatedResultRepository),
+    IPayrollConsolidatedResultService
 {
-    public PayrollConsolidatedResultService(IPayrollResultContextService context) :
-        base(context.ConsolidatedResultRepository)
-    {
-    }
-
     public async Task<ConsolidatedPayrollResult> GetPayrollResultAsync(IDbContext context, PayrollResultQuery query) =>
         await Repository.GetPayrollResultAsync(context, query);
 

@@ -10,40 +10,26 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
 
-public abstract class ReportTool : FunctionToolBase
+public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : FunctionToolBase(settings)
 {
     private static readonly string VariableStartMarker = "$";
     private static readonly string VariableEndMarker = "$";
 
     private CultureInfo Culture => CultureInfo.CurrentCulture;
-    protected Tenant Tenant { get; }
+    protected Tenant Tenant { get; } = tenant ?? throw new ArgumentNullException(nameof(tenant));
 
     // settings
     // settings
     protected new ReportToolSettings Settings => base.Settings as ReportToolSettings;
 
     // repositories
-    private IUserRepository UserRepository { get; }
-    private IEmployeeRepository EmployeeRepository { get; }
-    private IRegulationRepository RegulationRepository { get; }
-    private IPayrollRepository PayrollRepository { get; }
-    private IPayrunRepository PayrunRepository { get; }
-    private IReportSetRepository ReportRepository { get; }
-    private IWebhookRepository WebhookRepository { get; }
-
-    protected ReportTool(Tenant tenant, ReportToolSettings settings) :
-        base(settings)
-    {
-        Tenant = tenant ?? throw new ArgumentNullException(nameof(tenant));
-
-        UserRepository = settings.UserRepository ?? throw new ArgumentNullException(nameof(settings.UserRepository));
-        EmployeeRepository = settings.EmployeeRepository ?? throw new ArgumentNullException(nameof(settings.EmployeeRepository));
-        RegulationRepository = settings.RegulationRepository ?? throw new ArgumentNullException(nameof(settings.RegulationRepository));
-        PayrollRepository = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(settings.PayrollRepository));
-        PayrunRepository = settings.PayrunRepository ?? throw new ArgumentNullException(nameof(settings.PayrunRepository));
-        ReportRepository = settings.ReportRepository ?? throw new ArgumentNullException(nameof(settings.ReportRepository));
-        WebhookRepository = settings.WebhookRepository ?? throw new ArgumentNullException(nameof(settings.WebhookRepository));
-    }
+    private IUserRepository UserRepository { get; } = settings.UserRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.UserRepository));
+    private IEmployeeRepository EmployeeRepository { get; } = settings.EmployeeRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.EmployeeRepository));
+    private IRegulationRepository RegulationRepository { get; } = settings.RegulationRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.RegulationRepository));
+    private IPayrollRepository PayrollRepository { get; } = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.PayrollRepository));
+    private IPayrunRepository PayrunRepository { get; } = settings.PayrunRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.PayrunRepository));
+    private IReportSetRepository ReportRepository { get; } = settings.ReportRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.ReportRepository));
+    private IWebhookRepository WebhookRepository { get; } = settings.WebhookRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.WebhookRepository));
 
     protected async Task SetupReport(ReportSet report, ReportRequest request)
     {

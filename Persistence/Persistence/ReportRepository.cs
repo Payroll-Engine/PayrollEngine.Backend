@@ -3,11 +3,6 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportRepository : ReportRepositoryBase<Report>, IReportRepository
-{
-    public ReportRepository(IScriptRepository scriptRepository,
-        IReportAuditRepository auditRepository) :
-        base(scriptRepository, auditRepository)
-    {
-    }
-}
+public class ReportRepository(IScriptRepository scriptRepository,
+        IReportAuditRepository auditRepository)
+    : ReportRepositoryBase<Report>(scriptRepository, auditRepository), IReportRepository;

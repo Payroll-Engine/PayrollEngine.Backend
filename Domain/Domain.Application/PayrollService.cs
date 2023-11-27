@@ -8,26 +8,17 @@ using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Domain.Application;
 
-public class PayrollService : ChildApplicationService<IPayrollRepository, Payroll>, IPayrollService
-{
-    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; }
-    public INationalCaseValueRepository NationalCaseValueRepository { get; }
-    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; }
-    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; }
-
-    public PayrollService(
-        IPayrollRepository payrollRepository,
+public class PayrollService(IPayrollRepository payrollRepository,
         IGlobalCaseValueRepository globalCaseValueRepository,
         INationalCaseValueRepository nationalCaseValueRepository,
         ICompanyCaseValueRepository companyCaseValueRepository,
-        IEmployeeCaseValueRepository employeeCaseValueRepository) :
-        base(payrollRepository)
-    {
-        GlobalCaseValueRepository = globalCaseValueRepository ?? throw new ArgumentNullException(nameof(globalCaseValueRepository));
-        NationalCaseValueRepository = nationalCaseValueRepository ?? throw new ArgumentNullException(nameof(nationalCaseValueRepository));
-        CompanyCaseValueRepository = companyCaseValueRepository ?? throw new ArgumentNullException(nameof(companyCaseValueRepository));
-        EmployeeCaseValueRepository = employeeCaseValueRepository ?? throw new ArgumentNullException(nameof(employeeCaseValueRepository));
-    }
+        IEmployeeCaseValueRepository employeeCaseValueRepository)
+    : ChildApplicationService<IPayrollRepository, Payroll>(payrollRepository), IPayrollService
+{
+    public IGlobalCaseValueRepository GlobalCaseValueRepository { get; } = globalCaseValueRepository ?? throw new ArgumentNullException(nameof(globalCaseValueRepository));
+    public INationalCaseValueRepository NationalCaseValueRepository { get; } = nationalCaseValueRepository ?? throw new ArgumentNullException(nameof(nationalCaseValueRepository));
+    public ICompanyCaseValueRepository CompanyCaseValueRepository { get; } = companyCaseValueRepository ?? throw new ArgumentNullException(nameof(companyCaseValueRepository));
+    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; } = employeeCaseValueRepository ?? throw new ArgumentNullException(nameof(employeeCaseValueRepository));
 
     /// <inheritdoc />
     public async Task<IEnumerable<Regulation>> GetDerivedRegulationsAsync(IDbContext context, PayrollQuery query) =>

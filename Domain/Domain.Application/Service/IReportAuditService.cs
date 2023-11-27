@@ -3,6 +3,4 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface IReportAuditService : IChildApplicationService<IReportAuditRepository, ReportAudit>
-{
-}
+public interface IReportAuditService : IChildApplicationService<IReportAuditRepository, ReportAudit>;

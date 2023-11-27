@@ -5,14 +5,8 @@ using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
-internal abstract class PayrollRepositoryCaseFieldCommandBase : PayrollRepositoryCommandBase
+internal abstract class PayrollRepositoryCaseFieldCommandBase(IDbContext dbContext) : PayrollRepositoryCommandBase(dbContext)
 {
-
-    protected PayrollRepositoryCaseFieldCommandBase(IDbContext dbContext) :
-        base(dbContext)
-    {
-    }
-
     protected static void BuildDerivedCaseFields(List<DerivedCaseField> caseFields, OverrideType? overrideType = null)
     {
         // argument check

@@ -14,8 +14,11 @@ using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Api.Controller;
 
-public abstract class RepositoryChildObjectController<TParentService, TService, TParentRepo, TRepo, TParent, TDomain, TApi> :
-    RepositoryObjectController<TService, TRepo, TDomain, TApi>
+public abstract class RepositoryChildObjectController<TParentService, TService, TParentRepo, TRepo, TParent, TDomain,
+        TApi>(TParentService parentService, TService service, IControllerRuntime runtime,
+        IApiMap<TDomain, TApi> map)
+    :
+        RepositoryObjectController<TService, TRepo, TDomain, TApi>(service, runtime, map)
     where TParentService : class, IRepositoryApplicationService<TParentRepo>
     where TService : class, IChildApplicationService<TRepo, TDomain>
     where TParentRepo : class, IDomainRepository
@@ -24,16 +27,9 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     where TDomain : class, IDomainObject, new()
     where TApi : ApiObjectBase, new()
 {
-    protected TParentService ParentService { get; }
+    protected TParentService ParentService { get; } = parentService ?? throw new ArgumentNullException(nameof(parentService));
     private string ParentObjectName => GetObjectName(typeof(TParent));
     protected TService ChildService => Service;
-
-    protected RepositoryChildObjectController(TParentService parentService, TService service, IControllerRuntime runtime,
-        IApiMap<TDomain, TApi> map) :
-        base(service, runtime, map)
-    {
-        ParentService = parentService ?? throw new ArgumentNullException(nameof(parentService));
-    }
 
     /// <summary>
     /// Query items

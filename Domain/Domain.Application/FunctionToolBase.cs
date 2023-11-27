@@ -3,14 +3,8 @@ using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Domain.Application;
 
-public abstract class FunctionToolBase
+public abstract class FunctionToolBase(FunctionToolSettings settings)
 {
-    protected FunctionToolSettings Settings { get; }
-    protected FunctionHost FunctionHost { get; }
-
-    protected FunctionToolBase(FunctionToolSettings settings)
-    {
-        Settings = settings ?? throw new ArgumentNullException(nameof(settings));
-        FunctionHost = new(settings);
-    }
+    protected FunctionToolSettings Settings { get; } = settings ?? throw new ArgumentNullException(nameof(settings));
+    protected FunctionHost FunctionHost { get; } = new(settings);
 }

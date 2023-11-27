@@ -7,13 +7,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CollectorRepository : ScriptTrackChildDomainRepository<Collector, CollectorAudit>, ICollectorRepository
+public class CollectorRepository(IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository)
+    : ScriptTrackChildDomainRepository<Collector, CollectorAudit>(DbSchema.Tables.Collector,
+        DbSchema.CollectorColumn.RegulationId, scriptRepository, auditRepository), ICollectorRepository
 {
-    public CollectorRepository(IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository) :
-        base(DbSchema.Tables.Collector, DbSchema.CollectorColumn.RegulationId, scriptRepository, auditRepository)
-    {
-    }
-
     protected override void GetObjectCreateData(Collector collector, DbParameterCollection parameters)
     {
         parameters.Add(nameof(collector.Name), collector.Name);

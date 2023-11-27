@@ -12,15 +12,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation case fields
 /// </summary>
-public abstract class CaseFieldController : RepositoryChildObjectController<ICaseService, ICaseFieldService,
+public abstract class CaseFieldController(ICaseService caseService, ICaseFieldService caseFieldService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<ICaseService, ICaseFieldService,
     ICaseRepository, ICaseFieldRepository,
-    DomainObject.Case, DomainObject.CaseField, ApiObject.CaseField>
+    DomainObject.Case, DomainObject.CaseField, ApiObject.CaseField>(caseService, caseFieldService, runtime, new CaseFieldMap())
 {
-    protected CaseFieldController(ICaseService caseService, ICaseFieldService caseFieldService, IControllerRuntime runtime) :
-        base(caseService, caseFieldService, runtime, new CaseFieldMap())
-    {
-    }
-
     protected override async Task<ActionResult<ApiObject.CaseField>> CreateAsync(int regulationId, ApiObject.CaseField caseField)
     {
         // unique case field name per case

@@ -12,16 +12,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation wageTypes
 /// </summary>
-public abstract class WageTypeController : ScriptTrackChildObjectController<IRegulationService, IWageTypeService,
+public abstract class WageTypeController(IRegulationService regulationService, IWageTypeService wageTypeService,
+        IControllerRuntime runtime)
+    : ScriptTrackChildObjectController<IRegulationService, IWageTypeService,
     IRegulationRepository, IWageTypeRepository,
-    DomainObject.Regulation, DomainObject.WageType, DomainObject.WageTypeAudit, ApiObject.WageType>
+    DomainObject.Regulation, DomainObject.WageType, DomainObject.WageTypeAudit, ApiObject.WageType>(regulationService, wageTypeService, runtime, new WageTypeMap())
 {
-    protected WageTypeController(IRegulationService regulationService, IWageTypeService wageTypeService,
-        IControllerRuntime runtime) :
-        base(regulationService, wageTypeService, runtime, new WageTypeMap())
-    {
-    }
-
     protected override async Task<ActionResult<ApiObject.WageType>> CreateAsync(int regulationId, ApiObject.WageType wageType)
     {
         // unique wage type name per payroll

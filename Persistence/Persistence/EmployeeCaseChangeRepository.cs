@@ -7,13 +7,10 @@ using PayrollEngine.Persistence.DbQuery;
 
 namespace PayrollEngine.Persistence;
 
-public class EmployeeCaseChangeRepository : CaseChangeRepository<CaseChange>, IEmployeeCaseChangeRepository
+public class EmployeeCaseChangeRepository(CaseChangeRepositorySettings settings) : CaseChangeRepository<CaseChange>(
+        DbSchema.Tables.EmployeeCaseChange, DbSchema.EmployeeCaseChangeColumn.EmployeeId, settings),
+    IEmployeeCaseChangeRepository
 {
-    public EmployeeCaseChangeRepository(CaseChangeRepositorySettings settings) :
-        base(DbSchema.Tables.EmployeeCaseChange, DbSchema.EmployeeCaseChangeColumn.EmployeeId, settings)
-    {
-    }
-
     protected override void GetObjectCreateData(CaseChange caseChange, DbParameterCollection parameters)
     {
         parameters.Add(nameof(caseChange.EmployeeId), caseChange.EmployeeId);

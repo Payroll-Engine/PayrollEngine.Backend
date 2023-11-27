@@ -8,18 +8,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class CollectorResultSetRepository : ChildDomainRepository<CollectorResultSet>, ICollectorResultSetRepository
+public class CollectorResultSetRepository(ICollectorCustomResultRepository wageTypeCustomResultRepository,
+        bool bulkInsert)
+    : ChildDomainRepository<CollectorResultSet>(DbSchema.Tables.CollectorResult,
+        DbSchema.CollectorResultColumn.PayrollResultId), ICollectorResultSetRepository
 {
-    private ICollectorCustomResultRepository CollectorCustomResultRepository { get; }
-    private bool BulkInsert { get; }
-
-    public CollectorResultSetRepository(ICollectorCustomResultRepository wageTypeCustomResultRepository,
-        bool bulkInsert) :
-        base(DbSchema.Tables.CollectorResult, DbSchema.CollectorResultColumn.PayrollResultId)
-    {
-        CollectorCustomResultRepository = wageTypeCustomResultRepository ?? throw new ArgumentNullException(nameof(wageTypeCustomResultRepository));
-        BulkInsert = bulkInsert;
-    }
+    private ICollectorCustomResultRepository CollectorCustomResultRepository { get; } = wageTypeCustomResultRepository ?? throw new ArgumentNullException(nameof(wageTypeCustomResultRepository));
+    private bool BulkInsert { get; } = bulkInsert;
 
     protected override void GetObjectCreateData(CollectorResultSet result, DbParameterCollection parameters)
     {

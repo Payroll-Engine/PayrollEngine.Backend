@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payrun results
 /// </summary>
-public interface IPayrunResultRepository : IChildDomainRepository<PayrunResult>
-{
-}
+public interface IPayrunResultRepository : IChildDomainRepository<PayrunResult>;

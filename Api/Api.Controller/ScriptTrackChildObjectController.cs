@@ -11,10 +11,15 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the script track objects
 /// </summary>
-public abstract class ScriptTrackChildObjectController<TParentService, TService, TParentRepo, TRepo, TParent, TDomain, TAudit, TApi> :
-    RepositoryChildObjectController<TParentService, TService, TParentRepo, TRepo, TParent, TDomain, TApi>
+public abstract class ScriptTrackChildObjectController<TParentService, TService, TParentRepo, TRepo, TParent, TDomain,
+        TAudit, TApi>(TParentService parentService, TService service, IControllerRuntime runtime,
+        IApiMap<TDomain, TApi> map)
+    :
+        RepositoryChildObjectController<TParentService, TService, TParentRepo, TRepo, TParent, TDomain, TApi>(
+            parentService, service, runtime, map)
     where TParentService : class, IRepositoryApplicationService<TParentRepo>
-    where TService : class, IScriptTrackChildApplicationService<TRepo, TDomain, TAudit>, IChildApplicationService<TRepo, TDomain>
+    where TService : class, IScriptTrackChildApplicationService<TRepo, TDomain, TAudit>,
+    IChildApplicationService<TRepo, TDomain>
     where TParentRepo : class, IDomainRepository
     where TRepo : class, IScriptTrackDomainObjectRepository<TDomain, TAudit>, IChildDomainRepository<TDomain>
     where TParent : class, IDomainObject, new()
@@ -22,12 +27,6 @@ public abstract class ScriptTrackChildObjectController<TParentService, TService,
     where TAudit : AuditDomainObject
     where TApi : ApiObject.ApiObjectBase, new()
 {
-    protected ScriptTrackChildObjectController(TParentService parentService, TService service, IControllerRuntime runtime,
-        IApiMap<TDomain, TApi> map) :
-        base(parentService, service, runtime, map)
-    {
-    }
-
     // duplicated in PayrunController!
     protected async Task<ActionResult> RebuildAsync(int parentId, int itemId)
     {

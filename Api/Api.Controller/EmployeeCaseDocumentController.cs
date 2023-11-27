@@ -8,13 +8,9 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll employee case documents
 /// </summary>
-public abstract class EmployeeCaseDocumentController : CaseDocumentController<IEmployeeCaseValueService,
+public abstract class EmployeeCaseDocumentController(IEmployeeCaseValueService caseValueService,
+        ICaseDocumentService<IEmployeeCaseDocumentRepository,
+            DomainObject.CaseDocument> caseDocumentService, IControllerRuntime runtime)
+    : CaseDocumentController<IEmployeeCaseValueService,
     IEmployeeCaseValueRepository, IEmployeeCaseDocumentRepository,
-    DomainObject.Employee>
-{
-    protected EmployeeCaseDocumentController(IEmployeeCaseValueService caseValueService, ICaseDocumentService<IEmployeeCaseDocumentRepository,
-        DomainObject.CaseDocument> caseDocumentService, IControllerRuntime runtime) :
-        base(caseValueService, caseDocumentService, runtime)
-    {
-    }
-}
+    DomainObject.Employee>(caseValueService, caseDocumentService, runtime);

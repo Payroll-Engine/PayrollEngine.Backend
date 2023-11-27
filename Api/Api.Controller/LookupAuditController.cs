@@ -10,12 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation lookup audits
 /// </summary>
-public abstract class LookupAuditController : RepositoryChildObjectController<ILookupService, ILookupAuditService,
+public abstract class LookupAuditController(ILookupService lookupService, ILookupAuditService caseFieldAuditService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<ILookupService, ILookupAuditService,
     ILookupRepository, ILookupAuditRepository,
-    DomainObject.Lookup, DomainObject.LookupAudit, ApiObject.LookupAudit>
-{
-    protected LookupAuditController(ILookupService lookupService, ILookupAuditService caseFieldAuditService, IControllerRuntime runtime) :
-        base(lookupService, caseFieldAuditService, runtime, new LookupAuditMap())
-    {
-    }
-}
+    DomainObject.Lookup, DomainObject.LookupAudit, ApiObject.LookupAudit>(lookupService, caseFieldAuditService, runtime, new LookupAuditMap());

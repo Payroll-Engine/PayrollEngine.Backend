@@ -800,7 +800,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     /// <inheritdoc />
     public void AddReportLog(string message, string key = null, DateTime? reportDate = null)
     {
-        var _ = Settings.ReportLogRepository.CreateAsync(Settings.DbContext, TenantId, new ReportLog
+        _ = Settings.ReportLogRepository.CreateAsync(Settings.DbContext, TenantId, new ReportLog
         {
             ReportName = ReportName,
             ReportDate = reportDate ?? Date.Now,

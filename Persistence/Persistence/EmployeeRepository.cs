@@ -9,15 +9,10 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class EmployeeRepository : ChildDomainRepository<Employee>, IEmployeeRepository
+public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) : ChildDomainRepository<Employee>(
+    DbSchema.Tables.Employee, DbSchema.EmployeeColumn.TenantId), IEmployeeRepository
 {
-    private IEmployeeDivisionRepository EmployeeDivisionRepository { get; }
-
-    public EmployeeRepository(IEmployeeDivisionRepository divisionRepository) :
-        base(DbSchema.Tables.Employee, DbSchema.EmployeeColumn.TenantId)
-    {
-        EmployeeDivisionRepository = divisionRepository ?? throw new ArgumentNullException(nameof(divisionRepository));
-    }
+    private IEmployeeDivisionRepository EmployeeDivisionRepository { get; } = divisionRepository ?? throw new ArgumentNullException(nameof(divisionRepository));
 
     protected override void GetObjectCreateData(Employee employee, DbParameterCollection parameters)
     {

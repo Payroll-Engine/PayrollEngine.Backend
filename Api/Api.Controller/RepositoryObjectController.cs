@@ -12,20 +12,16 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Api.Controller;
 
-public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi> :
-    ObjectController<TDomain, TApi>
+public abstract class RepositoryObjectController<TService, TRepo, TDomain, TApi>(TService service,
+        IControllerRuntime runtime, IApiMap<TDomain, TApi> map)
+    :
+        ObjectController<TDomain, TApi>(runtime, map)
     where TService : class, IRepositoryApplicationService<TRepo>
     where TRepo : class, IDomainRepository
     where TDomain : class, IDomainObject, new()
     where TApi : ApiObjectBase, new()
 {
-    protected TService Service { get; }
-
-    protected RepositoryObjectController(TService service, IControllerRuntime runtime, IApiMap<TDomain, TApi> map) :
-        base(runtime, map)
-    {
-        Service = service ?? throw new ArgumentNullException(nameof(service));
-    }
+    protected TService Service { get; } = service ?? throw new ArgumentNullException(nameof(service));
 
     /// <summary>Gets the current evaluation date, add some time delay for newly created cases</summary>
     public DateTime CurrentEvaluationDate => Date.Now.AddSeconds(1);

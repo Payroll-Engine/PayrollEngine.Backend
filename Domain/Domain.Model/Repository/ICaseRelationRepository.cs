@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for case relations
 /// </summary>
-public interface ICaseRelationRepository : IScriptTrackDomainObjectRepository<CaseRelation, CaseRelationAudit>
-{
-}
+public interface ICaseRelationRepository : IScriptTrackDomainObjectRepository<CaseRelation, CaseRelationAudit>;

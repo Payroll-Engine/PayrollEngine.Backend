@@ -3,6 +3,4 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface IDivisionService : IChildApplicationService<IDivisionRepository, Division>
-{
-}
+public interface IDivisionService : IChildApplicationService<IDivisionRepository, Division>;

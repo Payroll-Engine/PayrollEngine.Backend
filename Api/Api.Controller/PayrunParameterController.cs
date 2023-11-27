@@ -10,13 +10,9 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payrun parameters
 /// </summary>
-public abstract class PayrunParameterController : RepositoryChildObjectController<IPayrunService, IPayrunParameterService,
+public abstract class PayrunParameterController(IPayrunService payrunService,
+        IPayrunParameterService payrunParameterService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<IPayrunService, IPayrunParameterService,
     IPayrunRepository, IPayrunParameterRepository,
-    DomainObject.Payrun, DomainObject.PayrunParameter, ApiObject.PayrunParameter>
-{
-    protected PayrunParameterController(IPayrunService payrunService, IPayrunParameterService payrunParameterService,
-        IControllerRuntime runtime) :
-        base(payrunService, payrunParameterService, runtime, new PayrunParameterMap())
-    {
-    }
-}
+    DomainObject.Payrun, DomainObject.PayrunParameter, ApiObject.PayrunParameter>(payrunService, payrunParameterService, runtime, new PayrunParameterMap());

@@ -5,13 +5,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class WageTypeAuditRepository : AuditChildDomainRepository<WageTypeAudit>, IWageTypeAuditRepository
+public class WageTypeAuditRepository() : AuditChildDomainRepository<WageTypeAudit>(DbSchema.Tables.WageTypeAudit,
+    DbSchema.WageTypeAuditColumn.WageTypeId), IWageTypeAuditRepository
 {
-    public WageTypeAuditRepository() :
-        base(DbSchema.Tables.WageTypeAudit, DbSchema.WageTypeAuditColumn.WageTypeId)
-    {
-    }
-
     protected override void GetObjectCreateData(WageTypeAudit audit, DbParameterCollection parameters)
     {
         parameters.Add(nameof(audit.WageTypeId), audit.WageTypeId);

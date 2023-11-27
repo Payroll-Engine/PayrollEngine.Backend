@@ -10,13 +10,9 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the report parameters
 /// </summary>
-public abstract class ReportParameterController : RepositoryChildObjectController<IReportService, IReportParameterService,
+public abstract class ReportParameterController(IReportService reportService,
+        IReportParameterService reportParameterService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<IReportService, IReportParameterService,
     IReportRepository, IReportParameterRepository,
-    DomainObject.Report, DomainObject.ReportParameter, ApiObject.ReportParameter>
-{
-    protected ReportParameterController(IReportService reportService, IReportParameterService reportParameterService,
-        IControllerRuntime runtime) :
-        base(reportService, reportParameterService, runtime, new ReportParameterMap())
-    {
-    }
-}
+    DomainObject.Report, DomainObject.ReportParameter, ApiObject.ReportParameter>(reportService, reportParameterService, runtime, new ReportParameterMap());

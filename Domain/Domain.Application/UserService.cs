@@ -6,13 +6,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
 
-public class UserService : ChildApplicationService<IUserRepository, User>, IUserService
+public class UserService(IUserRepository repository) : ChildApplicationService<IUserRepository, User>(repository),
+    IUserService
 {
-    public UserService(IUserRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
         await Repository.ExistsAnyAsync(context, tenantId, identifier);
 

@@ -13,24 +13,19 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the reports
 /// </summary>
-public abstract class ReportController : ScriptTrackChildObjectController<IRegulationService, IReportService,
+public abstract class ReportController(ITenantService tenantService, IRegulationService regulationService,
+        IReportService reportService,
+        IReportSetService reportSetService, IControllerRuntime runtime)
+    : ScriptTrackChildObjectController<IRegulationService, IReportService,
     IRegulationRepository, IReportRepository,
-    Tenant, Report, ReportAudit, ApiObject.Report>
+    Tenant, Report, ReportAudit, ApiObject.Report>(regulationService, reportService, runtime, new ReportMap())
 {
     private readonly ReportSetMap reportSetMap = new();
     private readonly ReportRequestMap reportRequestMap = new();
     private readonly ReportResponseMap reportResponseMap = new();
 
-    private ITenantService TenantService { get; }
-    private IReportSetService ReportSetService { get; }
-
-    protected ReportController(ITenantService tenantService, IRegulationService regulationService, IReportService reportService,
-        IReportSetService reportSetService, IControllerRuntime runtime) :
-        base(regulationService, reportService, runtime, new ReportMap())
-    {
-        TenantService = tenantService ?? throw new ArgumentNullException(nameof(tenantService));
-        ReportSetService = reportSetService ?? throw new ArgumentNullException(nameof(reportSetService));
-    }
+    private ITenantService TenantService { get; } = tenantService ?? throw new ArgumentNullException(nameof(tenantService));
+    private IReportSetService ReportSetService { get; } = reportSetService ?? throw new ArgumentNullException(nameof(reportSetService));
 
     public virtual async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
         int tenantId, int regulationId, int reportId, ApiObject.ReportRequest reportRequest = null)

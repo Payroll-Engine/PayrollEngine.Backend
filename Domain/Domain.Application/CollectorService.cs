@@ -6,13 +6,9 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class CollectorService : ScriptTrackChildApplicationService<ICollectorRepository, Collector, CollectorAudit>, ICollectorService
+public class CollectorService(ICollectorRepository repository) :
+    ScriptTrackChildApplicationService<ICollectorRepository, Collector, CollectorAudit>(repository), ICollectorService
 {
-    public CollectorService(ICollectorRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> collectorNames) =>
         await Repository.ExistsAnyAsync(context, regulationId, collectorNames);
 }

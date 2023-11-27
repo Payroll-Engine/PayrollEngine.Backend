@@ -10,15 +10,10 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class DomainRepository<T> : TableRepository, IDomainRepository
+public abstract class DomainRepository<T>(string tableName) : TableRepository(tableName), IDomainRepository
     where T : IDomainObject
 {
-    protected DomainRepository(string tableName) :
-        base(tableName)
-    {
-        // test if the domain object type declares the attribute object interface
-        IsAttributeObject = typeof(IAttributeObject).IsAssignableFrom(typeof(T));
-    }
+    // test if the domain object type declares the attribute object interface
 
     #region Query
 
@@ -272,7 +267,7 @@ public abstract class DomainRepository<T> : TableRepository, IDomainRepository
 
     #region Attributes
 
-    private bool IsAttributeObject { get; }
+    private bool IsAttributeObject { get; } = typeof(IAttributeObject).IsAssignableFrom(typeof(T));
 
     public virtual async Task<string> GetAttributeAsync(IDbContext context, int id, string attributeName)
     {

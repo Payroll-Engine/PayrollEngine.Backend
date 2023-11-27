@@ -4,10 +4,6 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class ReportParameterAuditService : ChildApplicationService<IReportParameterAuditRepository, ReportParameterAudit>, IReportParameterAuditService
-{
-    public ReportParameterAuditService(IReportParameterAuditRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class ReportParameterAuditService(IReportParameterAuditRepository repository) :
+    ChildApplicationService<IReportParameterAuditRepository, ReportParameterAudit>(repository),
+    IReportParameterAuditService;

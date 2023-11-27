@@ -3,6 +3,4 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface IWebhookMessageService : IChildApplicationService<IWebhookMessageRepository, WebhookMessage>
-{
-}
+public interface IWebhookMessageService : IChildApplicationService<IWebhookMessageRepository, WebhookMessage>;

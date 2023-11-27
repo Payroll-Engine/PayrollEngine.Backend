@@ -14,20 +14,14 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for payroll regulations
 /// </summary>
-public abstract class RegulationController : RepositoryChildObjectController<ITenantService, IRegulationService,
+public abstract class RegulationController(ITenantService tenantService, IRegulationService regulationService,
+        ICaseService caseService, ICaseFieldService caseFieldService, IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IRegulationService,
     ITenantRepository, IRegulationRepository,
-    Tenant, Regulation, ApiObject.Regulation>
+    Tenant, Regulation, ApiObject.Regulation>(tenantService, regulationService, runtime, new RegulationMap())
 {
-    private ICaseService CaseService { get; }
-    private ICaseFieldService CaseFieldService { get; }
-
-    protected RegulationController(ITenantService tenantService, IRegulationService regulationService,
-        ICaseService caseService, ICaseFieldService caseFieldService, IControllerRuntime runtime) :
-        base(tenantService, regulationService, runtime, new RegulationMap())
-    {
-        CaseService = caseService ?? throw new ArgumentNullException(nameof(caseService));
-        CaseFieldService = caseFieldService ?? throw new ArgumentNullException(nameof(caseFieldService));
-    }
+    private ICaseService CaseService { get; } = caseService ?? throw new ArgumentNullException(nameof(caseService));
+    private ICaseFieldService CaseFieldService { get; } = caseFieldService ?? throw new ArgumentNullException(nameof(caseFieldService));
 
     public virtual async Task<ActionResult<string>> GetCaseOfCaseFieldAsync(int tenantId, string caseFieldName)
     {

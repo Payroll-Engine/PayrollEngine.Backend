@@ -3,6 +3,4 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application.Service;
 
-public interface IRegulationShareService : IRootApplicationService<IRegulationShareRepository, RegulationShare>
-{
-}
+public interface IRegulationShareService : IRootApplicationService<IRegulationShareRepository, RegulationShare>;

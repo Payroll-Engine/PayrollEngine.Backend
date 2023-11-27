@@ -15,16 +15,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll results
 /// </summary>
-public abstract class PayrollResultController : RepositoryChildObjectController<ITenantService, IPayrollResultService,
+public abstract class PayrollResultController(ITenantService tenantService, IPayrollResultService payrollResultService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<ITenantService, IPayrollResultService,
     ITenantRepository, IPayrollResultRepository,
-    Tenant, PayrollResult, ApiObject.PayrollResult>
+    Tenant, PayrollResult, ApiObject.PayrollResult>(tenantService, payrollResultService, runtime, new PayrollResultMap())
 {
-    protected PayrollResultController(ITenantService tenantService, IPayrollResultService payrollResultService,
-        IControllerRuntime runtime) :
-        base(tenantService, payrollResultService, runtime, new PayrollResultMap())
-    {
-    }
-
     /// <summary>
     /// Query payroll result values />
     /// </summary>

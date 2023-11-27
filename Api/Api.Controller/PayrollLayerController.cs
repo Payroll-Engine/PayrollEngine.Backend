@@ -12,15 +12,12 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the payroll layers
 /// </summary>
-public abstract class PayrollLayerController : RepositoryChildObjectController<IPayrollService, IPayrollLayerService,
+public abstract class PayrollLayerController(IPayrollService payrollService, IPayrollLayerService payrollLayerService,
+        IControllerRuntime runtime)
+    : RepositoryChildObjectController<IPayrollService, IPayrollLayerService,
     IPayrollRepository, IPayrollLayerRepository,
-    Payroll, PayrollLayer, ApiObject.PayrollLayer>
+    Payroll, PayrollLayer, ApiObject.PayrollLayer>(payrollService, payrollLayerService, runtime, new PayrollLayerMap())
 {
-    protected PayrollLayerController(IPayrollService payrollService, IPayrollLayerService payrollLayerService, IControllerRuntime runtime) :
-        base(payrollService, payrollLayerService, runtime, new PayrollLayerMap())
-    {
-    }
-
     protected override async Task<ActionResult<ApiObject.PayrollLayer>> CreateAsync(int regulationId, ApiObject.PayrollLayer payrollLayer)
     {
         // unique payroll layer level and priority per payroll

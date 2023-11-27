@@ -4,13 +4,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrunParameterRepository : ChildDomainRepository<PayrunParameter>, IPayrunParameterRepository
+public class PayrunParameterRepository() : ChildDomainRepository<PayrunParameter>(DbSchema.Tables.PayrunParameter,
+    DbSchema.PayrunParameterColumn.PayrunId), IPayrunParameterRepository
 {
-    public PayrunParameterRepository() :
-        base(DbSchema.Tables.PayrunParameter, DbSchema.PayrunParameterColumn.PayrunId)
-    {
-    }
-
     protected override void GetObjectCreateData(PayrunParameter payrun, DbParameterCollection parameters)
     {
         parameters.Add(nameof(payrun.Name), payrun.Name);

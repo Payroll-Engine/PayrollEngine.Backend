@@ -4,10 +4,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class NationalCaseChangeService : CaseChangeService<INationalCaseChangeRepository, CaseChange>, INationalCaseChangeService
-{
-    public NationalCaseChangeService(IWebhookDispatchService webhookDispatcher, INationalCaseChangeRepository nationalCaseChangeRepository) :
-        base(webhookDispatcher, nationalCaseChangeRepository)
-    {
-    }
-}
+public class NationalCaseChangeService(IWebhookDispatchService webhookDispatcher,
+        INationalCaseChangeRepository nationalCaseChangeRepository)
+    : CaseChangeService<INationalCaseChangeRepository, CaseChange>(webhookDispatcher, nationalCaseChangeRepository),
+        INationalCaseChangeService;

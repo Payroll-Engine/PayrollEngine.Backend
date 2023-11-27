@@ -10,14 +10,10 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class RootDomainRepository<T> : DomainRepository<T>, IRootDomainRepository<T>
+public abstract class RootDomainRepository<T>(string tableName) : DomainRepository<T>(tableName),
+    IRootDomainRepository<T>
     where T : IDomainObject
 {
-    protected RootDomainRepository(string tableName) :
-        base(tableName)
-    {
-    }
-
     #region Query/Get
 
     public virtual async Task<IEnumerable<T>> QueryAsync(IDbContext context, Query query = null)

@@ -10,12 +10,8 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for the regulation cases
 /// </summary>
-public abstract class CaseController : ScriptTrackChildObjectController<IRegulationService, ICaseService,
+public abstract class CaseController(IRegulationService regulationService, ICaseService caseService,
+        IControllerRuntime runtime)
+    : ScriptTrackChildObjectController<IRegulationService, ICaseService,
     IRegulationRepository, ICaseRepository,
-    DomainObject.Regulation, DomainObject.Case, DomainObject.CaseAudit, ApiObject.Case>
-{
-    protected CaseController(IRegulationService regulationService, ICaseService caseService, IControllerRuntime runtime) :
-        base(regulationService, caseService, runtime, new CaseMap())
-    {
-    }
-}
+    DomainObject.Regulation, DomainObject.Case, DomainObject.CaseAudit, ApiObject.Case>(regulationService, caseService, runtime, new CaseMap());

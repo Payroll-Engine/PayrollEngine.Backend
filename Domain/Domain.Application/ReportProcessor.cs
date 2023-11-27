@@ -13,16 +13,11 @@ namespace PayrollEngine.Domain.Application;
 /// <summary>
 /// Process a report
 /// </summary>
-public class ReportProcessor : ReportTool
+public class ReportProcessor(Tenant tenant, IQueryService queryService, ReportToolSettings settings)
+    : ReportTool(tenant, settings)
 {
     // query
-    private IQueryService QueryService { get; }
-
-    public ReportProcessor(Tenant tenant, IQueryService queryService, ReportToolSettings settings) :
-        base(tenant, settings)
-    {
-        QueryService = queryService ?? throw new ArgumentNullException(nameof(queryService));
-    }
+    private IQueryService QueryService { get; } = queryService ?? throw new ArgumentNullException(nameof(queryService));
 
     public async Task<ReportResponse> ExecuteAsync(ReportSet report, IApiControllerContext controllerContext, ReportRequest reportRequest)
     {

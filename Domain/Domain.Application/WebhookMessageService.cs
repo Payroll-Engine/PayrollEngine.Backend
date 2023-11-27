@@ -4,10 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class WebhookMessageService : ChildApplicationService<IWebhookMessageRepository, WebhookMessage>, IWebhookMessageService
-{
-    public WebhookMessageService(IWebhookMessageRepository repository) :
-        base(repository)
-    {
-    }
-}
+public class WebhookMessageService(IWebhookMessageRepository repository) :
+    ChildApplicationService<IWebhookMessageRepository, WebhookMessage>(repository), IWebhookMessageService;

@@ -4,13 +4,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class WebhookRepository : ChildDomainRepository<Webhook>, IWebhookRepository
+public class WebhookRepository() : ChildDomainRepository<Webhook>(DbSchema.Tables.Webhook,
+    DbSchema.WebhookColumn.TenantId), IWebhookRepository
 {
-    public WebhookRepository() : 
-        base(DbSchema.Tables.Webhook, DbSchema.WebhookColumn.TenantId)
-    {
-    }
-
     protected override void GetObjectCreateData(Webhook webhook, DbParameterCollection parameters)
     {
         parameters.Add(nameof(webhook.Name), webhook.Name);

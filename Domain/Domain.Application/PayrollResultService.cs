@@ -7,27 +7,16 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class PayrollResultService : ChildApplicationService<IPayrollResultRepository, PayrollResult>, IPayrollResultService
+public class PayrollResultService(IPayrollResultContextService context) :
+    ChildApplicationService<IPayrollResultRepository, PayrollResult>(context.ResultRepository), IPayrollResultService
 {
-    private ICollectorResultRepository CollectorResultRepository { get; }
-    private ICollectorCustomResultRepository CollectorCustomResultRepository { get; }
-    private IWageTypeResultRepository WageTypeResultRepository { get; }
-    private IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; }
-    private IPayrunResultRepository PayrunResultRepository { get; }
-    private IPayrollResultSetRepository ResultSetRepository { get; }
-    private IPayrollConsolidatedResultRepository ConsolidatedResultRepository { get; }
-
-    public PayrollResultService(IPayrollResultContextService context) :
-        base(context.ResultRepository)
-    {
-        CollectorResultRepository = context.CollectorResultRepository ?? throw new ArgumentNullException(nameof(context.CollectorResultRepository));
-        CollectorCustomResultRepository = context.CollectorCustomResultRepository ?? throw new ArgumentNullException(nameof(context.CollectorCustomResultRepository));
-        WageTypeResultRepository = context.WageTypeResultRepository ?? throw new ArgumentNullException(nameof(context.WageTypeResultRepository));
-        WageTypeCustomResultRepository = context.WageTypeCustomResultRepository ?? throw new ArgumentNullException(nameof(context.WageTypeCustomResultRepository));
-        PayrunResultRepository = context.PayrunResultRepository ?? throw new ArgumentNullException(nameof(context.PayrunResultRepository));
-        ResultSetRepository = context.ResultSetRepository ?? throw new ArgumentNullException(nameof(context.ResultSetRepository));
-        ConsolidatedResultRepository = context.ConsolidatedResultRepository ?? throw new ArgumentNullException(nameof(context.ConsolidatedResultRepository));
-    }
+    private ICollectorResultRepository CollectorResultRepository { get; } = context.CollectorResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.CollectorResultRepository));
+    private ICollectorCustomResultRepository CollectorCustomResultRepository { get; } = context.CollectorCustomResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.CollectorCustomResultRepository));
+    private IWageTypeResultRepository WageTypeResultRepository { get; } = context.WageTypeResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.WageTypeResultRepository));
+    private IWageTypeCustomResultRepository WageTypeCustomResultRepository { get; } = context.WageTypeCustomResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.WageTypeCustomResultRepository));
+    private IPayrunResultRepository PayrunResultRepository { get; } = context.PayrunResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.PayrunResultRepository));
+    private IPayrollResultSetRepository ResultSetRepository { get; } = context.ResultSetRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.ResultSetRepository));
+    private IPayrollConsolidatedResultRepository ConsolidatedResultRepository { get; } = context.ConsolidatedResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.ConsolidatedResultRepository));
 
     public async Task<PayrollResultSet> GetResultSetAsync(IDbContext context,int tenantId, int resultId) =>
         await ResultSetRepository.GetAsync(context, tenantId, resultId);

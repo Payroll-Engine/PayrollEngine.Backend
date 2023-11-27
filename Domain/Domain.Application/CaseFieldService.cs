@@ -6,13 +6,10 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
-public class CaseFieldService : ChildApplicationService<ICaseFieldRepository, CaseField>, ICaseFieldService
+public class CaseFieldService
+    (ICaseFieldRepository repository) : ChildApplicationService<ICaseFieldRepository, CaseField>(repository),
+        ICaseFieldService
 {
-    public CaseFieldService(ICaseFieldRepository repository) :
-        base(repository)
-    {
-    }
-
     public async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
         await Repository.ExistsAnyAsync(context, caseId, caseFieldNames);
 

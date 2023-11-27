@@ -56,34 +56,24 @@ public interface ICaseValueRepository<TDomain> : IChildDomainRepository<TDomain>
 /// <summary>
 /// Repository for global case values
 /// </summary>
-public interface IGlobalCaseValueRepository : ICaseValueRepository
-{
-}
+public interface IGlobalCaseValueRepository : ICaseValueRepository;
 
 /// <summary>
 /// Repository for national case values
 /// </summary>
-public interface INationalCaseValueRepository : ICaseValueRepository
-{
-}
+public interface INationalCaseValueRepository : ICaseValueRepository;
 
 /// <summary>
 /// Repository for company case values
 /// </summary>
-public interface ICompanyCaseValueRepository : ICaseValueRepository
-{
-}
+public interface ICompanyCaseValueRepository : ICaseValueRepository;
 
 /// <summary>
 /// Repository for employee case values
 /// </summary>
-public interface IEmployeeCaseValueRepository : ICaseValueRepository
-{
-}
+public interface IEmployeeCaseValueRepository : ICaseValueRepository;
 
 /// <summary>
 /// Repository for case values
 /// </summary>
-public interface ICaseValueRepository : ICaseValueRepository<CaseValue>
-{
-}
+public interface ICaseValueRepository : ICaseValueRepository<CaseValue>;

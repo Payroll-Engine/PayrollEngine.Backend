@@ -3,6 +3,4 @@
 /// <summary>
 /// Repository for payroll case relation audits
 /// </summary>
-public interface ILookupValueAuditRepository : IAuditChildDomainRepository<LookupValueAudit>
-{
-}
+public interface ILookupValueAuditRepository : IAuditChildDomainRepository<LookupValueAudit>;

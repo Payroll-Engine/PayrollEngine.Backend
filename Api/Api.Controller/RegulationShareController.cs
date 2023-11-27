@@ -10,11 +10,6 @@ namespace PayrollEngine.Api.Controller;
 /// <summary>
 /// API controller for shared regulations
 /// </summary>
-public abstract class RegulationShareController : RepositoryRootObjectController<IRegulationShareService, IRegulationShareRepository,
-    DomainObject.RegulationShare, ApiObject.RegulationShare>
-{
-    protected RegulationShareController(IRegulationShareService shareService, IControllerRuntime runtime) :
-        base(shareService, runtime, new RegulationShareMap())
-    {
-    }
-}
+public abstract class RegulationShareController(IRegulationShareService shareService, IControllerRuntime runtime)
+    : RepositoryRootObjectController<IRegulationShareService, IRegulationShareRepository,
+    DomainObject.RegulationShare, ApiObject.RegulationShare>(shareService, runtime, new RegulationShareMap());
