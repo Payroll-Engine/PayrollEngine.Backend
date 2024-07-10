@@ -272,11 +272,11 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     public virtual async Task<string> GetAttributeAsync(IDbContext context, int id, string attributeName)
     {
         var attributeObject = await GetAttributeObjectAsync(context, id);
-        if (attributeObject?.Attributes == null || !attributeObject.Attributes.ContainsKey(attributeName))
+        if (attributeObject?.Attributes == null || !attributeObject.Attributes.TryGetValue(attributeName, out var attribute))
         {
             return null;
         }
-        return DefaultJsonSerializer.Serialize(attributeObject.Attributes[attributeName]);
+        return DefaultJsonSerializer.Serialize(attribute);
     }
 
     public virtual async Task<bool> ExistsAttributeAsync(IDbContext context, int id, string attributeName)

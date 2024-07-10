@@ -126,11 +126,11 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
 
         // case field key
         var key = new CaseFieldKey(PayrollId, caseFieldName);
-        if (!derivedCaseFields.ContainsKey(key))
+        if (!derivedCaseFields.TryGetValue(key, out var async))
         {
             return new List<ChildCaseField>();
         }
-        return derivedCaseFields[key];
+        return async;
     }
 
     private async System.Threading.Tasks.Task EnsureCaseFieldsAsync(IDbContext context)

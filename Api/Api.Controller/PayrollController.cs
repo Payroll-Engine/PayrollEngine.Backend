@@ -383,13 +383,13 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             switch (query.Result)
             {
                 case QueryResultType.Items:
-                    var values = caseChangeValues != null ? caseChangeValues.ToArray() : Array.Empty<ApiObject.CaseChangeCaseValue>();
+                    var values = caseChangeValues != null ? caseChangeValues.ToArray() : [];
                     return Ok(values);
                 case QueryResultType.Count:
                     var count = caseChangeValuesCount ?? 0;
                     return Ok(count);
                 case QueryResultType.ItemsWithCount:
-                    values = caseChangeValues != null ? caseChangeValues.ToArray() : Array.Empty<ApiObject.CaseChangeCaseValue>();
+                    values = caseChangeValues != null ? caseChangeValues.ToArray() : [];
                     count = caseChangeValuesCount ?? 0;
                     return Ok(new QueryResult<ApiObject.CaseChangeCaseValue>(values, count));
                 default:

@@ -51,7 +51,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
     private WageTypeResultSet CurrentWageTypeResult => Settings.CurrentWageTypeResult;
 
     /// <summary>The scheduled retro payrun jobs</summary>
-    internal List<RetroPayrunJob> RetroJobs { get; } = new();
+    internal List<RetroPayrunJob> RetroJobs { get; } = [];
 
     #endregion
 

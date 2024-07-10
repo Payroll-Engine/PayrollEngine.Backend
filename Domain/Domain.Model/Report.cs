@@ -11,12 +11,12 @@ namespace PayrollEngine.Domain.Model;
 public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IClusterObject,
     INamedObject, IDomainAttributeObject, IEquatable<Report>
 {
-    private static readonly List<FunctionType> FunctionTypes = new()
-    {
+    private static readonly List<FunctionType> FunctionTypes =
+    [
         FunctionType.ReportBuild,
         FunctionType.ReportStart,
         FunctionType.ReportEnd
-    };
+    ];
 
     private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
     {

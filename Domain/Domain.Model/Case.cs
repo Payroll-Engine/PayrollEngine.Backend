@@ -10,12 +10,12 @@ namespace PayrollEngine.Domain.Model;
 public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClusterObject,
     INamedObject, IDomainAttributeObject, IEquatable<Case>
 {
-    private static readonly List<FunctionType> FunctionTypes = new()
-    {
+    private static readonly List<FunctionType> FunctionTypes =
+    [
         FunctionType.CaseAvailable,
         FunctionType.CaseBuild,
         FunctionType.CaseValidate
-    };
+    ];
 
     // scripts
     private const string CaseFunctionScript = "Function\\CaseFunction.cs";

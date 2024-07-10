@@ -273,7 +273,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         var caseFields = (await CaseFieldProvider.GetDerivedCaseFieldsAsync(Settings.DbContext, caseType)).ToList();
         if (!caseFields.Any())
         {
-            return new();
+            return [];
         }
         return await GetTimeCaseValuesAsync(valueDate, caseType, caseFields.Select(x => x.Name));
     }

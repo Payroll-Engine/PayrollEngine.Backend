@@ -10,12 +10,12 @@ namespace PayrollEngine.Domain.Model;
 public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObject, IClusterObject,
     INamedObject, IDomainAttributeObject, IEquatable<Collector>
 {
-    private static readonly List<FunctionType> FunctionTypes = new()
-    {
+    private static readonly List<FunctionType> FunctionTypes =
+    [
         FunctionType.CollectorStart,
         FunctionType.CollectorApply,
         FunctionType.CollectorEnd
-    };
+    ];
     private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
     {
         "Cache\\Cache.cs",
@@ -24,7 +24,7 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     };
 
     // collected values
-    private readonly List<decimal> values = new();
+    private readonly List<decimal> values = [];
 
     /// <summary>
     /// The collector name (immutable)

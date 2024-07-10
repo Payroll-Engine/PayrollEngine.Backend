@@ -12,17 +12,17 @@ public class ConsolidatedPayrollResult : IEquatable<ConsolidatedPayrollResult>
     /// <summary>
     /// The wage type results
     /// </summary>
-    public List<WageTypeResultSet> WageTypeResults { get; set; } = new();
+    public List<WageTypeResultSet> WageTypeResults { get; set; } = [];
 
     /// <summary>
     /// The collector results
     /// </summary>
-    public List<CollectorResult> CollectorResults { get; set; } = new();
+    public List<CollectorResult> CollectorResults { get; set; } = [];
 
     /// <summary>
     /// The payrun results
     /// </summary>
-    public List<PayrunResult> PayrunResults { get; set; } = new();
+    public List<PayrunResult> PayrunResults { get; set; } = [];
 
     /// <summary>Compare two objects</summary>
     /// <param name="compare">The object to compare with this</param>

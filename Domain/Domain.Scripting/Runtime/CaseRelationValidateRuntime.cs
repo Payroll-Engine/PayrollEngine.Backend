@@ -33,7 +33,7 @@ public class CaseRelationValidateRuntime : CaseRelationRuntimeBase, ICaseRelatio
 
     /// <inheritdoc />
     public string[] GetValidateActions() =>
-        CaseRelation.ValidateActions == null ? Array.Empty<string>() :
+        CaseRelation.ValidateActions == null ? [] :
             CaseRelation.ValidateActions.ToArray();
 
     /// <inheritdoc />

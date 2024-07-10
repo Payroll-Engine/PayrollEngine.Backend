@@ -23,8 +23,8 @@ namespace PayrollEngine.Api.Core
         internal ControllerVisibilityConvention(IEnumerable<string> visibleControllers = null,
             IEnumerable<string> hiddenControllers = null)
         {
-            VisibleControllers = visibleControllers != null ? new(visibleControllers) : new();
-            HiddenControllers = hiddenControllers != null ? new(hiddenControllers) : new();
+            VisibleControllers = visibleControllers != null ? [..visibleControllers] : [];
+            HiddenControllers = hiddenControllers != null ? [..hiddenControllers] : [];
         }
 
         public void Apply(ActionModel action)

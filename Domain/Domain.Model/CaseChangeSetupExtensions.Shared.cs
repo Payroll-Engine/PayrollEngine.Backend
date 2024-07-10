@@ -133,12 +133,11 @@ public static class CaseChangeSetupExtensions
         foreach (var caseValue in CollectCaseValues(caseChangeSetup))
         {
             var key = new Tuple<string, string>(caseValue.CaseFieldName, caseValue.CaseSlot);
-            if (caseValueLookup.ContainsKey(key))
+            if (!caseValueLookup.TryAdd(key, caseValue))
             {
                 // duplicated case value
                 return caseValue;
             }
-            caseValueLookup.Add(key, caseValue);
         }
         return null;
     }

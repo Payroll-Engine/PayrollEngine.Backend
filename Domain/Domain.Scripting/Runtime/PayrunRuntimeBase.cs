@@ -47,7 +47,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     protected override string LogOwner => PayrunName;
 
     /// <summary>The payrun results</summary>
-    internal List<PayrunResult> PayrunResults { get; } = new();
+    internal List<PayrunResult> PayrunResults { get; } = [];
 
     #endregion
 
@@ -139,7 +139,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             throw new ArgumentException(nameof(key));
         }
-        return RuntimeValueProvider.PayrunValues.TryGetValue(key, out var value) ? value : null;
+        return RuntimeValueProvider.PayrunValues.GetValueOrDefault(key);
     }
 
     /// <inheritdoc />
@@ -190,7 +190,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             return null;
         }
-        return RuntimeValueProvider.EmployeeValues[employee].TryGetValue(key, out var value) ? value : null;
+        return RuntimeValueProvider.EmployeeValues[employee].GetValueOrDefault(key);
     }
 
     /// <inheritdoc />

@@ -113,7 +113,7 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
                 dataValue = culture.GetLocalization(value.ValueLocalizations, value.Value);
             }
 
-            lookupData.Values ??= new();
+            lookupData.Values ??= [];
             var valueData = new LookupValueData
             {
                 Key = value.Key,

@@ -144,7 +144,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
         }
 
         // setup related cases
-        caseSet.RelatedCases = new();
+        caseSet.RelatedCases = [];
 
         // group by relations (same source to target relations)
         var targetRelations = relations.GroupBy(x => new { x.SourceCaseName, x.SourceCaseSlot, x.TargetCaseName, x.TargetCaseSlot });

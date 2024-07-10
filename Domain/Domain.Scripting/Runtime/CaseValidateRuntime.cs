@@ -32,7 +32,7 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
 
     /// <inheritdoc />
     public string[] GetValidateActions() =>
-        Case.ValidateActions == null ? Array.Empty<string>() :
+        Case.ValidateActions == null ? [] :
             Case.ValidateActions.ToArray();
 
     /// <inheritdoc />
@@ -49,7 +49,7 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
         {
             throw new ArgumentException($"unknown case field {caseFieldName}");
         }
-        return caseField.ValidateActions == null ? Array.Empty<string>() : caseField.ValidateActions.ToArray();
+        return caseField.ValidateActions == null ? [] : caseField.ValidateActions.ToArray();
     }
 
     /// <inheritdoc />

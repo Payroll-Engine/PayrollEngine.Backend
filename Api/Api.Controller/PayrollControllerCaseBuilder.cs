@@ -602,7 +602,7 @@ internal sealed class PayrollControllerCaseBuilder
                 EmployeeId = employeeId
             },
             caseType,
-            new[] { caseValue.CaseFieldName },
+            [caseValue.CaseFieldName],
             caseValue.Created);
         if (caseValues == null)
         {

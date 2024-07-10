@@ -91,7 +91,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     public DateTime EvaluationDate => CaseValueProvider.EvaluationDate;
 
     /// <summary>Requested case fields</summary>
-    internal HashSet<string> RequestedFields { get; } = new();
+    internal HashSet<string> RequestedFields { get; } = [];
 
     #endregion
 
@@ -190,7 +190,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     public virtual List<string> GetCaseValueTags(string caseFieldName, DateTime valueDate)
     {
         var caseValue = GetTimeCaseValue(caseFieldName, valueDate).Result;
-        return caseValue == null ? new() : caseValue.Tags;
+        return caseValue == null ? [] : caseValue.Tags;
     }
 
     /// <inheritdoc />

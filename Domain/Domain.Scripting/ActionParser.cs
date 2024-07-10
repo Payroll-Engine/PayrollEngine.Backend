@@ -28,7 +28,7 @@ public static class ActionParser
         var root = syntaxTree.GetRoot() as CompilationUnitSyntax;
         if (root == null)
         {
-            return new();
+            return [];
         }
 
         // result
@@ -94,7 +94,7 @@ public static class ActionParser
                 }
 
                 // categories
-                List<string> categories = new();
+                List<string> categories = [];
                 var categoryIndex = 2;
                 while (categoryIndex < actionArgumentNodes.Count)
                 {
@@ -114,8 +114,8 @@ public static class ActionParser
                     Name = name,
                     Description = description,
                     Categories = categories.Any() ? categories : null,
-                    Parameters = new(),
-                    Issues = new()
+                    Parameters = [],
+                    Issues = []
                 };
 
                 // action parameters

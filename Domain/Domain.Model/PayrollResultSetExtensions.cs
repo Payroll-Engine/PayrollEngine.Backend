@@ -101,7 +101,7 @@ public static class PayrollResultSetExtensions
     {
         foreach (var collectorResult in payrollResultSet.CollectorResults)
         {
-            collectorResult.Tags ??= new();
+            collectorResult.Tags ??= [];
             collectorResult.Tags.AddNew(tags);
         }
     }
@@ -110,7 +110,7 @@ public static class PayrollResultSetExtensions
     {
         foreach (var wageTypeResult in payrollResultSet.WageTypeResults)
         {
-            wageTypeResult.Tags ??= new();
+            wageTypeResult.Tags ??= [];
             wageTypeResult.Tags.AddNew(tags);
 
             // wage type custom results
@@ -118,7 +118,7 @@ public static class PayrollResultSetExtensions
             {
                 foreach (var customResult in wageTypeResult.CustomResults)
                 {
-                    customResult.Tags ??= new();
+                    customResult.Tags ??= [];
                     customResult.Tags.AddNew(tags);
                 }
             }
@@ -129,7 +129,7 @@ public static class PayrollResultSetExtensions
     {
         foreach (var payrunResult in payrollResultSet.PayrunResults)
         {
-            payrunResult.Tags ??= new();
+            payrunResult.Tags ??= [];
             payrunResult.Tags.AddNew(tags);
         }
     }

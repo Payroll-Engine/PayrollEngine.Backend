@@ -10,11 +10,11 @@ namespace PayrollEngine.Domain.Model;
 public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject, IClusterObject,
     INamedObject, IDomainAttributeObject, IEquatable<WageType>
 {
-    private static readonly List<FunctionType> FunctionTypes = new()
-    {
+    private static readonly List<FunctionType> FunctionTypes =
+    [
         FunctionType.WageTypeValue,
         FunctionType.WageTypeResult
-    };
+    ];
     private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
     {
         "Cache\\Cache.cs",

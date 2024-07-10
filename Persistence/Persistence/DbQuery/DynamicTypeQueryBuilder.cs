@@ -17,7 +17,7 @@ internal sealed class DynamicTypeQueryBuilder<T> : TypeQueryBuilder<T>
     /// <summary>
     /// Dynamic query columns
     /// </summary>
-    internal List<string> DynamicColumns { get; } = new();
+    internal List<string> DynamicColumns { get; } = [];
 
     internal DynamicTypeQueryBuilder(IEnumerable<string> containerNames = null)
     {

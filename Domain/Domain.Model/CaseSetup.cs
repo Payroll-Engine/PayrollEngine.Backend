@@ -21,12 +21,12 @@ public class CaseSetup : IEquatable<CaseSetup>
     /// <summary>
     /// The case value setups
     /// </summary>
-    public List<CaseValueSetup> Values { get; set; } = new();
+    public List<CaseValueSetup> Values { get; set; } = [];
 
     /// <summary>
     /// The related cases
     /// </summary>
-    public List<CaseSetup> RelatedCases { get; set; } = new();
+    public List<CaseSetup> RelatedCases { get; set; } = [];
 
     /// <summary>Initializes a new instance of the <see cref="CaseSetup"/> class</summary>
     public CaseSetup()

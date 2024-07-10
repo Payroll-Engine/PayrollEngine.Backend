@@ -412,7 +412,7 @@ public class PayrunProcessor : FunctionToolBase
                             EvaluationDate = context.EvaluationDate,
                             Reason = currentJob.CreatedReason,
                             // current employee only
-                            EmployeeIdentifiers = new() { employee.Identifier },
+                            EmployeeIdentifiers = [employee.Identifier],
                             // consider runtime attribute changes
                             Attributes = currentJob.Attributes,
                         };
@@ -422,7 +422,7 @@ public class PayrunProcessor : FunctionToolBase
                         {
                             Payroll = context.Payroll,
                             Division = context.Division,
-                            Employees = new() { employee },
+                            Employees = [employee],
                             GlobalCaseValues = context.GlobalCaseValues,
                             NationalCaseValues = context.NationalCaseValues,
                             CompanyCaseValues = context.CompanyCaseValues,
@@ -670,7 +670,7 @@ public class PayrunProcessor : FunctionToolBase
                     var wageTypeResult = valueResult?.Item1;
                     if (wageTypeResult != null)
                     {
-                        payrollResult.WageTypeResults ??= new();
+                        payrollResult.WageTypeResults ??= [];
                         payrollResult.WageTypeResults.Add(wageTypeResult);
 
                         // retro payrun jobs
@@ -804,7 +804,7 @@ public class PayrunProcessor : FunctionToolBase
         }
         else
         {
-            payrollResult.CollectorResults = new();
+            payrollResult.CollectorResults = [];
         }
 
         foreach (var derivedCollector in context.DerivedCollectors)
@@ -828,7 +828,7 @@ public class PayrunProcessor : FunctionToolBase
                 Start = context.EvaluationPeriod.Start,
                 End = context.EvaluationPeriod.End,
                 Attributes = new(),
-                CustomResults = new()
+                CustomResults = []
             });
         }
     }
@@ -844,7 +844,7 @@ public class PayrunProcessor : FunctionToolBase
         // selected employees by identifier
         if (employeeIdentifiers != null && employeeIdentifiers.Any())
         {
-            employees = new();
+            employees = [];
             foreach (var employeeIdentifier in employeeIdentifiers)
             {
                 var query = new DivisionQuery

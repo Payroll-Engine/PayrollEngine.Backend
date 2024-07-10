@@ -81,7 +81,7 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
                     // case change from another division
                     continue;
                 }
-                caseChange.Values ??= new();
+                caseChange.Values ??= [];
                 caseChange.Values.Add(caseValue);
             }
         }
@@ -270,7 +270,7 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             else
             {
                 // ignored case value
-                caseChange.IgnoredValues ??= new();
+                caseChange.IgnoredValues ??= [];
                 caseChange.IgnoredValues.Add(caseValue);
             }
         }

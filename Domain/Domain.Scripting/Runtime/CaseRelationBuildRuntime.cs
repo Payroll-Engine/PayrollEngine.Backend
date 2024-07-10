@@ -24,7 +24,7 @@ public class CaseRelationBuildRuntime : CaseRelationRuntimeBase, ICaseRelationBu
 
     /// <inheritdoc />
     public string[] GetBuildActions() =>
-        CaseRelation.BuildActions == null ? Array.Empty<string>() :
+        CaseRelation.BuildActions == null ? [] :
             CaseRelation.BuildActions.ToArray();
 
     /// <summary>

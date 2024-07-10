@@ -22,7 +22,7 @@ public class CaseAvailableRuntime : CaseRuntimeBase, ICaseAvailableRuntime
     
     /// <inheritdoc />
     public string[] GetAvailableActions() =>
-        Case.AvailableActions == null ? Array.Empty<string>() :
+        Case.AvailableActions == null ? [] :
             Case.AvailableActions.ToArray();
 
     /// <summary>

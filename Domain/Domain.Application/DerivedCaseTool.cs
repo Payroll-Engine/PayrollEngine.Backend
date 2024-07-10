@@ -285,7 +285,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
         var allCaseFields = await GetDerivedCaseFieldsAsync(derivedCase);
         if (allCaseFields.Any())
         {
-            derivedCase.Fields = new();
+            derivedCase.Fields = [];
 
             // group case fields by the case field name
             var caseFieldsByName = allCaseFields.GroupBy(x => x.Name, y => y);
@@ -401,7 +401,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                             caseField.Order = caseFieldReference.Order.Value;
                         }
                         // add case field
-                        AddCaseFields(new() { caseField }, resolvedCaseFields);
+                        AddCaseFields([caseField], resolvedCaseFields);
                     }
                 }
             }

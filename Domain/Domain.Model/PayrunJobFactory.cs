@@ -59,7 +59,7 @@ public static class PayrunJobFactory
             EvaluationDate = jobInvocation.EvaluationDate.Value,
             CreatedReason = jobInvocation.Reason,
             // runtime
-            Employees = new(),
+            Employees = [],
             JobStatus = string.IsNullOrWhiteSpace(jobInvocation.Forecast) ? jobInvocation.JobStatus : PayrunJobStatus.Forecast
         };
 

@@ -206,7 +206,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         {
             return false;
         }
-        caseFieldSet.Tags ??= new();
+        caseFieldSet.Tags ??= [];
         if (!caseFieldSet.Tags.Contains(tag))
         {
             caseFieldSet.Tags.Add(tag);

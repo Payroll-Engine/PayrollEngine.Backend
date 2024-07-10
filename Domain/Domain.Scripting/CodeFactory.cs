@@ -22,7 +22,8 @@ internal static class CodeFactory
     /// The embedded c# scripting files
     /// </summary>
     /// <remarks>Keep this in sync with the PayrollEngine.Client.Scripting project</remarks>
-    internal static readonly string[] EmbeddedScriptNames = {
+    internal static readonly string[] EmbeddedScriptNames =
+    [
         "ClientScript.cs",
         "Extensions.cs",
         "Date.cs",
@@ -35,7 +36,7 @@ internal static class CodeFactory
         "Function\\Function.cs",
         "Function\\PayrollFunction.cs",
         "PayrollResults.cs"
-    };
+    ];
 
     /// <summary>
     /// Gets embedded source code

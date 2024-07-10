@@ -9,15 +9,15 @@ namespace PayrollEngine.Domain.Model;
 /// </summary>
 public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
 {
-    private static readonly List<FunctionType> FunctionTypes = new()
-    {
+    private static readonly List<FunctionType> FunctionTypes =
+    [
         FunctionType.PayrunStart,
         FunctionType.PayrunEmployeeAvailable,
         FunctionType.PayrunEmployeeStart,
         FunctionType.PayrunEmployeeEnd,
         FunctionType.PayrunWageTypeAvailable,
         FunctionType.PayrunEnd
-    };
+    ];
     private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
     {
         "Cache\\Cache.cs",

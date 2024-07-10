@@ -13,9 +13,10 @@ public static class Prefixes
     private static readonly string NumericAttributePrefix = SystemSpecification.NumericAttributePrefix;
 
     /// <summary>Prefix for boolean attribute fields</summary>
-    public static string[] AttributePrefixes => new[] {
+    public static string[] AttributePrefixes =>
+    [
         TextAttributePrefix,
         DateAttributePrefix,
         NumericAttributePrefix
-    };
+    ];
 }

@@ -143,7 +143,7 @@ internal sealed class PayrunProcessorRegulation
             Start = context.PayrunJob.PeriodStart,
             End = context.PayrunJob.PeriodEnd,
             Attributes = new(),
-            CustomResults = new()
+            CustomResults = []
         };
 
         // custom period results by cluster
@@ -191,7 +191,7 @@ internal sealed class PayrunProcessorRegulation
             // execution restart
             if (result != null && result.Item3)
             {
-                return new(new(), new(), new(), true);
+                return new(new(), [], [], true);
             }
 
             // wage type value

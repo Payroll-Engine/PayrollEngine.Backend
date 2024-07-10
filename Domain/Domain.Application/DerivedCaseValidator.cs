@@ -376,7 +376,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
 
         // setup related cases
-        caseSet.RelatedCases = new();
+        caseSet.RelatedCases = [];
 
         // group by relation
         var targetRelations = relations.GroupBy(x => new { x.SourceCaseName, x.SourceCaseSlot, x.TargetCaseName, x.TargetCaseSlot });

@@ -64,7 +64,7 @@ internal sealed class CSharpCompiler
     #region References
 
     private static readonly Type[] DefaultReferenceTypes =
-    {
+    [
         // any object
         typeof(object),
         // used for object references
@@ -73,10 +73,10 @@ internal sealed class CSharpCompiler
         typeof(DynamicAttribute),
         // used for linq
         typeof(Enumerable)
-    };
+    ];
 
     private static readonly string[] DefaultReferenceAssemblies =
-    {
+    [
         // core
         "System",
         "System.Runtime",
@@ -97,13 +97,13 @@ internal sealed class CSharpCompiler
         "System.ComponentModel",
         "System.Xml.ReaderWriter",
         "System.Private.Xml"
-    };
+    ];
 
     /// <summary>
     /// List of additional assembly references that are added to the
     /// compiler parameters in order to execute the script code.
     /// </summary>
-    private static readonly HashSet<MetadataReference> DefaultReferences = new();
+    private static readonly HashSet<MetadataReference> DefaultReferences = [];
 
     /// <summary>
     /// Gets the c# language version
@@ -157,15 +157,15 @@ internal sealed class CSharpCompiler
     #region Namespaces
 
     private static readonly string[] DefaultNamespaceNames =
-    {
+    [
         "System",
         "System.Text"
-    };
+    ];
 
     /// <summary>
     /// List of additional namespaces to add to the script
     /// </summary>
-    private static readonly HashSet<string> DefaultNamespaces = new();
+    private static readonly HashSet<string> DefaultNamespaces = [];
 
     /// <summary>
     /// Adds a default assembly namespace

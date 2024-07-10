@@ -94,7 +94,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     private CollectorResultSet CurrentCollectorResult => Settings.CurrentCollectorResult;
 
     /// <summary>The scheduled retro payrun jobs</summary>
-    internal List<RetroPayrunJob> RetroJobs { get; } = new();
+    internal List<RetroPayrunJob> RetroJobs { get; } = [];
 
     #endregion
 

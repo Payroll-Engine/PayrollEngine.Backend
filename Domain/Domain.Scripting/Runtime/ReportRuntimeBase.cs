@@ -537,7 +537,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             row[nameof(WageTypeResult.Value)] = result.Value;
             row[nameof(WageTypeResult.Start)] = result.Start;
             row[nameof(WageTypeResult.End)] = result.End;
-            row[nameof(WageTypeResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(WageTypeResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? []);
             row[nameof(WageTypeResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
@@ -595,7 +595,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             row[nameof(WageTypeCustomResult.Value)] = result.Value;
             row[nameof(WageTypeCustomResult.Start)] = result.Start;
             row[nameof(WageTypeCustomResult.End)] = result.End;
-            row[nameof(WageTypeCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(WageTypeCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? []);
             row[nameof(WageTypeCustomResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
@@ -655,7 +655,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             row[nameof(CollectorResult.Value)] = result.Value;
             row[nameof(CollectorResult.Start)] = result.Start;
             row[nameof(CollectorResult.End)] = result.End;
-            row[nameof(CollectorResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(CollectorResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? []);
             row[nameof(CollectorResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
@@ -709,7 +709,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             row[nameof(CollectorCustomResult.Value)] = result.Value;
             row[nameof(CollectorCustomResult.Start)] = result.Start;
             row[nameof(CollectorCustomResult.End)] = result.End;
-            row[nameof(CollectorCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(CollectorCustomResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? []);
             row[nameof(CollectorCustomResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }
@@ -772,7 +772,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             }
             row[nameof(PayrunResult.Start)] = result.Start;
             row[nameof(PayrunResult.End)] = result.End;
-            row[nameof(PayrunResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? new());
+            row[nameof(PayrunResult.Tags)] = JsonSerializer.Serialize(result.Tags ?? []);
             row[nameof(PayrunResult.Attributes)] = JsonSerializer.Serialize(result.Attributes ?? new());
             dataTable.Rows.Add(row);
         }

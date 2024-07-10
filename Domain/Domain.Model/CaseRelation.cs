@@ -10,11 +10,11 @@ namespace PayrollEngine.Domain.Model;
 public class CaseRelation : ScriptTrackDomainObject<CaseRelationAudit>, IDerivableObject,
     IClusterObject, IDomainAttributeObject, IEquatable<CaseRelation>
 {
-    private static readonly List<FunctionType> FunctionTypes = new()
-    {
+    private static readonly List<FunctionType> FunctionTypes =
+    [
         FunctionType.CaseRelationBuild,
         FunctionType.CaseRelationValidate
-    };
+    ];
 
     // scripts
     private const string CaseRelationFunctionScript = "Function\\CaseRelationFunction.cs";

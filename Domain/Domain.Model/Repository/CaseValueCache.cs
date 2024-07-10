@@ -119,11 +119,11 @@ public class CaseValueCache : ICaseValueCache
 
         // cache lookup with case slot filtering
         var key = new CaseValueKey(ParentId, caseFieldName);
-        if (!caseValuesCache.ContainsKey(key))
+        if (!caseValuesCache.TryGetValue(key, out var async))
         {
             return new List<CaseValue>();
         }
-        return caseValuesCache[key];
+        return async;
     }
 
     /// <inheritdoc />
