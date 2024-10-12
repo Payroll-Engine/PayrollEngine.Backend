@@ -9,7 +9,7 @@ The Payroll Engine API supports the [Open API](https://www.openapis.org/) specif
 ## API Versioning
 In the first 1.0 release of the REST API, no version header is required in the HTTP request. For future version changes, the HTTP header **X-Version** with the version number must be present.
 
-## API Conent Type
+## API Content Type
 The Payroll REST API supports HTTP requests in `JSON` format.
 
 ## Backend Server
