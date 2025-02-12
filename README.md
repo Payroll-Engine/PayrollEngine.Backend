@@ -61,6 +61,10 @@ The API key is defined in the following places (in order of priority):
 1. Environment variable `PayrollApiKey`
 2. Application settings file `appsettings.json`
 
+When an endpoint request is made, the API key must be included in the `Api-Key` HTTP header.
+
+> When the API key is active, Swagger requires authorization from it.
+
 ## C# Script Compiler
 The business logic defined by the business in C# is compiled into binary files (assemblies) by the backend using [Roslyn](https://github.com/dotnet/roslyn). This procedure has a positive effect on the runtime performance, so that even extensive calculations can be performed sufficiently quickly. At runtime, the backend keeps the assemblies in a cache. To optimize memory usage, unused assemblies are periodically deleted (application setting `AssemblyCacheTimeout`).
 
