@@ -49,7 +49,7 @@ public class CaseAvailableRuntime : CaseRuntimeBase, ICaseAvailableRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Available script error in case {CaseName}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Available script error in case {CaseName}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

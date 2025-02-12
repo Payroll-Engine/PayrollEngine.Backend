@@ -66,7 +66,7 @@ public class ReportEndRuntime : ReportRuntimeBase, IReportEndRuntime
         }
         if (!Enum.IsDefined((DataMergeSchemaChange)schemaChange))
         {
-            throw new PayrollException($"Invalid schema change: {schemaChange}");
+            throw new PayrollException($"Invalid schema change: {schemaChange}.");
         }
 
         try
@@ -89,7 +89,7 @@ public class ReportEndRuntime : ReportRuntimeBase, IReportEndRuntime
             {
                 if (!resultTable.Columns.Contains(mergeColumn))
                 {
-                    throw new ScriptException($"Unknown merge column {mergeColumn}");
+                    throw new ScriptException($"Unknown merge column {mergeColumn}.");
                 }
                 resultTable.PrimaryKey = [resultTable.Columns[mergeColumn]];
             }
@@ -143,7 +143,7 @@ public class ReportEndRuntime : ReportRuntimeBase, IReportEndRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"End script error in report {report.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"End script error in report {report.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

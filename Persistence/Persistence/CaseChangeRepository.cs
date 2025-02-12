@@ -69,7 +69,7 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             var caseValues = (await QueryCaseChangesValuesAsync(context, tenantId, parentId)).ToList();
             if (!caseValues.Any())
             {
-                throw new PayrollException($"Missing case values for case change with parent id {parentId}");
+                throw new PayrollException($"Missing case values for case change with parent id {parentId}.");
             }
 
             // apply case values
@@ -159,7 +159,7 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
         }
         if (caseChange.Values == null || !caseChange.Values.Any())
         {
-            throw new PayrollException("Case change without values");
+            throw new PayrollException("Case change without values.");
         }
 
         CaseType? caseType = null;
@@ -172,10 +172,10 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             // case field
             var caseField = (await PayrollRepository.GetDerivedCaseFieldsAsync(context,
                 new() { TenantId = tenantId, PayrollId = payrollId },
-                new[] { caseValue.CaseFieldName })).FirstOrDefault();
+                [caseValue.CaseFieldName])).FirstOrDefault();
             if (caseField == null)
             {
-                throw new PayrollException($"Unknown case field {caseValue.CaseFieldName}");
+                throw new PayrollException($"Unknown case field {caseValue.CaseFieldName}.");
             }
             caseFields.Add(caseField);
 
@@ -186,12 +186,12 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
                 var caseId = await CaseFieldRepository.GetParentIdAsync(context, caseField.Id);
                 if (!caseId.HasValue)
                 {
-                    throw new PayrollException($"Unknown case for case field {caseField}");
+                    throw new PayrollException($"Unknown case for case field {caseField}.");
                 }
                 var regulationId = await CaseRepository.GetParentIdAsync(context, caseId.Value);
                 if (!regulationId.HasValue)
                 {
-                    throw new PayrollException($"Unknown regulation case with id {caseId} on case field {caseField}");
+                    throw new PayrollException($"Unknown regulation case with id {caseId} on case field {caseField}.");
                 }
 
                 @case = await CaseRepository.GetAsync(context, regulationId.Value, caseId.Value);
@@ -200,11 +200,11 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             {
                 @case = (await PayrollRepository.GetDerivedCasesAsync(context,
                             query: new() { TenantId = tenantId, PayrollId = payrollId },
-                            caseNames: new[] { caseChange.ValidationCaseName })).FirstOrDefault();
+                            caseNames: [caseChange.ValidationCaseName])).FirstOrDefault();
             }
             if (@case == null)
             {
-                throw new PayrollException($"Missing case for case field {caseField}");
+                throw new PayrollException($"Missing case for case field {caseField}.");
             }
             cases.Add(@case);
         }
@@ -326,7 +326,7 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             {
                 if (@case.CaseType != caseType.Value)
                 {
-                    throw new PayrollException($"Different case types within a case change: {@case.CaseType} and {caseType.Value}");
+                    throw new PayrollException($"Different case types within a case change: {@case.CaseType} and {caseType.Value}.");
                 }
             }
             else
@@ -344,13 +344,13 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
                     // different divisions between case change and case value
                     if (changeDivision && valueDivision && caseChange.DivisionId.Value != caseValue.DivisionId.Value)
                     {
-                        throw new PayrollException($"Invalid case value division on case field: {caseField.Name}");
+                        throw new PayrollException($"Invalid case value division on case field: {caseField.Name}.");
                     }
 
                     // local case value requires a division
                     if (!changeDivision && !valueDivision)
                     {
-                        throw new PayrollException($"Missing case value division on case field: {caseField.Name}");
+                        throw new PayrollException($"Missing case value division on case field: {caseField.Name}.");
                     }
 
                     // ensure division from case change
@@ -393,13 +393,13 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             var cancellationCaseChange = await GetAsync(context, parentId, caseChange.CancellationId.Value);
             if (cancellationCaseChange == null)
             {
-                throw new PayrollException($"Invalid cancellation case change with id {caseChange.CancellationId.Value}");
+                throw new PayrollException($"Invalid cancellation case change with id {caseChange.CancellationId.Value}.");
             }
 
             // prevent double cancellations
             if (cancellationCaseChange.CancellationId.HasValue)
             {
-                throw new PayrollException($"Case change with id {cancellationCaseChange.Id} already cancelled");
+                throw new PayrollException($"Case change with id {cancellationCaseChange.Id} already cancelled.");
             }
 
             // update cancellation state

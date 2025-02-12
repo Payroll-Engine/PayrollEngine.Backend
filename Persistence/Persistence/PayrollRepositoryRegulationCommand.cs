@@ -63,12 +63,12 @@ internal sealed class PayrollRepositoryRegulationCommand : PayrollRepositoryComm
             var regulationTenant = await regulationRepository.GetParentIdAsync(DbContext, regulationDefinition.Id);
             if (!regulationTenant.HasValue)
             {
-                throw new PayrollException($"Unknown tenant of regulation with id {regulationDefinition.Id}");
+                throw new PayrollException($"Unknown tenant of regulation with id {regulationDefinition.Id}.");
             }
             var regulation = await regulationRepository.GetAsync(DbContext, regulationTenant.Value, regulationDefinition.Id);
             if (regulationTenant.Value != query.TenantId && !regulation.SharedRegulation)
             {
-                throw new PayrollException($"Invalid regulation with id {regulationDefinition.Id}");
+                throw new PayrollException($"Invalid regulation with id {regulationDefinition.Id}.");
             }
             regulations.Add(regulation);
         }

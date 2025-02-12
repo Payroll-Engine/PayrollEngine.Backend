@@ -46,7 +46,6 @@ public class EmployeeController : Api.Controller.EmployeeController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The id of the employee</param>
-    /// <returns></returns>
     [HttpGet("{employeeId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -116,7 +115,6 @@ public class EmployeeController : Api.Controller.EmployeeController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The id of the employee</param>
-    /// <returns></returns>
     [HttpDelete("{employeeId}")]
     [ApiOperationId("DeleteEmployee")]
     public async Task<IActionResult> DeleteEmployeeAsync(int tenantId, int employeeId)

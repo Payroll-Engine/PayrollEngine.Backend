@@ -84,7 +84,6 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="caseValueId">The case value id</param>
-    /// <returns></returns>
     [HttpDelete("{caseValueId}")]
     [ApiOperationId("DeleteGlobalCaseChange")]
     public async Task<IActionResult> DeleteGlobalCaseChangeAsync(int tenantId, int caseValueId)

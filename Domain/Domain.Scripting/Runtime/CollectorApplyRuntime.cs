@@ -61,7 +61,7 @@ public class CollectorApplyRuntime : CollectorRuntimeBase, ICollectorApplyRuntim
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Apply script error in collector {collector.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Apply script error in collector {collector.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

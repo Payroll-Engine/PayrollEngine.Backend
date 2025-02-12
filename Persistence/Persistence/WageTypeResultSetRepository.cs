@@ -57,7 +57,7 @@ public class WageTypeResultSetRepository(IWageTypeCustomResultRepository wageTyp
 
     protected override Task OnUpdatedAsync(IDbContext context, int payrollResultId, WageTypeResultSet resultSet)
     {
-        throw new NotSupportedException("Update of wage type results not supported");
+        throw new NotSupportedException("Update of wage type results not supported.");
     }
 
     protected override async Task<bool> OnDeletingAsync(IDbContext context, int wageTypeResultId)

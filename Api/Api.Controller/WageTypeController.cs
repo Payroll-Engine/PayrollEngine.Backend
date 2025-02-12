@@ -21,7 +21,7 @@ public abstract class WageTypeController(IRegulationService regulationService, I
     protected override async Task<ActionResult<ApiObject.WageType>> CreateAsync(int regulationId, ApiObject.WageType wageType)
     {
         // unique wage type name per payroll
-        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { wageType.WageTypeNumber }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, [wageType.WageTypeNumber]))
         {
             return BadRequest($"Wage type with number {wageType.WageTypeNumber} already exists");
         }

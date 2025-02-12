@@ -33,7 +33,7 @@ public class ScriptProviderRepository : RepositoryBase, IScriptProvider
         }
         if (string.IsNullOrWhiteSpace(tableName))
         {
-            throw new ArgumentException($"Unsupported script type {scriptObject.GetType()}");
+            throw new ArgumentException($"Unsupported script type {scriptObject.GetType()}.");
         }
 
         var query = DbQueryFactory.NewQuery(tableName)

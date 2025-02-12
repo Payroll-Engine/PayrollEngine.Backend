@@ -150,7 +150,6 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrunJobId">The id of the payrun jobs</param>
-    /// <returns></returns>
     [HttpDelete("{payrunJobId}")]
     [ApiOperationId("DeletePayrunJob")]
     public async Task<IActionResult> DeletePayrunJobAsync(int tenantId, int payrunJobId)

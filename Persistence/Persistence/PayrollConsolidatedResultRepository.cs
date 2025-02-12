@@ -31,7 +31,7 @@ public class PayrollConsolidatedResultRepository() : ChildDomainRepository<Payro
         foreach (var wageTypeResult in allWageTypeResults)
         {
             // update query wage type number filter
-            wageTypeResultQuery.WageTypeNumbers = new[] { wageTypeResult.WageTypeNumber };
+            wageTypeResultQuery.WageTypeNumbers = [wageTypeResult.WageTypeNumber];
             var wageTypeResultSet = new WageTypeResultSet(wageTypeResult)
             {
                 CustomResults = (await GetWageTypeCustomResultsAsync(context, wageTypeResultQuery)).ToList()

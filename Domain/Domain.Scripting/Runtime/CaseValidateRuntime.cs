@@ -47,7 +47,7 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
         var caseField = GetCaseFieldSet(caseFieldName);
         if (caseField == null)
         {
-            throw new ArgumentException($"unknown case field {caseFieldName}");
+            throw new ArgumentException($"unknown case field {caseFieldName}.");
         }
         return caseField.ValidateActions == null ? [] : caseField.ValidateActions.ToArray();
     }
@@ -90,7 +90,7 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
         var caseField = GetCaseFieldSet(caseFieldName);
         if (caseField == null)
         {
-            throw new ScriptException($"Unknown case field {caseFieldName}");
+            throw new ScriptException($"Unknown case field {caseFieldName}.");
         }
 
         Issues.Add(new()
@@ -132,7 +132,7 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Validate script error in case {CaseName}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Validate script error in case {CaseName}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

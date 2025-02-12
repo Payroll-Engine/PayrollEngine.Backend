@@ -87,7 +87,6 @@ public class LogController : Api.Controller.LogController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="logId">The id of the log</param>
-    /// <returns></returns>
     [HttpDelete("{logId}")]
     [ApiOperationId("DeleteLog")]
     public async Task<IActionResult> DeleteLogAsync(int tenantId, int logId)

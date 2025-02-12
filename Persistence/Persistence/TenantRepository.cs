@@ -32,7 +32,7 @@ public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.T
     {
         if (!await ExistsAsync(context, tenantId))
         {
-            throw new PayrollException($"Unknown tenant with id {tenantId}");
+            throw new PayrollException($"Unknown tenant with id {tenantId}.");
         }
 
         var parameters = new DbParameterCollection();

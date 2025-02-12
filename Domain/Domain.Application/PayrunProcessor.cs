@@ -1011,7 +1011,7 @@ public class PayrunProcessor : FunctionToolBase
                 if (payrunJob.ScheduleDate > evaluationPeriodStart)
                 {
                     throw new PayrollException(
-                        $"Retro job schedule date {payrunJob.ScheduleDate} must be before {evaluationPeriodStart}");
+                        $"Retro job schedule date {payrunJob.ScheduleDate} must be before {evaluationPeriodStart}.");
                 }
                 payrunJobs.Add(payrunJob);
             }
@@ -1038,7 +1038,7 @@ public class PayrunProcessor : FunctionToolBase
             calendar = await Settings.CalendarRepository.GetByNameAsync(Settings.DbContext, tenantId, calendarName);
             if (calendar == null)
             {
-                throw new PayrollException($"Unknown calendar {calendarName}");
+                throw new PayrollException($"Unknown calendar {calendarName}.");
             }
         }
         else

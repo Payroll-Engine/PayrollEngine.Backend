@@ -103,23 +103,33 @@ BEGIN
   -- debug help
   --PRINT CAST(@pivotSql AS NTEXT);
 
-  -- transaction start
-  BEGIN TRANSACTION;
+  -- transacton isolation level
+  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
 
-  -- start cleanup
-  DROP TABLE IF EXISTS ##CompanyCaseChangeValuePivot;
+  BEGIN TRY
 
-  -- build pivot table
-  EXECUTE dbo.sp_executesql @pivotSql
+    -- transaction start
+    BEGIN TRANSACTION;
 
-  -- apply query to pivot table
-  EXECUTE dbo.sp_executesql @sql
+    -- start cleanup
+    DROP TABLE IF EXISTS ##CompanyCaseChangeValuePivot;
 
-  -- cleanup
-  DROP TABLE IF EXISTS ##CompanyCaseChangeValuePivot;
+    -- build pivot table
+    EXECUTE dbo.sp_executesql @pivotSql
 
-  -- transaction end
-  COMMIT TRANSACTION;
+    -- apply query to pivot table
+    EXECUTE dbo.sp_executesql @sql
+
+    -- cleanup
+    DROP TABLE IF EXISTS ##CompanyCaseChangeValuePivot;
+
+    -- transaction end
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0
+      ROLLBACK TRANSACTION;
+  END CATCH;
 
 END
 GO

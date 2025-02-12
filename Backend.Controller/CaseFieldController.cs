@@ -117,10 +117,10 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="caseId">The case id</param>
-    /// <param name="caseFieldId">The case field id</param>
+    /// <param name="fieldId">The case field id</param>
     [HttpDelete("{fieldId}")]
     [ApiOperationId("DeleteCaseField")]
-    public async Task<IActionResult> DeleteCaseFieldAsync(int tenantId, int caseId, int caseFieldId)
+    public async Task<IActionResult> DeleteCaseFieldAsync(int tenantId, int caseId, int fieldId)
     {
         // authorization
         var authResult = await TenantRequestAsync(tenantId);
@@ -128,6 +128,6 @@ public class CaseFieldController : Api.Controller.CaseFieldController
         {
             return authResult;
         }
-        return await DeleteAsync(caseId, caseFieldId);
+        return await DeleteAsync(caseId, fieldId);
     }
 }

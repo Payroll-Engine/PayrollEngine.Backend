@@ -27,16 +27,18 @@ internal static class ApiFactory
         }
 
         // database connection string
-        var connectionString = Task.Run(configuration.GetSharedConnectionStringAsync).Result;
+        var connectionString = configuration.GetDatabaseConnectionString();
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new PayrollException("Missing database connection string");
+            Log.Critical("Startup error: missing database connection string.");
+            return;
         }
 
         // test database
         if (!Task.Run(dbContext.TestVersionAsync).Result)
         {
-            throw new PayrollException("Invalid database version");
+            Log.Critical("Startup error: invalid database version.");
+            return;
         }
         services.AddTransient(_ => dbContext);
 

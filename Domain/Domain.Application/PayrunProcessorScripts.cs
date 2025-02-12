@@ -118,7 +118,7 @@ internal sealed class PayrunProcessorScripts
     {
         if (caseValueProvider.Employee == null)
         {
-            throw new ArgumentException("Missing employee");
+            throw new ArgumentException("Missing employee.");
         }
 
         Log.Trace($"payrun start {context.PayrunJob.Name} on employee {caseValueProvider.Employee.Identifier}");
@@ -154,7 +154,7 @@ internal sealed class PayrunProcessorScripts
     {
         if (caseValueProvider.Employee == null)
         {
-            throw new ArgumentException("Missing employee");
+            throw new ArgumentException("Missing employee.");
         }
 
         Log.Trace($"payrun end {context.PayrunJob.Name} on employee {caseValueProvider.Employee.Identifier}");

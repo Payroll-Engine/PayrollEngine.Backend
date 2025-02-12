@@ -158,7 +158,7 @@ public class AssemblyCache
             }
             if (binary == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(scriptObject), $"Script object without binary {type.Namespace} with id {scriptObject.Id}");
+                throw new ArgumentOutOfRangeException(nameof(scriptObject), $"Script object without binary {type.Namespace} with id {scriptObject.Id}.");
             }
 
             LogStopwatch.Start(nameof(GetObjectAssembly));

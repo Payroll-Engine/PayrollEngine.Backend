@@ -10,6 +10,9 @@ public class PayrollServerConfiguration
     /// <summary>Use swagger dark theme</summary>
     public bool DarkTheme { get; set; }
 
+    /// <summary>Api key (default: none)</summary>
+    public string ApiKey { get; set; }
+
     /// <summary>Culture at start (default: os working culture)</summary>
     public string StartupCulture { get; set; }
 

@@ -74,7 +74,6 @@ public class TenantController : Api.Controller.TenantController
     /// </summary>
     /// <remarks>No authorization check</remarks>
     /// <param name="tenantId">The tenant id</param>
-    /// <returns></returns>
     [HttpDelete("{tenantId}")]
     [ApiOperationId("DeleteTenant")]
     public async Task<IActionResult> DeleteTenantAsync(int tenantId) =>
@@ -85,7 +84,6 @@ public class TenantController : Api.Controller.TenantController
     /// </summary>
     /// <remarks>No authorization check</remarks>
     /// <param name="tenantId">The tenant id</param>
-    /// <returns></returns>
     [HttpGet("{tenantId}")]
     [OkResponse]
     [NotFoundResponse]

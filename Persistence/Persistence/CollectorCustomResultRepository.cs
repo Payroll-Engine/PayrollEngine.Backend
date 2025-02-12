@@ -28,6 +28,6 @@ public class CollectorCustomResultRepository() : ChildDomainRepository<Collector
 
     protected override Task OnUpdatedAsync(IDbContext context, int collectorResultId, CollectorCustomResult customResult)
     {
-        throw new NotSupportedException("Update of collector custom results is not supported");
+        throw new NotSupportedException("Update of collector custom results is not supported.");
     }
 }

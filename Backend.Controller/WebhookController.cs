@@ -46,7 +46,6 @@ public class WebhookController : Api.Controller.WebhookController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="webhookId">The id of the webhook</param>
-    /// <returns></returns>
     [HttpGet("{webhookId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -114,7 +113,6 @@ public class WebhookController : Api.Controller.WebhookController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="webhookId">The id of the webhook</param>
-    /// <returns></returns>
     [HttpDelete("{webhookId}")]
     [ApiOperationId("DeleteWebhook")]
     public async Task<IActionResult> DeleteWebhookAsync(int tenantId, int webhookId)

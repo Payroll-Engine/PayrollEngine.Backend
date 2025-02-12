@@ -68,7 +68,7 @@ public class ReportSetRepository(ReportSetRepositorySettings settings) : ReportR
 
     protected override Task OnUpdatedAsync(IDbContext context, int regulationId, ReportSet report)
     {
-        throw new NotSupportedException("Update of report set not supported, please use the report parameter container");
+        throw new NotSupportedException("Update of report set not supported, please use the report parameter container.");
     }
 
     protected override async Task<bool> OnDeletingAsync(IDbContext context, int resultId)

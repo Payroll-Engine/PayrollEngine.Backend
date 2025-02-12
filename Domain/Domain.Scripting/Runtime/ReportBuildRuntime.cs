@@ -45,12 +45,12 @@ public class ReportBuildRuntime : ReportRuntimeBase, IReportBuildRuntime
         // report parameter
         if (Report.Parameters == null)
         {
-            throw new ArgumentException($"Invalid report parameter {parameterName}");
+            throw new ArgumentException($"Invalid report parameter {parameterName}.");
         }
         var reportParameter = Report.Parameters.FirstOrDefault(x => string.Equals(x.Name, parameterName));
         if (reportParameter == null)
         {
-            throw new ArgumentException($"Unknown report parameter {parameterName}");
+            throw new ArgumentException($"Unknown report parameter {parameterName}.");
         }
 
         // remove attribute
@@ -80,12 +80,12 @@ public class ReportBuildRuntime : ReportRuntimeBase, IReportBuildRuntime
         // report parameter
         if (Report.Parameters == null)
         {
-            throw new ArgumentException($"Invalid report parameter {parameterName}");
+            throw new ArgumentException($"Invalid report parameter {parameterName}.");
         }
         var reportParameter = Report.Parameters.FirstOrDefault(x => string.Equals(x.Name, parameterName));
         if (reportParameter == null)
         {
-            throw new ArgumentException($"Unknown report parameter {parameterName}");
+            throw new ArgumentException($"Unknown report parameter {parameterName}.");
         }
         reportParameter.Hidden = hidden;
     }
@@ -115,7 +115,7 @@ public class ReportBuildRuntime : ReportRuntimeBase, IReportBuildRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Build script error in report {report.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Build script error in report {report.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

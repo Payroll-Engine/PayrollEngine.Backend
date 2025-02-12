@@ -110,7 +110,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
 
         var collectorResult =
             CurrentPayrollResult.CollectorResults.FirstOrDefault(cr => string.Equals(cr.CollectorName, collectorName));
-        return collectorResult?.Value ?? default;
+        return collectorResult?.Value ?? 0;
     }
 
     #endregion
@@ -158,7 +158,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
         }
         if (startDate >= endDate)
         {
-            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}");
+            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}.");
         }
 
         // ensure attributes collection
@@ -167,7 +167,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
         // value type
         if (!Enum.IsDefined(typeof(ValueType), valueType))
         {
-            throw new ArgumentException($"Unknown value type: {valueType}");
+            throw new ArgumentException($"Unknown value type: {valueType}.");
         }
 
         // result
@@ -198,7 +198,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
         }
         if (startDate >= endDate)
         {
-            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}");
+            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}.");
         }
 
         // ensure attributes collection
@@ -212,7 +212,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
         }
         if (!collectorValueType.IsNumber())
         {
-            throw new ScriptException($"Value type for custom result must be numeric: {collectorValueType}");
+            throw new ScriptException($"Value type for custom result must be numeric: {collectorValueType}.");
         }
 
         // result
@@ -240,7 +240,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     {
         if (scheduleDate >= EvaluationPeriod.Start)
         {
-            throw new ArgumentOutOfRangeException(nameof(scheduleDate), $"Retro date {scheduleDate} must be before the evaluation period {EvaluationPeriod.Start}");
+            throw new ArgumentOutOfRangeException(nameof(scheduleDate), $"Retro date {scheduleDate} must be before the evaluation period {EvaluationPeriod.Start}.");
         }
         RetroJobs.Add(new() { ScheduleDate = scheduleDate, ResultTags = resultTags });
     }

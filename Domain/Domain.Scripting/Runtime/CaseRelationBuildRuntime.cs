@@ -51,7 +51,7 @@ public class CaseRelationBuildRuntime : CaseRelationRuntimeBase, ICaseRelationBu
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Build script error in case relation {caseRelation}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Build script error in case relation {caseRelation}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

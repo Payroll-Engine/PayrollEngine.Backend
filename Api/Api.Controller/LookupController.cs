@@ -34,7 +34,7 @@ public abstract class LookupController(IRegulationService regulationService, ILo
             return BadRequest($"Lookup {lookup.Id} without name");
         }
         // unique lookup name per tenant
-        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { lookup.Name }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, [lookup.Name]))
         {
             return BadRequest($"Lookup with name {lookup.Name} already exists");
         }
@@ -55,7 +55,7 @@ public abstract class LookupController(IRegulationService regulationService, ILo
             foreach (var name in names)
             {
                 // find the conflicting name
-                if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { name }))
+                if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, [name]))
                 {
                     return BadRequest($"Lookup with name {name} already exists");
                 }

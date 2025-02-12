@@ -30,7 +30,7 @@ public class RegulationReference
             var versionText = reference.Substring(versionToken + 1);
             if (!int.TryParse(versionText, out var version))
             {
-                throw new ArgumentException($"Invalid regulation reference {reference}");
+                throw new ArgumentException($"Invalid regulation reference {reference}.");
             }
             Name = reference.Substring(0, versionToken);
             Version = version;

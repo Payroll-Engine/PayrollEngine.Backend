@@ -13,11 +13,11 @@ public class PayrunRepository(IScriptRepository scriptRepository) : ScriptChildD
     // duplicated in ScriptTrackChildDomainRepository!
     public async Task RebuildAsync(IDbContext context, int tenantId, int payrunId)
     {
-        if (tenantId == default)
+        if (tenantId == 0)
         {
             throw new ArgumentException(nameof(tenantId));
         }
-        if (payrunId == default)
+        if (payrunId == 0)
         {
             throw new ArgumentNullException(nameof(payrunId));
         }
@@ -26,12 +26,12 @@ public class PayrunRepository(IScriptRepository scriptRepository) : ScriptChildD
         var payrun = await GetAsync(context, tenantId, payrunId);
         if (payrun == null)
         {
-            throw new PayrollException($"Unknown payrun with id {payrunId}");
+            throw new PayrollException($"Unknown payrun with id {payrunId}.");
         }
         var scriptObject = (IScriptObject)payrun;
         if (scriptObject == null)
         {
-            throw new PayrollException($"Invalid payrun with id {payrunId}");
+            throw new PayrollException($"Invalid payrun with id {payrunId}.");
         }
 
         // create transaction

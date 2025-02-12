@@ -104,7 +104,7 @@ public static class SqlQueryExtensions
         if ((divisionScope == DivisionScope.Local || divisionScope == DivisionScope.GlobalAndLocal)
             && !divisionId.HasValue)
         {
-            throw new PayrollException("Missing division to query local case values");
+            throw new PayrollException("Missing division to query local case values.");
         }
 
         switch (divisionScope)

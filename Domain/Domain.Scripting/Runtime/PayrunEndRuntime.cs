@@ -72,7 +72,7 @@ public class PayrunEndRuntime : PayrunRuntimeBase, IPayrunEndRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"End script error in payrun {payrun.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"End script error in payrun {payrun.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

@@ -81,7 +81,6 @@ public class CompanyCaseChangeController : Api.Controller.CompanyCaseChangeContr
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="caseValueId">The case value id</param>
-    /// <returns></returns>
     [HttpDelete("{caseValueId}")]
     [ApiOperationId("DeleteCompanyCaseChange")]
     public async Task<IActionResult> DeleteCompanyCaseChangeAsync(int tenantId, int caseValueId)

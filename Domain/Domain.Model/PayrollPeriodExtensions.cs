@@ -69,7 +69,7 @@ public static class PayrollPeriodExtensions
             if (periods.Count >= maxCount)
             {
                 throw new PayrollException($"To many periods ({maxCount}) for " +
-                                           $"the payrun period {datePeriod} with target date {targetMoment}");
+                                           $"the payrun period {datePeriod} with target date {targetMoment}.");
             }
         }
 

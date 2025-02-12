@@ -46,7 +46,7 @@ public class PayrunStartRuntime : PayrunRuntimeBase, IPayrunStartRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Start script error in payrun {payrun.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Start script error in payrun {payrun.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

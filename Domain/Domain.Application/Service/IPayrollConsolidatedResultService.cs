@@ -52,6 +52,5 @@ public interface IPayrollConsolidatedResultService : IChildApplicationService<IP
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="query">The payrun result query</param>
-    /// <returns></returns>
     Task<IEnumerable<PayrunResult>> GetPayrunResultsAsync(IDbContext context, ConsolidatedPayrunResultQuery query);
 }

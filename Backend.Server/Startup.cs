@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using PayrollEngine.Api.Core;
 
 namespace PayrollEngine.Backend.Server;
@@ -41,10 +41,10 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         // database connection string
-        var connectionString = System.Threading.Tasks.Task.Run(Configuration.GetSharedConnectionStringAsync).Result;
+        var connectionString = Configuration.GetDatabaseConnectionString();
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new PayrollException("Missing database connection string");
+            throw new PayrollException("Missing database connection string.");
         }
 
         // database command timeout

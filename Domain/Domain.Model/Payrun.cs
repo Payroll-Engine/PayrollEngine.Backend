@@ -18,11 +18,11 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
         FunctionType.PayrunWageTypeAvailable,
         FunctionType.PayrunEnd
     ];
-    private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
-    {
+    private static readonly IEnumerable<string> EmbeddedScriptNames =
+    [
         "Cache\\Cache.cs",
         "Function\\PayrunFunction.cs"
-    };
+    ];
 
     /// <summary>
     /// The payroll id (immutable)

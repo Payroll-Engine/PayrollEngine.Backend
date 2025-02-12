@@ -45,7 +45,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
                     // no default value available
                     if (string.IsNullOrWhiteSpace(mandatoryParameter.Value))
                     {
-                        throw new QueryException($"Missing mandatory parameter {mandatoryParameter.Name}");
+                        throw new QueryException($"Missing mandatory report parameter '{mandatoryParameter.Name}' in report '{report.Name}'");
                     }
                 }
             }

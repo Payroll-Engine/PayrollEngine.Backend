@@ -316,7 +316,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                     {
                         var caseValueReference = new CaseValueReference(caseField.Name, caseSlot);
                         var currentCaseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(
-                            EvaluationDate, derivedCase.CaseType, new[] { caseValueReference.Reference })).FirstOrDefault();
+                            EvaluationDate, derivedCase.CaseType, [caseValueReference.Reference])).FirstOrDefault();
                         if (currentCaseValue != null)
                         {
                             caseField.Start = currentCaseValue.Start;
@@ -356,12 +356,12 @@ public abstract class DerivedCaseTool : FunctionToolBase
                     RegulationDate = RegulationDate,
                     EvaluationDate = EvaluationDate
                 },
-                caseNames: new[] { @case.BaseCase },
+                caseNames: [@case.BaseCase],
                 clusterSet: ClusterSet,
                 overrideType: OverrideType.Active)).FirstOrDefault();
             if (baseCase == null)
             {
-                throw new PayrollException($"Unknown base case {@case.BaseCase} in case {@case.Name}");
+                throw new PayrollException($"Unknown base case {@case.BaseCase} in case {@case.Name}.");
             }
 
             // base collect case fields of base case (recursive)
@@ -417,7 +417,7 @@ public abstract class DerivedCaseTool : FunctionToolBase
                     RegulationDate = RegulationDate,
                     EvaluationDate = EvaluationDate
                 },
-                caseNames: new[] { @case.Name },
+                caseNames: [@case.Name],
                 clusterSet: ClusterSet,
                 overrideType: OverrideType.Active)).ToList();
 

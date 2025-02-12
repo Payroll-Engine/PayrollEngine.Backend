@@ -14,7 +14,7 @@ public class ReportSetService(IReportSetRepository repository, IQueryService que
     private ReportToolSettings Settings { get; } = settings ?? throw new ArgumentNullException(nameof(settings));
 
     public async Task<ReportSet> GetReportAsync(Tenant tenant, ReportSet report, IApiControllerContext controllerContext,
-        ReportRequest reportRequest = null)
+        ReportRequest reportRequest)
     {
         if (tenant == null)
         {

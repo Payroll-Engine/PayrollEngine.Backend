@@ -13,14 +13,9 @@ public class WebhookMessageRepository() : ChildDomainRepository<WebhookMessage>(
         parameters.Add(nameof(message.RequestDate), message.RequestDate);
         parameters.Add(nameof(message.RequestMessage), message.RequestMessage);
         parameters.Add(nameof(message.RequestOperation), message.RequestOperation);
-        base.GetObjectCreateData(message, parameters);
-    }
-
-    protected override void GetObjectData(WebhookMessage message, DbParameterCollection parameters)
-    {
         parameters.Add(nameof(message.ResponseDate), message.RequestDate);
         parameters.Add(nameof(message.ResponseStatus), message.ResponseStatus);
         parameters.Add(nameof(message.ResponseMessage), message.ResponseMessage);
-        base.GetObjectData(message, parameters);
+        base.GetObjectCreateData(message, parameters);
     }
 }

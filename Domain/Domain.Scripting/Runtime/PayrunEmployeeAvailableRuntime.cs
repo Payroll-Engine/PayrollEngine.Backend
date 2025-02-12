@@ -46,7 +46,7 @@ public class PayrunEmployeeAvailableRuntime : PayrunRuntimeBase, IPayrunEmployee
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Employee available script error in payrun {payrun.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Employee available script error in payrun {payrun.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

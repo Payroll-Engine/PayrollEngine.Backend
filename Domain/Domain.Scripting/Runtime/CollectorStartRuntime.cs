@@ -55,7 +55,7 @@ public class CollectorStartRuntime : CollectorRuntimeBase, ICollectorStartRuntim
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Start script error in collector {collector.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Start script error in collector {collector.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

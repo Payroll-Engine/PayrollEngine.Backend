@@ -126,7 +126,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                 EvaluationDate = EvaluationDate
             },
             caseType: caseType,
-            caseNames: new[] { caseName },
+            caseNames: [caseName],
             clusterSet: ClusterSet,
             overrideType: OverrideType.Active)).ToList();
         if (!cases.Any())
@@ -145,7 +145,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
 
         // derived case set from the most derived one
-        var caseSet = await GetDerivedCaseSetAsync(cases, caseSlot, caseChangeSetup, default, false);
+        var caseSet = await GetDerivedCaseSetAsync(cases, caseSlot, caseChangeSetup, null, false);
 
         // case cancellation
         if (caseChangeSetup.CancellationId.HasValue)
@@ -156,7 +156,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         // support unknown related cases only in cancellation mode
         var ignoreUnknownRelations = cancellationDate == null;
         // resolve case: start of recursion
-        await ValidateCaseAsync(cases, caseSet, caseChangeSetup, issues, default, ignoreUnknownRelations);
+        await ValidateCaseAsync(cases, caseSet, caseChangeSetup, issues, null, ignoreUnknownRelations);
 
         // apply runtime case values
         var fields = caseSet.CollectFields();
@@ -397,12 +397,12 @@ public class DerivedCaseValidator : DerivedCaseTool
                     RegulationDate = RegulationDate,
                     EvaluationDate = EvaluationDate
                 },
-                caseNames: new[] { targetRelation.Key.TargetCaseName },
+                caseNames: [targetRelation.Key.TargetCaseName],
                 clusterSet: ClusterSet,
                 overrideType: OverrideType.Active)).ToList();
             if (!targetCase.Any())
             {
-                throw new PayrollException($"Unknown related case with name {targetRelation.Key} in derived case {caseSet.Name}");
+                throw new PayrollException($"Unknown related case with name {targetRelation.Key} in derived case {caseSet.Name}.");
             }
             // target derived case set, the most derived one
             var targetCaseSet = await GetDerivedCaseSetAsync(targetCase, targetRelation.Key.TargetCaseSlot, caseChangeSetup, culture, false);

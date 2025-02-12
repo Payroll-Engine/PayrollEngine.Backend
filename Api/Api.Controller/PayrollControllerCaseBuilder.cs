@@ -578,7 +578,7 @@ internal sealed class PayrollControllerCaseBuilder
     {
         var cases = (await Context.PayrollService.GetDerivedCasesAsync(context,
             new() { TenantId = tenantId, PayrollId = payrollId },
-            caseNames: new[] { caseName })).ToList();
+            caseNames: [caseName])).ToList();
         return cases;
     }
 
@@ -586,7 +586,7 @@ internal sealed class PayrollControllerCaseBuilder
     {
         var caseFields = (await Context.PayrollService.GetDerivedCaseFieldsAsync(context,
             new() { TenantId = tenantId, PayrollId = payrollId },
-            new[] { caseFieldName })).ToList();
+            [caseFieldName])).ToList();
         return caseFields;
     }
 

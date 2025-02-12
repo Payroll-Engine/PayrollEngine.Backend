@@ -26,7 +26,7 @@ public static class CaseExtensions
             // case type
             if (@case.CaseType != refCase.CaseType)
             {
-                throw new PayrollException($"Case {refCase.Name}: different case types in case #{@case.Id} ({@case.CaseType}) and case #{refCase.Id} ({refCase.CaseType})");
+                throw new PayrollException($"Case {refCase.Name}: different case types in case #{@case.Id} ({@case.CaseType}) and case #{refCase.Id} ({refCase.CaseType}).");
             }
         }
     }

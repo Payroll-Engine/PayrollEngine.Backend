@@ -21,9 +21,9 @@
 
 
 ## Database Script Export
-1. start `SqlScripter`
-2. start `SqlFormatter`
-3. manual edit of [ModelCreate.sql](../Database/Current/ModelCreate.sql)
-    - remove top and bottom database instrctions
-4. manual edit of [ModelDrop.sql](../Database/Current/ModelDrop.sql)
-    - remove top and bottom database instrctions
+1. start `Db.ExportModelCreate.cmd`
+2. manual edit of [Database/ModelCreate.sql](../Database/ModelCreate.sql)
+    - remove top and bottom database instructions
+3. start `Db.ExportModelDrop.cmd`
+4. manual edit of [Database/ModelDrop.sql](../Database/ModelDrop.sql)
+    - remove top and bottom database instructions

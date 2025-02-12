@@ -120,7 +120,7 @@ public class DerivedCaseCollector : DerivedCaseTool
                 EvaluationDate = EvaluationDate
             },
             caseType: caseType,
-            caseNames: new[] { caseName },
+            caseNames: [caseName],
             clusterSet: ClusterSet,
             overrideType: OverrideType.Active)).ToList();
         var available = await CaseAvailable(cases, culture);

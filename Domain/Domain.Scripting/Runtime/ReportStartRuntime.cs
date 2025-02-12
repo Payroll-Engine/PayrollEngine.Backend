@@ -68,7 +68,7 @@ public class ReportStartRuntime : ReportRuntimeBase, IReportStartRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Start script error in report {report.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Start script error in report {report.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

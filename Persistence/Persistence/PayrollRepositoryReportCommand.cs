@@ -101,7 +101,7 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
             var regulationId = await reportRepository.GetParentIdAsync(DbContext, report.Id);
             if (!regulationId.HasValue)
             {
-                throw new PayrollException($"Unknown regulation of report {report.Name} with id {report.Id}");
+                throw new PayrollException($"Unknown regulation of report {report.Name} with id {report.Id}.");
             }
             var reportSet = await reportRepository.GetAsync(DbContext, regulationId.Value, report.Id);
             reportSets.Add(reportSet);

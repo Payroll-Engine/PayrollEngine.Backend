@@ -155,7 +155,7 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
                     var division = await EmployeeDivisionRepository.DivisionRepository.GetByNameAsync(context, tenantId, divisionName);
                     if (division == null)
                     {
-                        throw new PayrollException($"Unknown division with name {divisionName}");
+                        throw new PayrollException($"Unknown division with name {divisionName}.");
                     }
                     await EmployeeDivisionRepository.CreateAsync(context, employeeId, new EmployeeDivision
                     {
@@ -182,7 +182,7 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
             }
             else
             {
-                throw new PayrollException($"Missing division {division.Id} on employee {employeeId}");
+                throw new PayrollException($"Missing division {division.Id} on employee {employeeId}.");
             }
         }
     }

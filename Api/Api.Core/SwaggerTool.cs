@@ -37,9 +37,9 @@ public static class SwaggerTool
             {
                 if (controllerDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(ApiControllerNameAttribute), true).FirstOrDefault() is ApiControllerNameAttribute attribute)
                 {
-                    return new List<string>(new[] { attribute.ControllerName });
+                    return new List<string>([attribute.ControllerName]);
                 }
-                return new List<string>(new[] { controllerDescriptor.ControllerName });
+                return new List<string>([controllerDescriptor.ControllerName]);
             }
             return null;
         });
@@ -53,8 +53,6 @@ public static class SwaggerTool
             $"/{SwaggerRootFolder}/{apiDocumentationName}/{SwaggerFileName}",
             title);
         options.DocumentTitle = title;
-        // change index file to the root
-        options.RoutePrefix = string.Empty;
         options.EnableDeepLinking();
         options.DisplayOperationId();
     }

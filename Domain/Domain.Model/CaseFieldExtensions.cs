@@ -27,25 +27,25 @@ public static class CaseFieldExtensions
             if (caseField.ValueType != refCaseField.ValueType)
             {
                 throw new PayrollException($"Case field {refCaseField.Name}: different value types in case field #{caseField.Id} ({caseField.ValueType}) " +
-                                           $"and case field #{refCaseField.Id} ({refCaseField.ValueType})");
+                                           $"and case field #{refCaseField.Id} ({refCaseField.ValueType}).");
             }
             // time type
             if (caseField.TimeType != refCaseField.TimeType)
             {
                 throw new PayrollException($"Case field {refCaseField.Name}: different time types in case field #{caseField.Id} ({caseField.TimeType}) " +
-                                           $"and case field #{refCaseField.Id} ({refCaseField.TimeType})");
+                                           $"and case field #{refCaseField.Id} ({refCaseField.TimeType}).");
             }
             // time unit
             if (caseField.TimeUnit != refCaseField.TimeUnit)
             {
                 throw new PayrollException($"Case field {refCaseField.Name}: different time units in case field #{caseField.Id} ({caseField.TimeUnit}) " +
-                                           $"and case field #{refCaseField.Id} ({refCaseField.TimeUnit})");
+                                           $"and case field #{refCaseField.Id} ({refCaseField.TimeUnit}).");
             }
             // optional
             if (caseField.ValueMandatory != refCaseField.ValueMandatory)
             {
                 throw new PayrollException($"Case field {refCaseField.Name}: different value mandatory state in case field #{caseField.Id} ({caseField.TimeUnit}) " +
-                                           $"and case field #{refCaseField.Id} ({refCaseField.TimeUnit})");
+                                           $"and case field #{refCaseField.Id} ({refCaseField.TimeUnit}).");
             }
         }
     }

@@ -44,7 +44,6 @@ public class DivisionController : Api.Controller.DivisionController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="divisionId">The id of the division</param>
-    /// <returns></returns>
     [HttpGet("{divisionId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -109,7 +108,6 @@ public class DivisionController : Api.Controller.DivisionController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="divisionId">The id of the division</param>
-    /// <returns></returns>
     [HttpDelete("{divisionId}")]
     [ApiOperationId("DeleteDivision")]
     public async Task<IActionResult> DeleteDivisionAsync(int tenantId, int divisionId)

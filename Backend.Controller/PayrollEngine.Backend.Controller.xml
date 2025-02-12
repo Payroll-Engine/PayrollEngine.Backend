@@ -54,7 +54,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="calendarId">The id of the calendar</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.CalendarController.CreateCalendarAsync(System.Int32,PayrollEngine.Api.Model.Calendar)">
             <summary>
@@ -78,7 +77,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="calendarId">The id of the calendar</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.CalendarController.GetCalendarPeriodAsync(System.Int32,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32})">
             <summary>
@@ -282,7 +280,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="caseId">The case id</param>
-            <param name="caseFieldId">The case field id</param>
+            <param name="fieldId">The case field id</param>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.CaseRelationAuditController">
             <inheritdoc/>
@@ -488,7 +486,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="caseValueId">The case value id</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.CompanyCaseDocumentController">
             <inheritdoc/>
@@ -564,7 +561,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="divisionId">The id of the division</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.DivisionController.CreateDivisionAsync(System.Int32,PayrollEngine.Api.Model.Division)">
             <summary>
@@ -588,7 +584,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="divisionId">The id of the division</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.DivisionController.GetDivisionAttributeAsync(System.Int32,System.Int32,System.String)">
             <summary>
@@ -658,7 +653,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The employee id</param>
             <param name="caseValueId">The case value id</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.EmployeeCaseDocumentController">
             <inheritdoc/>
@@ -739,7 +733,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The id of the employee</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.EmployeeController.CreateEmployeeAsync(System.Int32,PayrollEngine.Api.Model.Employee)">
             <summary>
@@ -763,7 +756,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The id of the employee</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.EmployeeController.GetEmployeeAttributeAsync(System.Int32,System.Int32,System.String)">
             <summary>
@@ -829,7 +821,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="caseValueId">The case value id</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.GlobalCaseDocumentController">
             <inheritdoc/>
@@ -921,7 +912,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="logId">The id of the log</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.LookupAuditController">
             <inheritdoc/>
@@ -971,7 +961,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.LookupController.CreateLookupAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.Lookup)">
             <summary>
@@ -998,7 +987,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.LookupController.QueryLookupSetsAsync(System.Int32,System.Int32,PayrollEngine.Query)">
             <summary>
@@ -1016,7 +1004,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.LookupController.CreateLookupSetsAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.LookupSet[])">
             <summary>
@@ -1096,7 +1083,6 @@
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The lookup id</param>
             <param name="lookupValueId">The id of the lookup value</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.LookupValueController.CreateLookupValueAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.LookupValue)">
             <summary>
@@ -1126,7 +1112,6 @@
             <param name="regulationId">The regulation id</param>
             <param name="lookupId">The id of the lookup</param>
             <param name="lookupValueId">The id of the lookup value</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.NationalCaseChangeController">
             <inheritdoc/>
@@ -1164,7 +1149,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="caseValueId">The case value id</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.NationalCaseDocumentController">
             <inheritdoc/>
@@ -1305,7 +1289,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.CreatePayrollAsync(System.Int32,PayrollEngine.Api.Model.Payroll)">
             <summary>
@@ -1329,7 +1312,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrollId">The payroll id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollRegulationsAsync(System.Int32,System.Int32,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
@@ -1830,7 +1812,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrunId">The id of the payrun</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunController.CreatePayrunAsync(System.Int32,PayrollEngine.Api.Model.Payrun)">
             <summary>
@@ -1861,7 +1842,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrunId">The id of the payrun</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.PayrunJobController">
             <inheritdoc/>
@@ -1928,7 +1908,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="payrunJobId">The id of the payrun jobs</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.GetPayrunJobAttributeAsync(System.Int32,System.Int32,System.String)">
             <summary>
@@ -2007,7 +1986,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="payrunId">The payrun id</param>
             <param name="parameterId">The id of the payrun parameter</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.RegulationController">
             <inheritdoc/>
@@ -2029,7 +2007,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.RegulationController.GetCaseOfCaseFieldAsync(System.Int32,System.String)">
             <summary>
@@ -2061,7 +2038,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.RegulationController.GetRegulationAttributeAsync(System.Int32,System.Int32,System.String)">
             <summary>
@@ -2112,7 +2088,6 @@
             Get a regulation share
             </summary>
             <param name="shareId">The regulation share id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.QueryRegulationSharesAsync(PayrollEngine.Query)">
             <summary>
@@ -2140,7 +2115,6 @@
             Delete a regulation share
             </summary>
             <param name="shareId">The regulation share id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.RegulationShareController.GetRegulationShareAttributeAsync(System.Int32,System.String)">
             <summary>
@@ -2256,7 +2230,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="regulationId">The regulation id</param>
             <param name="reportId">The id of the report</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.ReportController.GetReportSetAsync(System.Int32,System.Int32,System.Int32,PayrollEngine.Api.Model.ReportRequest)">
             <summary>
@@ -2364,7 +2337,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="logId">The id of the report log</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.ReportParameterAuditController">
             <inheritdoc/>
@@ -2448,7 +2420,6 @@
             <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="parameterId">The id of the report parameter</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.ReportTemplateAuditController">
             <inheritdoc/>
@@ -2532,7 +2503,6 @@
             <param name="regulationId">The tenant id</param>
             <param name="reportId">The report id</param>
             <param name="templateId">The id of the report template</param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.ScriptAuditController">
             <inheritdoc/>
@@ -2654,7 +2624,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="taskId">The id of the task</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TaskController.GetTaskAttributeAsync(System.Int32,System.Int32,System.String)">
             <summary>
@@ -2719,7 +2688,6 @@
             </summary>
             <remarks>No authorization check</remarks>
             <param name="tenantId">The tenant id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TenantController.GetTenantAsync(System.Int32)">
             <summary>
@@ -2727,7 +2695,6 @@
             </summary>
             <remarks>No authorization check</remarks>
             <param name="tenantId">The tenant id</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.TenantController.GetSharedRegulationsAsync(System.Int32,System.Nullable{System.Int32})">
             <summary>
@@ -2804,7 +2771,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="userId">The id of the user</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.UserController.CreateUserAsync(System.Int32,PayrollEngine.Api.Model.User)">
             <summary>
@@ -2828,7 +2794,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="userId">The id of the user</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.UserController.TestUserPasswordAsync(System.Int32,System.Int32,System.String)">
             <summary>
@@ -2988,7 +2953,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="webhookId">The id of the webhook</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.WebhookController.CreateWebhookAsync(System.Int32,PayrollEngine.Api.Model.Webhook)">
             <summary>
@@ -3012,7 +2976,6 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="webhookId">The id of the webhook</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.WebhookController.GetWebhookAttributeAsync(System.Int32,System.Int32,System.String)">
             <summary>
@@ -3064,7 +3027,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="webhookId">The webhook id</param>
             <param name="webhookMessageId">The id of the webhook message</param>
-            <returns></returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.WebhookMessageController.CreateWebhookMessageAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.WebhookMessage)">
             <summary>
@@ -3091,7 +3053,6 @@
             <param name="tenantId">The tenant id</param>
             <param name="webhookId">The webhook id</param>
             <param name="webhookMessageId">The id of the webhook messages</param>
-            <returns></returns>
         </member>
     </members>
 </doc>

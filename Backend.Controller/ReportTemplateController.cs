@@ -126,7 +126,6 @@ public class ReportTemplateController : Api.Controller.ReportTemplateController
     /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="templateId">The id of the report template</param>
-    /// <returns></returns>
     [HttpDelete("{templateId}")]
     [ApiOperationId("DeleteReportTemplate")]
     public async Task<IActionResult> DeleteReportTemplateAsync(int tenantId,

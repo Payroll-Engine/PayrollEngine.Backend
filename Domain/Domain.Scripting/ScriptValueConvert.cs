@@ -36,7 +36,7 @@ public static class ScriptValueConvert
             }
             catch (Exception exception)
             {
-                throw new ScriptException($"Error converting type {scriptValue.GetType()} to decimal", exception);
+                throw new ScriptException($"Error converting type {scriptValue.GetType()} to decimal.", exception);
             }
         }
 

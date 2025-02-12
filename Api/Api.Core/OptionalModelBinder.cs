@@ -27,7 +27,7 @@ public class OptionalModelBinder<T> : IModelBinder where T : class
         };
 
         var result = string.IsNullOrWhiteSpace(body) ?
-            default :
+            null :
             JsonSerializer.Deserialize<T>(body, options);
 
         bindingContext.Result = ModelBindingResult.Success(result);

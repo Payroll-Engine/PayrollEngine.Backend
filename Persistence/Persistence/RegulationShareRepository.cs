@@ -27,11 +27,11 @@ public class RegulationShareRepository(IRegulationRepository regulationRepositor
         var regulation = await RegulationRepository.GetAsync(context, share.ProviderTenantId, share.ProviderRegulationId);
         if (regulation == null)
         {
-            throw new PayrollException($"Unknown regulation {share.ProviderRegulationId} in tenant {share.ProviderTenantId}");
+            throw new PayrollException($"Unknown regulation {share.ProviderRegulationId} in tenant {share.ProviderTenantId}.");
         }
         if (!regulation.SharedRegulation)
         {
-            throw new PayrollException($"Regulation {share.ProviderRegulationId} in tenant {share.ProviderTenantId} is not shared");
+            throw new PayrollException($"Regulation {share.ProviderRegulationId} in tenant {share.ProviderTenantId} is not shared.");
         }
         return await base.CreateAsync(context, share);
     }

@@ -34,7 +34,7 @@ public abstract class CaseValueSetupRepository(string tableName, string parentFi
 
     protected override Task OnUpdatedAsync(IDbContext context, int parentId, CaseValueSetup caseValueSetup)
     {
-        throw new NotSupportedException("Update of case value setup is not supported");
+        throw new NotSupportedException("Update of case value setup is not supported.");
     }
 
     protected override async Task<bool> OnDeletingAsync(IDbContext context, int caseValueSetupId)

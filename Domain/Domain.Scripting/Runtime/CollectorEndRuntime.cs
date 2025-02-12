@@ -54,7 +54,7 @@ public class CollectorEndRuntime : CollectorRuntimeBase, ICollectorEndRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"End script error in collector {collector.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"End script error in collector {collector.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

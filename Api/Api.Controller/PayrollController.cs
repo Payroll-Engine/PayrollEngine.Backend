@@ -206,7 +206,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                 return BadRequest("Missing case name");
             }
             var regulationCases = (await PayrollService.GetDerivedCasesAsync(Runtime.DbContext, query,
-                caseNames: new[] { query.CaseName })).ToList();
+                caseNames: [query.CaseName])).ToList();
             if (!regulationCases.Any())
             {
                 return BadRequest($"Unknown case {query.CaseName}");
@@ -521,7 +521,8 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             {
                 // case field
                 var caseValueReference = new CaseValueReference(caseFieldName);
-                var caseFields = await Service.GetDerivedCaseFieldsAsync(Runtime.DbContext, query, new[] { caseValueReference.CaseFieldName });
+                var caseFields = await Service.GetDerivedCaseFieldsAsync(Runtime.DbContext, query, [caseValueReference.CaseFieldName
+                ]);
                 var caseFieldId = caseFields.FirstOrDefault()?.Id;
                 if (!caseFieldId.HasValue)
                 {
@@ -1309,7 +1310,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                         RegulationDate = query.RegulationDate.Value.ToUtc(),
                         EvaluationDate = query.EvaluationDate.Value.ToUtc()
                     },
-                    new[] { lookupName }, OverrideType.Active)).ToList();
+                    [lookupName], OverrideType.Active)).ToList();
                 if (!lookups.Any())
                 {
                     return BadRequest($"Unknown lookup {lookupName}");

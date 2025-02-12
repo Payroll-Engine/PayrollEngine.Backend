@@ -25,7 +25,7 @@ public abstract class CollectorController(IRegulationService regulationService, 
             return BadRequest($"Collector {collector.Id} without name");
         }
         // unique collector name per payroll regulation
-        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { collector.Name }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, [collector.Name]))
         {
             return BadRequest($"Collector with name {collector.Name} already exists");
         }

@@ -52,23 +52,30 @@ BEGIN
   -- debug help
   --PRINT CAST(@pivotSql AS NTEXT);
 
-  -- transaction start
-  BEGIN TRANSACTION;
+  BEGIN TRY
 
-  -- cleanup
-  DROP TABLE IF EXISTS ##GlobalCaseValuePivot;
+    -- transaction start
+    BEGIN TRANSACTION;
 
-  -- build pivot table
-  EXECUTE dbo.sp_executesql @pivotSql
+    -- cleanup
+    DROP TABLE IF EXISTS ##GlobalCaseValuePivot;
 
-  -- apply query to pivot table
-  EXECUTE dbo.sp_executesql @sql
+    -- build pivot table
+    EXECUTE dbo.sp_executesql @pivotSql
 
-  -- cleanup
-  DROP TABLE IF EXISTS ##GlobalCaseValuePivot;
+    -- apply query to pivot table
+    EXECUTE dbo.sp_executesql @sql
+
+    -- cleanup
+    DROP TABLE IF EXISTS ##GlobalCaseValuePivot;
   
-  -- transaction end
-  COMMIT TRANSACTION;
+    -- transaction end
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0
+      ROLLBACK TRANSACTION;
+  END CATCH;
 
 END
 GO

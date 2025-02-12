@@ -68,7 +68,7 @@ public class PayrunWageTypeAvailableRuntime : PayrunRuntimeBase, IPayrunWageType
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Wage type available script error in payrun {payrun.Name}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Wage type available script error in payrun {payrun.Name}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

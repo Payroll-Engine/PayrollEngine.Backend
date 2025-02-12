@@ -48,7 +48,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         var tenant = await TenantRepository.GetAsync(context, tenantId);
         if (tenant == null)
         {
-            throw new PayrollException($"Unknown tenant with id {tenantId}");
+            throw new PayrollException($"Unknown tenant with id {tenantId}.");
         }
 
         // user
@@ -63,7 +63,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         if (webhooks.Count != 1)
         {
             Log.Warning($"missing single web hook for action {dispatchMessage.Action}");
-            return default;
+            return null;
         }
 
         var webhook = webhooks.First();
@@ -86,7 +86,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         var tenant = await TenantRepository.GetAsync(context, tenantId);
         if (tenant == null)
         {
-            throw new PayrollException($"Unknown tenant with id {tenantId}");
+            throw new PayrollException($"Unknown tenant with id {tenantId}.");
         }
 
         // webhooks

@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 using Dapper;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence.SqlServer;
 
 public class DbContext : IDbContext
 {
-    private static System.Version MinVersion => new(0, 5, 1);
+    /// <summary>The current database version</summary>
+    private static System.Version MinVersion => new(0, 9, 0);
 
     // minimum command timeout is 30 seconds
     private const int MinCommandTimeout = 30;
@@ -66,23 +67,32 @@ public class DbContext : IDbContext
         try
         {
             // version sql query
-            const string sql = $"SELECT COUNT(*) " +
-                               $"FROM {nameof(Version)} " +
-                               $"WHERE {nameof(Version.MajorVersion)} >= @major" +
-                               $"  AND {nameof(Version.MinorVersion)} >= @minor " +
-                               $"  AND {nameof(Version.SubVersion)} >= @build";
+            // order the existing version from new to old
+            const string query = $"SELECT TOP 1 {nameof(Version.MajorVersion)}, " +
+                                   $"{nameof(Version.MinorVersion)}, " +
+                                   $"{nameof(Version.SubVersion)} " +
+                                 $"FROM {nameof(Version)} " +
+                                 $"ORDER BY {nameof(Version.MajorVersion)} DESC, " +
+                                   $"{nameof(Version.MinorVersion)} DESC, " +
+                                   $"{nameof(Version.SubVersion)} DESC";
 
-            // count greater versions
-            var connection = new SqlConnection(ConnectionString);
-            var count = await connection.QueryFirstAsync<int>(sql, new
+            // test if the newest matches the minimum version criteria
+            await using var connection = new SqlConnection(ConnectionString);
+
+            await using var command = new SqlCommand(query, connection);
+            await connection.OpenAsync();
+
+            var valid = false;
+            await using var reader = await command.ExecuteReaderAsync();
+            while (reader.Read())
             {
-                major = MinVersion.Major,
-                minor = MinVersion.Major,
-                build = MinVersion.Build
-            });
-
-            // at least one version is required
-            return count > 0;
+                var major = reader.GetInt32(0);
+                var minor = reader.GetInt32(1);
+                var sub = reader.GetInt32(2);
+                var newestVersion = new System.Version(major, minor, sub);
+                valid = newestVersion >= MinVersion;
+            }
+            return valid;
         }
         catch
         {
@@ -111,10 +121,10 @@ public class DbContext : IDbContext
             // get test tenant identifier
             var connection = new SqlConnection(ConnectionString);
             var tenant = (await connection.QueryAsync<Tenant>(sql, new
-                {
-                    id = tenantId,
-                    identifier = tenantIdentifier
-                })).FirstOrDefault();
+            {
+                id = tenantId,
+                identifier = tenantIdentifier
+            })).FirstOrDefault();
             return tenant;
         }
         catch

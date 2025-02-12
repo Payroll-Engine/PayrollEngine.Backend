@@ -573,7 +573,7 @@ internal sealed class PayrunProcessorRegulation
                 if (payrunJob.ScheduleDate > evaluationPeriodStart)
                 {
                     throw new PayrollException(
-                        $"Retro job schedule date {payrunJob.ScheduleDate} must be before {evaluationPeriodStart}");
+                        $"Retro job schedule date {payrunJob.ScheduleDate} must be before {evaluationPeriodStart}.");
                 }
                 payrunJobs.Add(payrunJob);
             }

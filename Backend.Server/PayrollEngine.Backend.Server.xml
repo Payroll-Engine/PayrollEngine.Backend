@@ -15,12 +15,10 @@
             </summary>
             <param name="args"></param>
         </member>
-        <member name="M:PayrollEngine.Backend.Server.Program.CreateWebHostBuilder(System.String[])">
+        <member name="M:PayrollEngine.Backend.Server.Program.CreateWebHostBuilder(Microsoft.Extensions.Configuration.IConfiguration,System.String[])">
             <summary>
             Create the web host builder
             </summary>
-            <param name="args"></param>
-            <returns></returns>
         </member>
         <member name="T:PayrollEngine.Backend.Server.ProviderStartupExtensions">
             <summary>

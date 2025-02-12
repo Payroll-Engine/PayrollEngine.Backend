@@ -259,23 +259,30 @@ LEFT JOIN
   -- debug help
   --PRINT CAST(@pivotSql AS NTEXT);
   
-  -- transaction start
-  BEGIN TRANSACTION;
+  BEGIN TRY
+
+    -- transaction start
+    BEGIN TRANSACTION;
 
     -- cleanup
-  DROP TABLE IF EXISTS ##PayrollResultPivot;
+    DROP TABLE IF EXISTS ##PayrollResultPivot;
 
-  -- build pivot table
-  EXECUTE dbo.sp_executesql @pivotSql;
+    -- build pivot table
+    EXECUTE dbo.sp_executesql @pivotSql;
 
-  -- apply query to pivot table
-  EXECUTE dbo.sp_executesql @sql;
+    -- apply query to pivot table
+    EXECUTE dbo.sp_executesql @sql;
 
-  -- cleanup
-  DROP TABLE IF EXISTS ##PayrollResultPivot;
+    -- cleanup
+    DROP TABLE IF EXISTS ##PayrollResultPivot;
 
-  -- transaction end
-  COMMIT TRANSACTION;
+    -- transaction end
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0
+      ROLLBACK TRANSACTION;
+  END CATCH;
 
 END
 GO

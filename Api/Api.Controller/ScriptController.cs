@@ -25,7 +25,7 @@ public abstract class ScriptController(IRegulationService regulationService, ISc
             return BadRequest($"Script {script.Id} without name");
         }
         // unique function name per payroll
-        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, new[] { script.Name }))
+        if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, [script.Name]))
         {
             return BadRequest($"Script with name {script.Name} already exists");
         }

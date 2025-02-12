@@ -122,7 +122,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         GetObjectCreateData(obj, data);
         if (!data.HasAny)
         {
-            throw new PayrollException($"Missing object data for object {obj}");
+            throw new PayrollException($"Missing object data for object {obj}.");
         }
 
         data.Add(DbSchema.ObjectColumn.Status, obj.Status);
@@ -205,7 +205,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         GetObjectUpdateData();
         if (!parameters.HasAny)
         {
-            throw new PayrollException($"Missing object data for object {obj}");
+            throw new PayrollException($"Missing object data for object {obj}.");
         }
 
         parameters.Add(DbSchema.ObjectColumn.Status, obj.Status);

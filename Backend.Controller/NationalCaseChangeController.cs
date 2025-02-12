@@ -85,7 +85,6 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="caseValueId">The case value id</param>
-    /// <returns></returns>
     [HttpDelete("{caseValueId}")]
     [ApiOperationId("DeleteNationalCaseChange")]
     public async Task<IActionResult> DeleteNationalCaseChangeAsync(int tenantId, int caseValueId)

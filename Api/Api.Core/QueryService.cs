@@ -329,11 +329,11 @@ public class QueryService(IServiceProvider serviceProvider) : IQueryService
         {
             if (objectResult.StatusCode == 500)
             {
-                throw new PayrollException($"Internal server error {objectResult.Value}");
+                throw new PayrollException($"Internal server error {objectResult.Value}.");
             }
             if (objectResult.StatusCode is null or < 200 or >= 300)
             {
-                throw new PayrollException($"{objectResult.Value} [{objectResult.StatusCode}]");
+                throw new PayrollException($"{objectResult.Value} [{objectResult.StatusCode}].");
             }
 
             if (objectResult.Value is IEnumerable<object> array)

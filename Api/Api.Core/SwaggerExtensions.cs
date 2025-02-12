@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Rewrite;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace PayrollEngine.Api.Core;
@@ -7,7 +8,8 @@ public static class SwaggerExtensions
 {
     // ReSharper disable once UnusedMethodReturnValue.Global
     public static IApplicationBuilder UseSwagger(this IApplicationBuilder appBuilder,
-        string apiDocumentationName, string apiName, string apiVersion, bool darkTheme)
+        string apiDocumentationName, string apiName, string apiVersion, bool darkTheme,
+        bool rootRedirect)
     {
         appBuilder.UseSwagger();
         appBuilder.UseSwaggerUI(setupAction =>
@@ -28,6 +30,15 @@ public static class SwaggerExtensions
                 setupAction.InjectStylesheet("/swagger-ui/SwaggerDark.css");
             }
         });
+
+        // root redirect
+        if (rootRedirect)
+        {
+            var option = new RewriteOptions();
+            option.AddRedirect("^$", "swagger");
+            appBuilder.UseRewriter(option);
+        }
+
         return appBuilder;
     }
 }

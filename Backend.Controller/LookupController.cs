@@ -48,7 +48,6 @@ public class LookupController : Api.Controller.LookupController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The id of the lookup</param>
-    /// <returns></returns>
     [HttpGet("{lookupId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -119,7 +118,6 @@ public class LookupController : Api.Controller.LookupController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The id of the lookup</param>
-    /// <returns></returns>
     [HttpDelete("{lookupId}")]
     [ApiOperationId("DeleteLookup")]
     public async Task<IActionResult> DeleteLookupAsync(int tenantId, int regulationId, int lookupId)
@@ -165,7 +163,6 @@ public class LookupController : Api.Controller.LookupController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The id of the lookup</param>
-    /// <returns></returns>
     [HttpGet("sets/{lookupId}")]
     [OkResponse]
     [NotFoundResponse]

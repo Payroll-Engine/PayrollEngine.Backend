@@ -118,15 +118,15 @@ public sealed class CaseValueProvider : ICaseValueProvider
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
         if (!settings.EvaluationDate.IsUtc())
         {
-            throw new ArgumentException("Evaluation date must be UTC", nameof(settings.EvaluationDate));
+            throw new ArgumentException("Evaluation date must be UTC.", nameof(settings.EvaluationDate));
         }
         if (!settings.EvaluationPeriod.IsUtc)
         {
-            throw new ArgumentException("Evaluation period must be UTC", nameof(settings.EvaluationPeriod));
+            throw new ArgumentException("Evaluation period must be UTC.", nameof(settings.EvaluationPeriod));
         }
         if (settings.RetroDate.HasValue && !settings.RetroDate.Value.IsUtc())
         {
-            throw new ArgumentException("Retro date must be UTC", nameof(settings.RetroDate));
+            throw new ArgumentException("Retro date must be UTC.", nameof(settings.RetroDate));
         }
 
         // initialize the evaluation periods stack
@@ -158,7 +158,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
             var newCycleTimeUnit = payrollCalculator.CycleTimeUnit;
             if (!curCycleTimeUnit.IsValidTimeUnit(newCycleTimeUnit))
             {
-                throw new PayrollException($"Mismatching cycle time type {newCycleTimeUnit}, must be compatible with {curCycleTimeUnit}");
+                throw new PayrollException($"Mismatching cycle time type {newCycleTimeUnit}, must be compatible with {curCycleTimeUnit}.");
             }
 
             // test period compatibility
@@ -166,7 +166,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
             var newPeriodTimeUnit = payrollCalculator.PeriodTimeUnit;
             if (!curPeriodTimeUnit.IsValidTimeUnit(newPeriodTimeUnit))
             {
-                throw new PayrollException($"Mismatching period time type {newPeriodTimeUnit}, must be compatible with {curPeriodTimeUnit}");
+                throw new PayrollException($"Mismatching period time type {newPeriodTimeUnit}, must be compatible with {curPeriodTimeUnit}.");
             }
         }
 
@@ -183,7 +183,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
 
         if (payrollCalculator != payrollCalculators.Peek())
         {
-            throw new ArgumentException($"Unbalanced stack operation on payroll calculator {payrollCalculator}",
+            throw new ArgumentException($"Unbalanced stack operation on payroll calculator {payrollCalculator}.",
                 nameof(payrollCalculator));
         }
 
@@ -208,7 +208,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         }
         if (!evaluationPeriod.IsUtc)
         {
-            throw new ArgumentException("Value date must be UTC", nameof(evaluationPeriod));
+            throw new ArgumentException("Value date must be UTC.", nameof(evaluationPeriod));
         }
         evaluationPeriods.Push(evaluationPeriod);
     }
@@ -223,7 +223,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         }
         if (!evaluationPeriod.IsUtc)
         {
-            throw new ArgumentException("Value date must be UTC", nameof(evaluationPeriod));
+            throw new ArgumentException("Value date must be UTC.", nameof(evaluationPeriod));
         }
         if (evaluationPeriods.Count == 1)
         {
@@ -232,7 +232,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
 
         if (evaluationPeriod != evaluationPeriods.Peek())
         {
-            throw new ArgumentException("Unbalanced stack operation on evaluation periods",
+            throw new ArgumentException("Unbalanced stack operation on evaluation periods.",
                 nameof(evaluationPeriod));
         }
 
@@ -255,7 +255,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         var caseType = await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
         if (!caseType.HasValue)
         {
-            throw new PayrollException($"Unknown case field {caseFieldName}");
+            throw new PayrollException($"Unknown case field {caseFieldName}.");
         }
 
         // case value
@@ -268,7 +268,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
     {
         if (!valueDate.IsUtc())
         {
-            throw new ArgumentException("Value date must be UTC", nameof(valueDate));
+            throw new ArgumentException("Value date must be UTC.", nameof(valueDate));
         }
         var caseFields = (await CaseFieldProvider.GetDerivedCaseFieldsAsync(Settings.DbContext, caseType)).ToList();
         if (!caseFields.Any())
@@ -284,7 +284,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
     {
         if (!valueDate.IsUtc())
         {
-            throw new ArgumentException("Value date must be UTC", nameof(valueDate));
+            throw new ArgumentException("Value date must be UTC.", nameof(valueDate));
         }
         var allCaseFieldNames = caseFieldNames.ToList();
         if (!allCaseFieldNames.Any())
@@ -361,7 +361,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         }
         if (!evaluationPeriod.IsUtc)
         {
-            throw new ArgumentException("Value date must be UTC", nameof(evaluationPeriod));
+            throw new ArgumentException("Value date must be UTC.", nameof(evaluationPeriod));
         }
 
         // case field
@@ -443,7 +443,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         }
         if (!period.IsUtc)
         {
-            throw new ArgumentException("Value date must be UTC", nameof(period));
+            throw new ArgumentException("Value date must be UTC.", nameof(period));
         }
 
         var uniqueCaseFieldNames = new HashSet<string>(caseFieldNames);
@@ -577,7 +577,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         var caseType = await CaseFieldProvider.GetCaseTypeAsync(Settings.DbContext, caseFieldName);
         if (!caseType.HasValue)
         {
-            throw new PayrollException($"Unknown case field {caseFieldName}");
+            throw new PayrollException($"Unknown case field {caseFieldName}.");
         }
         // ReSharper disable once PossibleInvalidOperationException
         var caseValueRepository = GetCaseValueRepository(caseType.Value);
@@ -591,7 +591,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
         var caseField = await CaseFieldProvider.GetValueCaseFieldAsync(Settings.DbContext, caseFieldName);
         if (caseField == null)
         {
-            throw new PayrollException($"Unknown case field {caseFieldName}");
+            throw new PayrollException($"Unknown case field {caseFieldName}.");
         }
 
         // case values

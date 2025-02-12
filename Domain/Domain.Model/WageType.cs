@@ -15,12 +15,12 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
         FunctionType.WageTypeValue,
         FunctionType.WageTypeResult
     ];
-    private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
-    {
+    private static readonly IEnumerable<string> EmbeddedScriptNames =
+    [
         "Cache\\Cache.cs",
         "Function\\PayrunFunction.cs",
         "Function\\WageTypeFunction.cs"
-    };
+    ];
 
     /// <summary>
     /// The wage type number (immutable)

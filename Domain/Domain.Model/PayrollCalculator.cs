@@ -227,7 +227,7 @@ public class PayrollCalculator : IPayrollCalculator
     {
         if (!calculation.EvaluationPeriod.Start.IsSameMonth(calculation.EvaluationPeriod.End))
         {
-            throw new PayrollException($"Evaluation period {calculation.EvaluationPeriod} must be within a month");
+            throw new PayrollException($"Evaluation period {calculation.EvaluationPeriod} must be within a month.");
         }
 
         // calendar month period
@@ -414,7 +414,6 @@ public class PayrollCalculator : IPayrollCalculator
     /// Get the period day count
     /// </summary>
     /// <param name="period">The period to count</param>
-    /// <returns></returns>
     private decimal GetPeriodDayCount(DatePeriod period)
     {
         var daysInPeriod = 0m;

@@ -119,7 +119,6 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrunId">The payrun id</param>
     /// <param name="parameterId">The id of the payrun parameter</param>
-    /// <returns></returns>
     [HttpDelete("{parameterId}")]
     [ApiOperationId("DeletePayrun")]
     public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId, int parameterId)

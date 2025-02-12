@@ -231,7 +231,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         }
 
         var caseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(valueDate, caseType.Value,
-            new[] { caseFieldName })).FirstOrDefault();
+            [caseFieldName])).FirstOrDefault();
         return caseValue;
     }
 
@@ -246,7 +246,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         endDate ??= Date.MaxValue;
         if (endDate < startDate)
         {
-            throw new ArgumentException($"Invalid period end date: {endDate}", nameof(endDate));
+            throw new ArgumentException($"Invalid period end date: {endDate}.", nameof(endDate));
         }
 
         // period
@@ -284,7 +284,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     {
         if (endDate < startDate)
         {
-            throw new ArgumentException($"Invalid period end date: {endDate}", nameof(endDate));
+            throw new ArgumentException($"Invalid period end date: {endDate}.", nameof(endDate));
         }
 
         // period

@@ -251,7 +251,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         var caseField = GetCaseFieldSet(caseFieldName);
         if (caseField == null)
         {
-            throw new ArgumentException($"unknown case field {caseFieldName}");
+            throw new ArgumentException($"unknown case field {caseFieldName}.");
         }
         // ensure case field attribute collection
         caseField.Attributes ??= new();
@@ -276,7 +276,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         var caseField = GetCaseFieldSet(caseFieldName);
         if (caseField == null)
         {
-            throw new ArgumentException($"unknown case field {caseFieldName}");
+            throw new ArgumentException($"unknown case field {caseFieldName}.");
         }
         if (caseField.Attributes == null || !caseField.Attributes.ContainsKey(attributeName))
         {
@@ -332,7 +332,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         var caseField = GetCaseFieldSet(caseFieldName);
         if (caseField == null)
         {
-            throw new ArgumentException($"unknown case field {caseFieldName}");
+            throw new ArgumentException($"Unknown case field {caseFieldName}.");
         }
         if (caseField.ValueAttributes == null || !caseField.ValueAttributes.ContainsKey(attributeName))
         {
@@ -357,7 +357,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
             var caseField = CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
             if (caseField == null)
             {
-                throw new ScriptException($"Unknown case field {caseFieldName}");
+                throw new ScriptException($"Unknown case field {caseFieldName}.");
             }
             caseFieldSet = new(caseField)
             {

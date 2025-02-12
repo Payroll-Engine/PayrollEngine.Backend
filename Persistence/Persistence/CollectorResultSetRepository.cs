@@ -60,7 +60,7 @@ public class CollectorResultSetRepository(ICollectorCustomResultRepository wageT
 
     protected override Task OnUpdatedAsync(IDbContext context, int payrollResultId, CollectorResultSet resultSet)
     {
-        throw new NotSupportedException("Update of custom collector results is not supported");
+        throw new NotSupportedException("Update of custom collector results is not supported.");
     }
 
     protected override async Task<bool> OnDeletingAsync(IDbContext context, int wageTypeResultId)

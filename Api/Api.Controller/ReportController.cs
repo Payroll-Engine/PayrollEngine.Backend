@@ -28,8 +28,13 @@ public abstract class ReportController(ITenantService tenantService, IRegulation
     private IReportSetService ReportSetService { get; } = reportSetService ?? throw new ArgumentNullException(nameof(reportSetService));
 
     public virtual async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
-        int tenantId, int regulationId, int reportId, ApiObject.ReportRequest reportRequest = null)
+        int tenantId, int regulationId, int reportId, ApiObject.ReportRequest reportRequest)
     {
+        if (reportRequest == null)
+        {
+            throw new ArgumentNullException(nameof(reportRequest));
+        }
+
         try
         {
             // tenant

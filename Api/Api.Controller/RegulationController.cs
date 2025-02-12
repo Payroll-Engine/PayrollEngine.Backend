@@ -35,7 +35,8 @@ public abstract class RegulationController(ITenantService tenantService, IRegula
             }
 
             // case field
-            var caseFields = await CaseFieldService.GetRegulationCaseFieldsAsync(Runtime.DbContext, tenantId, new[] { caseFieldName });
+            var caseFields = await CaseFieldService.GetRegulationCaseFieldsAsync(Runtime.DbContext, tenantId,
+                [caseFieldName]);
             var caseId = caseFields.FirstOrDefault()?.Id;
             if (!caseId.HasValue)
             {

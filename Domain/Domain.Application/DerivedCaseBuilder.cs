@@ -95,7 +95,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
                 EvaluationDate = EvaluationDate
             },
             caseType: caseType,
-            caseNames: new[] { caseName },
+            caseNames: [caseName],
             clusterSet: ClusterSet,
             overrideType: OverrideType.Active)).ToList();
         if (!cases.Any())
@@ -166,12 +166,12 @@ public class DerivedCaseBuilder : DerivedCaseTool
                     RegulationDate = RegulationDate,
                     EvaluationDate = EvaluationDate
                 },
-                caseNames: new[] { targetRelation.Key.TargetCaseName },
+                caseNames: [targetRelation.Key.TargetCaseName],
                 clusterSet: ClusterSet,
                 overrideType: OverrideType.Active)).ToList();
             if (!targetCases.Any())
             {
-                throw new PayrollException($"Unknown related case with name {targetRelation.Key.TargetCaseName} in derived case {caseSet.Name}");
+                throw new PayrollException($"Unknown related case with name {targetRelation.Key.TargetCaseName} in derived case {caseSet.Name}.");
             }
             // target derived case on the most derived one
             var targetCaseSet = await GetDerivedCaseSetAsync(targetCases, targetRelation.Key.TargetCaseSlot, caseChangeSetup, culture, true);

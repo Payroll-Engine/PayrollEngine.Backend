@@ -86,7 +86,7 @@ internal sealed class CaseValueProviderCalculation
                     // return the latest created value
                     var value = CalculateValue(caseField, caseValue);
                     total += value as decimal? ??
-                             throw new PayrollException($"Invalid case value type for case field {caseField}");
+                             throw new PayrollException($"Invalid case value type for case field {caseField}.");
                 }
             }
             return total;
@@ -115,7 +115,7 @@ internal sealed class CaseValueProviderCalculation
         var allValuePeriods = new Dictionary<CaseValue, List<DatePeriod>>();
 
         // list with the available periods, initialized with the evaluation period
-        var availablePeriods = new List<DatePeriod>(new[] { EvaluationPeriod });
+        var availablePeriods = new List<DatePeriod>([EvaluationPeriod]);
         if (availablePeriods[0] == null)
         {
             throw new InvalidOperationException("Avail Period Setup");

@@ -165,7 +165,6 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// Ensure valid update date
     /// </summary>
     /// <param name="obj"></param>
-    /// <returns></returns>
     protected DateTime GetValidUpdatedDate(T obj) =>
         obj.Updated < obj.Created ? obj.Created : obj.Updated;
 

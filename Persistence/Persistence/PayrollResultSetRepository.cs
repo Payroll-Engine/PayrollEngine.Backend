@@ -94,7 +94,7 @@ public class PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeRes
 
     protected override Task OnUpdatedAsync(IDbContext context, int tenantId, PayrollResultSet payrollResultSet)
     {
-        throw new NotSupportedException("Update of payroll results not supported");
+        throw new NotSupportedException("Update of payroll results not supported.");
     }
 
     protected override async Task<bool> OnDeletingAsync(IDbContext context, int payrollResultId)

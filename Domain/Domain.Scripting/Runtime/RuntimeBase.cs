@@ -172,7 +172,7 @@ public abstract class RuntimeBase : IRuntime
         var assemblyScriptType = assembly.GetType(scriptType.FullName ?? throw new InvalidOperationException());
         if (assemblyScriptType == null)
         {
-            throw new PayrollException($"Unknown script type {scriptType}");
+            throw new PayrollException($"Unknown script type {scriptType}.");
         }
 
         // script function execution

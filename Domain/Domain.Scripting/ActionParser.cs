@@ -80,7 +80,7 @@ public static class ActionParser
                 var actionArgumentNodes = actionAttribute.ArgumentList.ChildNodes().ToList();
                 if (!actionArgumentNodes.Any())
                 {
-                    throw new PayrollException($"Invalid action provider attribute {actionAttribute.GetText()}");
+                    throw new PayrollException($"Invalid action provider attribute {actionAttribute.GetText()}.");
                 }
 
                 // name
@@ -131,7 +131,7 @@ public static class ActionParser
                     var parameterArgumentNodes = parameterAttribute.ArgumentList.ChildNodes().ToList();
                     if (parameterArgumentNodes.Count < 2)
                     {
-                        throw new PayrollException($"Invalid action parameter attribute {parameterAttribute.GetText()}");
+                        throw new PayrollException($"Invalid action parameter attribute {parameterAttribute.GetText()}.");
                     }
 
                     var parameterName = GetElementText(parameterArgumentNodes[0]);
@@ -174,7 +174,7 @@ public static class ActionParser
                     var issueArgumentNodes = issuesAttribute.ArgumentList.ChildNodes().ToList();
                     if (issueArgumentNodes.Count != 3)
                     {
-                        throw new PayrollException($"Invalid action issue attribute {issuesAttribute.GetText()}");
+                        throw new PayrollException($"Invalid action issue attribute {issuesAttribute.GetText()}.");
                     }
 
                     var issueName = GetElementText(issueArgumentNodes[0]);
@@ -186,7 +186,7 @@ public static class ActionParser
 
                     if (!int.TryParse(GetElementText(issueArgumentNodes[2]), out var issueParameterCount))
                     {
-                        throw new PayrollException($"Invalid action issue attribute {issuesAttribute.GetText()}: parameter count {issueArgumentNodes[2]}");
+                        throw new PayrollException($"Invalid action issue attribute {issuesAttribute.GetText()}: parameter count {issueArgumentNodes[2]}.");
                     }
 
                     // action info issue
@@ -274,7 +274,7 @@ public static class ActionParser
         // attribute arguments
         if (attribute.ArgumentList == null || attribute.ArgumentList.ChildNodes().Count() != 2)
         {
-            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}");
+            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}.");
         }
 
         // namespace argument
@@ -286,27 +286,27 @@ public static class ActionParser
         var typeofToken = functionTypeArgument.GetFirstToken();
         if (typeofToken.Value?.ToString() != "typeof")
         {
-            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: missing typeof()");
+            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: missing typeof().");
         }
 
         // skip (
         var midToken = typeofToken.GetNextToken();
         if (midToken.Value?.ToString() != "(")
         {
-            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: missing (");
+            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: missing (.");
         }
 
         // function type
         var functionToken = midToken.GetNextToken();
         if (functionToken.Value == null)
         {
-            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: missing function type");
+            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: missing function type.");
         }
         var function = GetElementText(functionToken);
         function = function.RemoveFromEnd("Function");
         if (!Enum.TryParse<FunctionType>(function, out var functionType))
         {
-            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: unknown function type");
+            throw new PayrollException($"Invalid action provider attribute {attribute.GetText()}: unknown function type.");
         }
 
         return new(namespaceName, functionType);

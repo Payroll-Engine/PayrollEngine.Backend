@@ -118,7 +118,7 @@ internal sealed class CSharpCompiler
             {
                 if (!Enum.TryParse(ScriptingSpecification.CSharpLanguageVersion, out LanguageVersion version))
                 {
-                    throw new PayrollException($"Invalid c# language version: {ScriptingSpecification.CSharpLanguageVersion}");
+                    throw new PayrollException($"Invalid c# language version: {ScriptingSpecification.CSharpLanguageVersion}.");
                 }
                 languageVersion = version;
             }

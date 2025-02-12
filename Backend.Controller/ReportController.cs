@@ -150,7 +150,6 @@ public class ReportController : Api.Controller.ReportController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="reportId">The id of the report</param>
-    /// <returns></returns>
     [HttpDelete("{reportId}")]
     [ApiOperationId("DeleteReport")]
     public async Task<IActionResult> DeleteReportAsync(int tenantId, int regulationId, int reportId)
@@ -183,7 +182,7 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [ApiOperationId("GetReportSet")]
     public override async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
-        int tenantId, int regulationId, int reportId, [FromBody] ApiObject.ReportRequest reportRequest = null)
+        int tenantId, int regulationId, int reportId, [FromBody] ApiObject.ReportRequest reportRequest)
     {
         // authorization
         var authResult = await TenantRequestAsync(tenantId);

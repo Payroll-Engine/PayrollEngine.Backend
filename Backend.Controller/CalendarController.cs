@@ -48,7 +48,6 @@ public class CalendarController : Api.Controller.CalendarController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="calendarId">The id of the calendar</param>
-    /// <returns></returns>
     [HttpGet("{calendarId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -127,7 +126,6 @@ public class CalendarController : Api.Controller.CalendarController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="calendarId">The id of the calendar</param>
-    /// <returns></returns>
     [HttpDelete("{calendarId}")]
     [ApiOperationId("DeleteCalendar")]
     public async Task<IActionResult> DeleteCalendarAsync(int tenantId, int calendarId)

@@ -18,11 +18,11 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
         FunctionType.ReportEnd
     ];
 
-    private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
-    {
+    private static readonly IEnumerable<string> EmbeddedScriptNames =
+    [
         "Report\\Report.cs",
         "Function\\ReportFunction.cs"
-    };
+    ];
 
     /// <summary>
     /// The payroll result report name

@@ -73,7 +73,7 @@ public class CaseRelationValidateRuntime : CaseRelationRuntimeBase, ICaseRelatio
         var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         if (caseField == null)
         {
-            throw new ScriptException($"Unknown case field {caseFieldName}");
+            throw new ScriptException($"Unknown case field {caseFieldName}.");
         }
 
         Issues.Add(new()
@@ -118,7 +118,7 @@ public class CaseRelationValidateRuntime : CaseRelationRuntimeBase, ICaseRelatio
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Validate script error in case relation {caseRelation}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Validate script error in case relation {caseRelation}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

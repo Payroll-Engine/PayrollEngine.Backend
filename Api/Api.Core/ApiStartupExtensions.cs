@@ -1,25 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using PayrollEngine.Persistence;
+using System.Globalization;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Hosting;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using PayrollEngine.Persistence;
 using DomainModel = PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Core;
 
 public static class ApiStartupExtensions
 {
+    // see also web.config
+    private const int MaxRequestBodySize = 2147483647;
+
     // ReSharper disable once UnusedMethodReturnValue.Global
     public static IServiceCollection AddApiServices(this IServiceCollection services,
         IConfiguration configuration, ApiSpecification specification, DomainModel.IDbContext dbContext)
@@ -44,10 +47,10 @@ public static class ApiStartupExtensions
         // IIS
         services.Configure<IISServerOptions>(options =>
         {
-            if (options.MaxRequestBodySize < int.MaxValue)
+            if (options.MaxRequestBodySize < MaxRequestBodySize)
             {
-                options.MaxRequestBodySize = int.MaxValue;
-                Log.Trace($"Increased IIS MaxRequestBodyBufferSize to {int.MaxValue}");
+                options.MaxRequestBodySize = MaxRequestBodySize;
+                Log.Trace($"Increased IIS MaxRequestBodyBufferSize to {MaxRequestBodySize}");
             }
         });
 
@@ -55,10 +58,10 @@ public static class ApiStartupExtensions
         services.Configure<KestrelServerOptions>(options =>
         {
             // if don't set default value is: 30 MB
-            if (options.Limits.MaxRequestBodySize < int.MaxValue)
+            if (options.Limits.MaxRequestBodySize < MaxRequestBodySize)
             {
-                options.Limits.MaxRequestBodySize = int.MaxValue;
-                Log.Trace($"Increased Kestrel MaxRequestBodySize to {int.MaxValue}");
+                options.Limits.MaxRequestBodySize = MaxRequestBodySize;
+                Log.Trace($"Increased Kestrel MaxRequestBodySize to {MaxRequestBodySize}");
             }
         });
 
@@ -97,6 +100,13 @@ public static class ApiStartupExtensions
         // swagger
         services.AddSwaggerGen(setupAction =>
         {
+            // api key
+            var apiKey = configuration.GetApiKey();
+            if (!string.IsNullOrWhiteSpace(apiKey))
+            {
+                setupAction.AddSwaggerApiKeySecurity();
+            }
+
             // ensure property names in camel case
             setupAction.DescribeAllParametersInCamelCase();
 
@@ -114,7 +124,7 @@ public static class ApiStartupExtensions
             // XML comments
             if (serverConfiguration.XmlCommentFileNames == null || !serverConfiguration.XmlCommentFileNames.Any())
             {
-                throw new PayrollException($"Missing XML comment files in configuration {nameof(PayrollServerConfiguration)}.{nameof(PayrollServerConfiguration.XmlCommentFileNames)}");
+                throw new PayrollException($"Missing XML comment files in configuration {nameof(PayrollServerConfiguration)}.{nameof(PayrollServerConfiguration.XmlCommentFileNames)}.");
             }
             var combinedXmlCommentFileName = SwaggerTool.CreateXmlCommentsFile(
                 specification.ApiDocumentationFileName, serverConfiguration.XmlCommentFileNames);
@@ -170,11 +180,18 @@ public static class ApiStartupExtensions
         }
 
         // logs
-        appLifetime.UseLog(appBuilder, environment, serverConfiguration.LogHttpRequests);
+        appLifetime.UseLog(configuration, appBuilder, environment, serverConfiguration.LogHttpRequests);
+
+        // api key
+        appBuilder.UseApiKey();
 
         // swagger
-        appBuilder.UseSwagger(specification.ApiDocumentationName, specification.ApiName,
-            specification.ApiVersion, serverConfiguration.DarkTheme);
+        appBuilder.UseSwagger(
+            apiDocumentationName: specification.ApiDocumentationName,
+            apiName: specification.ApiName,
+            apiVersion: specification.ApiVersion,
+            darkTheme: serverConfiguration.DarkTheme,
+            rootRedirect: true);
 
         // database
         if (serverConfiguration.DbTransactionTimeout > TimeSpan.Zero)

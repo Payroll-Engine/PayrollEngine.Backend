@@ -28,6 +28,6 @@ public class PayrunResultRepository() : ChildDomainRepository<PayrunResult>(DbSc
 
     protected override Task OnUpdatedAsync(IDbContext context, int parentId, PayrunResult payrunResult)
     {
-        throw new NotSupportedException("Update of payrun results is not supported");
+        throw new NotSupportedException("Update of payrun results is not supported.");
     }
 }

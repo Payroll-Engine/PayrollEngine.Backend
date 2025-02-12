@@ -49,9 +49,9 @@ public abstract class ScriptDomainObject : DomainObjectBase, IScriptObject, IEqu
     /// </summary>
     public virtual void Clear()
     {
-        Script = default;
-        Binary = default;
-        ScriptHash = default;
+        Script = null;
+        Binary = null;
+        ScriptHash = 0;
     }
 
     /// <inheritdoc />

@@ -111,7 +111,6 @@ public class TaskController : Api.Controller.TaskController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="taskId">The id of the task</param>
-    /// <returns></returns>
     [HttpDelete("{taskId}")]
     [ApiOperationId("DeleteTask")]
     public async Task<IActionResult> DeleteTaskAsync(int tenantId, int taskId)

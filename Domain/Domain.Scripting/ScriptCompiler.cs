@@ -95,7 +95,7 @@ public class ScriptCompiler
     {
         if (FunctionCodes.Count == 0)
         {
-            throw new PayrollException("Missing function code");
+            throw new PayrollException("Missing function code.");
         }
 
         // collect code to compile
@@ -136,7 +136,7 @@ public class ScriptCompiler
         var functionCode = CodeFactory.GetEmbeddedCodeFile($"Function\\{functionType}Function");
         if (string.IsNullOrWhiteSpace(functionCode))
         {
-            throw new PayrollException($"Missing embedded code for function {functionType} in {ScriptType}");
+            throw new PayrollException($"Missing embedded code for function {functionType} in {ScriptType}.");
         }
 
         // apply function expression to the source code region
@@ -151,7 +151,7 @@ public class ScriptCompiler
         var startIndex = template.IndexOf(startMarker, StringComparison.InvariantCulture);
         if (startIndex < 0)
         {
-            throw new PayrollException($"Missing start region with name {regionName} in script type {ScriptType}");
+            throw new PayrollException($"Missing start region with name {regionName} in script type {ScriptType}.");
         }
 
         // end
@@ -159,7 +159,7 @@ public class ScriptCompiler
         var endIndex = template.IndexOf(endMarker, startIndex + startMarker.Length, StringComparison.InvariantCulture);
         if (endIndex < 0)
         {
-            throw new PayrollException($"Missing end region with name {regionName} in script type {ScriptType}");
+            throw new PayrollException($"Missing end region with name {regionName} in script type {ScriptType}.");
         }
 
         // token replacement

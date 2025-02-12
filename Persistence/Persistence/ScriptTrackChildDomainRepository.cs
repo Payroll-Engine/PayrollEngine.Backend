@@ -34,11 +34,11 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string t
     // duplicated in Payrun!
     public virtual async Task RebuildAsync(IDbContext context, int parentId, int itemId)
     {
-        if (parentId == default)
+        if (parentId == 0)
         {
             throw new ArgumentException(nameof(parentId));
         }
-        if (itemId == default)
+        if (itemId == 0)
         {
             throw new ArgumentNullException(nameof(itemId));
         }
@@ -50,12 +50,12 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string t
         var item = await GetAsync(context, parentId, itemId);
         if (item == null)
         {
-            throw new PayrollException($"Unknown script object {typeof(TDomain)} with id {itemId}");
+            throw new PayrollException($"Unknown script object {typeof(TDomain)} with id {itemId}.");
         }
         var scriptObject = item as IScriptObject;
         if (scriptObject == null)
         {
-            throw new PayrollException($"Invalid script object {typeof(TDomain)} with id {itemId}");
+            throw new PayrollException($"Invalid script object {typeof(TDomain)} with id {itemId}.");
         }
 
         // rebuild script binary

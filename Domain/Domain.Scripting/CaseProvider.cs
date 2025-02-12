@@ -43,10 +43,10 @@ public sealed class CaseProvider : ICaseProvider
         PayrollRepository = payrollRepository ?? throw new ArgumentNullException(nameof(payrollRepository));
         RegulationDate = regulationDate.IsUtc()
             ? evaluationDate
-            : throw new ArgumentException("Regulation date must be UTC", nameof(regulationDate));
+            : throw new ArgumentException("Regulation date must be UTC.", nameof(regulationDate));
         EvaluationDate = evaluationDate.IsUtc()
             ? evaluationDate
-            : throw new ArgumentException("Evaluation date must be UTC", nameof(evaluationDate));
+            : throw new ArgumentException("Evaluation date must be UTC.", nameof(evaluationDate));
     }
 
     /// <inheritdoc />
@@ -65,6 +65,6 @@ public sealed class CaseProvider : ICaseProvider
                 RegulationDate = RegulationDate,
                 EvaluationDate = EvaluationDate
             },
-            null, new[] { caseName }, overrideType, clusterSet)).FirstOrDefault();
+            null, [caseName], overrideType, clusterSet)).FirstOrDefault();
     }
 }

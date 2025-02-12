@@ -14,7 +14,6 @@ public static class DomainEnumerableExtensions
     /// <param name="derivedObjects">The objects sorted from leaf to root</param>
     /// <param name="createdBefore">The object creation date</param>
     /// <typeparam name="T">The domain object</typeparam>
-    /// <returns></returns>
     public static T GetNewestObject<T>(this IEnumerable<T> derivedObjects, DateTime createdBefore) where T : IDomainObject
     {
         T result = default;
@@ -40,7 +39,6 @@ public static class DomainEnumerableExtensions
     /// <param name="derivedObjects">The objects sorted from leaf to root</param>
     /// <param name="scriptProvider">Object value provider function</param>
     /// <typeparam name="T">The domain object</typeparam>
-    /// <returns></returns>
     public static ICollection<T> GetDerivedExpressionObjects<T>(this IEnumerable<T> derivedObjects,
         Func<T, string> scriptProvider) where T : IDomainObject
     {

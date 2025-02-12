@@ -9378,11 +9378,6 @@ GO
 -- Update Payroll Engine Database Version
 -- --------------------------------------------------------------------------------
 
-IF DB_NAME() <> 'PayrollEngine' BEGIN
-  RAISERROR( 'Error: Wrong database, expecting PayrollEngine.', 16, 10 )
-  RETURN
-END
-
 -- database version
 DECLARE @errorID int
 INSERT INTO [Version] (
@@ -9393,15 +9388,15 @@ INSERT INTO [Version] (
 	[Description] )
 VALUES (
 	0,
-	5,
-	1,
+	9,
+	0,
 	CURRENT_USER,
-	'Payroll Engine: initial database setup' )
+	'Payroll Engine: Full setup v0.9.0' )
 SET @errorID = @@ERROR
 IF ( @errorID <> 0 ) BEGIN
 	PRINT 'Error while updating the Payroll Engine database version.'
 END
 ELSE BEGIN
-	PRINT 'Payroll Engine database version successfully updated to release 0.5.1'
+	PRINT 'Payroll Engine database version successfully updated to release 0.9.0'
 END
 

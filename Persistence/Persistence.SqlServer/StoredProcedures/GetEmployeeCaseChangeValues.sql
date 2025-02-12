@@ -105,23 +105,30 @@ BEGIN
   -- debug help
   --PRINT CAST(@pivotSql AS NTEXT);
 
-  -- transaction start
-  BEGIN TRANSACTION;
+  BEGIN TRY
 
-  -- start cleanup
-  DROP TABLE IF EXISTS ##EmployeeCaseChangeValuePivot;
+    -- transaction start
+    BEGIN TRANSACTION;
 
-  -- build pivot table
-  EXECUTE dbo.sp_executesql @pivotSql
+    -- start cleanup
+    DROP TABLE IF EXISTS ##EmployeeCaseChangeValuePivot;
 
-  -- apply query to pivot table
-  EXECUTE dbo.sp_executesql @sql
+    -- build pivot table
+    EXECUTE dbo.sp_executesql @pivotSql
 
-  -- end cleanup
-  DROP TABLE IF EXISTS ##EmployeeCaseChangeValuePivot
+    -- apply query to pivot table
+    EXECUTE dbo.sp_executesql @sql
 
-  -- transaction end
-  COMMIT TRANSACTION;
+    -- end cleanup
+    DROP TABLE IF EXISTS ##EmployeeCaseChangeValuePivot
+
+    -- transaction end
+    COMMIT TRANSACTION;
+  END TRY
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0
+      ROLLBACK TRANSACTION;
+  END CATCH;
 
 END
 GO

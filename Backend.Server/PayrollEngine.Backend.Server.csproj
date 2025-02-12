@@ -3,8 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Backend.Server</AssemblyName>
 		<RootNamespace>PayrollEngine.Backend.Server</RootNamespace>
-		<UserSecretsId>PayrollEngine.Backend.Server</UserSecretsId>
-		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+		<UserSecretsId>Backend</UserSecretsId>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<Description>Payroll Engine Backend Server</Description>
 	</PropertyGroup>
@@ -26,14 +25,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Serilog" Version="0.8.0-beta.2" />
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
-		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.1" />
-		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+		<PackageReference Include="PayrollEngine.Serilog" Version="0.9.0-beta.1" />
+		<PackageReference Include="Scalar.AspNetCore" Version="2.0.12" />
+		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-		<PackageReference Include="Serilog.Sinks.MSSqlServer" Version="6.6.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+		<PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.1.0" />
+		<PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="5.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,6 +45,9 @@
 
 	<ItemGroup>
 		<None Include="wwwroot\*" />
+		<Content Include="..\asset.json" Link="asset.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<Folder Include="wwwroot\images\" />
 		<Folder Include="wwwroot\swagger-ui\" />
 	</ItemGroup>

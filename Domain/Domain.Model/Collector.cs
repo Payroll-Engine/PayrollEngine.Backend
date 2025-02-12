@@ -16,12 +16,12 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
         FunctionType.CollectorApply,
         FunctionType.CollectorEnd
     ];
-    private static readonly IEnumerable<string> EmbeddedScriptNames = new[]
-    {
+    private static readonly IEnumerable<string> EmbeddedScriptNames =
+    [
         "Cache\\Cache.cs",
         "Function\\PayrunFunction.cs",
         "Function\\CollectorFunction.cs"
-    };
+    ];
 
     // collected values
     private readonly List<decimal> values = [];
@@ -130,7 +130,7 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     /// The collected result value restricted against the threshold value
     /// </summary>
     public decimal? ResultThreshold =>
-        Threshold.HasValue ? Math.Max(Result, Threshold.Value) : default;
+        Threshold.HasValue ? Math.Max(Result, Threshold.Value) : 0;
 
     /// <summary>
     /// The surplus of the collected result value against the threshold value

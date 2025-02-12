@@ -75,7 +75,6 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
     /// <param name="lookupValueId">The id of the lookup value</param>
-    /// <returns></returns>
     [HttpGet("{lookupValueId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -149,7 +148,6 @@ public class LookupValueController : Api.Controller.LookupValueController
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The id of the lookup</param>
     /// <param name="lookupValueId">The id of the lookup value</param>
-    /// <returns></returns>
     [HttpDelete("{lookupValueId}")]
     [ApiOperationId("DeleteLookupValue")]
     public async Task<IActionResult> DeleteLookupValueAsync(int tenantId,

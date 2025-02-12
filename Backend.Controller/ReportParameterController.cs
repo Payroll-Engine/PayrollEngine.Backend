@@ -124,7 +124,6 @@ public class ReportParameterController : Api.Controller.ReportParameterControlle
     /// <param name="regulationId">The tenant id</param>
     /// <param name="reportId">The report id</param>
     /// <param name="parameterId">The id of the report parameter</param>
-    /// <returns></returns>
     [HttpDelete("{parameterId}")]
     [ApiOperationId("DeleteReportParameter")]
     public async Task<IActionResult> DeleteReportParameterAsync(int tenantId,

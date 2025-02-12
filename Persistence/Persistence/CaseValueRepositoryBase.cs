@@ -26,12 +26,12 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         // test value period
         if (!caseValue.Start.HasValue && caseValue.End.HasValue)
         {
-            throw new PayrollException("Case value period without start date");
+            throw new PayrollException("Case value period without start date.");
         }
         if (caseValue.Start.HasValue && caseValue.End.HasValue &&
             caseValue.End < caseValue.Start)
         {
-            throw new PayrollException("Case value period end date before start date");
+            throw new PayrollException("Case value period end date before start date.");
         }
 
         // parent field
@@ -161,7 +161,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         }
         if (evaluationDate.HasValue && !evaluationDate.Value.IsUtc())
         {
-            throw new ArgumentException("Case value query moment must be UTC", nameof(evaluationDate));
+            throw new ArgumentException("Case value query moment must be UTC.", nameof(evaluationDate));
         }
 
         // query
@@ -209,11 +209,11 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         }
         if (!period.IsUtc)
         {
-            throw new ArgumentException("Case value query period must be UTC", nameof(period));
+            throw new ArgumentException("Case value query period must be UTC.", nameof(period));
         }
         if (evaluationDate.HasValue && !evaluationDate.Value.IsUtc())
         {
-            throw new ArgumentException("Case value query moment must be UTC", nameof(evaluationDate));
+            throw new ArgumentException("Case value query moment must be UTC.", nameof(evaluationDate));
         }
 
         // query
@@ -275,7 +275,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         }
         if (!period.IsUtc)
         {
-            throw new ArgumentException("Case value query period must be UTC", nameof(period));
+            throw new ArgumentException("Case value query period must be UTC.", nameof(period));
         }
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
@@ -321,11 +321,11 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         // check for valid case field name
         if (string.IsNullOrWhiteSpace(item.CaseFieldName))
         {
-            throw new PayrollException("Missing case field name");
+            throw new PayrollException("Missing case field name.");
         }
         if (!await CaseFieldRepository.ExistsAsync(context, DbSchema.CaseFieldColumn.Name, item.CaseFieldName))
         {
-            throw new PayrollException($"Unknown case field with name {item.CaseFieldName}");
+            throw new PayrollException($"Unknown case field with name {item.CaseFieldName}.");
         }
 
         return await base.CreateAsync(context, parentId, item);

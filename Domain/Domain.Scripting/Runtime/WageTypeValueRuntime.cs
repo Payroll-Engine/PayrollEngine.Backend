@@ -57,7 +57,7 @@ public class WageTypeValueRuntime : WageTypeRuntimeBase, IWageTypeValueRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Value script error in wage type {wageType.WageTypeNumber.ToString("0.####", CultureInfo.InvariantCulture)}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Value script error in wage type {wageType.WageTypeNumber.ToString("0.####", CultureInfo.InvariantCulture)}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

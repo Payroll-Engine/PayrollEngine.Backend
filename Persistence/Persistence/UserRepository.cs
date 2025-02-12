@@ -2,8 +2,8 @@
 using System.Text;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -26,7 +26,7 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
         parameters.Add(nameof(user.Culture), user.Culture);
         parameters.Add(nameof(user.UserType), user.UserType);
         parameters.Add(nameof(user.Attributes), JsonSerializer.SerializeNamedDictionary(user.Attributes));
-        base.GetObjectCreateData(user, parameters);
+        base.GetObjectData(user, parameters);
     }
 
     /// <inheritdoc />
@@ -36,23 +36,37 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
         {
             throw new ArgumentException(nameof(password));
         }
+        if (!UserPassword.IsValid(password))
+        {
+            return false;
+        }
+
         var user = await GetAsync(context, tenantId, userId);
         if (user == null)
         {
-            throw new PayrollException($"Unknown user with id {userId}");
+            throw new PayrollException($"Unknown user with id {userId}.");
         }
 
         // compare password
-        return TestPassword(user, password);
+        return VerifyPassword(user, password);
     }
 
     /// <inheritdoc />
     public async System.Threading.Tasks.Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, PasswordChangeRequest changeRequest)
     {
+        if (changeRequest == null)
+        {
+            throw new ArgumentNullException(nameof(changeRequest));
+        }
+        if (!UserPassword.IsValid(changeRequest.NewPassword))
+        {
+            throw new PayrollException("Invalid new user password.");
+        }
+
         var user = await GetAsync(context, tenantId, userId);
         if (user == null)
         {
-            throw new PayrollException($"Unknown user with id {userId}");
+            throw new PayrollException($"Unknown user with id {userId}.");
         }
 
         // existing password
@@ -61,13 +75,13 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
             // test existing password
             if (string.IsNullOrWhiteSpace(changeRequest.ExistingPassword))
             {
-                throw new PayrollException("Missing existing password");
+                throw new PayrollException("Missing existing password.");
             }
 
             // validate existing password
-            if (!TestPassword(user, changeRequest.ExistingPassword))
+            if (!VerifyPassword(user, changeRequest.ExistingPassword))
             {
-                throw new PayrollException("Invalid password");
+                throw new PayrollException("Invalid password.");
             }
 
             // password reset
@@ -105,10 +119,6 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
         txScope.Complete();
     }
 
-    private static bool TestPassword(User user, string password)
-    {
-        var existingHashSalt = new HashSalt(user.Password, user.StoredSalt);
-        var testHashSalt = password.ToHashSalt(user.StoredSalt);
-        return existingHashSalt.Equals(testHashSalt);
-    }
+    private static bool VerifyPassword(User user, string verifyPassword) =>
+        UserPassword.VerifyPassword(user.Password, user.StoredSalt, verifyPassword);
 }

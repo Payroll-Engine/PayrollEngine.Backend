@@ -46,7 +46,6 @@ public class RegulationController : Api.Controller.RegulationController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
-    /// <returns></returns>
     [HttpGet("{regulationId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -136,7 +135,6 @@ public class RegulationController : Api.Controller.RegulationController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
-    /// <returns></returns>
     [HttpDelete("{regulationId}")]
     [ApiOperationId("DeleteRegulation")]
     public async Task<IActionResult> DeleteRegulationAsync(int tenantId, int regulationId)

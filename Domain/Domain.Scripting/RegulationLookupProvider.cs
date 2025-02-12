@@ -75,7 +75,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         // unknown lookup
         if (!DerivedLookups[lookupName].Any())
         {
-            throw new ArgumentException($"Missing lookup with name {lookupName}");
+            throw new ArgumentException($"Missing lookup with name {lookupName}.");
         }
 
         // derived lookups
@@ -85,14 +85,14 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             var regulationId = await LookupSetRepository.GetParentIdAsync(context, lookup.Id);
             if (!regulationId.HasValue)
             {
-                throw new ArgumentException($"Invalid lookup with name {lookupName}");
+                throw new ArgumentException($"Invalid lookup with name {lookupName}.");
             }
 
             // lookup tenant
             var tenantId = await RegulationRepository.GetParentIdAsync(context, regulationId.Value);
             if (!tenantId.HasValue)
             {
-                throw new ArgumentException($"Invalid lookup with name {lookupName}");
+                throw new ArgumentException($"Invalid lookup with name {lookupName}.");
             }
 
             // lookup value
@@ -130,7 +130,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         // unknown lookup
         if (!DerivedLookups[lookupName].Any())
         {
-            throw new ArgumentException($"Missing lookup with name {lookupName}");
+            throw new ArgumentException($"Missing lookup with name {lookupName}.");
         }
 
         // derived lookups
@@ -140,14 +140,14 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             var regulationId = await LookupSetRepository.GetParentIdAsync(context, lookup.Id);
             if (!regulationId.HasValue)
             {
-                throw new ArgumentException($"Invalid lookup with name {lookupName}");
+                throw new ArgumentException($"Invalid lookup with name {lookupName}.");
             }
 
             // lookup tenant
             var tenantId = await RegulationRepository.GetParentIdAsync(context, regulationId.Value);
             if (!tenantId.HasValue)
             {
-                throw new ArgumentException($"Invalid lookup with name {lookupName}");
+                throw new ArgumentException($"Invalid lookup with name {lookupName}.");
             }
 
             // lookup value

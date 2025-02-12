@@ -87,7 +87,7 @@ internal sealed class PayrollRepositoryScriptCommand : PayrollRepositoryCommandB
             var regulationId = await scriptRepository.GetParentIdAsync(DbContext, script.Id);
             if (!regulationId.HasValue)
             {
-                throw new PayrollException($"Unknown regulation of script {script.Name} with id {script.Id}");
+                throw new PayrollException($"Unknown regulation of script {script.Name} with id {script.Id}.");
             }
             var scriptSet = await scriptRepository.GetAsync(DbContext, regulationId.Value, script.Id);
             scriptSets.Add(scriptSet);

@@ -38,7 +38,7 @@ public class CaseBuildRuntime : CaseChangeRuntimeBase, ICaseBuildRuntime
         var caseField = GetCaseFieldSet(caseFieldName);
         if (caseField == null)
         {
-            throw new ArgumentException($"unknown case field {caseFieldName}");
+            throw new ArgumentException($"unknown case field {caseFieldName}.");
         }
         return caseField.BuildActions == null ? [] : caseField.BuildActions.ToArray();
     }
@@ -69,7 +69,7 @@ public class CaseBuildRuntime : CaseChangeRuntimeBase, ICaseBuildRuntime
         }
         catch (Exception exception)
         {
-            throw new ScriptException($"Build script error in case {CaseName}: {exception.GetBaseMessage()}", exception);
+            throw new ScriptException($"Build script error in case {CaseName}: {exception.GetBaseMessage()}.", exception);
         }
     }
 }

@@ -28,6 +28,6 @@ public class WageTypeCustomResultRepository() : ChildDomainRepository<WageTypeCu
 
     protected override Task OnUpdatedAsync(IDbContext context, int wageTypeResultId, WageTypeCustomResult customResult)
     {
-        throw new NotSupportedException("Update of wage type custom results is not supported");
+        throw new NotSupportedException("Update of wage type custom results is not supported.");
     }
 }

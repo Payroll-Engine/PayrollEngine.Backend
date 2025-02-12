@@ -305,7 +305,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         GetObjectCreateData(item, parameters);
         if (!parameters.HasAny)
         {
-            throw new PayrollException($"Missing object data for object {item}");
+            throw new PayrollException($"Missing object data for object {item}.");
         }
 
         parameters.Add(DbSchema.ObjectColumn.Status, item.Status);

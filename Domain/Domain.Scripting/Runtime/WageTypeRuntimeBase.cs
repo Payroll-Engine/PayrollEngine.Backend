@@ -116,7 +116,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
 
         var wageTypeResult =
             CurrentPayrollResult.WageTypeResults.FirstOrDefault(wtr => wtr.WageTypeNumber == wageTypeNumber);
-        return wageTypeResult?.Value ?? default;
+        return wageTypeResult?.Value ?? 0;
     }
 
     /// <inheritdoc />
@@ -129,7 +129,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
 
         var collectorResult =
             CurrentPayrollResult.CollectorResults.FirstOrDefault(cr => string.Equals(cr.CollectorName, collectorName));
-        return collectorResult?.Value ?? default;
+        return collectorResult?.Value ?? 0;
     }
 
     /// <inheritdoc />
@@ -170,7 +170,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
         }
         if (startDate >= endDate)
         {
-            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}");
+            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}.");
         }
 
         // ensure attributes collection
@@ -179,7 +179,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
         // value type
         if (!Enum.IsDefined(typeof(ValueType), valueType))
         {
-            throw new ArgumentException($"Unknown value type: {valueType}");
+            throw new ArgumentException($"Unknown value type: {valueType}.");
         }
 
         // result
@@ -210,7 +210,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
         }
         if (startDate >= endDate)
         {
-            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}");
+            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}.");
         }
 
         // ensure attributes collection
@@ -224,7 +224,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
         }
         if (!wageTypeValueType.IsNumber())
         {
-            throw new ScriptException($"Value type for wage type result must be numeric: {wageTypeValueType}");
+            throw new ScriptException($"Value type for wage type result must be numeric: {wageTypeValueType}.");
         }
 
         // result
@@ -253,7 +253,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
     {
         if (scheduleDate >= EvaluationPeriod.Start)
         {
-            throw new ArgumentOutOfRangeException(nameof(scheduleDate), $"Retro date {scheduleDate} must be before the evaluation period {EvaluationPeriod.Start}");
+            throw new ArgumentOutOfRangeException(nameof(scheduleDate), $"Retro date {scheduleDate} must be before the evaluation period {EvaluationPeriod.Start}.");
         }
         RetroJobs.Add(new() { ScheduleDate = scheduleDate, ResultTags = resultTags });
     }

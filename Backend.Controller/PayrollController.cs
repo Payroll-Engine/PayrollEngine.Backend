@@ -51,7 +51,6 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <returns></returns>
     [HttpGet("{payrollId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -123,7 +122,6 @@ public class PayrollController : Api.Controller.PayrollController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrollId">The payroll id</param>
-    /// <returns></returns>
     [HttpDelete("{payrollId}")]
     [ApiOperationId("DeletePayroll")]
     public async Task<IActionResult> DeletePayrollAsync(int tenantId, int payrollId)

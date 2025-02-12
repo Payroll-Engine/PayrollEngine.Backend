@@ -76,7 +76,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     public Tuple<DateTime, DateTime> RetroPeriod =>
         ParentPayrunJob != null
             ? new Tuple<DateTime, DateTime>(ParentPayrunJob.PeriodStart, ParentPayrunJob.PeriodEnd)
-            : default;
+            : null;
 
     /// <inheritdoc />
     public string Forecast => PayrunJob.Forecast;
@@ -274,7 +274,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         }
         else
         {
-            throw new PayrollException("Missing employee on consolidated collector result request");
+            throw new PayrollException("Missing employee on consolidated collector result request.");
         }
 
 
@@ -316,7 +316,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         var consolidatedResults = new List<Tuple<decimal, string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (EmployeeId == null)
         {
-            throw new PayrollException("Missing employee on consolidated collector custom result request");
+            throw new PayrollException("Missing employee on consolidated collector custom result request.");
         }
 
         var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
@@ -358,7 +358,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         }
         if (!EmployeeId.HasValue)
         {
-            throw new PayrollException("Missing employee on retro wage type result request");
+            throw new PayrollException("Missing employee on retro wage type result request.");
         }
 
         var results = new List<decimal>();
@@ -371,7 +371,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                     TenantId = TenantId,
                     EmployeeId = EmployeeId.Value,
                     DivisionId = PayrunJob.DivisionId,
-                    WageTypeNumbers = new[] { wageTypeNumber },
+                    WageTypeNumbers = [wageTypeNumber],
                     Forecast = forecast,
                     Tags = tags,
                     JobStatus = (PayrunJobStatus?)jobStatus,
@@ -383,7 +383,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                 retroResults.Sort((x, y) => DateTime.Compare(x.Start, y.Start));
                 if (!EmployeeId.HasValue)
                 {
-                    throw new PayrollException("Missing employee on retro wage type result request");
+                    throw new PayrollException("Missing employee on retro wage type result request.");
                 }
 
                 //  results period
@@ -395,7 +395,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                         TenantId = TenantId,
                         EmployeeId = EmployeeId.Value,
                         DivisionId = PayrunJob.DivisionId,
-                        WageTypeNumbers = new[] { wageTypeNumber },
+                        WageTypeNumbers = [wageTypeNumber],
                         Period = new(periodStart, periodEnd),
                         Forecast = forecast,
                         Tags = tags
@@ -448,7 +448,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         }
         if (!EmployeeId.HasValue)
         {
-            throw new PayrollException("Missing employee on wage type result request");
+            throw new PayrollException("Missing employee on wage type result request.");
         }
 
         if (start >= end)
@@ -489,7 +489,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         }
         if (!EmployeeId.HasValue)
         {
-            throw new PayrollException("Missing employee on wage type custom result request");
+            throw new PayrollException("Missing employee on wage type custom result request.");
         }
 
         if (start >= end)
@@ -547,7 +547,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         var consolidatedResults = new List<Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (EmployeeId == null)
         {
-            throw new PayrollException("Missing employee on consolidated collector custom result request");
+            throw new PayrollException("Missing employee on consolidated collector custom result request.");
         }
 
         // iterate from the start period until the job period
@@ -612,7 +612,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         var consolidatedResults = new List<Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (EmployeeId == null)
         {
-            throw new PayrollException("Missing employee on consolidated collector custom result request");
+            throw new PayrollException("Missing employee on consolidated collector custom result request.");
         }
 
         // iterate from the start period until the job period
@@ -664,7 +664,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         }
         if (!EmployeeId.HasValue)
         {
-            throw new PayrollException("Missing employee on collector result request");
+            throw new PayrollException("Missing employee on collector result request.");
         }
 
         if (start >= end)
@@ -707,7 +707,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         }
         if (!EmployeeId.HasValue)
         {
-            throw new PayrollException("Missing employee on wage type custom result request");
+            throw new PayrollException("Missing employee on wage type custom result request.");
         }
 
         if (start >= end)

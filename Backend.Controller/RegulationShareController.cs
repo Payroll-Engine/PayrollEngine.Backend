@@ -34,7 +34,6 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     /// Get a regulation share
     /// </summary>
     /// <param name="shareId">The regulation share id</param>
-    /// <returns></returns>
     [HttpGet("{shareId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -123,7 +122,6 @@ public class RegulationShareController : Api.Controller.RegulationShareControlle
     /// Delete a regulation share
     /// </summary>
     /// <param name="shareId">The regulation share id</param>
-    /// <returns></returns>
     [HttpDelete("{shareId}")]
     [ApiOperationId("DeleteRegulationShare")]
     public async Task<IActionResult> DeleteRegulationShareAsync(int shareId) =>

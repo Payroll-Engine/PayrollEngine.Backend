@@ -45,7 +45,6 @@ public class PayrunController : Api.Controller.PayrunController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrunId">The id of the payrun</param>
-    /// <returns></returns>
     [HttpGet("{payrunId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -132,7 +131,6 @@ public class PayrunController : Api.Controller.PayrunController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrunId">The id of the payrun</param>
-    /// <returns></returns>
     [HttpDelete("{payrunId}")]
     [ApiOperationId("DeletePayrun")]
     public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId)

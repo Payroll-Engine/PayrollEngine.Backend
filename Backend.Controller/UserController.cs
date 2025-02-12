@@ -46,7 +46,6 @@ public class UserController : Api.Controller.UserController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="userId">The id of the user</param>
-    /// <returns></returns>
     [HttpGet("{userId}")]
     [OkResponse]
     [NotFoundResponse]
@@ -116,7 +115,6 @@ public class UserController : Api.Controller.UserController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="userId">The id of the user</param>
-    /// <returns></returns>
     [HttpDelete("{userId}")]
     [ApiOperationId("DeleteUser")]
     public async Task<IActionResult> DeleteUserAsync(int tenantId, int userId)
