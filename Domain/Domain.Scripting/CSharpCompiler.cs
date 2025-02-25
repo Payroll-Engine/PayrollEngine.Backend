@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 
 namespace PayrollEngine.Domain.Scripting;
@@ -271,11 +272,7 @@ internal sealed class CSharpCompiler
         // error handling
         if (!compilation.Success)
         {
-            var failures = compilation.Diagnostics.Where(diagnostic =>
-                    diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error)
-                .Select(x => x.ToString())
-                .ToList();
-            throw new ScriptCompileException(failures);
+            throw new ScriptCompileException(GetCompilerFailures(compilation));
         }
 
         // build the assembly
@@ -292,6 +289,20 @@ internal sealed class CSharpCompiler
         LogStopwatch.Stop(nameof(CompileAssembly));
 
         return result;
+    }
+
+    private List<string> GetCompilerFailures(EmitResult compilation)
+    {
+        var failures = new List<string>();
+        foreach (var diagnostic in compilation.Diagnostics.Where(diagnostic =>
+                     diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error))
+        {
+            var failure = $"{diagnostic.GetMessage()}";
+            var spanStart = diagnostic.Location.GetLineSpan().Span.Start;
+            failure += $" [{diagnostic.Id}: Line {spanStart.Line + 1}, Column {spanStart.Character + 1}]";
+            failures.Add(failure);
+        }
+        return failures;
     }
 
     private string GetAssemblyAttributes()

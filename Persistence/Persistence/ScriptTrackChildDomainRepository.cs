@@ -96,7 +96,7 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string t
         var embeddedScripts = scriptObject.GetEmbeddedScriptNames();
 
         // compilation
-        var result = new ScriptCompiler(typeof(TDomain), functionScripts, scripts, embeddedScripts).Compile();
+        var result = new ScriptCompiler(item, functionScripts, scripts, embeddedScripts).Compile();
 
         // result
         if (result == null)

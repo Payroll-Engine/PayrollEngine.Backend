@@ -310,21 +310,28 @@ public abstract class DerivedCaseTool : FunctionToolBase
                 }
                 else if (initValues)
                 {
-                    // no default values: get case value at the evaluation date
-                    if (caseField.DefaultStart == null && caseField.DefaultEnd == null &&
-                        caseField.DefaultValue == null)
+                    var caseValueReference = new CaseValueReference(caseField.Name, caseSlot);
+                    var currentCaseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(
+                        valueDate: EvaluationDate,
+                        caseType: derivedCase.CaseType,
+                        caseFieldNames: [caseValueReference.Reference])).FirstOrDefault();
+                    if (currentCaseValue != null)
                     {
-                        var caseValueReference = new CaseValueReference(caseField.Name, caseSlot);
-                        var currentCaseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(
-                            EvaluationDate, derivedCase.CaseType, [caseValueReference.Reference])).FirstOrDefault();
-                        if (currentCaseValue != null)
+                        if (caseField.DefaultStart == null)
                         {
                             caseField.Start = currentCaseValue.Start;
-                            caseField.End = currentCaseValue.End;
-                            caseField.Value = currentCaseValue.Value;
-                            caseField.CancellationDate = currentCaseValue.CancellationDate;
                         }
+                        if (caseField.DefaultEnd == null)
+                        {
+                            caseField.End = currentCaseValue.End;
+                        }
+                        if (caseField.DefaultValue == null)
+                        {
+                            caseField.Value = currentCaseValue.Value;
+                        }
+                        caseField.CancellationDate = currentCaseValue.CancellationDate;
                     }
+
                     // default value
                     else if (!string.IsNullOrWhiteSpace(caseField.DefaultValue))
                     {

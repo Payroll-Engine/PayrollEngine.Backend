@@ -81,7 +81,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             // tenant
             query.TenantId = query.TenantId;
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -625,7 +625,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
 
         // authorization
         var authResult = await TenantRequestAsync(query.TenantId);
-        if(authResult != null)
+        if (authResult != null)
         {
             return authResult;
         }
@@ -794,7 +794,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(tenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -841,17 +841,51 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             Employee = settings.Employee
         });
 
+        // [culture by priority]: employee > division > tenant > system
+        var culture =
+            // priority 1: employee culture
+            settings.Employee?.Culture ??
+            // priority 2: division culture
+            settings.Division?.Culture ??
+            // priority 3: tenant culture
+            settings.Tenant.Culture ??
+            // priority 4: system culture
+            CultureInfo.CurrentCulture.Name;
+
+        // payroll calculator
+        var calculator = Context.PayrollCalculatorProvider.CreateCalculator(
+            tenantId: settings.Tenant.Id,
+            userId: settings.User?.Id,
+            culture: new(culture),
+            calendar: calendar);
+
         // case values maybe changed during the validation
         var issues = settings.CaseType switch
         {
-            CaseType.Global => await validator.ValidateGlobalCaseAsync(settings.ValidationCase.Name, null,
-                settings.DomainCaseChangeSetup, settings.CancellationDate),
-            CaseType.National => await validator.ValidateNationalCaseAsync(settings.ValidationCase.Name, null,
-                settings.DomainCaseChangeSetup, settings.CancellationDate),
-            CaseType.Company => await validator.ValidateCompanyCaseAsync(settings.ValidationCase.Name, null,
-                settings.DomainCaseChangeSetup, settings.CancellationDate),
-            CaseType.Employee => await validator.ValidateEmployeeCaseAsync(settings.ValidationCase.Name, null,
-                settings.DomainCaseChangeSetup, settings.CancellationDate),
+            CaseType.Global => await validator.ValidateGlobalCaseAsync(
+                caseName: settings.ValidationCase.Name,
+                caseSlot: null,
+                caseChangeSetup: settings.DomainCaseChangeSetup,
+                calculator: calculator,
+                cancellationDate: settings.CancellationDate),
+            CaseType.National => await validator.ValidateNationalCaseAsync(
+                caseName: settings.ValidationCase.Name,
+                caseSlot: null,
+                caseChangeSetup: settings.DomainCaseChangeSetup,
+                calculator: calculator,
+                cancellationDate: settings.CancellationDate),
+            CaseType.Company => await validator.ValidateCompanyCaseAsync(
+                caseName: settings.ValidationCase.Name,
+                caseSlot: null,
+                caseChangeSetup: settings.DomainCaseChangeSetup,
+                calculator: calculator,
+                cancellationDate: settings.CancellationDate),
+            CaseType.Employee => await validator.ValidateEmployeeCaseAsync(
+                caseName: settings.ValidationCase.Name,
+                caseSlot: null,
+                caseChangeSetup: settings.DomainCaseChangeSetup,
+                calculator: calculator,
+                cancellationDate: settings.CancellationDate),
             _ => throw new ArgumentOutOfRangeException()
         };
 
@@ -883,14 +917,14 @@ public abstract class PayrollController(IPayrollContextService context, IControl
     #region Payroll Regulation Items
 
     protected async Task<ActionResult<ApiObject.Case[]>> GetPayrollCasesAsync(
-        DomainObject.PayrollQuery query, CaseType? caseType, string[] caseNames, 
+        DomainObject.PayrollQuery query, CaseType? caseType, string[] caseNames,
         OverrideType? overrideType, string clusterSetName, bool? hidden = null)
     {
         try
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -948,7 +982,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1007,7 +1041,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // authorization
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1067,7 +1101,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1123,7 +1157,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1179,7 +1213,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1232,7 +1266,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1280,7 +1314,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1368,7 +1402,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
     {
         // verify tenant
         var authResult = await TenantRequestAsync(query.TenantId);
-        if(authResult != null)
+        if (authResult != null)
         {
             return authResult;
         }
@@ -1412,7 +1446,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1458,7 +1492,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1500,7 +1534,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1544,7 +1578,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1589,7 +1623,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         {
             // tenant
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -1662,7 +1696,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
 
             // authorization
             var authResult = await TenantRequestAsync(query.TenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return new(querySetup, authResult);
             }

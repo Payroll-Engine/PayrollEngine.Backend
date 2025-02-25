@@ -12,9 +12,19 @@ namespace PayrollEngine.Domain.Scripting;
 public class ScriptCompiler
 {
     /// <summary>
-    /// Script type
+    /// Script owner
     /// </summary>
-    private Type ScriptType { get; }
+    private object ScriptOwner { get; }
+
+    /// <summary>
+    /// Script owner type
+    /// </summary>
+    private Type ScriptOwnerType => ScriptOwner.GetType();
+
+    /// <summary>
+    /// Owner name
+    /// </summary>
+    private string ScriptOwnerName { get; }
 
     /// <summary>
     /// Object codes
@@ -37,14 +47,24 @@ public class ScriptCompiler
     /// <summary>
     /// Initializes a new instance of the <see cref="ScriptCompiler"/> class
     /// </summary>
-    public ScriptCompiler(Type scriptType, IDictionary<FunctionType, string> functionScripts,
+    /// <param name="scriptOwner">The script owner</param>
+    /// <param name="functionScripts">The function scripts</param>
+    /// <param name="scripts">The scripts</param>
+    /// <param name="embeddedScripts">The embedded scripts</param>
+    public ScriptCompiler(object scriptOwner, IDictionary<FunctionType, string> functionScripts,
         IEnumerable<Script> scripts = null, IEnumerable<string> embeddedScripts = null)
     {
-        ScriptType = scriptType ?? throw new ArgumentNullException(nameof(scriptType));
-        if (!typeof(IScriptObject).IsAssignableFrom(scriptType))
+        // script owner
+        ScriptOwner = scriptOwner ?? throw new ArgumentNullException(nameof(scriptOwner));
+        if (!typeof(IScriptObject).IsAssignableFrom(ScriptOwnerType))
         {
-            throw new ArgumentException(nameof(scriptType));
+            throw new ArgumentException(nameof(ScriptOwnerType));
         }
+        ScriptOwnerName = scriptOwner is INamedObject namedObject ?
+            namedObject.Name :
+            ScriptOwnerType.Name;
+
+        // function scripts
         if (functionScripts == null)
         {
             throw new ArgumentNullException(nameof(functionScripts));
@@ -117,8 +137,8 @@ public class ScriptCompiler
         }
 
         // compile code
-        var compiler = new CSharpCompiler(ScriptType.FullName);
-        return compiler.CompileAssembly(new List<string>(codes));
+        var compiler = new CSharpCompiler(assemblyName: ScriptOwnerType.FullName);
+        return compiler.CompileAssembly(codes);
     }
 
     /// <summary>
@@ -136,7 +156,7 @@ public class ScriptCompiler
         var functionCode = CodeFactory.GetEmbeddedCodeFile($"Function\\{functionType}Function");
         if (string.IsNullOrWhiteSpace(functionCode))
         {
-            throw new PayrollException($"Missing embedded code for function {functionType} in {ScriptType}.");
+            throw new PayrollException($"Missing embedded code for function {functionType} in script {ScriptOwnerName} [{ScriptOwnerType}].");
         }
 
         // apply function expression to the source code region
@@ -151,7 +171,7 @@ public class ScriptCompiler
         var startIndex = template.IndexOf(startMarker, StringComparison.InvariantCulture);
         if (startIndex < 0)
         {
-            throw new PayrollException($"Missing start region with name {regionName} in script type {ScriptType}.");
+            throw new PayrollException($"Missing start region with name {regionName} in script {ScriptOwnerName} [{ScriptOwnerType}].");
         }
 
         // end
@@ -159,7 +179,7 @@ public class ScriptCompiler
         var endIndex = template.IndexOf(endMarker, startIndex + startMarker.Length, StringComparison.InvariantCulture);
         if (endIndex < 0)
         {
-            throw new PayrollException($"Missing end region with name {regionName} in script type {ScriptType}.");
+            throw new PayrollException($"Missing end region with name {regionName} in script {ScriptOwnerName} [{ScriptOwnerType}].");
         }
 
         // token replacement

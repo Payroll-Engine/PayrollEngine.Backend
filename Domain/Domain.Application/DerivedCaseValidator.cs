@@ -60,23 +60,28 @@ public class DerivedCaseValidator : DerivedCaseTool
     }
 
     public async Task<List<CaseValidationIssue>> ValidateGlobalCaseAsync(string caseName, string caseSlot,
-        CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
-        await ValidateCaseAsync(CaseType.Global, caseName, caseSlot, caseChangeSetup, cancellationDate);
+        CaseChangeSetup caseChangeSetup, IPayrollCalculator calculator,
+        DateTime? cancellationDate = null) =>
+        await ValidateCaseAsync(CaseType.Global, caseName, caseSlot, caseChangeSetup, calculator, cancellationDate);
 
     public async Task<List<CaseValidationIssue>> ValidateNationalCaseAsync(string caseName, string caseSlot,
-        CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
-        await ValidateCaseAsync(CaseType.National, caseName, caseSlot, caseChangeSetup, cancellationDate);
+        CaseChangeSetup caseChangeSetup, IPayrollCalculator calculator,
+        DateTime? cancellationDate = null) =>
+        await ValidateCaseAsync(CaseType.National, caseName, caseSlot, caseChangeSetup, calculator, cancellationDate);
 
     public async Task<List<CaseValidationIssue>> ValidateCompanyCaseAsync(string caseName, string caseSlot,
-        CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
-        await ValidateCaseAsync(CaseType.Company, caseName, caseSlot, caseChangeSetup, cancellationDate);
+        CaseChangeSetup caseChangeSetup, IPayrollCalculator calculator,
+        DateTime? cancellationDate = null) =>
+        await ValidateCaseAsync(CaseType.Company, caseName, caseSlot, caseChangeSetup, calculator, cancellationDate);
 
     public async Task<List<CaseValidationIssue>> ValidateEmployeeCaseAsync(string caseName, string caseSlot,
-        CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null) =>
-        await ValidateCaseAsync(CaseType.Employee, caseName, caseSlot, caseChangeSetup, cancellationDate);
+        CaseChangeSetup caseChangeSetup, IPayrollCalculator calculator,
+        DateTime? cancellationDate = null) =>
+        await ValidateCaseAsync(CaseType.Employee, caseName, caseSlot, caseChangeSetup, calculator, cancellationDate);
 
     private async Task<List<CaseValidationIssue>> ValidateCaseAsync(CaseType caseType, string caseName,
-        string caseSlot, CaseChangeSetup caseChangeSetup, DateTime? cancellationDate = null)
+        string caseSlot, CaseChangeSetup caseChangeSetup, IPayrollCalculator calculator,
+        DateTime? cancellationDate = null)
     {
         if (string.IsNullOrWhiteSpace(caseName))
         {
@@ -163,7 +168,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         foreach (var field in fields)
         {
             // validate case field
-            var caseFieldIssues = ValidateCaseField(caseSet, field);
+            var caseFieldIssues = ValidateCaseField(caseSet, field, calculator);
             if (caseFieldIssues != null && caseFieldIssues.Any())
             {
                 issues.AddRange(caseFieldIssues);
@@ -229,14 +234,23 @@ public class DerivedCaseValidator : DerivedCaseTool
         return issues;
     }
 
-    private List<CaseValidationIssue> ValidateCaseField(Case @case, CaseFieldSet caseFieldSet)
+    private List<CaseValidationIssue> ValidateCaseField(Case @case, CaseFieldSet caseFieldSet,
+        IPayrollCalculator calculator)
     {
         var issues = new List<CaseValidationIssue>();
 
         // start date type
         if (caseFieldSet.Start.HasValue)
         {
-            if (!caseFieldSet.StartDateType.IsStartMatching(caseFieldSet.Start.Value))
+            var expected = ValidatePeriodCycleDate(
+                calculator: calculator,
+                dateType: caseFieldSet.StartDateType,
+                test: caseFieldSet.Start.Value);
+            if (expected == null && !caseFieldSet.StartDateType.IsStartMatching(caseFieldSet.Start.Value))
+            {
+                expected = caseFieldSet.StartDateType.ToString();
+            }
+            if (expected != null)
             {
                 issues.Add(new()
                 {
@@ -248,7 +262,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                     CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
                     CaseFieldName = caseFieldSet.Name,
                     CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
-                    Message = $"Case field {caseFieldSet.Name}: invalid start date {caseFieldSet.Start.Value.ToPeriodStartString()}, expected {caseFieldSet.StartDateType}"
+                    Message = $"Case field {caseFieldSet.Name}: invalid start date {caseFieldSet.Start.Value.ToPeriodStartString()}, expected {expected}"
                 });
             }
         }
@@ -256,7 +270,15 @@ public class DerivedCaseValidator : DerivedCaseTool
         // end date type
         if (caseFieldSet.End.HasValue)
         {
-            if (!caseFieldSet.EndDateType.IsEndMatching(caseFieldSet.End.Value))
+            var expected = ValidatePeriodCycleDate(
+                calculator: calculator,
+                dateType: caseFieldSet.EndDateType,
+                test: caseFieldSet.End.Value);
+            if (expected == null && !caseFieldSet.EndDateType.IsEndMatching(caseFieldSet.End.Value))
+            {
+                expected = caseFieldSet.EndDateType.ToString();
+            }
+            if (expected != null)
             {
                 issues.Add(new()
                 {
@@ -268,7 +290,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                     CaseSlotLocalizations = caseFieldSet.CaseSlotLocalizations,
                     CaseFieldName = caseFieldSet.Name,
                     CaseFieldNameLocalizations = caseFieldSet.NameLocalizations,
-                    Message = $"Case field {caseFieldSet.Name}: invalid end date {caseFieldSet.End.Value.ToPeriodStartString()}, expected {caseFieldSet.EndDateType}"
+                    Message = $"Case field {caseFieldSet.Name}: invalid end date {caseFieldSet.End.Value.ToPeriodStartString()}, expected {expected}"
                 });
             }
         }
@@ -348,6 +370,35 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
 
         return issues;
+    }
+
+    private string ValidatePeriodCycleDate(IPayrollCalculator calculator, CaseFieldDateType dateType, DateTime test)
+    {
+        var period = calculator.GetPayrunPeriod(test);
+        var cycle = calculator.GetPayrunCycle(test);
+        return dateType switch
+        {
+            CaseFieldDateType.PeriodStart =>
+                Equals(test, period.Start) ? null : $"{period.Start:g} (start of period {period})",
+            CaseFieldDateType.PeriodStartDate =>
+                Equals(test.Date, period.Start.Date) ? null : $"{period.Start.Date:g} (start date of period {period})",
+
+            CaseFieldDateType.PeriodEnd =>
+                Equals(test, period.End) ? null : $"{period.End:g} (end of period {period} )",
+            CaseFieldDateType.PeriodEndDate =>
+                Equals(test.Date, period.End.Date) ? null : $"{period.End.Date:g} (end date of period {period} )",
+
+            CaseFieldDateType.CycleStart =>
+                Equals(test, cycle.Start) ? null : $"{cycle.Start:g} (start of cycle {cycle})",
+            CaseFieldDateType.CycleStartDate =>
+                Equals(test.Date, cycle.Start.Date) ? null : $"{cycle.Start.Date:g}  (start date of cycle {period} )",
+
+            CaseFieldDateType.CycleEnd =>
+                Equals(test, cycle.End) ? null : $"{cycle.End:g} (end of cycle {cycle} )",
+            CaseFieldDateType.CycleEndDate =>
+                Equals(test.Date, cycle.End.Date) ? null : $"{cycle.End.Date:g} (end date of cycle {cycle} )",
+            _ => null
+        };
     }
 
     // entry point to resolve recursive 

@@ -60,7 +60,7 @@ public class WeekPayrollPeriod : IPayrollPeriod
 
     /// <inheritdoc />
     public string Name =>
-        $"{Period.Start.ToString("yyyy", Culture)} {WeekOfYear}";
+        $"{Period.Start.ToString("yyyy", Culture)} w{WeekOfYear}";
 
     /// <inheritdoc />
     public IPayrollPeriod GetPayrollPeriod(DateTime moment, int offset = 0) =>
