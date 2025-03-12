@@ -36,7 +36,7 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
     /// <param name="hidden">Hidden cases (default: all)</param>
     /// <returns>The derived cases</returns>
     Task<IEnumerable<Case>> GetDerivedCasesAsync(IDbContext context, PayrollQuery query,
-        CaseType? caseType = null, IEnumerable<string> caseNames = null, 
+        CaseType? caseType = null, IEnumerable<string> caseNames = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null, bool? hidden = null);
 
     /// <summary>
@@ -78,7 +78,7 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
         string targetCaseName = null, OverrideType? overrideType = null, ClusterSet clusterSet = null);
 
     /// <summary>
-    /// Get from all wage types the the topmost derived regulation
+    /// Get from all wage types the topmost derived regulation
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="query">The payroll query</param>
@@ -131,10 +131,12 @@ public interface IPayrollRepository : IChildDomainRepository<Payroll>
     /// <param name="query">The payroll query</param>
     /// <param name="reportNames">The report names filter (default: all)</param>
     /// <param name="overrideType">The override type filter (default: active)</param>
+    /// <param name="userType">The user type (default: all)</param>
     /// <param name="clusterSet">The cluster set</param>
     /// <returns>The derived reports</returns>
     Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
-        IEnumerable<string> reportNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null);
+        IEnumerable<string> reportNames = null, OverrideType? overrideType = null, 
+        UserType? userType = null, ClusterSet clusterSet = null);
 
     /// <summary>
     /// Get all active report parameters, considering derived regulations

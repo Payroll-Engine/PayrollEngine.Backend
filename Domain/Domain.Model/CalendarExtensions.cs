@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Globalization;
+using System.Collections.Generic;
 
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>
 /// Extension methods for the <see cref="Calendar"/>
 /// </summary>
+/// <remarks>Client service contains a copy</remarks>
 public static class CalendarExtensions
 {
     /// <summary>Returns the week of year for the specified DateTime</summary>
@@ -29,25 +30,73 @@ public static class CalendarExtensions
     /// <param name="calendar">The payroll calendar</param>
     /// <param name="workDay">The work day</param>
     /// <returns>Returns true for valid time units</returns>
-    private static bool HasWorkDay(this Calendar calendar, DayOfWeek workDay) =>
+    private static bool IsWorkDay(this Calendar calendar, DayOfWeek workDay) =>
         workDay switch
         {
             DayOfWeek.Sunday => calendar.WorkSunday,
-            DayOfWeek.Monday => calendar.WorkSunday,
-            DayOfWeek.Tuesday => calendar.WorkSunday,
-            DayOfWeek.Wednesday => calendar.WorkSunday,
-            DayOfWeek.Thursday => calendar.WorkSunday,
-            DayOfWeek.Friday => calendar.WorkSunday,
-            DayOfWeek.Saturday => calendar.WorkSunday,
+            DayOfWeek.Monday => calendar.WorkMonday,
+            DayOfWeek.Tuesday => calendar.WorkThursday,
+            DayOfWeek.Wednesday => calendar.WorkWednesday,
+            DayOfWeek.Thursday => calendar.WorkThursday,
+            DayOfWeek.Friday => calendar.WorkFriday,
+            DayOfWeek.Saturday => calendar.WorkSaturday,
             _ => calendar.WorkSunday
         };
 
-    /// <summary>Get work day list</summary>
+    /// <summary>Test for working day</summary>
+    /// <param name="calendar">The payroll calendar</param>
+    /// <param name="moment">Test day</param>
+    /// <returns>Returns true for valid time units</returns>
+    public static bool IsWorkDay(this Calendar calendar, DateTime moment) =>
+        // week mode
+        calendar.WeekMode == CalendarWeekMode.Week ||
+        // work week
+        IsWorkDay(calendar, (DayOfWeek)moment.DayOfWeek);
+
+    /// <summary>Get week days</summary>
     /// <param name="calendar">The payroll calendar</param>
     /// <returns>Returns true for valid time units</returns>
-    public static List<DayOfWeek> GetWorkDays(this Calendar calendar) =>
+    public static List<DayOfWeek> GetWeekDays(this Calendar calendar) =>
         Enum.GetValues<DayOfWeek>().
-            Where(dayOfWeek => HasWorkDay(calendar, dayOfWeek)).ToList();
+            Where(dayOfWeek => IsWorkDay(calendar, dayOfWeek)).ToList();
+
+    /// <summary>Get previous working days</summary>
+    /// <param name="calendar">The payroll calendar</param>
+    /// <param name="moment">The start moment (not included in results)</param>
+    /// <param name="count">The number of days (default: 1)</param>
+    /// <returns>Returns true for valid time units</returns>
+    public static List<DateTime> GetPreviousWorkDays(this Calendar calendar, DateTime moment, int count = 1)
+    {
+        var days = new List<DateTime>();
+        for (var i = 0; i < count; i++)
+        {
+            var day = moment.AddDays(-i).Date;
+            if (IsWorkDay(calendar, day))
+            {
+                days.Add(day);
+            }
+        }
+        return days;
+    }
+
+    /// <summary>Get next working days</summary>
+    /// <param name="calendar">The payroll calendar</param>
+    /// <param name="moment">The start moment (not included in results)</param>
+    /// <param name="count">The number of days (default: 1)</param>
+    /// <returns>Returns true for valid time units</returns>
+    public static List<DateTime> GetNextWorkDays(this Calendar calendar, DateTime moment, int count = 1)
+    {
+        var days = new List<DateTime>();
+        for (var i = 0; i < count; i++)
+        {
+            var day = moment.AddDays(i).Date;
+            if (IsWorkDay(calendar, day))
+            {
+                days.Add(day);
+            }
+        }
+        return days;
+    }
 
     /// <summary>Test for valid time units</summary>
     /// <param name="calendar">The payroll calendar</param>

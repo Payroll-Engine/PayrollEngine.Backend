@@ -153,7 +153,7 @@ public class PayrunJob : ApiObjectBase
     public DateTime? Finished { get; set; }
 
     /// <summary>
-    /// The create reason (immutable)
+    /// The created reason (immutable)
     /// </summary>
     [Required]
     public string CreatedReason { get; set; }

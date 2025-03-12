@@ -200,7 +200,7 @@ public class ReportProcessor(Tenant tenant, IQueryService queryService, ReportTo
             GlobalCaseValueRepository = Settings.GlobalCaseValueRepository,
             NationalCaseValueRepository = Settings.NationalCaseValueRepository,
             CompanyCaseValueRepository = Settings.CompanyCaseValueRepository,
-            EmployeCaseValueRepository = Settings.EmployeCaseValueRepository,
+            EmployeeCaseValueRepository = Settings.EmployeeCaseValueRepository,
             LookupRepository = Settings.LookupRepository,
             LookupValueRepository = Settings.LookupValueRepository,
             WageTypeRepository = Settings.WageTypeRepository,
@@ -211,6 +211,10 @@ public class ReportProcessor(Tenant tenant, IQueryService queryService, ReportTo
             CollectorResultRepository = Settings.CollectorResultRepository,
             CollectorCustomResultRepository = Settings.CollectorCustomResultRepository,
             PayrunResultRepository = Settings.PayrunResultRepository,
+            DivisionRepository = Settings.DivisionRepository,
+            EmployeeRepository = Settings.EmployeeRepository,
+            CalendarRepository = Settings.CalendarRepository,
+            PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
             WebhookDispatchService = Settings.WebhookDispatchService,
             ControllerContext = controllerContext
         };

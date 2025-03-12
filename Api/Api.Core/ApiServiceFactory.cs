@@ -212,7 +212,6 @@ internal static class ApiServiceFactory
             new PayrollContextService
             {
                 TenantService = serviceProvider.GetRequiredService<ITenantService>(),
-                CalendarService = serviceProvider.GetRequiredService<ICalendarService>(),
                 RegulationLookupSetService = serviceProvider.GetRequiredService<ILookupSetService>(),
                 PayrollService = serviceProvider.GetRequiredService<IPayrollService>(),
                 DivisionService = serviceProvider.GetRequiredService<IDivisionService>(),
@@ -231,8 +230,9 @@ internal static class ApiServiceFactory
                 EmployeeService = serviceProvider.GetRequiredService<IEmployeeService>(),
                 EmployeeChangeService = serviceProvider.GetRequiredService<IEmployeeCaseChangeService>(),
                 EmployeeCaseValueService = serviceProvider.GetRequiredService<IEmployeeCaseValueService>(),
-                WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>(),
-                PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>()
+                CalendarService = serviceProvider.GetRequiredService<ICalendarService>(),
+                PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>(),
+                WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>()
             };
 
         private static IPayrollLayerService NewPayrollLayerService(IServiceProvider serviceProvider) =>
@@ -412,16 +412,16 @@ internal static class ApiServiceFactory
                 new()
                 {
                     DbContext = serviceProvider.GetRequiredService<IDbContext>(),
-                    WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>(),
                     UserRepository = serviceProvider.GetRequiredService<IUserRepository>(),
                     TaskRepository = serviceProvider.GetRequiredService<ITaskRepository>(),
                     LogRepository = serviceProvider.GetRequiredService<ILogRepository>(),
                     ReportLogRepository = serviceProvider.GetRequiredService<IReportLogRepository>(),
+                    DivisionRepository = serviceProvider.GetRequiredService<IDivisionRepository>(),
                     EmployeeRepository = serviceProvider.GetRequiredService<IEmployeeRepository>(),
                     GlobalCaseValueRepository = serviceProvider.GetRequiredService<IGlobalCaseValueRepository>(),
                     NationalCaseValueRepository = serviceProvider.GetRequiredService<INationalCaseValueRepository>(),
                     CompanyCaseValueRepository = serviceProvider.GetRequiredService<ICompanyCaseValueRepository>(),
-                    EmployeCaseValueRepository = serviceProvider.GetRequiredService<IEmployeeCaseValueRepository>(),
+                    EmployeeCaseValueRepository = serviceProvider.GetRequiredService<IEmployeeCaseValueRepository>(),
                     RegulationRepository = serviceProvider.GetRequiredService<IRegulationRepository>(),
                     LookupRepository = serviceProvider.GetRequiredService<ILookupRepository>(),
                     LookupValueRepository = serviceProvider.GetRequiredService<ILookupValueRepository>(),
@@ -435,7 +435,10 @@ internal static class ApiServiceFactory
                     PayrunResultRepository = serviceProvider.GetRequiredService<IPayrunResultRepository>(),
                     PayrunRepository = serviceProvider.GetRequiredService<IPayrunRepository>(),
                     ReportRepository = serviceProvider.GetRequiredService<IReportSetRepository>(),
-                    WebhookRepository = serviceProvider.GetRequiredService<IWebhookRepository>()
+                    WebhookRepository = serviceProvider.GetRequiredService<IWebhookRepository>(),
+                    CalendarRepository = serviceProvider.GetRequiredService<ICalendarRepository>(),
+                    PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>(),
+                    WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>()
                 });
 
         private static IReportParameterService NewReportParameterService(IServiceProvider serviceProvider) =>

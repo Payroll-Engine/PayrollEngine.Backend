@@ -10,14 +10,14 @@ namespace PayrollEngine.Persistence;
 internal sealed class CaseValueResultCommand : DomainRepositoryCommandBase
 {
     /// <summary>
-    /// Execute a item query in case query attributes are present
+    /// Execute item query in case query attributes are present
     /// </summary>
     /// <typeparam name="TItem">The type of results to return.</typeparam>
     /// <param name="context">The database context</param>
     /// <param name="query">The case value query</param>
     /// <returns>
-    /// A sequence of data of <typeparamref name="TItem"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
-    /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+    /// A sequence of data of <typeparamref name="TItem"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
+    /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     internal async Task<IEnumerable<TItem>> QueryCaseValuesAsync<TItem>(IDbContext context, CaseValueQuery query)
     {

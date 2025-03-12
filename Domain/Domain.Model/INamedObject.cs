@@ -2,7 +2,7 @@
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>
-/// Represents an named object
+/// Represents a named object
 /// </summary>
 public interface INamedObject
 {

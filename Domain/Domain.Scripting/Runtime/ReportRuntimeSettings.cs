@@ -21,7 +21,7 @@ public class ReportRuntimeSettings : RuntimeSettings
     public ICompanyCaseValueRepository CompanyCaseValueRepository { get; init; }
 
     /// <summary>The employee case value repository</summary>
-    public IEmployeeCaseValueRepository EmployeCaseValueRepository { get; init; }
+    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; init; }
 
     /// <summary>The lookup repository</summary>
     public ILookupRepository LookupRepository { get; init; }

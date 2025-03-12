@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting.Controller;
+using PayrollEngine.Domain.Scripting.Runtime;
 using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
@@ -500,29 +501,36 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
     }
 
-    private async Task CaseValidateAsync(IEnumerable<Case> cases, CaseSet caseSet, List<CaseValidationIssue> caseIssues)
+    private async Task CaseValidateAsync(IEnumerable<Case> cases, CaseSet caseSet,
+        List<CaseValidationIssue> caseIssues)
     {
         var lookupProvider = await NewRegulationLookupProviderAsync();
+
+        var settings = new CaseChangeRuntimeSettings
+        {
+            DbContext = Settings.DbContext,
+            UserCulture = UserCulture,
+            FunctionHost = FunctionHost,
+            Tenant = Tenant,
+            User = User,
+            Payroll = Payroll,
+            CaseProvider = CaseProvider,
+            CaseValueProvider = CaseValueProvider,
+            RegulationLookupProvider = lookupProvider,
+            DivisionRepository = DivisionRepository,
+            EmployeeRepository = EmployeeRepository,
+            CalendarRepository = CalendarRepository,
+            PayrollCalculatorProvider = PayrollCalculatorProvider,
+            WebhookDispatchService = WebhookDispatchService,
+            Case = caseSet
+        };
 
         // case validate expression
         foreach (var validateScripts in cases.GetDerivedExpressionObjects(x => x.ValidateScript))
         {
             // issues may be added by the script
             var issues = new List<CaseValidationIssue>();
-            var valid = new CaseScriptController().CaseValidate(validateScripts, new()
-            {
-                DbContext = Settings.DbContext,
-                UserCulture = UserCulture,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                User = User,
-                Payroll = Payroll,
-                CaseProvider = CaseProvider,
-                CaseValueProvider = CaseValueProvider,
-                RegulationLookupProvider = lookupProvider,
-                WebhookDispatchService = WebhookDispatchService,
-                Case = caseSet
-            }, issues);
+            var valid = new CaseScriptController().CaseValidate(validateScripts, settings, issues);
 
             // issues
             if (issues.Any())
@@ -553,25 +561,31 @@ public class DerivedCaseValidator : DerivedCaseTool
     {
         var lookupProvider = await NewRegulationLookupProviderAsync();
 
+        var settings = new CaseRelationRuntimeSettings
+        {
+            DbContext = Settings.DbContext,
+            UserCulture = UserCulture,
+            FunctionHost = FunctionHost,
+            Tenant = Tenant,
+            User = User,
+            Payroll = Payroll,
+            CaseValueProvider = CaseValueProvider,
+            RegulationLookupProvider = lookupProvider,
+            DivisionRepository = DivisionRepository,
+            EmployeeRepository = EmployeeRepository,
+            CalendarRepository = CalendarRepository,
+            PayrollCalculatorProvider = PayrollCalculatorProvider,
+            WebhookDispatchService = WebhookDispatchService,
+            SourceCaseSet = sourceCaseSet,
+            TargetCaseSet = targetCaseSet
+        };
+
         // case relation validate scripts
         foreach (var validateScripts in derivedCaseRelation.GetDerivedExpressionObjects(x => x.ValidateScript))
         {
             // issues may be added by the script
             var issues = new List<CaseValidationIssue>();
-            var valid = new CaseRelationScriptController().CaseRelationValidate(validateScripts, new()
-            {
-                DbContext = Settings.DbContext,
-                UserCulture = UserCulture,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                User = User,
-                Payroll = Payroll,
-                CaseValueProvider = CaseValueProvider,
-                RegulationLookupProvider = lookupProvider,
-                WebhookDispatchService = WebhookDispatchService,
-                SourceCaseSet = sourceCaseSet,
-                TargetCaseSet = targetCaseSet
-            }, issues);
+            var valid = new CaseRelationScriptController().CaseRelationValidate(validateScripts, settings, issues);
 
             // issues
             if (issues.Any())

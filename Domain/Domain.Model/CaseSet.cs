@@ -30,6 +30,16 @@ public class CaseSet : Case, IEquatable<CaseSet>
     public DateTime? CancellationDate { get; set; }
 
     /// <summary>
+    /// The change reason
+    /// </summary>
+    public string Reason { get; set; }
+
+    /// <summary>
+    /// The change forecast
+    /// </summary>
+    public string Forecast { get; set; }
+
+    /// <summary>
     /// Derived case fields
     /// </summary>
     public List<CaseFieldSet> Fields { get; set; }

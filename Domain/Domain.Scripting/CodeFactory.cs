@@ -28,6 +28,7 @@ internal static class CodeFactory
         "Extensions.cs",
         "Date.cs",
         "DatePeriod.cs",
+        "TimePeriod.cs",
         "Tools.cs",
         "PayrollValue.cs",
         "PeriodValue.cs",

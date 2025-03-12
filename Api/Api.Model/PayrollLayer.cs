@@ -8,8 +8,8 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The payroll layer API object.
 /// Payroll layer evaluated order in payrolls:
-/// 1. From th highest level to the lowest level
-/// 2. Within a level: from th highest priority to the lowest priority
+/// 1. From th the highest level to the lowest level
+/// 2. Within a level: from the highest priority to the lowest priority
 /// </summary>
 public class PayrollLayer : ApiObjectBase
 {

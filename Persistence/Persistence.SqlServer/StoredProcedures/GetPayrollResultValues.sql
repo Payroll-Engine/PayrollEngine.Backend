@@ -111,7 +111,7 @@ FROM (
     [CollectorResult].[Tags] AS [ResultTags],
     [CollectorResult].[Attributes],
     [CollectorResult].[ValueType] AS [ResultType],
-    LTRIM([CollectorResult].[Value]) AS [ResultValue],
+    FORMAT([CollectorResult].[Value], ''N2'') AS [ResultValue],
     [CollectorResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[CollectorResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
@@ -136,7 +136,7 @@ FROM (
     [CollectorCustomResult].[Tags] AS [ResultTags],
     [CollectorCustomResult].[Attributes],
     [CollectorCustomResult].[ValueType] AS [ResultType],
-    LTRIM([CollectorCustomResult].[Value]) AS [ResultValue],
+    FORMAT([CollectorCustomResult].[Value], ''N2'') AS [ResultValue],
     [CollectorCustomResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[CollectorCustomResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
@@ -163,7 +163,7 @@ FROM (
     [WageTypeResult].[Tags] AS [ResultTags],
     [WageTypeResult].[Attributes],
     [WageTypeResult].[ValueType] AS [ResultType],
-    LTRIM([WageTypeResult].[Value]) AS [ResultValue],
+    FORMAT([WageTypeResult].[Value], ''N2'') AS [ResultValue],
     [WageTypeResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
@@ -188,7 +188,7 @@ FROM (
     [WageTypeCustomResult].[Tags] AS [ResultTags],
     [WageTypeCustomResult].[Attributes],
     [WageTypeCustomResult].[ValueType] AS [ResultType],
-    LTRIM([WageTypeCustomResult].[Value]) AS [ResultValue],
+    FORMAT([WageTypeCustomResult].[Value], ''N2'') AS [ResultValue],
     [WageTypeCustomResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeCustomResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;

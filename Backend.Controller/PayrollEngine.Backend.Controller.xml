@@ -725,11 +725,11 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="query">Query parameters</param>
-            <returns>An ActionResult with a employee array</returns>
+            <returns>An ActionResult with employee array</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.EmployeeController.GetEmployeeAsync(System.Int32,System.Int32)">
             <summary>
-            Get a employee
+            Get employee
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The id of the employee</param>
@@ -1356,7 +1356,7 @@
             <param name="query">Query parameters</param>
             <returns>All payroll case change values</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCaseValuesAsync(System.Int32,System.Int32,System.DateTime,System.DateTime,System.String[],System.Nullable{System.Int32},System.String)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCaseValuesAsync(System.Int32,System.Int32,System.DateTime,System.DateTime,System.String[],System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Get case values
             </summary>
@@ -1366,6 +1366,8 @@
             <param name="startDate">The time period start date</param>
             <param name="endDate">The time period end date</param>
             <param name="employeeId">The employee id, mandatory for employee case</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <param name="caseSlot">The case slot</param>
             <returns>The payroll case values</returns>
         </member>
@@ -1379,8 +1381,8 @@
             <param name="caseType">The case type</param>
             <param name="caseFieldNames">The case field names (default: all)</param>
             <param name="valueDate">The moment of the value (default: UTC now)</param>
-            <param name="regulationDate">The regulation date (default: valueDate)</param>
-            <param name="evaluationDate">The evaluation date (default: valueDate)</param>
+            <param name="regulationDate">The regulation date (default: value date)</param>
+            <param name="evaluationDate">The evaluation date (default: value date)</param>
             <returns>The payroll case value of the case field</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollAvailableCaseFieldValuesAsync(System.Int32,System.Int32,System.Int32,System.String[],System.DateTime,System.DateTime,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
@@ -1528,7 +1530,7 @@
             <param name="culture">The content culture</param>
             <returns>The lookup value data</returns>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.Nullable{PayrollEngine.UserType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
             Get payroll report sets
             </summary>
@@ -1536,6 +1538,7 @@
             <param name="payrollId">The payroll id</param>
             <param name="reportNames">The report names filter (case-insensitive, default is all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
+            <param name="userType">The user type (default: all)</param>
             <param name="clusterSetName">The cluster set name</param>
             <param name="regulationDate">The regulation date (default: UTC now)</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
@@ -2022,7 +2025,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="regulation">The regulation to add</param>
-            <returns>The newly created regulation regulation</returns>
+            <returns>The newly created regulation</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.RegulationController.UpdateRegulationAsync(System.Int32,PayrollEngine.Api.Model.Regulation)">
             <summary>
@@ -2030,7 +2033,7 @@
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="regulation">The regulation id</param>
-            <returns>The modified regulation regulation</returns>
+            <returns>The modified regulation</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.RegulationController.DeleteRegulationAsync(System.Int32,System.Int32)">
             <summary>

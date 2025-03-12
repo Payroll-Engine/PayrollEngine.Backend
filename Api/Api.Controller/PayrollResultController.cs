@@ -96,7 +96,7 @@ public abstract class PayrollResultController(ITenantService tenantService, IPay
     }
 
     /// <summary>
-    /// Count count of payroll result values
+    /// Count of payroll result values
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id</param>

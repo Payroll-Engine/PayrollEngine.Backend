@@ -74,7 +74,7 @@ public class ReportBuilder(Tenant tenant, IQueryService queryService, ReportTool
             GlobalCaseValueRepository = Settings.GlobalCaseValueRepository,
             NationalCaseValueRepository = Settings.NationalCaseValueRepository,
             CompanyCaseValueRepository = Settings.CompanyCaseValueRepository,
-            EmployeCaseValueRepository = Settings.EmployeCaseValueRepository,
+            EmployeeCaseValueRepository = Settings.EmployeeCaseValueRepository,
             LookupRepository = Settings.LookupRepository,
             LookupValueRepository = Settings.LookupValueRepository,
             WageTypeRepository = Settings.WageTypeRepository,
@@ -85,6 +85,10 @@ public class ReportBuilder(Tenant tenant, IQueryService queryService, ReportTool
             CollectorResultRepository = Settings.CollectorResultRepository,
             CollectorCustomResultRepository = Settings.CollectorCustomResultRepository,
             PayrunResultRepository = Settings.PayrunResultRepository,
+            DivisionRepository = Settings.DivisionRepository,
+            EmployeeRepository = Settings.EmployeeRepository,
+            CalendarRepository = Settings.CalendarRepository,
+            PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
             WebhookDispatchService = Settings.WebhookDispatchService,
             ControllerContext = controllerContext
         });

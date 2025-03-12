@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting.Controller;
+using PayrollEngine.Domain.Scripting.Runtime;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -202,22 +203,28 @@ public class DerivedCaseCollector : DerivedCaseTool
             // case set
             var caseSet = await GetDerivedCaseSetAsync(caseList, null, null, culture, false);
 
+            var settings = new CaseRuntimeSettings
+            {
+                DbContext = Settings.DbContext,
+                UserCulture = culture,
+                FunctionHost = FunctionHost,
+                Tenant = Tenant,
+                User = User,
+                Payroll = Payroll,
+                CaseValueProvider = CaseValueProvider,
+                RegulationLookupProvider = lookupProvider,
+                DivisionRepository = DivisionRepository,
+                EmployeeRepository = EmployeeRepository,
+                CalendarRepository = CalendarRepository,
+                PayrollCalculatorProvider = PayrollCalculatorProvider,
+                WebhookDispatchService = WebhookDispatchService,
+                Case = caseSet
+            };
+
             // case available function call
             foreach (var _ in availableScripts)
             {
-                var available = new CaseScriptController().CaseAvailable(new()
-                {
-                    DbContext = Settings.DbContext,
-                    UserCulture = culture,
-                    FunctionHost = FunctionHost,
-                    Tenant = Tenant,
-                    User = User,
-                    Payroll = Payroll,
-                    CaseValueProvider = CaseValueProvider,
-                    RegulationLookupProvider = lookupProvider,
-                    WebhookDispatchService = WebhookDispatchService,
-                    Case = caseSet
-                });
+                var available = new CaseScriptController().CaseAvailable(settings);
                 if (available.HasValue)
                 {
                     return available.Value;

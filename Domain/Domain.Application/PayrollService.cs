@@ -66,8 +66,9 @@ public class PayrollService(IPayrollRepository payrollRepository,
 
     /// <inheritdoc />
     public async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
-        IEnumerable<string> reportNames = null, OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
-        await Repository.GetDerivedReportsAsync(context, query, reportNames, overrideType, clusterSet);
+        IEnumerable<string> reportNames = null, OverrideType? overrideType = null, UserType? userType = null,
+        ClusterSet clusterSet = null) =>
+        await Repository.GetDerivedReportsAsync(context, query, reportNames, overrideType, userType, clusterSet);
 
     /// <inheritdoc />
     public async Task<IEnumerable<ReportParameter>> GetDerivedReportParametersAsync(IDbContext context, PayrollQuery query,

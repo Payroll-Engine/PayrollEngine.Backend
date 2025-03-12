@@ -28,8 +28,8 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="commandTimeout">The command timeout (in seconds)</param>
     /// <param name="commandType">The type of command to execute</param>
     /// <returns>
-    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
-    /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
+    /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     protected async Task<IEnumerable<T>> QueryAsync(IDbContext context, string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
@@ -47,8 +47,8 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="commandTimeout">The command timeout (in seconds)</param>
     /// <param name="commandType">The type of command to execute</param>
     /// <returns>
-    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
-    /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
+    /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     protected async Task<IEnumerable<TItem>> QueryAsync<TItem>(IDbContext context, string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
@@ -65,8 +65,8 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="commandTimeout">The command timeout (in seconds)</param>
     /// <param name="commandType">The type of command to execute</param>
     /// <returns>
-    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
-    /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
+    /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     protected async Task<TResult> QuerySingleAsync<TResult>(IDbContext context, string sql, object param = null,
         IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
@@ -77,20 +77,20 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     #region Case Value (Shared)
 
     /// <summary>
-    /// Execute a item query in case query attributes are present
+    /// Execute item query in case query attributes are present
     /// </summary>
     /// <typeparam name="TItem">The type of results to return.</typeparam>
     /// <param name="context">The database context</param>
     /// <param name="query">The case value query</param>
     /// <returns>
-    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
-    /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
+    /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     internal async Task<IEnumerable<TItem>> QueryCaseValuesAsync<TItem>(IDbContext context, CaseValueQuery query) =>
         await new CaseValueResultCommand().QueryCaseValuesAsync<TItem>(context, query);
 
     /// <summary>
-    /// Execute a item count query in case query attributes are present
+    /// Execute item count query in case query attributes are present
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="query">The case value query</param>

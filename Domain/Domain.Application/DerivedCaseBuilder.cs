@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting.Controller;
+using PayrollEngine.Domain.Scripting.Runtime;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -222,22 +223,29 @@ public class DerivedCaseBuilder : DerivedCaseTool
 
         // case build expression
         var build = true;
+
+        var settings = new CaseChangeRuntimeSettings
+        {
+            DbContext = Settings.DbContext,
+            UserCulture = UserCulture,
+            FunctionHost = FunctionHost,
+            Tenant = Tenant,
+            User = User,
+            Payroll = Payroll,
+            CaseProvider = CaseProvider,
+            CaseValueProvider = CaseValueProvider,
+            RegulationLookupProvider = lookupProvider,
+            DivisionRepository = DivisionRepository,
+            EmployeeRepository = EmployeeRepository,
+            CalendarRepository = CalendarRepository,
+            PayrollCalculatorProvider = PayrollCalculatorProvider,
+            WebhookDispatchService = WebhookDispatchService,
+            Case = caseSet
+        };
+
         foreach (var buildScripts in cases.GetDerivedExpressionObjects(x => x.BuildScript))
         {
-            var caseBuild = new CaseScriptController().CaseBuild(buildScripts, new()
-            {
-                DbContext = Settings.DbContext,
-                UserCulture = UserCulture,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                User = User,
-                Payroll = Payroll,
-                CaseProvider = CaseProvider,
-                CaseValueProvider = CaseValueProvider,
-                RegulationLookupProvider = lookupProvider,
-                WebhookDispatchService = WebhookDispatchService,
-                Case = caseSet
-            });
+            var caseBuild = new CaseScriptController().CaseBuild(buildScripts, settings);
             if (caseBuild.HasValue)
             {
                 build = caseBuild.Value;
@@ -258,23 +266,29 @@ public class DerivedCaseBuilder : DerivedCaseTool
     {
         var lookupProvider = await NewRegulationLookupProviderAsync();
 
+        var settings = new CaseRelationRuntimeSettings
+        {
+            DbContext = Settings.DbContext,
+            UserCulture = UserCulture,
+            FunctionHost = FunctionHost,
+            Tenant = Tenant,
+            User = User,
+            Payroll = Payroll,
+            CaseValueProvider = CaseValueProvider,
+            RegulationLookupProvider = lookupProvider,
+            DivisionRepository = DivisionRepository,
+            EmployeeRepository = EmployeeRepository,
+            CalendarRepository = CalendarRepository,
+            PayrollCalculatorProvider = PayrollCalculatorProvider,
+            WebhookDispatchService = WebhookDispatchService,
+            SourceCaseSet = sourceCaseSet,
+            TargetCaseSet = targetCaseSet
+        };
+
         // case relation build scripts
         foreach (var buildScripts in derivedCaseRelation.GetDerivedExpressionObjects(x => x.BuildScript))
         {
-            var build = new CaseRelationScriptController().CaseRelationBuild(buildScripts, new()
-            {
-                DbContext = Settings.DbContext,
-                UserCulture = UserCulture,
-                FunctionHost = FunctionHost,
-                Tenant = Tenant,
-                User = User,
-                Payroll = Payroll,
-                CaseValueProvider = CaseValueProvider,
-                RegulationLookupProvider = lookupProvider,
-                WebhookDispatchService = WebhookDispatchService,
-                SourceCaseSet = sourceCaseSet,
-                TargetCaseSet = targetCaseSet
-            });
+            var build = new CaseRelationScriptController().CaseRelationBuild(buildScripts, settings);
             if (build.HasValue)
             {
                 return build.Value;

@@ -42,8 +42,8 @@ public interface IDbContext
     /// <param name="commandTimeout">The command timeout (in seconds).</param>
     /// <param name="commandType">The type of command to execute.</param>
     /// <returns>
-    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
-    /// created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+    /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
+    /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
         int? commandTimeout = null, CommandType? commandType = null);

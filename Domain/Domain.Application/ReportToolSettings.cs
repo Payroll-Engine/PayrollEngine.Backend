@@ -8,14 +8,14 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 public class ReportToolSettings : FunctionToolSettings
 {
-    public IWebhookDispatchService WebhookDispatchService { get; init; }
 
     public IUserRepository UserRepository { get; init; }
+    public IDivisionRepository DivisionRepository { get; init; }
     public IEmployeeRepository EmployeeRepository { get; init; }
     public IGlobalCaseValueRepository GlobalCaseValueRepository { get; init; }
     public INationalCaseValueRepository NationalCaseValueRepository { get; init; }
     public ICompanyCaseValueRepository CompanyCaseValueRepository { get; init; }
-    public IEmployeeCaseValueRepository EmployeCaseValueRepository { get; init; }
+    public IEmployeeCaseValueRepository EmployeeCaseValueRepository { get; init; }
     public IRegulationRepository RegulationRepository { get; init; }
     public ILookupRepository LookupRepository { get; init; }
     public ILookupValueRepository LookupValueRepository { get; init; }
@@ -31,4 +31,8 @@ public class ReportToolSettings : FunctionToolSettings
     public IPayrunRepository PayrunRepository { get; init; }
     public IReportSetRepository ReportRepository { get; init; }
     public IWebhookRepository WebhookRepository { get; init; }
+
+    public ICalendarRepository CalendarRepository { get; init; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
+    public IWebhookDispatchService WebhookDispatchService { get; init; }
 }

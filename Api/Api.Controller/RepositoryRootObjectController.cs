@@ -76,7 +76,7 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     }
 
     /// <summary>
-    /// Count count of resources query
+    /// Count of resources query
     /// </summary>
     /// <param name="query">Query parameters</param>
     /// <returns>Count of requested Api objects</returns>

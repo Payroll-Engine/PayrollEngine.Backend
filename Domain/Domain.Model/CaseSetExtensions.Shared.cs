@@ -138,7 +138,7 @@ public static class CaseSetExtensions
     /// <summary>
     /// Set the case cancellation date
     /// </summary>
-    /// <param name="caseSet">The case to setup</param>
+    /// <param name="caseSet">The case to set up</param>
     /// <param name="cancellationDate">The case cancellation date</param>
     public static void SetCancellationDate(this CaseSet caseSet, DateTime? cancellationDate)
     {

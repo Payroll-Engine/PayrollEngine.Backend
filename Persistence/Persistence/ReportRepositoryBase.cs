@@ -25,6 +25,7 @@ public abstract class ReportRepositoryBase<T>(IScriptRepository scriptRepository
         parameters.Add(nameof(report.OverrideType), report.OverrideType);
         parameters.Add(nameof(report.Category), report.Category);
         parameters.Add(nameof(report.AttributeMode), report.AttributeMode);
+        parameters.Add(nameof(report.UserType), report.UserType);
         parameters.Add(nameof(report.Queries), JsonSerializer.SerializeNamedDictionary(report.Queries));
         parameters.Add(nameof(report.Relations), DefaultJsonSerializer.Serialize(report.Relations));
         parameters.Add(nameof(report.BuildExpression), report.BuildExpression);

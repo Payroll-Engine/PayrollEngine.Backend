@@ -147,7 +147,6 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
                 new()
                 {
                     DbContext = Runtime.DbContext,
-                    CalendarRepository = ServiceSettings.CalendarRepository,
                     UserRepository = ServiceSettings.UserRepository,
                     DivisionRepository = ServiceSettings.DivisionRepository,
                     TaskRepository = ServiceSettings.TaskRepository,
@@ -166,6 +165,7 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
                     PayrollResultRepository = ServiceSettings.PayrollResultRepository,
                     PayrollConsolidatedResultRepository = ServiceSettings.PayrollConsolidatedResultRepository,
                     PayrollResultSetRepository = ServiceSettings.PayrollResultSetRepository,
+                    CalendarRepository = ServiceSettings.CalendarRepository,
                     PayrollCalculatorProvider = ServiceSettings.PayrollCalculatorProvider,
                     WebhookDispatchService = WebhookDispatcher,
                     FunctionLogTimeout = serverConfiguration.FunctionLogTimeout,

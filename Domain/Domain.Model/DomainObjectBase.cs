@@ -3,7 +3,7 @@
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>
-/// Represents a domain object, containing an Id and an object status
+/// Represents a domain object, containing an id and an object status
 /// </summary>
 public abstract class DomainObjectBase : IDomainObject
 {

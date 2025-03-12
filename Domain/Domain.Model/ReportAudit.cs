@@ -50,6 +50,11 @@ public class ReportAudit : ScriptAuditDomainObject, IDomainAttributeObject
     public ReportAttributeMode AttributeMode { get; set; }
 
     /// <summary>
+    /// The user type (default: employee)
+    /// </summary>
+    public UserType UserType { get; set; }
+
+    /// <summary>
     /// The report queries, key is the query name and value the api operation name
     /// </summary>
     public Dictionary<string, string> Queries { get; set; }

@@ -244,7 +244,8 @@ internal sealed class QueryMethodInfo
             {
                 return null;
             }
-            return dateValue;
+            // ensure utc
+            return dateValue.ToUtc();
         }
 
         // cast enum

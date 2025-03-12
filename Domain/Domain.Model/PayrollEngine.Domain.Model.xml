@@ -290,6 +290,7 @@
             <summary>
             Extension methods for the <see cref="T:PayrollEngine.Domain.Model.Calendar"/>
             </summary>
+            <remarks>Client service contains a copy</remarks>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWeekOfYear(PayrollEngine.Domain.Model.Calendar,System.Globalization.CultureInfo,System.DateTime)">
             <summary>Returns the week of year for the specified DateTime</summary>
@@ -298,15 +299,35 @@
             <param name="moment">The moment of the week</param>
             <returns>The returned value is an integer between 1 and 53</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.HasWorkDay(PayrollEngine.Domain.Model.Calendar,PayrollEngine.DayOfWeek)">
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.IsWorkDay(PayrollEngine.Domain.Model.Calendar,PayrollEngine.DayOfWeek)">
             <summary>Test for working days</summary>
             <param name="calendar">The payroll calendar</param>
             <param name="workDay">The work day</param>
             <returns>Returns true for valid time units</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWorkDays(PayrollEngine.Domain.Model.Calendar)">
-            <summary>Get work day list</summary>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.IsWorkDay(PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <summary>Test for working day</summary>
             <param name="calendar">The payroll calendar</param>
+            <param name="moment">Test day</param>
+            <returns>Returns true for valid time units</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWeekDays(PayrollEngine.Domain.Model.Calendar)">
+            <summary>Get week days</summary>
+            <param name="calendar">The payroll calendar</param>
+            <returns>Returns true for valid time units</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetPreviousWorkDays(PayrollEngine.Domain.Model.Calendar,System.DateTime,System.Int32)">
+            <summary>Get previous working days</summary>
+            <param name="calendar">The payroll calendar</param>
+            <param name="moment">The start moment (not included in results)</param>
+            <param name="count">The number of days (default: 1)</param>
+            <returns>Returns true for valid time units</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetNextWorkDays(PayrollEngine.Domain.Model.Calendar,System.DateTime,System.Int32)">
+            <summary>Get next working days</summary>
+            <param name="calendar">The payroll calendar</param>
+            <param name="moment">The start moment (not included in results)</param>
+            <param name="count">The number of days (default: 1)</param>
             <returns>Returns true for valid time units</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.ValidTimeUnits(PayrollEngine.Domain.Model.Calendar)">
@@ -1785,6 +1806,16 @@
             Cancellation date
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseSet.Reason">
+            <summary>
+            The change reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseSet.Forecast">
+            <summary>
+            The change forecast
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CaseSet.Fields">
             <summary>
             Derived case fields
@@ -1844,7 +1875,7 @@
             <summary>
             Set the case cancellation date
             </summary>
-            <param name="caseSet">The case to setup</param>
+            <param name="caseSet">The case to set up</param>
             <param name="cancellationDate">The case cancellation date</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.CaseSetup">
@@ -2784,7 +2815,7 @@
             <summary>The payrun job id</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorResultQuery.ParentPayrunJobId">
-            <summary>The The parent job id</summary>
+            <summary>The parent job id</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorResultQuery.CollectorNames">
             <summary>The collector names</summary>
@@ -3055,7 +3086,7 @@
         </member>
         <member name="T:PayrollEngine.Domain.Model.DomainObjectBase">
             <summary>
-            Represents a domain object, containing an Id and an object status
+            Represents a domain object, containing an id and an object status
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.DomainObjectBase.Id">
@@ -3230,7 +3261,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.ICaseFieldProvider.GetCaseTypeAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
             <summary>
-            Get case type of a case field
+            Get case type of case field
             </summary>
             <param name="context">The database context</param>
             <param name="caseFieldName">The case field name</param>
@@ -3449,8 +3480,8 @@
             <param name="commandTimeout">The command timeout (in seconds).</param>
             <param name="commandType">The type of command to execute.</param>
             <returns>
-            A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc) is queried then the data from the first column in assumed, otherwise an instance is
-            created per row, and a direct column-name===member-name mapping is assumed (case insensitive).
+            A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
+            created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
             </returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryFirstAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
@@ -3550,7 +3581,7 @@
         </member>
         <member name="T:PayrollEngine.Domain.Model.INamedObject">
             <summary>
-            Represents an named object
+            Represents a named object
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.INamedObject.Name">
@@ -5235,7 +5266,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.CreatedReason">
             <summary>
-            The create reason (immutable)
+            The created reason (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.ReleasedReason">
@@ -5845,6 +5876,11 @@
             The report attribute mode
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Report.UserType">
+            <summary>
+            The user type (default: employee)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Report.Queries">
             <summary>
             The report queries, key is the query name and value the api operation name
@@ -5958,6 +5994,11 @@
         <member name="P:PayrollEngine.Domain.Model.ReportAudit.AttributeMode">
             <summary>
             The report attribute mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportAudit.UserType">
+            <summary>
+            The user type (default: employee)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportAudit.Queries">
@@ -6755,7 +6796,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.ICaseFieldProxyRepository.GetCaseTypeAsync(PayrollEngine.Domain.Model.IDbContext,System.String)">
             <summary>
-            Get case type of a case field
+            Get case type of case field
             </summary>
             <param name="context">The database context</param>
             <param name="caseFieldName">The case field name</param>
@@ -6961,7 +7002,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IChildDomainRepository`1.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32)">
             <summary>
-            Test if an domain item exists
+            Test if domain item exists
             </summary>
             <param name="context">The database context</param>
             <param name="parentId">The parent item id</param>
@@ -7044,7 +7085,7 @@
             </summary>
             <param name="context">The database context</param>
             <param name="parentId">The parent item id</param>
-            <param name="itemId">The if of the domain item to delete</param>
+            <param name="itemId">The id of the domain item to delete</param>
             <returns>True if the record was deleted</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICollectorAuditRepository">
@@ -7111,7 +7152,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
             <summary>
-            Test if an domain item exists
+            Test if domain item exists
             </summary>
             <param name="context">The database context</param>
             <param name="id">The item id</param>
@@ -7119,7 +7160,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IDomainRepository.ExistsAsync(PayrollEngine.Domain.Model.IDbContext,System.String,System.Object)">
             <summary>
-            Test if an domain item exists
+            Test if domain item exists
             </summary>
             <param name="context">The database context</param>
             <param name="fieldName">The item field name</param>
@@ -7158,7 +7199,7 @@
             Delete an attribute
             </summary>
             <param name="context">The database context</param>
-            <param name="id">The if of the domain item to delete</param>
+            <param name="id">The id of the domain item to delete</param>
             <param name="attributeName">The attribute name</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeDivisionRepository">
@@ -7426,7 +7467,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedWageTypesAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.Decimal},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
-            Get from all wage types the the topmost derived regulation
+            Get from all wage types the topmost derived regulation
             </summary>
             <param name="context">The database context</param>
             <param name="query">The payroll query</param>
@@ -7467,7 +7508,7 @@
             <param name="overrideType">The override type filter (default: active)</param>
             <returns>The derived lookup values</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},PayrollEngine.Domain.Model.ClusterSet)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.IPayrollRepository.GetDerivedReportsAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.PayrollQuery,System.Collections.Generic.IEnumerable{System.String},System.Nullable{PayrollEngine.OverrideType},System.Nullable{PayrollEngine.UserType},PayrollEngine.Domain.Model.ClusterSet)">
             <summary>
             Get all active reports, considering derived regulations
             </summary>
@@ -7475,6 +7516,7 @@
             <param name="query">The payroll query</param>
             <param name="reportNames">The report names filter (default: all)</param>
             <param name="overrideType">The override type filter (default: active)</param>
+            <param name="userType">The user type (default: all)</param>
             <param name="clusterSet">The cluster set</param>
             <returns>The derived reports</returns>
         </member>
@@ -7779,7 +7821,7 @@
             Remove a domain object from the repository
             </summary>
             <param name="context">The database context</param>
-            <param name="id">The if of the domain object to delete</param>
+            <param name="id">The id of the domain object to delete</param>
             <returns>True if the record was deleted</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IScriptAuditRepository">
@@ -7952,7 +7994,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.Repository.PayrollValidator"/> class.
             </summary>
-            <param name="payrollRepository">"The payroll repository></param>
+            <param name="payrollRepository">The payroll repository></param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.PayrollValidator.ValidateRegulations(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Domain.Model.Payroll,System.DateTime,System.DateTime)">
             <summary>Validate payroll regulations</summary>
@@ -8362,7 +8404,7 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.GetScriptTags(System.String)">
             <summary>
-            Extract the code tags from script
+            Extract the code tags from script.
             Script tag example:
               /* #sealed */ MyScriptExpression
             </summary>

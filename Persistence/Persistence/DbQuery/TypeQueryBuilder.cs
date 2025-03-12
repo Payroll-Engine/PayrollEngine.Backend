@@ -85,7 +85,7 @@ internal class TypeQueryBuilder<T> : QueryBuilderBase, IQueryContext
             throw new ArgumentException(nameof(name));
         }
 
-        // case insensitive column name
+        // case-insensitive column name
         var typeColumn = FindTypeColumn(name.Trim());
         if (typeColumn == null)
         {

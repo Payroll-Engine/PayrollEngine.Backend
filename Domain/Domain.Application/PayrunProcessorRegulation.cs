@@ -113,6 +113,10 @@ internal sealed class PayrunProcessorRegulation
                 CaseValueProvider = caseValueProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
                 RuntimeValueProvider = context.RuntimeValueProvider,
+                DivisionRepository = Settings.DivisionRepository,
+                EmployeeRepository = Settings.EmployeeRepository,
+                CalendarRepository = Settings.CalendarRepository,
+                PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
                 WebhookDispatchService = Settings.WebhookDispatchService
             });
         return isAvailable ?? true;
@@ -185,6 +189,10 @@ internal sealed class PayrunProcessorRegulation
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentWageTypeResult = resultSet,
                 RuntimeValueProvider = context.RuntimeValueProvider,
+                DivisionRepository = Settings.DivisionRepository,
+                EmployeeRepository = Settings.EmployeeRepository,
+                CalendarRepository = Settings.CalendarRepository,
+                PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
                 WebhookDispatchService = Settings.WebhookDispatchService
             }, autoPeriodResults);
 
@@ -251,6 +259,10 @@ internal sealed class PayrunProcessorRegulation
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentWageTypeResult = resultSet,
                 RuntimeValueProvider = context.RuntimeValueProvider,
+                DivisionRepository = Settings.DivisionRepository,
+                EmployeeRepository = Settings.EmployeeRepository,
+                CalendarRepository = Settings.CalendarRepository,
+                PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
                 WebhookDispatchService = Settings.WebhookDispatchService
             });
 
@@ -314,6 +326,10 @@ internal sealed class PayrunProcessorRegulation
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentCollectorResult = collectorResult,
                 RuntimeValueProvider = context.RuntimeValueProvider,
+                DivisionRepository = Settings.DivisionRepository,
+                EmployeeRepository = Settings.EmployeeRepository,
+                CalendarRepository = Settings.CalendarRepository,
+                PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
                 WebhookDispatchService = Settings.WebhookDispatchService
             });
 
@@ -364,6 +380,10 @@ internal sealed class PayrunProcessorRegulation
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentCollectorResult = collectorResult,
                 RuntimeValueProvider = context.RuntimeValueProvider,
+                DivisionRepository = Settings.DivisionRepository,
+                EmployeeRepository = Settings.EmployeeRepository,
+                CalendarRepository = Settings.CalendarRepository,
+                PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
                 WebhookDispatchService = Settings.WebhookDispatchService
             });
             value = result.Item1;
@@ -423,6 +443,10 @@ internal sealed class PayrunProcessorRegulation
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentCollectorResult = collectorResult,
                 RuntimeValueProvider = context.RuntimeValueProvider,
+                DivisionRepository = Settings.DivisionRepository,
+                EmployeeRepository = Settings.EmployeeRepository,
+                CalendarRepository = Settings.CalendarRepository,
+                PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
                 WebhookDispatchService = Settings.WebhookDispatchService
             });
 

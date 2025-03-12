@@ -2093,6 +2093,7 @@ CREATE TABLE [dbo].[Report] (
   [Relations] [nvarchar](max) NULL,
   [OverrideType] [int] NOT NULL,
   [AttributeMode] [int] NOT NULL,
+  [UserType] [int] NOT NULL,
   [BuildExpression] [nvarchar](max) NULL,
   [StartExpression] [nvarchar](max) NULL,
   [EndExpression] [nvarchar](max) NULL,
@@ -2135,6 +2136,7 @@ CREATE TABLE [dbo].[ReportAudit] (
   [Relations] [nvarchar](max) NULL,
   [AttributeMode] [int] NOT NULL,
   [OverrideType] [int] NOT NULL,
+  [UserType] [int] NOT NULL,
   [BuildExpression] [nvarchar](max) NULL,
   [StartExpression] [nvarchar](max) NULL,
   [EndExpression] [nvarchar](max) NULL,
@@ -4462,6 +4464,9 @@ ALTER TABLE [dbo].[Report] ADD CONSTRAINT [DF_PayrollResultReport_Updated] DEFAU
 FOR [Updated]
 GO
 
+ALTER TABLE [dbo].[Report] ADD CONSTRAINT [DF_Report_UserType] DEFAULT((0))
+FOR [UserType]
+GO
 ALTER TABLE [dbo].[ReportAudit] ADD CONSTRAINT [DF_ReportAudit_Status] DEFAULT((0))
 FOR [Status]
 GO
@@ -4472,6 +4477,9 @@ GO
 
 ALTER TABLE [dbo].[ReportAudit] ADD CONSTRAINT [DF_ReportAudit_Updated] DEFAULT(getutcdate())
 FOR [Updated]
+GO
+ALTER TABLE [dbo].[ReportAudit] ADD CONSTRAINT [DF_ReportAudit_UserType] DEFAULT((0))
+FOR [UserType]
 GO
 
 ALTER TABLE [dbo].[ReportLog] ADD CONSTRAINT [DF_ReportLog_Status] DEFAULT((0))
@@ -7478,7 +7486,9 @@ BEGIN
     --   dbo.[CaseRelation].[Binary],
     dbo.[CaseRelation].[ScriptHash],
     dbo.[CaseRelation].[Attributes],
-    dbo.[CaseRelation].[Clusters]
+    dbo.[CaseRelation].[Clusters],
+    dbo.[CaseRelation].[BuildActions],
+    dbo.[CaseRelation].[ValidateActions]
   -- excluded columns
   --dbo.[CaseRelation].[Script],
   --dbo.[CaseRelation].[ScriptVersion]
@@ -7577,10 +7587,10 @@ BEGIN
     dbo.[Case].[ScriptHash],
     dbo.[Case].[Attributes],
     dbo.[Case].[Clusters],
-    dbo.[Case].[AvailableActions]
+    dbo.[Case].[AvailableActions],
+    dbo.[Case].[BuildActions],
+    dbo.[Case].[ValidateActions]
   -- excluded columns
-  --dbo.[Case].[BuildActions],
-  --dbo.[Case].[ValidateActions],
   --dbo.[Case].[Script],
   --dbo.[Case].[ScriptVersion]
   FROM dbo.[Case]
@@ -8905,7 +8915,7 @@ FROM (
     [CollectorResult].[Tags] AS [ResultTags],
     [CollectorResult].[Attributes],
     [CollectorResult].[ValueType] AS [ResultType],
-    LTRIM([CollectorResult].[Value]) AS [ResultValue],
+    FORMAT([CollectorResult].[Value], ''N2'') AS [ResultValue],
     [CollectorResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[CollectorResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
@@ -8930,7 +8940,7 @@ FROM (
     [CollectorCustomResult].[Tags] AS [ResultTags],
     [CollectorCustomResult].[Attributes],
     [CollectorCustomResult].[ValueType] AS [ResultType],
-    LTRIM([CollectorCustomResult].[Value]) AS [ResultValue],
+    FORMAT([CollectorCustomResult].[Value], ''N2'') AS [ResultValue],
     [CollectorCustomResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[CollectorCustomResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
@@ -8957,7 +8967,7 @@ FROM (
     [WageTypeResult].[Tags] AS [ResultTags],
     [WageTypeResult].[Attributes],
     [WageTypeResult].[ValueType] AS [ResultType],
-    LTRIM([WageTypeResult].[Value]) AS [ResultValue],
+    FORMAT([WageTypeResult].[Value], ''N2'') AS [ResultValue],
     [WageTypeResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
@@ -8982,7 +8992,7 @@ FROM (
     [WageTypeCustomResult].[Tags] AS [ResultTags],
     [WageTypeCustomResult].[Attributes],
     [WageTypeCustomResult].[ValueType] AS [ResultType],
-    LTRIM([WageTypeCustomResult].[Value]) AS [ResultValue],
+    FORMAT([WageTypeCustomResult].[Value], ''N2'') AS [ResultValue],
     [WageTypeCustomResult].[Value] AS [ResultNumericValue]';
   SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeCustomResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
@@ -9389,14 +9399,14 @@ INSERT INTO [Version] (
 VALUES (
 	0,
 	9,
-	0,
+	1,
 	CURRENT_USER,
-	'Payroll Engine: Full setup v0.9.0' )
+	'Payroll Engine: Full setup v0.9.1' )
 SET @errorID = @@ERROR
 IF ( @errorID <> 0 ) BEGIN
 	PRINT 'Error while updating the Payroll Engine database version.'
 END
 ELSE BEGIN
-	PRINT 'Payroll Engine database version successfully updated to release 0.9.0'
+	PRINT 'Payroll Engine database version successfully updated to release 0.9.1'
 END
 

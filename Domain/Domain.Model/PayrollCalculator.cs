@@ -404,7 +404,7 @@ public class PayrollCalculator : IPayrollCalculator
                 weekDayCount = weekCount;
                 break;
             case CalendarWeekMode.WorkWeek:
-                weekDayCount = calculation.CaseValuePeriod.GetWorkingDaysCount(Calendar.GetWorkDays());
+                weekDayCount = calculation.CaseValuePeriod.GetWorkingDaysCount(Calendar.GetWeekDays());
                 break;
         }
         return weekDayCount;

@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json;
+using System.Globalization;
+using System.Collections.Generic;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Client.QueryExpression;
 using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -50,12 +50,47 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     public object GetReportAttribute(string attributeName) =>
         Report.Attributes?.GetValue<object>(attributeName);
 
+    /// <inheritdoc />
+    public void SetReportAttribute(string attributeName, object value)
+    {
+        if (string.IsNullOrWhiteSpace(attributeName))
+        {
+            throw new ArgumentException(nameof(attributeName));
+        }
+
+        // add/change attribute
+        if (value != null)
+        {
+            // ensure attribute collection
+            Report.Attributes ??= new();
+            Report.Attributes[attributeName] = value;
+        }
+        else
+        {
+            // remove attribute
+            if (Report.Attributes != null && Report.Attributes.ContainsKey(attributeName))
+            {
+                Report.Attributes.Remove(attributeName);
+            }
+        }
+    }
+
     #region Parameter
 
     /// <inheritdoc />
     public bool HasParameter(string parameterName)
     {
+        if (string.IsNullOrWhiteSpace(parameterName))
+        {
+            throw new ArgumentException(nameof(parameterName));
+        }
+
         // request
+        if (string.IsNullOrWhiteSpace(parameterName))
+        {
+            throw new ArgumentException(nameof(parameterName));
+        }
+
         if (ReportRequest.Parameters != null && ReportRequest.Parameters.ContainsKey(parameterName))
         {
             return true;
@@ -63,12 +98,17 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
 
         // report
         var parameter = Report.Parameters.FirstOrDefault(x => string.Equals(x.Name, parameterName));
-        return parameter != null;
+        return parameter?.Value != null;
     }
 
     /// <inheritdoc />
     public string GetParameter(string parameterName)
     {
+        if (string.IsNullOrWhiteSpace(parameterName))
+        {
+            throw new ArgumentException(nameof(parameterName));
+        }
+
         // request
         if (ReportRequest.Parameters != null && ReportRequest.Parameters.TryGetValue(parameterName, out var parameter1))
         {
@@ -137,6 +177,45 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     }
 
     /// <inheritdoc />
+    public void SetParameterAttribute(string parameterName, string attributeName, object value)
+    {
+        if (string.IsNullOrWhiteSpace(parameterName))
+        {
+            throw new ArgumentException(nameof(parameterName));
+        }
+        if (string.IsNullOrWhiteSpace(attributeName))
+        {
+            throw new ArgumentException(nameof(attributeName));
+        }
+
+        // report parameter
+        if (Report.Parameters == null)
+        {
+            throw new ArgumentException($"Invalid report parameter {parameterName}.");
+        }
+        var reportParameter = Report.Parameters.FirstOrDefault(x => string.Equals(x.Name, parameterName));
+        if (reportParameter == null)
+        {
+            throw new ArgumentException($"Unknown report parameter {parameterName}.");
+        }
+
+        // remove attribute
+        if (value == null)
+        {
+            if (reportParameter.Attributes != null && reportParameter.Attributes.ContainsKey(attributeName))
+            {
+                reportParameter.Attributes.Remove(attributeName);
+            }
+        }
+        else
+        {
+            // add/change attribute
+            reportParameter.Attributes ??= new();
+            reportParameter.Attributes[attributeName] = value;
+        }
+    }
+
+    /// <inheritdoc />
     public bool ParameterHidden(string parameterName)
     {
         if (string.IsNullOrWhiteSpace(parameterName))
@@ -186,7 +265,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
             {
                 return null;
             }
-            Log.Warning($"Execute query: {stopwatch.ElapsedMilliseconds} ms ({resultTable.Rows.Count})");
+            Log.Debug($"Execute query: {stopwatch.ElapsedMilliseconds} ms ({resultTable.Rows.Count})");
             resultTable.TableName = tableName;
             resultTable.AcceptChanges();
             return resultTable;
@@ -280,7 +359,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
     public DataTable ExecuteEmployeeCaseValueQuery(string tableName, int employeeId,
         Tuple<int?, string, string, string, long?, long?> queryValues)
     {
-        var caseValues = Settings.EmployeCaseValueRepository.
+        var caseValues = Settings.EmployeeCaseValueRepository.
             QueryAsync(Settings.DbContext, employeeId, BuildCaseValueQuery(queryValues)).Result;
         return BuildCaseValueTable(tableName, caseValues);
     }
@@ -558,7 +637,10 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
         }
 
         // query
-        var results = Settings.WageTypeCustomResultRepository.QueryAsync(Settings.DbContext, wageTypeResultId, QueryValuesToQuery(queryValues)).Result;
+        var results = Settings.WageTypeCustomResultRepository.QueryAsync(
+            context: Settings.DbContext,
+            parentId: wageTypeResultId,
+            query: QueryValuesToQuery(queryValues)).Result;
 
         // setup columns
         var dataTable = new DataTable(tableName);

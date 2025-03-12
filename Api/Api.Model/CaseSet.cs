@@ -33,6 +33,16 @@ public class CaseSet : Case
     public DateTime? CancellationDate { get; set; }
 
     /// <summary>
+    /// The change reason
+    /// </summary>
+    public string Reason { get; set; }
+    
+    /// <summary>
+    /// The change forecast
+    /// </summary>
+    public string Forecast { get; set; }
+
+    /// <summary>
     /// Derived case fields
     /// </summary>
     public CaseFieldSet[] Fields { get; set; }

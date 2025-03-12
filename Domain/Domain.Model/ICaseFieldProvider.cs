@@ -9,7 +9,7 @@ namespace PayrollEngine.Domain.Model;
 public interface ICaseFieldProvider
 {
     /// <summary>
-    /// Get case type of a case field
+    /// Get case type of case field
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="caseFieldName">The case field name</param>

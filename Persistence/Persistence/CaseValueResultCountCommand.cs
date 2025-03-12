@@ -9,7 +9,7 @@ namespace PayrollEngine.Persistence;
 internal sealed class CaseValueResultCountCommand : DomainRepositoryCommandBase
 {
     /// <summary>
-    /// Execute a item count query in case query attributes are present
+    /// Execute item count query in case query attributes are present
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="query">The case value query</param>

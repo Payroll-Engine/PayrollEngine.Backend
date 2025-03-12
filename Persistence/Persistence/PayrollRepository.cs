@@ -107,10 +107,10 @@ public class PayrollRepository(IPayrollLayerRepository payrollLayerRepository,
 
     /// <inheritdoc/>
     public async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(IDbContext context, PayrollQuery query,
-        IEnumerable<string> reportNames = null,
-        OverrideType? overrideType = null, ClusterSet clusterSet = null) =>
+        IEnumerable<string> reportNames = null, OverrideType? overrideType = null,
+        UserType? userType = null, ClusterSet clusterSet = null) =>
         await new PayrollRepositoryReportCommand(context).GetDerivedReportsAsync(ReportRepository,
-            query, reportNames, overrideType, clusterSet);
+            query, reportNames, overrideType, userType, clusterSet);
 
     /// <inheritdoc/>
     public async Task<IEnumerable<ReportParameter>> GetDerivedReportParametersAsync(IDbContext context, PayrollQuery query,
@@ -119,7 +119,7 @@ public class PayrollRepository(IPayrollLayerRepository payrollLayerRepository,
 
     /// <inheritdoc/>
     public async Task<IEnumerable<ReportTemplate>> GetDerivedReportTemplatesAsync(IDbContext context, PayrollQuery query,
-       IEnumerable<string> reportNames = null,  string culture = null, OverrideType? overrideType = null) =>
+       IEnumerable<string> reportNames = null, string culture = null, OverrideType? overrideType = null) =>
         await new PayrollRepositoryReportTemplatesCommand(context).GetDerivedReportTemplatesAsync(
             query, reportNames, culture, overrideType);
 

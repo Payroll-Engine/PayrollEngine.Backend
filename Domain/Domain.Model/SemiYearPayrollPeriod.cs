@@ -54,9 +54,9 @@ public class SemiYearPayrollPeriod : IPayrollPeriod
             // previous year
             (Date.MonthsInSemiYear - semiYearOffset) * -1;
 
-        // semi year start
+        // semi year-start
         var semiYearStart = Culture.Calendar.GetOffsetDate(year, month, offsetMonths: offsetMonths);
-        // semi year end
+        // semi year-end
         var semiYearEnd = Culture.Calendar.GetOffsetDate(year, month, offsetMonths: offsetMonths + Date.MonthsInSemiYear)
             .AddDays(-1).LastMomentOfDay();
 

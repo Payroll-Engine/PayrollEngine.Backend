@@ -55,9 +55,9 @@ public class YearPayrollPeriod : IPayrollPeriod
             // previous year
             (Date.MonthsInYear - yearOffset) * -1;
 
-        // year start
+        // year-start
         var yearStart = Culture.Calendar.GetOffsetDate(year, month, offsetMonths);
-        // year end
+        // year-end
         var yearEnd = Culture.Calendar.GetOffsetDate(year + 1, month, offsetMonths)
             .AddDays(-1).LastMomentOfDay();
 

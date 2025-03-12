@@ -28,7 +28,7 @@ public class ScriptAudit : ApiObjectBase
     public List<FunctionType> FunctionTypes { get; set; }
 
     /// <summary>
-    /// The script script
+    /// The script
     /// </summary>
     [Required]
     public string Value { get; set; }

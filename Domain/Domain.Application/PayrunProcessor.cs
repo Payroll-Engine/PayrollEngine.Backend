@@ -220,7 +220,7 @@ public class PayrunProcessor : FunctionToolBase
             if (stopwatch != null)
             {
                 stopwatch.Stop();
-                Log.Information($"{{Payrun}} load wage types [{context.DerivedWageTypes.Count}]: {stopwatch.ElapsedMilliseconds} ms");
+                Log.Debug($"{Payrun} load wage types [{context.DerivedWageTypes.Count}]: {stopwatch.ElapsedMilliseconds} ms");
                 stopwatch.Restart();
             }
 
@@ -233,7 +233,7 @@ public class PayrunProcessor : FunctionToolBase
             }
             var clusterSetCollector = context.Payroll.ClusterSets?.FirstOrDefault(x => string.Equals(collectorCluster, x.Name));
             context.DerivedCollectors = await processorRegulation.GetDerivedCollectorsAsync(context.PayrunJob, clusterSetCollector);
-            Log.Trace($"Payrun with {context.DerivedCollectors.Count} collectors");
+            Log.Trace($"{Payrun} with {context.DerivedCollectors.Count} collectors");
 
             // process scripts
             var processorScript = new PayrunProcessorScripts(FunctionHost, Settings, ResultProvider, Tenant, Payrun);
@@ -246,7 +246,7 @@ public class PayrunProcessor : FunctionToolBase
             if (stopwatch != null)
             {
                 stopwatch.Stop();
-                Log.Information($"{{Payrun}} load collectors [{context.DerivedCollectors.Count}]: {stopwatch.ElapsedMilliseconds} ms");
+                Log.Debug($"{Payrun} load collectors [{context.DerivedCollectors.Count}]: {stopwatch.ElapsedMilliseconds} ms");
                 stopwatch.Restart();
             }
 
@@ -433,7 +433,7 @@ public class PayrunProcessor : FunctionToolBase
                         var retroJob = await retroProcessor.Process(retroJobInvocation, payrunSetup);
                         retroJobs.Add(retroJob);
 
-                        // prepare period for the the following retro payrun job
+                        // prepare period for the following retro payrun job
                         retroPeriod = retroPeriod.GetPayrollPeriod(retroPeriod.Start, 1);
                     }
                 }
@@ -480,7 +480,7 @@ public class PayrunProcessor : FunctionToolBase
             if (stopwatch != null)
             {
                 stopwatch.Stop();
-                Log.Information($"{{Payrun}} store results: {stopwatch.ElapsedMilliseconds} ms");
+                Log.Debug($"{Payrun} store results: {stopwatch.ElapsedMilliseconds} ms");
             }
 
             // employee end function
@@ -722,7 +722,7 @@ public class PayrunProcessor : FunctionToolBase
                     wageTypeStopwatch.Stop();
                     if (wageTypeStopwatch.Elapsed > Settings.FunctionLogTimeout)
                     {
-                        Log.Information($"{{Payrun}} calc wage type {derivedWageType.Key:##.#}: {wageTypeStopwatch.ElapsedMilliseconds} ms");
+                        Log.Debug($"{Payrun} calc wage type {derivedWageType.Key:##.#}: {wageTypeStopwatch.ElapsedMilliseconds} ms");
                     }
 
                     // next wage type
@@ -734,7 +734,7 @@ public class PayrunProcessor : FunctionToolBase
         if (stopwatch != null)
         {
             stopwatch.Stop();
-            Log.Information($"{{Payrun}} calc all wage types [{context.DerivedWageTypes.Count}]: {stopwatch.ElapsedMilliseconds} ms");
+            Log.Debug($"{Payrun} calc all wage types [{context.DerivedWageTypes.Count}]: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         // collector end
@@ -760,7 +760,7 @@ public class PayrunProcessor : FunctionToolBase
         if (stopwatch != null)
         {
             stopwatch.Stop();
-            Log.Information($"{{Payrun}} get payrun results [{payrollResult.PayrunResults.Count}]: {stopwatch.ElapsedMilliseconds} ms");
+            Log.Debug($"{Payrun} get payrun results [{payrollResult.PayrunResults.Count}]: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         // incremental mode: remove unchanged results
@@ -938,6 +938,10 @@ public class PayrunProcessor : FunctionToolBase
                 CaseValueProvider = caseValueProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
                 RuntimeValueProvider = context.RuntimeValueProvider,
+                DivisionRepository = Settings.DivisionRepository,
+                EmployeeRepository = Settings.EmployeeRepository,
+                CalendarRepository = Settings.CalendarRepository,
+                PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
                 WebhookDispatchService = Settings.WebhookDispatchService
             });
             if (isAvailable.HasValue && isAvailable.Value)

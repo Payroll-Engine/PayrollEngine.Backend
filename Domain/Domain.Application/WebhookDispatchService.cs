@@ -31,6 +31,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
     private IWebhookRepository WebhookRepository { get; } = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
     private IWebhookMessageRepository MessageRepository { get; } = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
 
+    // ReSharper disable once GrammarMistakeInComment
     /// <summary>
     /// Only one http client
     /// prevent sockets-overflow exception, by creating the http client for any request.

@@ -99,7 +99,7 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
     }
 
     /// <summary>
-    /// Count count of resources query
+    /// Count of resources query
     /// </summary>
     /// <param name="parentId">The tenant id</param>
     /// <param name="query">Query parameters</param>

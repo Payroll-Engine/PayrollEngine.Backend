@@ -50,7 +50,7 @@ public interface IRepositoryApplicationService<out TRepo>
     /// Delete an attribute
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The if of the domain object to delete</param>
+    /// <param name="id">The id of the domain object to delete</param>
     /// <param name="attributeName">The attribute name</param>
     Task<bool?> DeleteAttributeAsync(IDbContext context, int id, string attributeName);
 

@@ -136,7 +136,7 @@ public class AssemblyCache
             if (cached)
             {
                 assembly = assemblyRuntime.Assembly;
-                // update lst usage, used to cleanup outdated assemblies
+                // update lst usage, used to clean up outdated assemblies
                 assemblyRuntime.LastUsed = Date.Now;
             }
         }

@@ -11,7 +11,7 @@ public interface IChildDomainRepository<T> : IDomainRepository
     where T : IDomainObject
 {
     /// <summary>
-    /// Test if an domain item exists
+    /// Test if domain item exists
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="parentId">The parent item id</param>
@@ -94,7 +94,7 @@ public interface IChildDomainRepository<T> : IDomainRepository
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="parentId">The parent item id</param>
-    /// <param name="itemId">The if of the domain item to delete</param>
+    /// <param name="itemId">The id of the domain item to delete</param>
     /// <returns>True if the record was deleted</returns>
     Task<bool> DeleteAsync(IDbContext context, int parentId, int itemId);
 }

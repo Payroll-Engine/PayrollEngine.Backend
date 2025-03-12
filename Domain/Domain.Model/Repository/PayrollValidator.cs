@@ -13,7 +13,7 @@ public class PayrollValidator
     /// <summary>
     /// Initializes a new instance of the <see cref="PayrollValidator"/> class.
     /// </summary>
-    /// <param name="payrollRepository">"The payroll repository></param>
+    /// <param name="payrollRepository">The payroll repository></param>
     public PayrollValidator(IPayrollRepository payrollRepository)
     {
         PayrollRepository = payrollRepository ?? throw new ArgumentNullException(nameof(payrollRepository));

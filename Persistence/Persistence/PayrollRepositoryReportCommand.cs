@@ -23,11 +23,13 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
     /// <param name="reportNames">The report names</param>
     /// <param name="overrideType">The override type</param>
     /// <param name="clusterSet">The cluster set</param>
+    /// <param name="userType">The user type</param>
     /// <returns>The derived reports, ordered by derivation level</returns>
     internal async Task<IEnumerable<ReportSet>> GetDerivedReportsAsync(
         IReportSetRepository reportRepository,
         PayrollQuery query, IEnumerable<string> reportNames = null,
-        OverrideType? overrideType = null, ClusterSet clusterSet = null)
+        OverrideType? overrideType = null, UserType? userType = null,
+        ClusterSet clusterSet = null)
     {
         // argument check
         if (reportRepository == null)
@@ -69,6 +71,10 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
         parameters.Add(DbSchema.ParameterGetDerivedReports.PayrollId, query.PayrollId);
         parameters.Add(DbSchema.ParameterGetDerivedReports.RegulationDate, query.RegulationDate);
         parameters.Add(DbSchema.ParameterGetDerivedReports.CreatedBefore, query.EvaluationDate);
+        if (userType.HasValue)
+        {
+            parameters.Add(DbSchema.ParameterGetDerivedReports.UserType, userType.Value);
+        }
         if (clusterSet != null)
         {
             if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())

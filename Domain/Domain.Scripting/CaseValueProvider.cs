@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using CaseValue = PayrollEngine.Domain.Model.CaseValue;
 using Task = System.Threading.Tasks.Task;
+using CaseValue = PayrollEngine.Domain.Model.CaseValue;
 
 namespace PayrollEngine.Domain.Scripting;
 
@@ -330,7 +330,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
                     break;
                 case CaseFieldTimeType.Moment:
                     // the latest moment/start case value before the value date (ignore forecast values)
-                    caseValue = caseFieldValues.Where(x => x.Start.HasValue && x.Start < valueDate).MaxBy(x => x.Start);
+                    caseValue = caseFieldValues.Where(x => x.Start.HasValue && x.Start <= valueDate).MaxBy(x => x.Start);
                     break;
                 case CaseFieldTimeType.Period:
                 case CaseFieldTimeType.CalendarPeriod:
@@ -667,7 +667,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
     /// <summary>
     /// Get period values from moment case field
     /// </summary>
-    /// <param name="caseFieldName">The case field, may includes the slot name</param>
+    /// <param name="caseFieldName">The case field, may include the slot name</param>
     /// <param name="caseField">The case field</param>
     /// <param name="valuePeriods">The value periods</param>
     /// <param name="values">The values</param>
@@ -696,7 +696,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
     /// <summary>
     /// Get period values from moment case field
     /// </summary>
-    /// <param name="caseFieldName">The case field, may includes the slot name</param>
+    /// <param name="caseFieldName">The case field, may include the slot name</param>
     /// <param name="caseField">The case field</param>
     /// <param name="caseValues">The case values</param>
     /// <param name="valuePeriods">The value periods</param>
@@ -746,7 +746,7 @@ public sealed class CaseValueProvider : ICaseValueProvider
     /// <summary>
     /// Get calendar period values from moment case field
     /// </summary>
-    /// <param name="caseFieldName">The case field, may includes the slot name</param>
+    /// <param name="caseFieldName">The case field, may include the slot name</param>
     /// <param name="caseField">The case field</param>
     /// <param name="calculator">The case value calculator</param>
     /// <param name="valuePeriods">The value periods</param>

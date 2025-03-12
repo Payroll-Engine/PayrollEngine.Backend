@@ -67,7 +67,9 @@ BEGIN
  --   dbo.[CaseRelation].[Binary],
     dbo.[CaseRelation].[ScriptHash],
     dbo.[CaseRelation].[Attributes],
-    dbo.[CaseRelation].[Clusters]
+    dbo.[CaseRelation].[Clusters],
+    dbo.[CaseRelation].[BuildActions],
+    dbo.[CaseRelation].[ValidateActions]
   -- excluded columns
   --dbo.[CaseRelation].[Script],
   --dbo.[CaseRelation].[ScriptVersion]

@@ -142,7 +142,7 @@ public class PayrunJob : DomainObjectBase, INamedObject, IDomainAttributeObject,
     public DateTime? Finished { get; set; }
 
     /// <summary>
-    /// The create reason (immutable)
+    /// The created reason (immutable)
     /// </summary>
     public string CreatedReason { get; set; }
 

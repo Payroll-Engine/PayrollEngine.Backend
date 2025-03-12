@@ -24,7 +24,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="query">Query parameters</param>
-    /// <returns>An ActionResult with a employee array</returns>
+    /// <returns>An ActionResult with employee array</returns>
     [HttpGet]
     [OkResponse]
     [NotFoundResponse]
@@ -42,7 +42,7 @@ public class EmployeeController : Api.Controller.EmployeeController
     }
 
     /// <summary>
-    /// Get a employee
+    /// Get employee
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The id of the employee</param>

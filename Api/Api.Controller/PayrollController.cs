@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
-using PayrollEngine.Api.Core;
-using PayrollEngine.Api.Map;
-using PayrollEngine.Client.Scripting;
-using PayrollEngine.Domain.Model.Repository;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using PayrollEngine.Api.Map;
+using PayrollEngine.Api.Core;
+using PayrollEngine.Client.Scripting;
 using PayrollEngine.Domain.Application;
+using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Application.Service;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
@@ -33,12 +33,11 @@ public abstract class PayrollController(IPayrollContextService context, IControl
     internal ITaskService TaskService { get; } = context.TaskService ?? throw new ArgumentNullException(nameof(IPayrollContextService.TaskService));
     internal ILogService LogService { get; } = context.LogService ?? throw new ArgumentNullException(nameof(IPayrollContextService.LogService));
     internal IPayrollService PayrollService => Service;
-    internal DomainObject.IWebhookDispatchService WebhookDispatchService { get; } = context.WebhookDispatchService ?? throw new ArgumentNullException(nameof(IPayrollContextService.WebhookDispatchService));
+    internal IDivisionService DivisionService { get; } = context.DivisionService ?? throw new ArgumentNullException(nameof(IPayrollContextService.DivisionService));
+    internal IEmployeeService EmployeeService { get; } = context.EmployeeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.EmployeeService));
 
     private ICaseService CaseService { get; } = context.CaseService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CaseService));
-    private ICalendarService CalendarService { get; } = context.CalendarService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CalendarService));
     private IUserService UserService { get; } = context.UserService ?? throw new ArgumentNullException(nameof(IPayrollContextService.UserService));
-    private IDivisionService DivisionService { get; } = context.DivisionService ?? throw new ArgumentNullException(nameof(IPayrollContextService.DivisionService));
     private ICaseFieldService CaseFieldService { get; } = context.CaseFieldService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CaseFieldService));
     private IGlobalCaseChangeService GlobalChangeService { get; } = context.GlobalChangeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.GlobalChangeService));
     private IGlobalCaseValueService GlobalCaseValueService { get; } = context.GlobalCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.GlobalCaseValueService));
@@ -46,9 +45,12 @@ public abstract class PayrollController(IPayrollContextService context, IControl
     private INationalCaseValueService NationalCaseValueService { get; } = context.NationalCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.NationalCaseValueService));
     private ICompanyCaseChangeService CompanyChangeService { get; } = context.CompanyChangeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CompanyChangeService));
     private ICompanyCaseValueService CompanyCaseValueService { get; } = context.CompanyCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CompanyCaseValueService));
-    private IEmployeeService EmployeeService { get; } = context.EmployeeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.EmployeeService));
     private IEmployeeCaseChangeService EmployeeChangeService { get; } = context.EmployeeChangeService ?? throw new ArgumentNullException(nameof(IPayrollContextService.EmployeeChangeService));
     private IEmployeeCaseValueService EmployeeCaseValueService { get; } = context.EmployeeCaseValueService ?? throw new ArgumentNullException(nameof(IPayrollContextService.EmployeeCaseValueService));
+
+    internal DomainObject.IPayrollCalculatorProvider PayrollCalculatorProvider { get; } = context.PayrollCalculatorProvider ?? throw new ArgumentNullException(nameof(IPayrollContextService.PayrollCalculatorProvider));
+    internal ICalendarService CalendarService { get; } = context.CalendarService ?? throw new ArgumentNullException(nameof(IPayrollContextService.CalendarService));
+    internal DomainObject.IWebhookDispatchService WebhookDispatchService { get; } = context.WebhookDispatchService ?? throw new ArgumentNullException(nameof(IPayrollContextService.WebhookDispatchService));
 
     #region Payroll Regulations
 
@@ -152,7 +154,6 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                 Calendar = calendar,
                 Payroll = payroll,
                 User = user,
-                PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
                 RegulationDate = query.RegulationDate.Value,
                 EvaluationDate = query.EvaluationDate.Value,
                 ClusterSetName = query.ClusterSetName,
@@ -265,7 +266,6 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                 Calendar = calendar,
                 Payroll = querySetup.Payroll,
                 User = querySetup.User,
-                PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
                 RegulationDate = query.RegulationDate.Value,
                 EvaluationDate = query.EvaluationDate.Value,
                 ClusterSetName = query.ClusterSetName,
@@ -332,7 +332,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             {
                 // case fields
                 var now = Date.Now;
-                var caseFieldNames = (await Service.GetDerivedCaseFieldsOfCaseAsync(Runtime.DbContext,
+                var caseFields = (await Service.GetDerivedCaseFieldsOfCaseAsync(Runtime.DbContext,
                     new()
                     {
                         TenantId = tenantId,
@@ -340,8 +340,8 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                         RegulationDate = query.RegulationDate ?? now,
                         EvaluationDate = query.EvaluationDate ?? now
                     },
-                    caseNames)).Select(x => x.Name);
-                if (caseFieldNames.Any())
+                    caseNames)).ToList();
+                if (caseFields.Any())
                 {
                     // case values
                     query.Result ??= QueryResultType.Items;
@@ -351,13 +351,19 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                     {
                         var domainValues = query.CaseType switch
                         {
-                            CaseType.Global => await GlobalChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query),
-                            CaseType.National => await NationalChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query),
-                            CaseType.Company => await CompanyChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query),
+                            CaseType.Global =>
+                                (await GlobalChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query)).ToList(),
+                            CaseType.National =>
+                                (await NationalChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query)).ToList(),
+                            CaseType.Company =>
+                                (await CompanyChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, tenantId, query)).ToList(),
                             // ReSharper disable once PossibleInvalidOperationException
-                            CaseType.Employee => await EmployeeChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, query.EmployeeId.Value, query),
+                            CaseType.Employee =>
+                                (await EmployeeChangeService.QueryValuesAsync(Runtime.DbContext, tenantId, query.EmployeeId.Value, query)).ToList(),
                             _ => throw new ArgumentOutOfRangeException(nameof(query.CaseType), query.CaseType, null)
                         };
+
+                        ApplyLocalizations(domainValues, cases, caseFields);
                         caseChangeValues = new CaseChangeCaseValueMap().ToApi(domainValues);
                     }
 
@@ -403,6 +409,19 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         catch (Exception exception)
         {
             return InternalServerError(exception);
+        }
+    }
+
+    private void ApplyLocalizations(IEnumerable<DomainObject.CaseChangeCaseValue> caseChangeValues, IList<ApiObject.Case> cases,
+        IList<DomainObject.ChildCaseField> caseFields)
+    {
+        foreach (var changeCaseValue in caseChangeValues)
+        {
+            var @case = cases.FirstOrDefault(x => string.Equals(x.Name, changeCaseValue.CaseName));
+            changeCaseValue.CaseNameLocalizations = @case?.NameLocalizations;
+
+            var caseField = caseFields.FirstOrDefault(x => string.Equals(x.Name, changeCaseValue.CaseFieldName));
+            changeCaseValue.CaseFieldNameLocalizations = caseField?.NameLocalizations;
         }
     }
 
@@ -478,7 +497,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             var domainCaseValues = caseFieldNames != null && caseFieldNames.Length > 0 ?
                 // get case values of specific case fields
                 await caseValueTool.GetTimeCaseValuesAsync(caseValueDate, caseType, caseFieldNames) :
-                // get case values by case case type
+                // get case values by case type
                 await caseValueTool.GetTimeCaseValuesAsync(caseValueDate, caseType);
             return domainCaseValues.Select(domainCaseValue => new CaseValueMap().ToApi(domainCaseValue)).ToList();
         }
@@ -584,7 +603,6 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                 Calendar = calendar,
                 Payroll = querySetup.Payroll,
                 User = querySetup.User,
-                PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
                 RegulationDate = query.RegulationDate.Value,
                 EvaluationDate = query.EvaluationDate.Value,
                 Employee = querySetup.Employee
@@ -835,7 +853,6 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             Calendar = calendar,
             Payroll = settings.Payroll,
             User = settings.User,
-            PayrollCalculatorProvider = Context.PayrollCalculatorProvider,
             RegulationDate = settings.RegulationDate.Value,
             EvaluationDate = settings.EvaluationDate.Value,
             Employee = settings.Employee
@@ -1439,8 +1456,8 @@ public abstract class PayrollController(IPayrollContextService context, IControl
     }
 
     protected async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(
-        DomainObject.PayrollQuery query,
-        string[] reportNames, OverrideType? overrideType, string clusterSetName)
+        DomainObject.PayrollQuery query, string[] reportNames, 
+        OverrideType? overrideType, UserType? userType, string clusterSetName)
     {
         try
         {
@@ -1475,6 +1492,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                 },
                 reportNames: reportNames,
                 overrideType: overrideType,
+                userType: userType,
                 clusterSet: querySetup.ClusterSet);
 
             return new ReportSetMap().ToApi(reports);

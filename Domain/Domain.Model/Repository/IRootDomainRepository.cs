@@ -62,7 +62,7 @@ public interface IRootDomainRepository<T> : IDomainRepository
     /// Remove a domain object from the repository
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The if of the domain object to delete</param>
+    /// <param name="id">The id of the domain object to delete</param>
     /// <returns>True if the record was deleted</returns>
     Task<bool> DeleteAsync(IDbContext context, int id);
 }

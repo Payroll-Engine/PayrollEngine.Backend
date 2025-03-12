@@ -5,9 +5,7 @@ namespace PayrollEngine.Domain.Application.Service;
 public interface IPayrollContextService
 {
     ITenantService TenantService { get; }
-    IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
 
-    ICalendarService CalendarService { get; init; }
     ILookupSetService RegulationLookupSetService { get; init; }
     IPayrollService PayrollService { get; }
     IDivisionService DivisionService { get; init; }
@@ -26,5 +24,7 @@ public interface IPayrollContextService
     IEmployeeService EmployeeService { get; init; }
     IEmployeeCaseChangeService EmployeeChangeService { get; init; }
     IEmployeeCaseValueService EmployeeCaseValueService { get; init; }
+    ICalendarService CalendarService { get; init; }
+    IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
     IWebhookDispatchService WebhookDispatchService { get; init; }
 }

@@ -27,7 +27,9 @@ CREATE PROCEDURE dbo.[GetDerivedReports]
   @regulationDate AS DATETIME2(7),
   -- creation date
   @createdBefore AS DATETIME2(7),
-  -- the report names: JSON array of VARCHAR(128)
+  -- user type
+  @userType AS INT = NULL,
+-- the report names: JSON array of VARCHAR(128)
   @reportNames AS VARCHAR(MAX) = NULL,
   -- the include clusters: JSON array of cluster names VARCHAR(128)
   @includeClusters AS VARCHAR(MAX) = NULL,
@@ -57,6 +59,7 @@ BEGIN
     dbo.[Report].[Queries],
     dbo.[Report].[Relations],
     dbo.[Report].[AttributeMode],
+    dbo.[Report].[UserType],
     dbo.[Report].[BuildExpression],
     dbo.[Report].[StartExpression],
     dbo.[Report].[EndExpression],
@@ -73,6 +76,7 @@ BEGIN
   -- active reports only
   WHERE dbo.[Report].[Status] = 0
     AND dbo.[Report].[Created] < @createdBefore
+    AND (@userType IS NULL OR dbo.[Report].[UserType] <= @userType)
     AND ((@includeClusters IS NULL AND @excludeClusters IS NULL)
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[Report].[Clusters]) = 1)
     AND (

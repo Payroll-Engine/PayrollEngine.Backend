@@ -39,7 +39,7 @@ public class LunisoralMonthPayrollPeriod : IPayrollPeriod
 
         // lunisolar month first week
         var firstDayOfWeek = calendar.FirstDayOfWeek ?? (DayOfWeek)culture.DateTimeFormat.FirstDayOfWeek;
-        var startOfWeek = moment.GetPreviousWeekDay(firstDayOfWeek);
+        var startOfWeek = moment.GetPreviousWeekDay(firstDayOfWeek).Date;
         var startWeekOfYear = Calendar.GetWeekOfYear(Culture, startOfWeek);
         if (startWeekOfYear > 1)
         {

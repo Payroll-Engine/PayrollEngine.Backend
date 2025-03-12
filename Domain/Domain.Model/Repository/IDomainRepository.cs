@@ -10,7 +10,7 @@ public interface IDomainRepository : IRepository
     #region Basic Operations
 
     /// <summary>
-    /// Test if an domain item exists
+    /// Test if domain item exists
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="id">The item id</param>
@@ -18,7 +18,7 @@ public interface IDomainRepository : IRepository
     Task<bool> ExistsAsync(IDbContext context, int id);
 
     /// <summary>
-    /// Test if an domain item exists
+    /// Test if domain item exists
     /// </summary>
     /// <param name="context">The database context</param>
     /// <param name="fieldName">The item field name</param>
@@ -61,7 +61,7 @@ public interface IDomainRepository : IRepository
     /// Delete an attribute
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="id">The if of the domain item to delete</param>
+    /// <param name="id">The id of the domain item to delete</param>
     /// <param name="attributeName">The attribute name</param>
     Task<bool?> DeleteAttributeAsync(IDbContext context, int id, string attributeName);
 

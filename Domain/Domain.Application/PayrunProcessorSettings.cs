@@ -10,7 +10,6 @@ namespace PayrollEngine.Domain.Application;
 public class PayrunProcessorSettings : FunctionToolSettings
 {
     // repositories
-    public ICalendarRepository CalendarRepository { get; init; }
     public IUserRepository UserRepository { get; init; }
     public IDivisionRepository DivisionRepository { get; init; }
     public IEmployeeRepository EmployeeRepository { get; init; }
@@ -27,11 +26,12 @@ public class PayrunProcessorSettings : FunctionToolSettings
     public IPayrollResultRepository PayrollResultRepository { get; init; }
     public IPayrollConsolidatedResultRepository PayrollConsolidatedResultRepository { get; init; }
     public IPayrollResultSetRepository PayrollResultSetRepository { get; init; }
-    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
 
     /// <summary>Function log timeout</summary>
     public TimeSpan FunctionLogTimeout { get; init; }
 
     // services
+    public ICalendarRepository CalendarRepository { get; init; }
+    public IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
     public IWebhookDispatchService WebhookDispatchService { get; init; }
 }

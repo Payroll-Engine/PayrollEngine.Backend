@@ -60,6 +60,11 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
     public ReportAttributeMode AttributeMode { get; set; }
 
     /// <summary>
+    /// The user type (default: employee)
+    /// </summary>
+    public UserType UserType { get; set; }
+
+    /// <summary>
     /// The report queries, key is the query name and value the api operation name
     /// </summary>
     public Dictionary<string, string> Queries { get; set; }
@@ -129,6 +134,7 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
             OverrideType = OverrideType,
             Category = Category,
             AttributeMode = AttributeMode,
+            UserType = UserType,
             Queries = Queries,
             Relations = Relations,
             BuildExpression = BuildExpression,
@@ -152,6 +158,7 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
         OverrideType = audit.OverrideType;
         Category = audit.Category;
         AttributeMode = audit.AttributeMode;
+        UserType = audit.UserType;
         Queries = audit.Queries.Copy();
         Relations = audit.Relations.Copy();
         BuildExpression = audit.BuildExpression;

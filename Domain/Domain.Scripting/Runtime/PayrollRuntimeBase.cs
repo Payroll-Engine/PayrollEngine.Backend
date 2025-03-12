@@ -197,6 +197,11 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     public virtual Tuple<string, DateTime, Tuple<DateTime?, DateTime?>, object, DateTime?, List<string>, Dictionary<string, object>> GetCaseValue(
         string caseFieldName, DateTime valueDate)
     {
+        if (string.IsNullOrWhiteSpace(caseFieldName))
+        {
+            throw new ArgumentException(nameof(caseFieldName));
+        }
+
         var caseValue = GetTimeCaseValue(caseFieldName, valueDate).Result;
         if (caseValue == null)
         {

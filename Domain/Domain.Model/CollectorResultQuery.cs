@@ -12,7 +12,7 @@ public class CollectorResultQuery : PayrollResultQuery
     /// <summary>The payrun job id</summary>
     public int? PayrunJobId { get; set; }
 
-    /// <summary>The The parent job id</summary>
+    /// <summary>The parent job id</summary>
     public int? ParentPayrunJobId { get; set; }
 
     /// <summary>The collector names</summary>

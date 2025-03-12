@@ -1229,6 +1229,16 @@
             Cancellation date
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.Reason">
+            <summary>
+            The change reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CaseSet.Forecast">
+            <summary>
+            The change forecast
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CaseSet.Fields">
             <summary>
             Derived case fields
@@ -2338,8 +2348,8 @@
             <summary>
             The payroll layer API object.
             Payroll layer evaluated order in payrolls:
-            1. From th highest level to the lowest level
-            2. Within a level: from th highest priority to the lowest priority
+            1. From th the highest level to the lowest level
+            2. Within a level: from the highest priority to the lowest priority
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrollLayer.Level">
@@ -2836,7 +2846,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJob.CreatedReason">
             <summary>
-            The create reason (immutable)
+            The created reason (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJob.ReleasedReason">
@@ -3226,6 +3236,11 @@
         <member name="P:PayrollEngine.Api.Model.Report.AttributeMode">
             <summary>
             The report attribute mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Report.UserType">
+            <summary>
+            The user type (default: employee)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Report.Queries">
@@ -3731,7 +3746,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.Script.Value">
             <summary>
-            The script script
+            The script
             </summary>
         </member>
         <member name="M:PayrollEngine.Api.Model.Script.ToString">
@@ -3759,7 +3774,7 @@
         </member>
         <member name="P:PayrollEngine.Api.Model.ScriptAudit.Value">
             <summary>
-            The script script
+            The script
             </summary>
         </member>
         <member name="M:PayrollEngine.Api.Model.ScriptAudit.ToString">

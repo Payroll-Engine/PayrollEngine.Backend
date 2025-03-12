@@ -17,6 +17,7 @@ public class ReportAuditRepository() : AuditChildDomainRepository<ReportAudit>(D
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.Category), audit.Category);
         parameters.Add(nameof(audit.AttributeMode), audit.AttributeMode);
+        parameters.Add(nameof(audit.UserType), audit.UserType);
         parameters.Add(nameof(audit.Queries), JsonSerializer.SerializeNamedDictionary(audit.Queries));
         parameters.Add(nameof(audit.Relations), DefaultJsonSerializer.Serialize(audit.Relations));
         parameters.Add(nameof(audit.BuildExpression), audit.BuildExpression);

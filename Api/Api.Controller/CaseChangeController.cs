@@ -99,7 +99,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     }
 
     /// <summary>
-    /// Count count of resources query
+    /// Count of resources query
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="parentId">The change parent id</param>
@@ -206,7 +206,7 @@ public abstract class CaseChangeController<TParentService, TParentRepo, TRepo, T
     }
 
     /// <summary>
-    /// Count count of resources query
+    /// Count of resources query
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="parentId">The change parent id</param>

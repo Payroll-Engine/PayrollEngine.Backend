@@ -18,9 +18,12 @@ public class DerivedCaseToolSettings : FunctionToolSettings
     public Payroll Payroll { get; set; }
     public DateTime RegulationDate { get; set; }
     public DateTime EvaluationDate { get; set; }
+    public IDivisionRepository DivisionRepository { get; set; }
+    public IEmployeeRepository EmployeeRepository { get; set; }
     public IPayrollRepository PayrollRepository { get; set; }
     public IRegulationRepository RegulationRepository { get; set; }
     public ILookupSetRepository LookupSetRepository { get; set; }
-    public IWebhookDispatchService WebhookDispatchService { get; set; }
+    public ICalendarRepository CalendarRepository { get; set; }
     public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
+    public IWebhookDispatchService WebhookDispatchService { get; set; }
 }

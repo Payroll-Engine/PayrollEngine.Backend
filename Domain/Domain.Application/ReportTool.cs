@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using Task = System.Threading.Tasks.Task;
@@ -22,7 +22,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
     // settings
     protected new ReportToolSettings Settings => base.Settings as ReportToolSettings;
 
-    // repositories
+    // parameter type lookup repositories
     private IUserRepository UserRepository { get; } = settings.UserRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.UserRepository));
     private IEmployeeRepository EmployeeRepository { get; } = settings.EmployeeRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.EmployeeRepository));
     private IRegulationRepository RegulationRepository { get; } = settings.RegulationRepository ?? throw new ArgumentNullException(nameof(ReportToolSettings.RegulationRepository));
@@ -36,20 +36,6 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
         // report parameters
         if (report.Parameters.Any())
         {
-            // parameter validation
-            var mandatoryParameters = report.Parameters.Where(x => x.Mandatory);
-            foreach (var mandatoryParameter in mandatoryParameters)
-            {
-                if (request.Parameters == null || !request.Parameters.ContainsKey(mandatoryParameter.Name))
-                {
-                    // no default value available
-                    if (string.IsNullOrWhiteSpace(mandatoryParameter.Value))
-                    {
-                        throw new QueryException($"Missing mandatory report parameter '{mandatoryParameter.Name}' in report '{report.Name}'");
-                    }
-                }
-            }
-
             // report parameters
             foreach (var reportParameter in report.Parameters)
             {
@@ -340,7 +326,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
 
                 if (string.IsNullOrWhiteSpace(variableValue))
                 {
-                    throw new QueryException($"Unknown report variable {variableName}");
+                    return null;
                 }
 
                 // apply variable

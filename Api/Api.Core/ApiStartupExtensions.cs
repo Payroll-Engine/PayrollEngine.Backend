@@ -57,7 +57,7 @@ public static class ApiStartupExtensions
         // Kestrel
         services.Configure<KestrelServerOptions>(options =>
         {
-            // if don't set default value is: 30 MB
+            // don't set default value is: 30 MB
             if (options.Limits.MaxRequestBodySize < MaxRequestBodySize)
             {
                 options.Limits.MaxRequestBodySize = MaxRequestBodySize;

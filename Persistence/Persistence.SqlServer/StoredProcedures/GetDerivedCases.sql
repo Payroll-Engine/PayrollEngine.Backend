@@ -74,10 +74,10 @@ BEGIN
     dbo.[Case].[ScriptHash],
     dbo.[Case].[Attributes],
     dbo.[Case].[Clusters],
-    dbo.[Case].[AvailableActions]
+    dbo.[Case].[AvailableActions],
+    dbo.[Case].[BuildActions],
+    dbo.[Case].[ValidateActions]
   -- excluded columns
-  --dbo.[Case].[BuildActions],
-  --dbo.[Case].[ValidateActions],
   --dbo.[Case].[Script],
   --dbo.[Case].[ScriptVersion]
   FROM dbo.[Case]

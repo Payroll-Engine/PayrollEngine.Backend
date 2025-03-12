@@ -25,7 +25,6 @@ public class PayrunEmployeeEndRuntime : PayrunRuntimeBase, IPayrunEmployeeEndRun
     /// Execute the payrun employee end value script
     /// </summary>
     /// <param name="payrun">The payrun</param>
-    /// <returns>True if the employee is end</returns>
     [MethodImpl(MethodImplOptions.NoInlining)]
     internal void ExecuteEmployeeEndScript(Payrun payrun)
     {

@@ -179,7 +179,7 @@ public static class StringExtensions
     #region Scripting
 
     /// <summary>
-    /// Extract the code tags from script
+    /// Extract the code tags from script.
     /// Script tag example:
     ///   /* #sealed */ MyScriptExpression
     /// </summary>

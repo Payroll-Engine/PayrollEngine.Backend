@@ -89,7 +89,7 @@ public class RegulationController : Api.Controller.RegulationController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulation">The regulation to add</param>
-    /// <returns>The newly created regulation regulation</returns>
+    /// <returns>The newly created regulation</returns>
     [HttpPost]
     [CreatedResponse]
     [NotFoundResponse]
@@ -112,7 +112,7 @@ public class RegulationController : Api.Controller.RegulationController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="regulation">The regulation id</param>
-    /// <returns>The modified regulation regulation</returns>
+    /// <returns>The modified regulation</returns>
     [HttpPut("{regulationId}")]
     [OkResponse]
     [NotFoundResponse]

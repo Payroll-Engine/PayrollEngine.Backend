@@ -164,6 +164,18 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
 
         CaseType? caseType = null;
 
+        // sync value created date
+        if (caseChange.Created != DateTime.MinValue)
+        {
+            foreach (var caseValue in caseChange.Values)
+            {
+                if (caseValue.Created == DateTime.MinValue)
+                {
+                    caseValue.Created = caseChange.Created;
+                }
+            }
+        }
+
         // collect cases with case fields
         var caseFields = new List<CaseField>();
         var cases = new List<Case>();
@@ -243,12 +255,10 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
                         Filter = filter
                     };
                     var latestCaseValue = (await CaseValueRepository.QueryAsync(context, parentId, query)).FirstOrDefault();
-                    if (latestCaseValue != null &&
-                        Equals(latestCaseValue.Start, caseValue.Start) &&
-                        Equals(latestCaseValue.End, caseValue.End) &&
-                        Equals(latestCaseValue.Value, caseValue.Value))
+                    if (latestCaseValue != null && EqualCaseValue(latestCaseValue, caseValue) ||
+                        (latestCaseValue == null && caseValue?.Value == null))
                     {
-                        // unchanged value
+                        // unchanged or undefined value
                         createValue = false;
                     }
                     break;
@@ -410,6 +420,20 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
 
         txScope.Complete();
         return caseChange;
+    }
+
+    private static bool EqualCaseValue(CaseValue left, CaseValue right)
+    {
+        // start and end
+        if (!Equals(left.Start, right.Start) || !Equals(left.End, right.End))
+        {
+            return false;
+        }
+
+        // value
+        return Equals(left.Value, right.Value) ||
+               (string.IsNullOrWhiteSpace(left.Value) &&
+                string.IsNullOrWhiteSpace(right.Value));
     }
 
     private async Task CreateCaseValuesAsync(IDbContext context, T caseChange)

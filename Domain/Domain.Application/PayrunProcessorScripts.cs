@@ -64,6 +64,10 @@ internal sealed class PayrunProcessorScripts
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,
             RuntimeValueProvider = context.RuntimeValueProvider,
+            DivisionRepository = Settings.DivisionRepository,
+            EmployeeRepository = Settings.EmployeeRepository,
+            CalendarRepository = Settings.CalendarRepository,
+            PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
             WebhookDispatchService = Settings.WebhookDispatchService
         });
         return start ?? true;
@@ -110,6 +114,10 @@ internal sealed class PayrunProcessorScripts
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,
             RuntimeValueProvider = context.RuntimeValueProvider,
+            DivisionRepository = Settings.DivisionRepository,
+            EmployeeRepository = Settings.EmployeeRepository,
+            CalendarRepository = Settings.CalendarRepository,
+            PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
             WebhookDispatchService = Settings.WebhookDispatchService
         });
     }
@@ -145,6 +153,10 @@ internal sealed class PayrunProcessorScripts
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,
             RuntimeValueProvider = context.RuntimeValueProvider,
+            DivisionRepository = Settings.DivisionRepository,
+            EmployeeRepository = Settings.EmployeeRepository,
+            CalendarRepository = Settings.CalendarRepository,
+            PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
             WebhookDispatchService = Settings.WebhookDispatchService
         });
         return start ?? true;
@@ -181,6 +193,10 @@ internal sealed class PayrunProcessorScripts
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,
             RuntimeValueProvider = context.RuntimeValueProvider,
+            DivisionRepository = Settings.DivisionRepository,
+            EmployeeRepository = Settings.EmployeeRepository,
+            CalendarRepository = Settings.CalendarRepository,
+            PayrollCalculatorProvider = Settings.PayrollCalculatorProvider,
             WebhookDispatchService = Settings.WebhookDispatchService
         });
     }

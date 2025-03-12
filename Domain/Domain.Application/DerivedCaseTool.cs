@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -18,6 +18,26 @@ public abstract class DerivedCaseTool : FunctionToolBase
     protected ICaseProvider CaseProvider { get; }
     private ICaseFieldProvider CaseFieldProvider { get; }
     protected ICaseValueProvider CaseValueProvider { get; }
+
+    /// <summary>
+    /// The division repository
+    /// </summary>
+    protected IDivisionRepository DivisionRepository { get; }
+
+    /// <summary>
+    /// The employee repository
+    /// </summary>
+    protected IEmployeeRepository EmployeeRepository { get; }
+
+    /// <summary>
+    /// The calendar repository
+    /// </summary>
+    protected ICalendarRepository CalendarRepository { get; }
+
+    /// <summary>
+    /// The payroll calculator provider
+    /// </summary>
+    protected IPayrollCalculatorProvider PayrollCalculatorProvider { get; }
 
     /// <summary>
     /// The webhook dispatcher
@@ -228,11 +248,15 @@ public abstract class DerivedCaseTool : FunctionToolBase
             new CaseFieldProxyRepository(settings.PayrollRepository, Tenant.Id, Payroll.Id, RegulationDate, EvaluationDate, ClusterSet));
 
         // repositories
+        DivisionRepository = settings.DivisionRepository ?? throw new ArgumentNullException(nameof(settings.DivisionRepository));
+        EmployeeRepository = settings.EmployeeRepository ?? throw new ArgumentNullException(nameof(settings.EmployeeRepository));
         PayrollRepository = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(settings.PayrollRepository));
         RegulationRepository = settings.RegulationRepository ?? throw new ArgumentNullException(nameof(settings.RegulationRepository));
         RegulationLookupSetRepository = settings.LookupSetRepository ?? throw new ArgumentNullException(nameof(settings.LookupSetRepository));
 
         // services
+        CalendarRepository = settings.CalendarRepository ?? throw new ArgumentNullException(nameof(settings.CalendarRepository));
+        PayrollCalculatorProvider = settings.PayrollCalculatorProvider ?? throw new ArgumentNullException(nameof(settings.PayrollCalculatorProvider));
         WebhookDispatchService = settings.WebhookDispatchService ?? throw new ArgumentNullException(nameof(settings.WebhookDispatchService));
     }
 
@@ -297,6 +321,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
             }
 
             // case values
+            var caseCulture = string.IsNullOrWhiteSpace(culture) ?
+                                CultureInfo.CurrentCulture : new CultureInfo(culture);
             foreach (var caseField in derivedCase.Fields)
             {
                 // adapt value
@@ -310,32 +336,51 @@ public abstract class DerivedCaseTool : FunctionToolBase
                 }
                 else if (initValues)
                 {
-                    var caseValueReference = new CaseValueReference(caseField.Name, caseSlot);
-                    var currentCaseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(
-                        valueDate: EvaluationDate,
-                        caseType: derivedCase.CaseType,
-                        caseFieldNames: [caseValueReference.Reference])).FirstOrDefault();
-                    if (currentCaseValue != null)
+                    // init case field without time value
+                    if (caseField.TimeType is CaseFieldTimeType.Timeless or CaseFieldTimeType.Moment)
                     {
-                        if (caseField.DefaultStart == null)
+                        if (caseField.DefaultStart != null)
                         {
-                            caseField.Start = currentCaseValue.Start;
+                            caseField.Start = Date.Parse(caseField.DefaultStart, caseCulture);
                         }
-                        if (caseField.DefaultEnd == null)
+                        if (caseField.DefaultEnd != null)
                         {
-                            caseField.End = currentCaseValue.End;
+                            caseField.End = Date.Parse(caseField.DefaultEnd, caseCulture);
                         }
-                        if (caseField.DefaultValue == null)
+                        if (caseField.DefaultValue != null)
+                        {
+                            caseField.Value = caseField.ValueType is ValueType.Date or ValueType.DateTime
+                                ? ValueConvert.ToJson(Date.Parse(caseField.DefaultValue, caseCulture))
+                                : caseField.DefaultValue;
+                        }
+                    }
+                    else
+                    {
+                        // init time value
+                        var caseValueReference = new CaseValueReference(caseField.Name, caseSlot);
+                        var currentCaseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(
+                            valueDate: EvaluationDate,
+                            caseType: derivedCase.CaseType,
+                            caseFieldNames: [caseValueReference.Reference])).FirstOrDefault();
+
+                        // default or previous values
+                        caseField.Start = currentCaseValue?.Start ??
+                                          (caseField.DefaultStart != null ?
+                                            Date.Parse(caseField.DefaultStart, caseCulture) : null);
+                        caseField.End = currentCaseValue?.End ??
+                                        (caseField.DefaultEnd != null ?
+                                            Date.Parse(caseField.DefaultEnd, caseCulture) : null);
+                        if (currentCaseValue?.Value == null)
+                        {
+                            caseField.Value = caseField.ValueType is ValueType.Date or ValueType.DateTime ?
+                                ValueConvert.ToJson(Date.Parse(caseField.DefaultValue, caseCulture)) :
+                                caseField.DefaultValue;
+                        }
+                        else
                         {
                             caseField.Value = currentCaseValue.Value;
                         }
-                        caseField.CancellationDate = currentCaseValue.CancellationDate;
-                    }
-
-                    // default value
-                    else if (!string.IsNullOrWhiteSpace(caseField.DefaultValue))
-                    {
-                        caseField.Value = caseField.DefaultValue;
+                        caseField.CancellationDate = currentCaseValue?.CancellationDate;
                     }
                 }
             }

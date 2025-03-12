@@ -37,7 +37,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     #region Query/Get
 
     /// <summary>
-    /// Setup the database query
+    /// Set up the database query
     /// </summary>
     /// <param name="dbQuery">The database query</param>
     /// <param name="query">The payroll query</param>
