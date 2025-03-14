@@ -151,7 +151,7 @@ public class CalendarController : Api.Controller.CalendarController
     /// zero: current (default)<br />
     /// greater than zero: future<br /></param>
     /// <returns>The calendar period</returns>
-    [HttpGet("periods")]
+    [HttpGet("period")]
     [OkResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
@@ -181,7 +181,7 @@ public class CalendarController : Api.Controller.CalendarController
     /// zero: current (default)<br />
     /// greater than zero: future<br /></param>
     /// <returns>The calendar cycle</returns>
-    [HttpGet("cycles")]
+    [HttpGet("cycle")]
     [OkResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
@@ -210,7 +210,7 @@ public class CalendarController : Api.Controller.CalendarController
     /// <param name="evaluationDate">The evaluation period date (default: all)</param>
     /// <param name="evaluationPeriodDate">The date within the evaluation period (default: evaluation date)</param>
     /// <returns>The calendar value</returns>
-    [HttpGet("values")]
+    [HttpGet("value")]
     [OkResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]

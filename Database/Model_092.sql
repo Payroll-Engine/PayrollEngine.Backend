@@ -7938,6 +7938,7 @@ CREATE PROCEDURE [dbo].[GetDerivedReports]
   @regulationDate AS DATETIME2(7),
   -- creation date
   @createdBefore AS DATETIME2(7),
+  @userType AS INT = NULL,
   -- the report names: JSON array of VARCHAR(128)
   @reportNames AS VARCHAR(MAX) = NULL,
   -- the include clusters: JSON array of cluster names VARCHAR(128)
@@ -7984,6 +7985,10 @@ BEGIN
   -- active reports only
   WHERE dbo.[Report].[Status] = 0
     AND dbo.[Report].[Created] < @createdBefore
+    AND (
+      @userType IS NULL
+      OR dbo.[Report].[UserType] <= @userType
+      )
     AND (
       (
         @includeClusters IS NULL
@@ -9399,14 +9404,14 @@ INSERT INTO [Version] (
 VALUES (
 	0,
 	9,
-	1,
+	2,
 	CURRENT_USER,
-	'Payroll Engine: Full setup v0.9.1' )
+	'Payroll Engine: Full setup v0.9.2' )
 SET @errorID = @@ERROR
 IF ( @errorID <> 0 ) BEGIN
 	PRINT 'Error while updating the Payroll Engine database version.'
 END
 ELSE BEGIN
-	PRINT 'Payroll Engine database version successfully updated to release 0.9.1'
+	PRINT 'Payroll Engine database version successfully updated to release 0.9.2'
 END
 
