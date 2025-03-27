@@ -5,6 +5,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The lookup settings
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class LookupSettings
 {
     /// <summary>

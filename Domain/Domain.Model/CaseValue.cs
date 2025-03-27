@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>
 /// A case value used in national, company and employee case
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<CaseValue>
 {
     private CultureInfo Culture => CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;

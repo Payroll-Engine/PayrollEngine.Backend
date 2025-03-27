@@ -6,6 +6,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A payroll service tenant
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class Tenant : DomainObjectBase, IIdentifiableObject, IDomainAttributeObject, IEquatable<Tenant>
 {
     /// <summary>

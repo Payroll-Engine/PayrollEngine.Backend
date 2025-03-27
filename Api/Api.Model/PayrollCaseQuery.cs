@@ -2,13 +2,14 @@
 using System.ComponentModel.DataAnnotations;
 using PayrollEngine.Domain.Model;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace PayrollEngine.Api.Model;
 
 /// <summary>
 /// Query for the payroll case controller
 /// </summary>
+// ReSharper disable CollectionNeverUpdated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class PayrollCaseQuery : PayrollQuery, ICultureQuery
 {
     /// <summary>
@@ -36,7 +37,6 @@ public class PayrollCaseQuery : PayrollQuery, ICultureQuery
     /// <summary>
     /// The case names (optional)
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public List<string> CaseNames { get; set; }
 
     /// <summary>

@@ -183,7 +183,7 @@ public abstract class RuntimeBase : IRuntime
     }
 
     /// <inheritdoc />
-    public bool IsWorkDay(string calendarName, DateTime moment) =>
+    public bool IsCalendarWorkDay(string calendarName, DateTime moment) =>
         GetCalendar(calendarName).IsWorkDay(moment);
 
     /// <inheritdoc />

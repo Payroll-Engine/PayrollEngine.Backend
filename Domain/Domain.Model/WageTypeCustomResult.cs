@@ -6,7 +6,9 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A wage type custom result
 /// </summary>
-public class WageTypeCustomResult : DomainObjectBase, ITagObject, IDomainAttributeObject, IEquatable<WageTypeCustomResult>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+public class WageTypeCustomResult : DomainObjectBase, ITagObject, 
+    IDomainAttributeObject, IEquatable<WageTypeCustomResult>
 {
     /// <summary>
     /// The wage type result id (immutable)

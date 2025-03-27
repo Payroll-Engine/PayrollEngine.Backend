@@ -7,6 +7,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The retro payrun job API object
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class RetroPayrunJob : ApiObjectBase
 {
     /// <summary>
@@ -18,7 +19,6 @@ public class RetroPayrunJob : ApiObjectBase
     /// <summary>
     /// The result tags
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public List<string> ResultTags { get; set; }
 
     /// <inheritdoc/>

@@ -6,6 +6,8 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Represents an issue from the case validation
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseValidationIssue : IEquatable<CaseValidationIssue>
 {
     /// <summary>

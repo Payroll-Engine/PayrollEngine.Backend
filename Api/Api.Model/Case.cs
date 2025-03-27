@@ -6,6 +6,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The regulation case API object
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class Case : ApiObjectBase
 {
     /// <summary>

@@ -6,7 +6,9 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Custom collector result
 /// </summary>
-public class CollectorCustomResult : DomainObjectBase, ITagObject, IDomainAttributeObject, IEquatable<CollectorCustomResult>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+public class CollectorCustomResult : DomainObjectBase, ITagObject,
+    IDomainAttributeObject, IEquatable<CollectorCustomResult>
 {
     /// <summary>
     /// The wage type result id (immutable)
@@ -68,7 +70,7 @@ public class CollectorCustomResult : DomainObjectBase, ITagObject, IDomainAttrib
     /// The period starting date for the value
     /// </summary>
     public DateTime Start { get; set; }
-    
+
     /// <summary>
     /// The starting date hash code (immutable)
     /// </summary>

@@ -4,6 +4,8 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// Lookup value date in a specific language
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class LookupValueData
 {
     /// <summary>

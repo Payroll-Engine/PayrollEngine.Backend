@@ -6,6 +6,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The payroll result info API object
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class PayrollResult : ApiObjectBase
 {
     /// <summary>

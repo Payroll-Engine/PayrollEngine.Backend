@@ -7,6 +7,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The case field including the slot and values
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseFieldSet : CaseField
 {
     /// <summary>
@@ -24,7 +25,6 @@ public class CaseFieldSet : CaseField
     /// <summary>
     /// The localized case slots
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseSlotLocalizations { get; set; }
 
     /// <summary>

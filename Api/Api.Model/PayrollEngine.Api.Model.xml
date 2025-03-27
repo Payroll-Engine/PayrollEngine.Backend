@@ -2989,6 +2989,11 @@
             The execution reason (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.StoreEmptyResults">
+            <summary>
+            Store empty employee results (default: false)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.LogLevel">
             <summary>
             The function log level, default is information

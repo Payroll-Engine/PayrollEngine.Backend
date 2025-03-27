@@ -6,6 +6,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Case slot
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseSlot : IEquatable<CaseSlot>
 {
     /// <summary>

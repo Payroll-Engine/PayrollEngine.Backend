@@ -6,6 +6,8 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Action parameter info
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class ActionParameterInfo : IEquatable<ActionParameterInfo>
 {
     /// <summary>The action parameter name</summary>

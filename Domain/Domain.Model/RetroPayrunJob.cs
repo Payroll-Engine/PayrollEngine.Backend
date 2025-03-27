@@ -6,6 +6,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// The retro payrun job
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class RetroPayrunJob : IEquatable<RetroPayrunJob>
 {
     /// <summary>

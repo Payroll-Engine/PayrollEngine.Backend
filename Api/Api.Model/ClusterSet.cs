@@ -5,6 +5,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// Cluster set
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class ClusterSet
 {
     /// <summary>

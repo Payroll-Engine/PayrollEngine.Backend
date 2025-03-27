@@ -5,6 +5,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Case field reference
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseFieldReference : IEquatable<CaseFieldReference>
 {
     /// <summary>

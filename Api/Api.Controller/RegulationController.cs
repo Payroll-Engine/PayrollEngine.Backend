@@ -29,7 +29,7 @@ public abstract class RegulationController(ITenantService tenantService, IRegula
         {
             // tenant
             var authResult = await TenantRequestAsync(tenantId);
-            if(authResult != null)
+            if (authResult != null)
             {
                 return authResult;
             }
@@ -37,14 +37,22 @@ public abstract class RegulationController(ITenantService tenantService, IRegula
             // case field
             var caseFields = await CaseFieldService.GetRegulationCaseFieldsAsync(Runtime.DbContext, tenantId,
                 [caseFieldName]);
-            var caseId = caseFields.FirstOrDefault()?.Id;
-            if (!caseId.HasValue)
+            var caseFieldId = caseFields.FirstOrDefault()?.Id;
+            if (!caseFieldId.HasValue)
             {
                 return BadRequest($"Unknown case field {caseFieldName}");
             }
 
+            // case id
+            var caseId = await CaseFieldService.GetParentIdAsync(Runtime.DbContext, caseFieldId.Value);
+            if (!caseId.HasValue || caseId == 0)
+            {
+                return BadRequest($"Unknown case for case field {caseFieldName}");
+            }
+
+            // regulation id
             var regulationId = await CaseService.GetParentIdAsync(Runtime.DbContext, caseId.Value);
-            if (!regulationId.HasValue)
+            if (!regulationId.HasValue || regulationId == 0)
             {
                 return BadRequest($"Unknown case for case field {caseFieldName}");
             }

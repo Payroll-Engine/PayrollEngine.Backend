@@ -4826,6 +4826,12 @@
             Payroll result extensions
             </summary>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.IsEmpty(PayrollEngine.Domain.Model.PayrollResultSet)">
+            <summary>
+            Test for empty result set
+            </summary>
+            <param name="payrollResultSet">The payroll result set</param>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetResultDate(PayrollEngine.Domain.Model.PayrollResultSet,System.DateTime)">
             <summary>
             Set creation date for all results
@@ -5457,6 +5463,11 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.Reason">
             <summary>
             The execution reason (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.StoreEmptyResults">
+            <summary>
+            Store empty employee results (default: false)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.LogLevel">

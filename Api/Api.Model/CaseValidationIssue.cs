@@ -6,6 +6,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// Represents an issue from the case validation
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseValidationIssue
 {
     /// <summary>
@@ -29,7 +30,6 @@ public class CaseValidationIssue
     /// <summary>
     /// The localized case names
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseNameLocalizations { get; set; }
 
     /// <summary>
@@ -41,7 +41,6 @@ public class CaseValidationIssue
     /// <summary>
     /// The localized case slot names
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseSlotLocalizations { get; set; }
 
     /// <summary>
@@ -53,7 +52,6 @@ public class CaseValidationIssue
     /// <summary>
     /// The localized case field names
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> CaseFieldNameLocalizations { get; set; }
 
     /// <summary>
@@ -65,7 +63,6 @@ public class CaseValidationIssue
     /// <summary>
     /// The localized source case names
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> SourceCaseNameLocalizations { get; set; }
 
     /// <summary>
@@ -77,7 +74,6 @@ public class CaseValidationIssue
     /// <summary>
     /// The localized source case slots
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> SourceCaseSlotLocalizations { get; set; }
 
     /// <summary>
@@ -89,7 +85,6 @@ public class CaseValidationIssue
     /// <summary>
     /// The localized target case names
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> TargetCaseNameLocalizations { get; set; }
 
     /// <summary>
@@ -101,7 +96,6 @@ public class CaseValidationIssue
     /// <summary>
     /// The localized target case slots
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> TargetCaseSlotLocalizations { get; set; }
 
     /// <summary>

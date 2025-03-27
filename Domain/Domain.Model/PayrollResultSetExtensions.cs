@@ -10,6 +10,28 @@ namespace PayrollEngine.Domain.Model;
 public static class PayrollResultSetExtensions
 {
     /// <summary>
+    /// Test for empty result set
+    /// </summary>
+    /// <param name="payrollResultSet">The payroll result set</param>
+    public static bool IsEmpty(this PayrollResultSet payrollResultSet)
+    {
+        // payrun results
+        if (payrollResultSet.PayrunResults.Any(result => !string.IsNullOrWhiteSpace(result.Value)))
+        {
+            return false;
+        }
+
+        // collector results
+        if (payrollResultSet.CollectorResults.Any(result => result.Value != 0))
+        {
+            return false;
+        }
+
+        // wage type results
+        return payrollResultSet.WageTypeResults.All(result => result.Value == 0);
+    }
+
+    /// <summary>
     /// Set creation date for all results
     /// </summary>
     /// <param name="payrollResultSet">The payroll result set</param>

@@ -7,6 +7,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The payrun result API object
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class PayrunResult : ApiObjectBase
 {
     /// <summary>
@@ -29,7 +30,6 @@ public class PayrunResult : ApiObjectBase
     /// <summary>
     /// The localized result names
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
@@ -69,13 +69,11 @@ public class PayrunResult : ApiObjectBase
     /// <summary>
     /// The result tags
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public List<string> Tags { get; set; }
 
     /// <summary>
     /// The result attributes (immutable)
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

@@ -5,6 +5,8 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Case relation reference
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseRelationReference : IEquatable<CaseRelationReference>
 {
     /// <summary>

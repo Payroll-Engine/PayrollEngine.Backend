@@ -65,6 +65,7 @@ BEGIN
     dbo.[Case].[BaseCaseFields],
     dbo.[Case].[OverrideType],
     dbo.[Case].[CancellationType],
+    dbo.[Case].[RetroDisabled],
     dbo.[Case].[AvailableExpression],
     dbo.[Case].[BuildExpression],
     dbo.[Case].[ValidateExpression],

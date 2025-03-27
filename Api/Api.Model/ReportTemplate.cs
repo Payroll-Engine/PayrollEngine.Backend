@@ -6,6 +6,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// The report template API object
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class ReportTemplate : ApiObjectBase
 {
     /// <summary>
@@ -52,7 +53,6 @@ public class ReportTemplate : ApiObjectBase
     /// <summary>
     /// Custom attributes
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

@@ -73,6 +73,13 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
 
     #endregion
 
+    #region Division
+
+    /// <inheritdoc />
+    public int DivisionId => Payroll.DivisionId;
+
+    #endregion
+
     #region Culture
 
     /// <inheritdoc />
@@ -216,8 +223,42 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             caseValue.Attributes);
     }
 
-    private async System.Threading.Tasks.Task<CaseValue> GetTimeCaseValue(string caseFieldName, DateTime valueDate)
+    /// <inheritdoc />
+    public virtual List<Tuple<string, DateTime, Tuple<DateTime?, DateTime?>, object, DateTime?, List<string>, Dictionary<string, object>>> GetCaseValues(
+        IList<string> caseFieldNames, DateTime valueDate)
     {
+        if (caseFieldNames == null)
+        {
+            throw new ArgumentNullException(nameof(caseFieldNames));
+        }
+
+
+        var caseValues = GetTimeCaseValues(caseFieldNames, valueDate).Result;
+        var values =
+            new List<Tuple<string, DateTime, Tuple<DateTime?, DateTime?>, object, DateTime?, List<string>,
+                Dictionary<string, object>>>();
+
+        foreach (var caseValue in caseValues)
+        {
+            var value = new Tuple<string, DateTime, Tuple<DateTime?, DateTime?>, object, DateTime?, List<string>,
+                Dictionary<string, object>>(caseValue.CaseFieldName,
+                caseValue.Created,
+                new(caseValue.Start, caseValue.End),
+                ValueConvert.ToValue(caseValue.Value, caseValue.ValueType, TenantCulture),
+                caseValue.CancellationDate,
+                caseValue.Tags,
+                caseValue.Attributes);
+            values.Add(value);
+        }
+        return values;
+    }
+
+    private async System.Threading.Tasks.Task<CaseValue> GetTimeCaseValue(string caseFieldName, DateTime valueDate) =>
+        (await GetTimeCaseValues([caseFieldName], valueDate)).FirstOrDefault();
+
+    private async System.Threading.Tasks.Task<List<CaseValue>> GetTimeCaseValues(IList<string> caseFieldNames, DateTime valueDate)
+    {
+        var caseFieldName = caseFieldNames.FirstOrDefault();
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
             throw new ArgumentException(nameof(caseFieldName));
@@ -235,9 +276,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             return null;
         }
 
-        var caseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(valueDate, caseType.Value,
-            [caseFieldName])).FirstOrDefault();
-        return caseValue;
+        var caseValues = await CaseValueProvider.GetTimeCaseValuesAsync(valueDate, caseType.Value, caseFieldNames);
+        return caseValues;
     }
 
     public virtual List<Tuple<string, DateTime, Tuple<DateTime?, DateTime?>, object, DateTime?, List<string>, Dictionary<string, object>>> GetCaseValues(

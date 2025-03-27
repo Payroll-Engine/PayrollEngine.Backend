@@ -3,6 +3,8 @@
 /// <summary>
 /// Action issue info
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class ActionIssueInfo
 {
     /// <summary>The action issue name</summary>

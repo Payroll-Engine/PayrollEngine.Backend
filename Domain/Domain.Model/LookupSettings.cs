@@ -5,6 +5,8 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// The lookup settings
 /// </summary>
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 public class LookupSettings : IEquatable<LookupSettings>
 {
     /// <summary>

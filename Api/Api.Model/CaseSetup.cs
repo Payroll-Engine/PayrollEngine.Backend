@@ -6,6 +6,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// Case setup
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseSetup : ApiObjectBase
 {
     /// <summary>
@@ -22,12 +23,10 @@ public class CaseSetup : ApiObjectBase
     /// <summary>
     /// The case value setups
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public List<CaseValueSetup> Values { get; set; }
 
     /// <summary>
     /// The related cases
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public List<CaseSetup> RelatedCases { get; set; }
 }

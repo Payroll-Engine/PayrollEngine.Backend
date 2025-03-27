@@ -5,6 +5,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A payrun job employee
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class PayrunJobEmployee : DomainObjectBase, IEquatable<PayrunJobEmployee>
 {
     /// <summary>

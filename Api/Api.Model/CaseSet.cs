@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace PayrollEngine.Api.Model;
 
 /// <summary>
 /// The payroll case object, including case fields and related cases
 /// </summary>
+// ReSharper disable CollectionNeverQueried.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseSet : Case
 {
     /// <summary>

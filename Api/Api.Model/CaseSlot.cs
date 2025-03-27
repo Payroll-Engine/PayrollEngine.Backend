@@ -18,6 +18,5 @@ public class CaseSlot
     /// <summary>
     /// The localized case slot names
     /// </summary>
-    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> NameLocalizations { get; set; }
 }

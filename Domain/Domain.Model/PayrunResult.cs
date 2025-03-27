@@ -6,6 +6,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A payrun result
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class PayrunResult : DomainObjectBase, ITagObject, IDomainAttributeObject, IEquatable<PayrunResult>
 {
     /// <summary>

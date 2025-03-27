@@ -177,8 +177,8 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
         }
 
         // collect cases with case fields
-        var caseFields = new List<CaseField>();
         var cases = new List<Case>();
+        var caseFields = new List<CaseField>();
         foreach (var caseValue in caseChange.Values)
         {
             // case field

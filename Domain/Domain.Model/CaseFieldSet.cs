@@ -8,6 +8,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// The case field including the slot and values
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class CaseFieldSet : CaseField, IEquatable<CaseFieldSet>
 {
     /// <summary>

@@ -2,7 +2,7 @@
   "WebserverName": "Payroll Engine - Backend Server",
   "WebserverExec": "PayrollEngine.Backend.Server.dll",
   "Database": {
-    "MinVersion": "0.9.12",
+    "MinVersion": "0.9.2",
     "CurrentVersion": "0.9.2",
     "InitScripts": [
       "Database\\Model_092.sql"

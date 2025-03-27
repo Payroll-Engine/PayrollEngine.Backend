@@ -6,6 +6,8 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Case setup
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 public class CaseSetup : IEquatable<CaseSetup>
 {
     /// <summary>

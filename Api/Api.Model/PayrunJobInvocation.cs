@@ -86,6 +86,11 @@ public class PayrunJobInvocation : ApiObjectBase
     public string Reason { get; set; }
 
     /// <summary>
+    /// Store empty employee results (default: false)
+    /// </summary>
+    public bool StoreEmptyResults { get; set; }
+
+    /// <summary>
     /// The function log level, default is information
     /// </summary>
     public LogLevel LogLevel { get; set; } = LogLevel.Information;

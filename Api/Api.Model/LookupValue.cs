@@ -6,6 +6,7 @@ namespace PayrollEngine.Api.Model;
 /// <summary>
 /// Represents a lookup value
 /// </summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class LookupValue : ApiObjectBase
 {
     /// <summary>

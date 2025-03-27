@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -13,6 +13,8 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 internal sealed class PayrunContext
 {
+    internal bool StoreEmptyResults { get; init; }
+
     internal User User { get; init; }
     internal Division Division { get; set; }
     internal Payroll Payroll { get; init; }

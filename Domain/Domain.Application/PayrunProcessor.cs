@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
+using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting.Controller;
 using Calendar = PayrollEngine.Domain.Model.Calendar;
-using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -81,7 +81,9 @@ public class PayrunProcessor : FunctionToolBase
             // context payroll
             Payroll = setup.Payroll ?? await processorRepositories.LoadPayrollAsync(payrollId),
             // retro pay
-            RetroDate = await GetRetroDateAsync(jobInvocation)
+            RetroDate = await GetRetroDateAsync(jobInvocation),
+            // empty results
+            StoreEmptyResults = jobInvocation.StoreEmptyResults
         };
 
         // context division
@@ -411,6 +413,7 @@ public class PayrunProcessor : FunctionToolBase
                             PeriodStart = retroPeriod.Start,
                             EvaluationDate = context.EvaluationDate,
                             Reason = currentJob.CreatedReason,
+                            StoreEmptyResults = context.StoreEmptyResults,
                             // current employee only
                             EmployeeIdentifiers = [employee.Identifier],
                             // consider runtime attribute changes
@@ -475,7 +478,10 @@ public class PayrunProcessor : FunctionToolBase
             }
 
             // store current period results by payrun job and employee
-            await Settings.PayrollResultSetRepository.CreateAsync(Settings.DbContext, Tenant.Id, payrollResult);
+            if (context.StoreEmptyResults || !payrollResult.IsEmpty())
+            {
+                await Settings.PayrollResultSetRepository.CreateAsync(Settings.DbContext, Tenant.Id, payrollResult);
+            }
 
             if (stopwatch != null)
             {

@@ -5,6 +5,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Lookup value data in a specific language
 /// </summary>
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class LookupValueData : IEquatable<LookupValueData>
 {
     /// <summary>

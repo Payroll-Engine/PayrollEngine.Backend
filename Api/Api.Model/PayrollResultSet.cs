@@ -1,10 +1,11 @@
-﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
-
+﻿
 namespace PayrollEngine.Api.Model;
 
 /// <summary>
 /// The payroll result set API object
 /// </summary>
+// ReSharper disable CollectionNeverQueried.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class PayrollResultSet : PayrollResult
 {
     /// <summary>
