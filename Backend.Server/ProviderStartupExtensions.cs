@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Backend.Controller;
+using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
 
