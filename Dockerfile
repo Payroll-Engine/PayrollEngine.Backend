@@ -1,4 +1,7 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# Build stage with multi-platform support
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG TARGETARCH
+ARG BUILDPLATFORM
 WORKDIR /src
 
 # copy solution and project files
@@ -19,12 +22,23 @@ COPY ["Persistence/Persistence.SqlServer/PayrollEngine.Persistence.SqlServer.csp
 # copy Directory.Build.props files
 COPY ["Directory.Build.props", "./"]
 
-RUN dotnet restore "PayrollEngine.Backend.sln"
+# Restore with architecture-specific runtime
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+      dotnet restore "PayrollEngine.Backend.sln" --runtime linux-arm64; \
+    else \
+      dotnet restore "PayrollEngine.Backend.sln" --runtime linux-x64; \
+    fi
 
 # copy everything else
 COPY . .
 WORKDIR "/src/Backend.Server"
-RUN dotnet publish "PayrollEngine.Backend.Server.csproj" -c Release -o /app/publish --no-restore
+
+# Publish with architecture-specific runtime and restore included
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+      dotnet publish "PayrollEngine.Backend.Server.csproj" -c Release -o /app/publish --runtime linux-arm64 --self-contained false; \
+    else \
+      dotnet publish "PayrollEngine.Backend.Server.csproj" -c Release -o /app/publish --runtime linux-x64 --self-contained false; \
+    fi
 
 # final stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
