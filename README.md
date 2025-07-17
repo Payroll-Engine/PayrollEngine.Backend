@@ -85,6 +85,22 @@ The.NET Core application consists of the following projects:
 | `PayrollEngine.Backend.Controller`    | Library    | Routing controllers                               |
 | `PayrollEngine.Backend.Server`        | Exe        | Web application server with rest api              |
 
+## Docker Support
+Build the Docker image:
+   ```bash
+   docker build -t payroll-backend .
+   ```
+
+Run with database connection:
+   ```bash
+   docker run -p 5000:5000 \
+     -e ConnectionStrings__DefaultConnection="Server=localhost;Database=PayrollEngine;User Id=sa;Password=PayrollStrongPass789;TrustServerCertificate=True;" \
+     payroll-backend
+   ```
+
+Verify API is accessible at http://localhost:5000
+
+
 ## Further documents
 - [OData](OData.md) queries
 - [Database](Database.md) Management
