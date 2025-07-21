@@ -12,7 +12,7 @@
 		<PackageProjectUrl>https://payrollengine.org/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Payroll-Engine/PayrollEngine.Backend.git</RepositoryUrl>
 		<NoWarn>1701;1702;8034;AD0001;RMG020;RMG012</NoWarn>
-		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
 
