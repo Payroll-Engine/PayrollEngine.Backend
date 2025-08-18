@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 using PayrollEngine.Client.Scripting.Function;
 
 namespace PayrollEngine.Domain.Scripting;
@@ -11,11 +12,13 @@ namespace PayrollEngine.Domain.Scripting;
 internal static class CodeFactory
 {
     private static Assembly Assembly { get; }
+    private static List<string> ResourceNames { get; }
     private static Dictionary<string, string> CodeFiles { get; } = new();
 
     static CodeFactory()
     {
         Assembly = typeof(Function).Assembly;
+        ResourceNames = Assembly.GetManifestResourceNames().ToList();
     }
 
     /// <summary>
@@ -47,12 +50,8 @@ internal static class CodeFactory
     /// <returns>The source code</returns>
     internal static string GetEmbeddedCodeFile(string resourceName)
     {
-        if (string.IsNullOrWhiteSpace(resourceName))
-        {
-            throw new ArgumentException(nameof(resourceName));
-        }
-
-        resourceName = resourceName.EnsureEnd(".cs");
+        // ensure valid embedded resource name
+        resourceName = GetCodeFileResourceName(resourceName);
 
         string codeFile;
         if (CodeFiles.TryGetValue(resourceName, out var file))
@@ -65,5 +64,34 @@ internal static class CodeFactory
             CodeFiles.Add(resourceName, codeFile);
         }
         return codeFile;
+    }
+
+    /// <summary>
+    /// Get code file resource name
+    /// </summary>
+    /// <param name="resourceName">Name of the resource</param>
+    private static string GetCodeFileResourceName(string resourceName)
+    {
+        if (string.IsNullOrWhiteSpace(resourceName))
+        {
+            throw new ArgumentException(nameof(resourceName));
+        }
+
+        // extension
+        resourceName = resourceName.EnsureEnd(".cs");
+
+        // name check
+        if (ResourceNames.Contains(resourceName))
+        {
+            return resourceName;
+        }
+
+        // subfolder map
+        resourceName = resourceName.Replace("\\", "/");
+        if (!ResourceNames.Contains(resourceName))
+        {
+            throw new ArgumentException($"Unknown embedded resource {resourceName}", nameof(resourceName));
+        }
+        return resourceName;
     }
 }
