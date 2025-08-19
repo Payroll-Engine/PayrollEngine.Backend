@@ -18,7 +18,7 @@ public interface IDbContext
     string DecimalType { get; }
 
     /// <summary>Test the required database version</summary>
-    System.Threading.Tasks.Task TestVersionAsync();
+    Task<Exception> TestVersionAsync();
 
     /// <summary>Test for valid tenant</summary>
     /// <param name="tenantId">The tenant id</param>

@@ -1,9 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
-using PayrollEngine.Domain.Scripting;
 using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Domain.Model;
-using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Api.Core;
 
@@ -35,11 +34,8 @@ internal static class ApiFactory
         }
 
         // test database
-        try
-        {
-            Task.Run(dbContext.TestVersionAsync);
-        }
-        catch (Exception exception)
+        var exception = dbContext.TestVersionAsync().Result;
+        if (exception != null)
         {
             Log.Critical(exception, exception.GetBaseException().Message);
             return;
