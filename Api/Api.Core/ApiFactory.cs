@@ -10,7 +10,7 @@ namespace PayrollEngine.Api.Core;
 internal static class ApiFactory
 {
     // services setup
-    internal static void SetupApiServices(IServiceCollection services, 
+    internal static void SetupApiServices(IServiceCollection services,
         IConfiguration configuration, IDbContext dbContext)
     {
         if (services == null)
@@ -35,9 +35,13 @@ internal static class ApiFactory
         }
 
         // test database
-        if (!Task.Run(dbContext.TestVersionAsync).Result)
+        try
         {
-            Log.Critical("Startup error: invalid database version.");
+            Task.Run(dbContext.TestVersionAsync);
+        }
+        catch (Exception exception)
+        {
+            Log.Critical(exception, exception.GetBaseException().Message);
             return;
         }
         services.AddTransient(_ => dbContext);

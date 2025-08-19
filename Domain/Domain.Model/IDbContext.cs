@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -18,7 +18,7 @@ public interface IDbContext
     string DecimalType { get; }
 
     /// <summary>Test the required database version</summary>
-    Task<bool> TestVersionAsync();
+    System.Threading.Tasks.Task TestVersionAsync();
 
     /// <summary>Test for valid tenant</summary>
     /// <param name="tenantId">The tenant id</param>

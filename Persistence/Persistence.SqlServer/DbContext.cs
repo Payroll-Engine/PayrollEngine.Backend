@@ -62,41 +62,35 @@ public class DbContext : IDbContext
         $"DECIMAL({SystemSpecification.DecimalPrecision}, {SystemSpecification.DecimalScale})";
 
     /// <inheritdoc />
-    public async Task<bool> TestVersionAsync()
+    public async System.Threading.Tasks.Task TestVersionAsync()
     {
-        try
+        // version sql query
+        // order the existing version from new to old
+        const string query = $"SELECT TOP 1 {nameof(Version.MajorVersion)}, " +
+                               $"{nameof(Version.MinorVersion)}, " +
+                               $"{nameof(Version.SubVersion)} " +
+                             $"FROM {nameof(Version)} " +
+                             $"ORDER BY {nameof(Version.MajorVersion)} DESC, " +
+                               $"{nameof(Version.MinorVersion)} DESC, " +
+                               $"{nameof(Version.SubVersion)} DESC";
+
+        // test if the newest matches the minimum version criteria
+        await using var connection = new SqlConnection(ConnectionString);
+
+        await using var command = new SqlCommand(query, connection);
+        await connection.OpenAsync();
+
+        await using var reader = await command.ExecuteReaderAsync();
+        while (reader.Read())
         {
-            // version sql query
-            // order the existing version from new to old
-            const string query = $"SELECT TOP 1 {nameof(Version.MajorVersion)}, " +
-                                   $"{nameof(Version.MinorVersion)}, " +
-                                   $"{nameof(Version.SubVersion)} " +
-                                 $"FROM {nameof(Version)} " +
-                                 $"ORDER BY {nameof(Version.MajorVersion)} DESC, " +
-                                   $"{nameof(Version.MinorVersion)} DESC, " +
-                                   $"{nameof(Version.SubVersion)} DESC";
-
-            // test if the newest matches the minimum version criteria
-            await using var connection = new SqlConnection(ConnectionString);
-
-            await using var command = new SqlCommand(query, connection);
-            await connection.OpenAsync();
-
-            var valid = false;
-            await using var reader = await command.ExecuteReaderAsync();
-            while (reader.Read())
+            var major = reader.GetInt32(0);
+            var minor = reader.GetInt32(1);
+            var sub = reader.GetInt32(2);
+            var newestVersion = new System.Version(major, minor, sub);
+            if (newestVersion < MinVersion)
             {
-                var major = reader.GetInt32(0);
-                var minor = reader.GetInt32(1);
-                var sub = reader.GetInt32(2);
-                var newestVersion = new System.Version(major, minor, sub);
-                valid = newestVersion >= MinVersion;
+                throw new PayrollException($"Invalid database version {newestVersion}. Should be {MinVersion} or newer.");
             }
-            return valid;
-        }
-        catch
-        {
-            return false;
         }
     }
 
