@@ -6689,26 +6689,6 @@
             Repository for case audits
             </summary>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseChangeRepository">
-            <summary>
-            Repository for global case changes
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseChangeRepository">
-            <summary>
-            Repository for national case changes
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseChangeRepository">
-            <summary>
-            Repository for company case changes
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseChangeRepository">
-            <summary>
-            Repository for employee case changes
-            </summary>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1">
             <summary>
             Repository for case changes
@@ -6764,26 +6744,6 @@
             <param name="parentId">The change parent id</param>
             <param name="caseChange">The case values to add</param>
             <returns>The case value at a given time, null if no value is available</returns>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseDocumentRepository">
-            <summary>
-            Repository for global case documents
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseDocumentRepository">
-            <summary>
-            Repository for national case documents
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseDocumentRepository">
-            <summary>
-            Repository for company case documents
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseDocumentRepository">
-            <summary>
-            Repository for employee case documents
-            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseDocumentRepository">
             <summary>
@@ -6885,29 +6845,14 @@
             <param name="regulationId">The regulation id</param>
             <returns>The regulation cases</returns>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseValueChangeRepository">
-            <summary>
-            Repository for global case value changes
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseValueChangeRepository">
-            <summary>
-            Repository for national case value changes
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseValueChangeRepository">
-            <summary>
-            Repository for company case value changes
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueChangeRepository">
-            <summary>
-            Repository for employee case value changes
-            </summary>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseValueChangeRepository">
             <summary>
             Repository for case value changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.ICaseValueRepository">
+            <summary>
+            Repository for case values
             </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1">
@@ -6954,51 +6899,6 @@
             <param name="period">The date period</param>
             <param name="caseFieldName">The case field name</param>
             <returns>The retro case value</returns>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseValueRepository">
-            <summary>
-            Repository for global case values
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseValueRepository">
-            <summary>
-            Repository for national case values
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseValueRepository">
-            <summary>
-            Repository for company case values
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueRepository">
-            <summary>
-            Repository for employee case values
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.ICaseValueRepository">
-            <summary>
-            Repository for case values
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseValueSetupRepository">
-            <summary>
-            Repository for global case value setups
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseValueSetupRepository">
-            <summary>
-            Repository for national case value setups
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseValueSetupRepository">
-            <summary>
-            Repository for company case value setups
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueSetupRepository">
-            <summary>
-            Repository for national case value setup
-            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseValueSetupRepository">
             <summary>
@@ -7133,6 +7033,31 @@
             Repository for collector results
             </summary>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseChangeRepository">
+            <summary>
+            Repository for company case changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseDocumentRepository">
+            <summary>
+            Repository for company case documents
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseValueChangeRepository">
+            <summary>
+            Repository for company case value changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseValueRepository">
+            <summary>
+            Repository for company case values
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.ICompanyCaseValueSetupRepository">
+            <summary>
+            Repository for company case value setups
+            </summary>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IDivisionRepository">
             <summary>
             Repository for divisions
@@ -7213,6 +7138,31 @@
             <param name="id">The id of the domain item to delete</param>
             <param name="attributeName">The attribute name</param>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseChangeRepository">
+            <summary>
+            Repository for employee case changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseDocumentRepository">
+            <summary>
+            Repository for employee case documents
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueChangeRepository">
+            <summary>
+            Repository for employee case value changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueRepository">
+            <summary>
+            Repository for employee case values
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueSetupRepository">
+            <summary>
+            Repository for national case value setup
+            </summary>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeDivisionRepository">
             <summary>
             Repository for employee divisions
@@ -7236,6 +7186,31 @@
             <param name="tenantId">The tenant id</param>
             <param name="identifier">The user identifier</param>
             <returns>True if the employee with this identifier exists</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseChangeRepository">
+            <summary>
+            Repository for global case changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseDocumentRepository">
+            <summary>
+            Repository for global case documents
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseValueChangeRepository">
+            <summary>
+            Repository for global case value changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseValueRepository">
+            <summary>
+            Repository for global case values
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.IGlobalCaseValueSetupRepository">
+            <summary>
+            Repository for global case value setups
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ILogRepository">
             <summary>
@@ -7339,6 +7314,31 @@
             <param name="context">The database context</param>
             <param name="lookupId">The lookup id</param>
             <returns>The count of deleted lookup values</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseChangeRepository">
+            <summary>
+            Repository for national case changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseDocumentRepository">
+            <summary>
+            Repository for national case documents
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseValueChangeRepository">
+            <summary>
+            Repository for national case value changes
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseValueRepository">
+            <summary>
+            Repository for national case values
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.INationalCaseValueSetupRepository">
+            <summary>
+            Repository for national case value setups
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IPayrollConsolidatedResultRepository">
             <summary>

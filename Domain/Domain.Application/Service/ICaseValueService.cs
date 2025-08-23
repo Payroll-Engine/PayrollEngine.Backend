@@ -2,17 +2,8 @@
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using DomainCaseValue = PayrollEngine.Domain.Model.CaseValue;
 
 namespace PayrollEngine.Domain.Application.Service;
-
-public interface IGlobalCaseValueService : ICaseValueService<IGlobalCaseValueRepository, DomainCaseValue>;
-
-public interface INationalCaseValueService : ICaseValueService<INationalCaseValueRepository, DomainCaseValue>;
-
-public interface ICompanyCaseValueService : ICaseValueService<ICompanyCaseValueRepository, DomainCaseValue>;
-
-public interface IEmployeeCaseValueService : ICaseValueService<IEmployeeCaseValueRepository, DomainCaseValue>;
 
 public interface ICaseValueService<out TRepo, TDomain> : IChildApplicationService<TRepo, TDomain>
     where TRepo : class, IChildDomainRepository<TDomain>

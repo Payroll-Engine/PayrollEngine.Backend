@@ -4,26 +4,6 @@ using System.Threading.Tasks;
 namespace PayrollEngine.Domain.Model.Repository;
 
 /// <summary>
-/// Repository for global case changes
-/// </summary>
-public interface IGlobalCaseChangeRepository : ICaseChangeRepository<CaseChange>;
-
-/// <summary>
-/// Repository for national case changes
-/// </summary>
-public interface INationalCaseChangeRepository : ICaseChangeRepository<CaseChange>;
-
-/// <summary>
-/// Repository for company case changes
-/// </summary>
-public interface ICompanyCaseChangeRepository : ICaseChangeRepository<CaseChange>;
-
-/// <summary>
-/// Repository for employee case changes
-/// </summary>
-public interface IEmployeeCaseChangeRepository : ICaseChangeRepository<CaseChange>;
-
-/// <summary>
 /// Repository for case changes
 /// </summary>
 public interface ICaseChangeRepository<T> : IChildDomainRepository<T>
