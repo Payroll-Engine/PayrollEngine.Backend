@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Core" Version="0.9.0-beta.8" />
+		<PackageReference Include="PayrollEngine.Core" Version="0.9.0-beta.9" />
 	</ItemGroup>
 
 	<ItemGroup>
