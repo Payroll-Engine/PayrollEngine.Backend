@@ -6,9 +6,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class LookupRepositoryBase<T>(ILookupAuditRepository auditRepository) :
+public abstract class LookupRepositoryBase<T>(ILookupAuditRepository auditRepository, bool auditDisabled) :
     TrackChildDomainRepository<T, LookupAudit>(DbSchema.Tables.Lookup, DbSchema.LookupColumn.RegulationId,
-        auditRepository)
+        auditRepository, auditDisabled)
     where T : Lookup, new()
 {
     protected override void GetObjectCreateData(T lookup, DbParameterCollection parameters)

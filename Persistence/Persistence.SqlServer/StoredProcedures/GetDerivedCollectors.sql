@@ -54,6 +54,7 @@ BEGIN
     dbo.[Collector].[CollectMode],
     dbo.[Collector].[Negated],
     dbo.[Collector].[OverrideType],
+    dbo.[Collector].[Culture],
     dbo.[Collector].[CollectorGroups],
     dbo.[Collector].[StartExpression],
     dbo.[Collector].[ApplyExpression],

@@ -99,9 +99,6 @@ internal sealed class FilterClauseBuilder : QueryNodeVisitor<SqlKata.Query>
                     }
                 }
                 break;
-
-            default:
-                return query;
         }
 
         return query;

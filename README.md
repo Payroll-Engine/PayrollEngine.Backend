@@ -13,34 +13,41 @@ In the first 1.0 release of the REST API, no version header is required in the H
 The Payroll REST API supports HTTP requests in `JSON` format.
 
 ## Backend Server
-To run the backend server, the web host must support the execution of .NET Core applications. For local development, [IIS Express](https://learn.microsoft.com/en-us/iis/extensions/introduction-to-iis-express/iis-express-overview) serves as the host in two execution variants:
-- [CLI dotnet command](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the command inside the binary folder:
+In order to run the backend server, the web host must support the execution of .NET Core applications. Follow these steps to start the [IIS Express](https://learn.microsoft.com/en-us/iis/extensions/introduction-to-iis-express/iis-express-overview) service for local development:
+- [Dotnet](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the binary file:
+```shell
+dotnet <PathToBin>/PayrollEngine.Backend.Server.dll --urls=https://localhost:44354/
 ```
-start "" dotnet PayrollEngine.Backend.Server.dll --urls=https://localhost:44354/
+- [Dotnet](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the project file, using the working path `Backend.Server/`:
+```shell
+dotnet run --urls=https://localhost:44354/
 ```
 - Visual Studio solution `PayrollEngine.Backend.sln` using the debugger.
 
 ## Application Settings
 The server configuration file `appsetings.json` contains the following settings:
 
-| Setting                    | Description                                              | Type       | Default        |
+| Setting                    | Description                                                 | Type       | Default        |
 |:--|:--|:--|:--|
-| `StartupCulture`           | The culture of the backend process                       | string     | System culture |
-| `LogHttpRequests`          | Log http requested to log file                           | bool       | false          |
-| `InitializeScriptCompiler` | Initialize the script compiler to reduce first run time  | bool       | false          |
-| `DbTransactionTimeout`     | Database transaction timeout                             | timespan   | 10 minutes     |
-| `DbCommandTimeout`         | Database command timeout                                 | seconds    | 2 minutes      |
-| `WebhookTimeout`           | Webhook timeout                                          | timespan   | 1 minute       |
-| `FunctionLogTimeout`       | Timeout for tracking long function executions            | timespan   | off            |
-| `AssemblyCacheTimeout`     | Timeout for cached assemblies                            | timespan   | 30 minutes     |
-| `VisibleControllers`       | Name of visible API controllers <sup>1) 2)</sup>         | string[]   | all            |
-| `HiddenControllers`        | Name of hidden API controllers <sup>1) 2)</sup>          | string[]   | none           |
-| `DarkTheme`                | Use swagger dark theme                                   | bool       | false          |
-| `ApiKey`                   | Enable api key protection, dev-secret only!              | string     | none           |
-| `Serilog`                  | Logger settings                                          | [Serilog](https://serilog.net/) | file and console log |
+| `StartupCulture`           | The culture of the backend process                          | string     | System culture |
+| `AuditTrailDisabled`       | Disable the audit trail for regulation objects              | bool       | false          |
+| `LogHttpRequests`          | Log http requested to log file                              | bool       | false          |
+| `InitializeScriptCompiler` | Initialize the script compiler to reduce startup time       | bool       | false          |
+| `DumpCompilerSources`      | Store compiler source files <sup>1)</sup>                   | bool       | false          |
+| `DbTransactionTimeout`     | Database transaction timeout                                | timespan   | 10 minutes     |
+| `DbCommandTimeout`         | Database command timeout                                    | seconds    | 2 minutes      |
+| `WebhookTimeout`           | Webhook timeout                                             | timespan   | 1 minute       |
+| `FunctionLogTimeout`       | Timeout for tracking long function executions               | timespan   | off            |
+| `AssemblyCacheTimeout`     | Timeout for cached assemblies                               | timespan   | 30 minutes     |
+| `VisibleControllers`       | Name of visible API controllers <sup>2) 3)</sup>            | string[]   | all            |
+| `HiddenControllers`        | Name of hidden API controllers <sup>2) 3)</sup>             | string[]   | none           |
+| `DarkTheme`                | Use swagger dark theme                                      | bool       | false          |
+| `ApiKey`                   | Enable api key protection, dev-secret only!                 | string     | none           |
+| `Serilog`                  | Logger settings                                             | [Serilog](https://serilog.net/) | file and console log |
 
-<sup>1)</sup> Wildcard support for `*` and `?`<br />
-<sup>2)</sup> `HiddenControllers` setting cannot be combined with `VisibleControllers` setting
+<sup>1)</sup> Store compilation scripts the disk. Analyses only feature.<br />
+<sup>2)</sup> Wildcard support for `*` and `?`.<br />
+<sup>3)</sup> `HiddenControllers` setting cannot be combined with `VisibleControllers` setting.
 
 > It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 
@@ -58,8 +65,8 @@ Once set, the API key is the only way to access the API endpoints. The API clien
 
 The API key is defined in the following places (in order of priority):
 
-1. Environment variable `PayrollApiKey`
-2. Application settings file `appsettings.json`
+1. System environment variable `PayrollApiKey`
+2. Value `ApiKey` in the application settings file `appsettings.json`
 
 When an endpoint request is made, the API key must be included in the `Api-Key` HTTP header.
 
@@ -67,6 +74,11 @@ When an endpoint request is made, the API key must be included in the `Api-Key` 
 
 ## C# Script Compiler
 The business logic defined by the business in C# is compiled into binary files (assemblies) by the backend using [Roslyn](https://github.com/dotnet/roslyn). This procedure has a positive effect on the runtime performance, so that even extensive calculations can be performed sufficiently quickly. At runtime, the backend keeps the assemblies in a cache. To optimize memory usage, unused assemblies are periodically deleted (application setting `AssemblyCacheTimeout`).
+
+You can use the 'InitializeScriptCompiler' application setting to start the Roslyn engine when the application starts, thereby eliminating the runtime delay.
+
+To perform a more in-depth analysis, set the `DumpCompilerSources` application setting to force the C# script compiler to save the source scripts of the compilation as disk files. These files are stored in the `ScriptDump` folder within the application folder, ordered by function type and dump date.
+
 
 ## Solution projects
 The.NET Core application consists of the following projects:

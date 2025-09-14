@@ -15,7 +15,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
     private static readonly string VariableStartMarker = "$";
     private static readonly string VariableEndMarker = "$";
 
-    private CultureInfo Culture => CultureInfo.CurrentCulture;
+    private static CultureInfo Culture => CultureInfo.CurrentCulture;
     protected Tenant Tenant { get; } = tenant ?? throw new ArgumentNullException(nameof(tenant));
 
     // settings

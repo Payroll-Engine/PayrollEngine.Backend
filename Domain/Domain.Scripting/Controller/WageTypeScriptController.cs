@@ -17,7 +17,7 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>
 
     #region Value
 
-    public Tuple<decimal?, List<RetroPayrunJob>,bool> GetValue(WageTypeRuntimeSettings settings, bool autoPeriodResults)
+    public Tuple<decimal?, List<RetroPayrunJob>, bool> GetValue(WageTypeRuntimeSettings settings, bool autoPeriodResults)
     {
         LogStopwatch.Start(nameof(WageTypeValueRuntime));
 
@@ -57,8 +57,15 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>
                         if (value.Item4 is decimal decimalValue)
                         {
                             var period = new DatePeriod(value.Item2, value.Item3);
-                            runtime.AddCustomResult(periodValue.Key, decimalValue,
-                                period.Start, period.End, null, null, null);
+                            runtime.AddCustomResult(
+                                source: periodValue.Key,
+                                value: decimalValue,
+                                startDate: period.Start,
+                                endDate: period.End,
+                                tags: null,
+                                attributes: null,
+                                valueType: null,
+                                culture: null);
                         }
                     }
                 }

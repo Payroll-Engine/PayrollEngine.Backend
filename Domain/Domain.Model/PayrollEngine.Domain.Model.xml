@@ -2107,6 +2107,11 @@
             The case numeric value
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseValue.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CaseValue.CaseRelation">
             <summary>
             The case relation
@@ -2387,6 +2392,11 @@
             The value type, default is value type money
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.Culture">
+            <summary>
+            The collector culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.CollectorGroups">
             <summary>
             Associated collector groups
@@ -2584,6 +2594,11 @@
             The value type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorAudit.Culture">
+            <summary>
+            The collector culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorAudit.CollectorGroups">
             <summary>
             Associated collector groups
@@ -2678,6 +2693,11 @@
             The collector custom result value (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.Culture">
+            <summary>
+            The collector custom result culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.Start">
             <summary>
             The period starting date for the value
@@ -2765,6 +2785,11 @@
         <member name="P:PayrollEngine.Domain.Model.CollectorResult.Value">
             <summary>
             The collector result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.Culture">
+            <summary>
+            The collector result culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorResult.Start">
@@ -4921,6 +4946,11 @@
             The result numeric value
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.ResultCulture">
+            <summary>
+            The result culture
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResultValue.Attributes">
             <summary>
             The result attributes
@@ -5604,6 +5634,11 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunResult.NumericValue">
             <summary>
             The numeric result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunResult.Start">
@@ -8687,6 +8722,11 @@
             The wage type calendar (fallback: employee calendar)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.Culture">
+            <summary>
+            The wage type culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.WageType.Collectors">
             <summary>
             Associated collectors
@@ -8802,6 +8842,11 @@
             The wage type calendar
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.Culture">
+            <summary>
+            The wage type culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.Collectors">
             <summary>
             Associated collectors
@@ -8879,6 +8924,11 @@
         <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.Value">
             <summary>
             The wage type custom result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.Start">
@@ -8972,6 +9022,11 @@
         <member name="P:PayrollEngine.Domain.Model.WageTypeResult.Value">
             <summary>
             The wage type result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeResult.Start">

@@ -76,6 +76,7 @@ BEGIN
   [dbo].[NationalCaseValue].[ValueType],
   [dbo].[NationalCaseValue].[Value],
   [dbo].[NationalCaseValue].[NumericValue],
+  [dbo].[NationalCaseValue].[Culture],
   [dbo].[NationalCaseValue].[Start],
   [dbo].[NationalCaseValue].[End],
   [dbo].[NationalCaseValue].[Forecast],

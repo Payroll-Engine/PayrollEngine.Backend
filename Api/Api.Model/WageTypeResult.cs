@@ -50,6 +50,11 @@ public class WageTypeResult : ApiObjectBase
     public decimal Value { get; set; }
 
     /// <summary>
+    /// The wage type result culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// The starting date for the value
     /// </summary>
     [Required]

@@ -44,6 +44,9 @@ public class ScriptCompiler
 
     private const string ReturnStatement = "return";
 
+    /// <summary>Dump compiler source files (default: false)</summary>
+    public static bool DumpCompilerSources { get; set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ScriptCompiler"/> class
     /// </summary>
@@ -137,7 +140,9 @@ public class ScriptCompiler
         }
 
         // compile code
-        var compiler = new CSharpCompiler(assemblyName: ScriptOwnerType.FullName);
+        var compiler = new CSharpCompiler(
+            assemblyName: ScriptOwnerType.FullName,
+            dumpCompilerSource: DumpCompilerSources);
         return compiler.CompileAssembly(codes);
     }
 

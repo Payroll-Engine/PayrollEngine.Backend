@@ -8,9 +8,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseRepository(IScriptRepository scriptRepository, ICaseAuditRepository auditRepository)
+public class CaseRepository(IScriptRepository scriptRepository, ICaseAuditRepository auditRepository, bool auditDisabled)
     : ScriptTrackChildDomainRepository<Case, CaseAudit>(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId,
-        scriptRepository, auditRepository), ICaseRepository
+        scriptRepository, auditRepository, auditDisabled), ICaseRepository
 {
     public async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
     {

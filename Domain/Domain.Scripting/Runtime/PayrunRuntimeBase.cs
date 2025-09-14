@@ -152,10 +152,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         if (value == null)
         {
             // remove value
-            if (RuntimeValueProvider.PayrunValues.ContainsKey(key))
-            {
-                RuntimeValueProvider.PayrunValues.Remove(key);
-            }
+            RuntimeValueProvider.PayrunValues.Remove(key);
         }
         else
         {
@@ -210,10 +207,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         if (value == null)
         {
             // remove value
-            if (employeeValues.ContainsKey(key))
-            {
-                employeeValues.Remove(key);
-            }
+            employeeValues.Remove(key);
         }
         else
         {

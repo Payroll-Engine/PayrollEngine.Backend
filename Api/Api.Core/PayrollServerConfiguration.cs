@@ -16,11 +16,17 @@ public class PayrollServerConfiguration
     /// <summary>Culture at start (default: os working culture)</summary>
     public string StartupCulture { get; set; }
 
+    /// <summary>Disable the audit trail (default: false)</summary>
+    public bool AuditTrailDisabled { get; set; }
+
     /// <summary>Log http request (default: false)</summary>
     public bool LogHttpRequests { get; set; }
 
     /// <summary>Initialize the script compiler to reduce first execution time (default: false)</summary>
     public bool InitializeScriptCompiler { get; set; }
+
+    /// <summary>Dump compiler source files (default: false)</summary>
+    public bool DumpCompilerSources { get; set; }
 
     /// <summary>Database command timeout in seconds (default: 2 minutes)</summary>
     public TimeSpan DbCommandTimeout { get; set; } = TimeSpan.FromMinutes(2);

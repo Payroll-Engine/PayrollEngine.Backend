@@ -71,6 +71,11 @@ public class CaseValue : ApiObjectBase
     public decimal? NumericValue { get; set; }
 
     /// <summary>
+    /// The case field culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// The case relation
     /// </summary>
     public CaseRelationReference CaseRelation { get; set; }

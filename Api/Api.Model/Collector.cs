@@ -42,6 +42,11 @@ public class Collector : ApiObjectBase
     public ValueType ValueType { get; set; }
 
     /// <summary>
+    /// The collector culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// Associated collector groups
     /// </summary>
     public List<string> CollectorGroups { get; set; }

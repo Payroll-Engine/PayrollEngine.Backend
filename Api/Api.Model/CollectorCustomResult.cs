@@ -45,6 +45,11 @@ public class CollectorCustomResult : ApiObjectBase
     public decimal Value { get; set; }
 
     /// <summary>
+    /// The collector custom result culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// The period starting date for the value
     /// </summary>
     [Required]

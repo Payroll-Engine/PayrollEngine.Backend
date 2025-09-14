@@ -761,7 +761,12 @@ public class PayrunProcessor : FunctionToolBase
 
         // case values as payrun results (with enabled slots)
         payrollResult.PayrunResults.AddRange(
-            await processorRegulation.GetCaseValuePayrunResultsAsync(context.Payroll, context.PayrunJob, caseValueProvider, true));
+            await processorRegulation.GetCaseValuePayrunResultsAsync(
+                payroll: context.Payroll,
+                payrunJob: context.PayrunJob,
+                caseValueProvider: caseValueProvider,
+                culture: culture,
+                expandCaseSlots: true));
 
         if (stopwatch != null)
         {
@@ -831,6 +836,7 @@ public class PayrunProcessor : FunctionToolBase
                 CollectMode = resultCollector.CollectMode,
                 Negated = resultCollector.Negated,
                 ValueType = resultCollector.ValueType,
+                Culture = resultCollector.Culture ?? context.PayrollCulture,
                 Start = context.EvaluationPeriod.Start,
                 End = context.EvaluationPeriod.End,
                 Attributes = new(),

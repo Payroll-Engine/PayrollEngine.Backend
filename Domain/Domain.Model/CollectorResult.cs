@@ -74,6 +74,11 @@ public class CollectorResult : DomainObjectBase, ITagObject, IDomainAttributeObj
     /// The collector result value (immutable)
     /// </summary>
     public decimal Value { get; set; }
+    
+    /// <summary>
+    /// The collector result culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// The starting date for the value (immutable)

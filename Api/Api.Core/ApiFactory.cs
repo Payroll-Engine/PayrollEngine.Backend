@@ -50,7 +50,7 @@ internal static class ApiFactory
         services.AddSingleton<IPayrollCalculatorProvider, DefaultPayrollCalculatorProvider>();
 
         // repositories
-        ApiRepositoryFactory.SetupApiServices(services);
+        ApiRepositoryFactory.SetupApiServices(services, configuration);
         ApiServiceFactory.SetupApiServices(services, configuration);
     }
 }

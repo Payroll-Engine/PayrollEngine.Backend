@@ -2,20 +2,20 @@
 #if COMPILER_PERFORMANCE
 #define LOG_STOPWATCH
 #endif
-//#define DUMP_COMPILER_SOURCES
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime;
-using System.Runtime.CompilerServices;
 using System.Text;
+using System.Runtime;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp;
+using PayrollEngine.IO;
 
 namespace PayrollEngine.Domain.Scripting;
 
@@ -26,13 +26,14 @@ internal sealed class CSharpCompiler
 {
     private string AssemblyName { get; }
     private AssemblyInfo AssemblyInfo { get; }
+    private bool DumpCompilerSource { get; }
 
-    internal CSharpCompiler(string assemblyName) :
-        this(assemblyName, null)
+    internal CSharpCompiler(string assemblyName, bool dumpCompilerSource) :
+        this(assemblyName, null, dumpCompilerSource)
     {
     }
 
-    private CSharpCompiler(string assemblyName, AssemblyInfo assemblyInfo)
+    private CSharpCompiler(string assemblyName, AssemblyInfo assemblyInfo, bool dumpCompilerSource)
     {
         if (string.IsNullOrWhiteSpace(assemblyName))
         {
@@ -41,6 +42,7 @@ internal sealed class CSharpCompiler
 
         AssemblyName = assemblyName;
         AssemblyInfo = assemblyInfo;
+        DumpCompilerSource = dumpCompilerSource;
     }
 
     static CSharpCompiler()
@@ -203,40 +205,10 @@ internal sealed class CSharpCompiler
             throw new ArgumentNullException(nameof(codes));
         }
 
-#if DUMP_COMPILER_SOURCES
-            // target folder: ScriptDump\AssemblyName\
-            var dumpFolder = Path.Combine("ScriptDump", AssemblyName);
-            if (!Directory.Exists(dumpFolder))
-            {
-                Directory.CreateDirectory(dumpFolder);
-            }
-
-            // dump all code files
-            for (var i = 0; i < codes.Count; i++)
-            {
-                // source code file
-                var code = codes[i];
-
-                // file name
-                string dumpFileName = null;
-                // support name comment on first line in source file, example:
-                // /* MyScriptType */
-                var startMarker = code.IndexOf("/*", StringComparison.InvariantCulture);
-                var endMarker = code.IndexOf("*/", StringComparison.InvariantCulture);
-                var length = endMarker - startMarker;
-                if (length > 0 && length < 100)
-                {
-                    dumpFileName = code.Substring(startMarker + 2, length - 2).Trim();
-                }
-                if (string.IsNullOrWhiteSpace(dumpFileName))
-                {
-                    dumpFileName = $"Source{i + 1}";
-                }
-
-                // file storage
-                File.WriteAllText($"{dumpFolder}\\{dumpFileName}.cs", code);
-            }
-#endif
+        if (DumpCompilerSource)
+        {
+            DumpScriptSourceFiles(codes);
+        }
 
         LogStopwatch.Start(nameof(CompileAssembly));
 
@@ -291,7 +263,68 @@ internal sealed class CSharpCompiler
         return result;
     }
 
-    private List<string> GetCompilerFailures(EmitResult compilation)
+    /// <summary>Dump scripts to a temporary folder</summary>
+    /// <param name="codes">Source codes</param>
+    /// <remarks>Debug only</remarks>
+    private void DumpScriptSourceFiles(IList<string> codes)
+    {
+        // target folder: ScriptDump/AssemblyName/TimeStamp/
+        var dumpFolder = EnsureDumpFolderName();
+
+        // dump all code files
+        for (var i = 0; i < codes.Count; i++)
+        {
+            // source code file
+            var code = codes[i];
+
+            // file name
+            string dumpFileName = null;
+            // support name comment on first line in source file, example:
+            // /* MyScriptType */
+            var startMarker = code.IndexOf("/*", StringComparison.InvariantCulture);
+            var endMarker = code.IndexOf("*/", StringComparison.InvariantCulture);
+            var length = endMarker - startMarker;
+            if (length > 0 && length < 100)
+            {
+                dumpFileName = code.Substring(startMarker + 2, length - 2).Trim();
+            }
+            if (string.IsNullOrWhiteSpace(dumpFileName))
+            {
+                dumpFileName = $"Source{i + 1}";
+            }
+
+            // file storage
+            var fileName = Path.Combine(dumpFolder, $"{dumpFileName}.cs");
+            File.WriteAllText(fileName, code);
+        }
+    }
+
+    private string EnsureDumpFolderName()
+    {
+        var dumpFolder = Path.Combine("ScriptDump", AssemblyName);
+        if (!Directory.Exists(dumpFolder))
+        {
+            Directory.CreateDirectory(dumpFolder);
+        }
+        dumpFolder = Path.Combine(dumpFolder, FileTool.CurrentTimeStamp());
+        if (!Directory.Exists(dumpFolder))
+        {
+            Directory.CreateDirectory(dumpFolder);
+        }
+        else
+        {
+            var index = 1;
+            while (Directory.Exists(dumpFolder))
+            {
+                dumpFolder += $"-{index}";
+                index++;
+            }
+            Directory.CreateDirectory(dumpFolder);
+        }
+        return dumpFolder;
+    }
+
+    private static List<string> GetCompilerFailures(EmitResult compilation)
     {
         var failures = new List<string>();
         foreach (var diagnostic in compilation.Diagnostics.Where(diagnostic =>

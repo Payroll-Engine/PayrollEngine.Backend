@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using PayrollEngine.Client.Scripting;
 using PayrollEngine.Client.Scripting.Runtime;
@@ -35,6 +36,14 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
 
     /// <inheritdoc />
     public string[] CollectorGroups => WageType.CollectorGroups?.ToArray();
+
+    #region Culture and Calendar
+
+    /// <inheritdoc />
+    public override string GetDerivedCulture(int divisionId, int employeeId) =>
+        WageType.Culture ?? base.GetDerivedCulture(divisionId, employeeId);
+
+    #endregion
 
     #region Internal
 
@@ -72,10 +81,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
         // remove attribute
         if (value == null)
         {
-            if (CurrentWageTypeResult.Attributes.ContainsKey(name))
-            {
-                CurrentWageTypeResult.Attributes.Remove(name);
-            }
+            CurrentWageTypeResult.Attributes.Remove(name);
         }
         else
         {
@@ -162,7 +168,8 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
 
     /// <inheritdoc />
     public void AddPayrunResult(string source, string name, string value, int valueType,
-        DateTime startDate, DateTime endDate, string slot, List<string> tags, Dictionary<string, object> attributes)
+        DateTime startDate, DateTime endDate, string slot, List<string> tags,
+        Dictionary<string, object> attributes, string culture)
     {
         if (string.IsNullOrWhiteSpace(source))
         {
@@ -182,6 +189,12 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
             throw new ArgumentException($"Unknown value type: {valueType}.");
         }
 
+        // culture
+        if (string.IsNullOrWhiteSpace(culture))
+        {
+            culture = GetDerivedCulture(DivisionId, Employee.Id);
+        }
+
         // result
         var result = new PayrunResult
         {
@@ -191,7 +204,11 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
             Slot = slot,
             ValueType = (ValueType)valueType,
             Value = value,
-            NumericValue = ValueConvert.ToNumber(value, (ValueType)valueType, TenantCulture),
+            NumericValue = ValueConvert.ToNumber(
+                json: value,
+                valueType: (ValueType)valueType,
+                culture: CultureInfo.GetCultureInfo(culture)),
+            Culture = culture,
             Start = startDate,
             End = endDate,
             Tags = tags,
@@ -202,7 +219,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
 
     /// <inheritdoc />
     public void AddCustomResult(string source, decimal value, DateTime startDate, DateTime endDate,
-        List<string> tags, Dictionary<string, object> attributes, int? valueType)
+        List<string> tags, Dictionary<string, object> attributes, int? valueType, string culture)
     {
         if (string.IsNullOrWhiteSpace(source))
         {
@@ -227,6 +244,12 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
             throw new ScriptException($"Value type for wage type result must be numeric: {wageTypeValueType}.");
         }
 
+        // culture
+        if (string.IsNullOrWhiteSpace(culture))
+        {
+            culture = GetDerivedCulture(DivisionId, Employee.Id);
+        }
+
         // result
         var customResult = new WageTypeCustomResult
         {
@@ -235,6 +258,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
             WageTypeNameLocalizations = WageType.NameLocalizations,
             Source = source,
             ValueType = wageTypeValueType,
+            Culture = culture,
             Value = value,
             Start = startDate,
             End = endDate,

@@ -168,8 +168,8 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         return false;
     }
 
-    private Task<bool> OnCreatingAsync() => Task.FromResult(true);
-    private Task OnCreatedAsync() => Task.FromResult(0);
+    private static Task<bool> OnCreatingAsync() => Task.FromResult(true);
+    private static Task OnCreatedAsync() => Task.FromResult(0);
 
     #endregion
 

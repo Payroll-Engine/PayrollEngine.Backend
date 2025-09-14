@@ -48,6 +48,11 @@ public class PayrunResult : DomainObjectBase, ITagObject, IDomainAttributeObject
     /// The numeric result value (immutable)
     /// </summary>
     public decimal? NumericValue { get; set; }
+    
+    /// <summary>
+    /// The case field culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// The period starting date for the value

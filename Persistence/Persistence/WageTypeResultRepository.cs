@@ -15,6 +15,7 @@ public class WageTypeResultRepository() : ChildDomainRepository<WageTypeResult>(
         parameters.Add(nameof(result.WageTypeNameLocalizations), JsonSerializer.SerializeNamedDictionary(result.WageTypeNameLocalizations));
         parameters.Add(nameof(result.ValueType), result.ValueType);
         parameters.Add(nameof(result.Value), result.Value);
+        parameters.Add(nameof(result.Culture), result.Culture);
         parameters.Add(nameof(result.Start), result.Start);
         parameters.Add(nameof(result.StartHash), result.StartHash);
         parameters.Add(nameof(result.End), result.End);

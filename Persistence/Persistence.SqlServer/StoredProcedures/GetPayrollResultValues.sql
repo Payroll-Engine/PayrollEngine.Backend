@@ -63,6 +63,7 @@ BEGIN
   [PayrollValue].[ResultType],
   [PayrollValue].[ResultValue],
   [PayrollValue].[ResultNumericValue],
+  [PayrollValue].[ResultCulture],
   [PayrollValue].[ResultTags],
   [PayrollValue].[Attributes],
   -- payrun job
@@ -112,7 +113,8 @@ FROM (
     [CollectorResult].[Attributes],
     [CollectorResult].[ValueType] AS [ResultType],
     FORMAT([CollectorResult].[Value], ''N2'') AS [ResultValue],
-    [CollectorResult].[Value] AS [ResultNumericValue]';
+    [CollectorResult].[Value] AS [ResultNumericValue],
+    [CollectorResult].[Culture] AS [ResultCulture]';
   SET @attributeSql = dbo.BuildAttributeQuery('[CollectorResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
   SET @pivotSql = @pivotSql + N'
@@ -137,7 +139,8 @@ FROM (
     [CollectorCustomResult].[Attributes],
     [CollectorCustomResult].[ValueType] AS [ResultType],
     FORMAT([CollectorCustomResult].[Value], ''N2'') AS [ResultValue],
-    [CollectorCustomResult].[Value] AS [ResultNumericValue]';
+    [CollectorCustomResult].[Value] AS [ResultNumericValue],
+    [CollectorCustomResult].[Culture] AS [ResultCulture]';
   SET @attributeSql = dbo.BuildAttributeQuery('[CollectorCustomResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
   SET @pivotSql = @pivotSql + N'
@@ -164,7 +167,8 @@ FROM (
     [WageTypeResult].[Attributes],
     [WageTypeResult].[ValueType] AS [ResultType],
     FORMAT([WageTypeResult].[Value], ''N2'') AS [ResultValue],
-    [WageTypeResult].[Value] AS [ResultNumericValue]';
+    [WageTypeResult].[Value] AS [ResultNumericValue],
+    [WageTypeResult].[Culture] AS [ResultCulture]';
   SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
   SET @pivotSql = @pivotSql + N'
@@ -189,7 +193,8 @@ FROM (
     [WageTypeCustomResult].[Attributes],
     [WageTypeCustomResult].[ValueType] AS [ResultType],
     FORMAT([WageTypeCustomResult].[Value], ''N2'') AS [ResultValue],
-    [WageTypeCustomResult].[Value] AS [ResultNumericValue]';
+    [WageTypeCustomResult].[Value] AS [ResultNumericValue],
+    [WageTypeCustomResult].[Culture] AS [ResultCulture]';
   SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeCustomResult].[Attributes]', @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
   SET @pivotSql = @pivotSql + N'
@@ -216,7 +221,8 @@ FROM (
     [PayrunResult].[Attributes],
     [PayrunResult].[ValueType] AS [ResultType],
     LTRIM([PayrunResult].[Value]) AS [ResultValue],
-    [PayrunResult].[NumericValue] AS [ResultNumericValue]';
+    [PayrunResult].[NumericValue] AS [ResultNumericValue],
+    [PayrunResult].[Culture] AS [ResultCulture]';
   SET @attributeSql = dbo.BuildAttributeQuery(NULL, @attributes);
   SET @pivotSql = @pivotSql + @attributeSql;
   SET @pivotSql = @pivotSql + N'

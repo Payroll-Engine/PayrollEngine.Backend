@@ -46,7 +46,7 @@ public class WageTypeAudit : ApiObjectBase
     /// The override type
     /// </summary>
     public OverrideType OverrideType { get; set; }
-    
+
     /// <summary>
     /// The value type, default is value type money
     /// </summary>
@@ -56,6 +56,11 @@ public class WageTypeAudit : ApiObjectBase
     /// The wage type calendar
     /// </summary>
     public string Calendar { get; set; }
+
+    /// <summary>
+    /// The wage type culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// Associated collectors

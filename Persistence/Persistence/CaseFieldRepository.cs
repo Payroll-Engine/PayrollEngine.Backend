@@ -7,9 +7,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseFieldRepository(ICaseFieldAuditRepository auditRepository) :
+public class CaseFieldRepository(ICaseFieldAuditRepository auditRepository, bool auditDisabled) :
     TrackChildDomainRepository<CaseField, CaseFieldAudit>(DbSchema.Tables.CaseField, DbSchema.CaseFieldColumn.CaseId,
-        auditRepository), ICaseFieldRepository
+        auditRepository, auditDisabled), ICaseFieldRepository
 {
     public async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
         await ExistsAnyAsync(context, DbSchema.CaseFieldColumn.CaseId, caseId, DbSchema.CaseFieldColumn.Name, caseFieldNames);

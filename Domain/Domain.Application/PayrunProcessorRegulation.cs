@@ -144,6 +144,7 @@ internal sealed class PayrunProcessorRegulation
             WageTypeName = wageType.Name,
             WageTypeNameLocalizations = wageType.NameLocalizations,
             ValueType = wageType.ValueType,
+            Culture = wageType.Culture ?? context.PayrollCulture,
             Start = context.PayrunJob.PeriodStart,
             End = context.PayrunJob.PeriodEnd,
             Attributes = new(),
@@ -461,7 +462,7 @@ internal sealed class PayrunProcessorRegulation
     }
 
     internal async Task<List<PayrunResult>> GetCaseValuePayrunResultsAsync(Payroll payroll,
-        PayrunJob payrunJob, ICaseValueProvider caseValueProvider, bool expandCaseSlots)
+        PayrunJob payrunJob, ICaseValueProvider caseValueProvider, string culture, bool expandCaseSlots)
     {
         var payrunResults = new List<PayrunResult>();
 
@@ -539,20 +540,22 @@ internal sealed class PayrunProcessorRegulation
             {
                 foreach (var slot in slots)
                 {
-                    payrunResults.AddRange(await GetCaseValuePayrunResultsAsync(caseValueProvider, caseField, payrunJob.PeriodEnd, slot.Name));
+                    payrunResults.AddRange(await GetCaseValuePayrunResultsAsync(
+                        caseValueProvider, caseField, payrunJob.PeriodEnd, culture, slot.Name));
                 }
             }
             else
             {
                 // case value
-                payrunResults.AddRange(await GetCaseValuePayrunResultsAsync(caseValueProvider, caseField, payrunJob.PeriodEnd));
+                payrunResults.AddRange(await GetCaseValuePayrunResultsAsync(
+                    caseValueProvider, caseField, payrunJob.PeriodEnd, culture));
             }
         }
         return payrunResults;
     }
 
-    private static async Task<List<PayrunResult>> GetCaseValuePayrunResultsAsync(ICaseValueProvider caseValueProvider, ChildCaseField caseField,
-        DateTime periodEnd, string caseSlot = null)
+    private static async Task<List<PayrunResult>> GetCaseValuePayrunResultsAsync(ICaseValueProvider caseValueProvider,
+        ChildCaseField caseField, DateTime periodEnd, string culture, string caseSlot = null)
     {
         var results = new List<PayrunResult>();
 
@@ -576,6 +579,7 @@ internal sealed class PayrunProcessorRegulation
                         End = datePeriod.End == periodEnd ? datePeriod.End : datePeriod.End.PreviousTick(),
                         Value = caseValue.Value,
                         NumericValue = caseValue.NumericValue,
+                        Culture = caseField.Culture ?? culture,
                         Tags = caseField.Tags,
                         Attributes = caseValue.Attributes
                     });

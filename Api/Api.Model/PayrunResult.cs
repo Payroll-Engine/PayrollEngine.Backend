@@ -50,6 +50,11 @@ public class PayrunResult : ApiObjectBase
     public string Value { get; set; }
 
     /// <summary>
+    /// The payrun result culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// The numeric result value (immutable)
     /// </summary>
     public decimal? NumericValue { get; set; }

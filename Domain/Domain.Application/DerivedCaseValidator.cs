@@ -373,7 +373,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         return issues;
     }
 
-    private string ValidatePeriodCycleDate(IPayrollCalculator calculator, CaseFieldDateType dateType, DateTime test)
+    private static string ValidatePeriodCycleDate(IPayrollCalculator calculator, CaseFieldDateType dateType, DateTime test)
     {
         var period = calculator.GetPayrunPeriod(test);
         var cycle = calculator.GetPayrunCycle(test);

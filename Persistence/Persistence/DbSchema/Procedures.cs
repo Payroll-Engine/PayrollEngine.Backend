@@ -6,6 +6,9 @@ public static class Procedures
     // tenant
     public static readonly string DeleteTenant = "DeleteTenant";
 
+    // employee
+    public static readonly string DeleteEmployee = "DeleteEmployee";
+
     // regulation
     public static readonly string GetDerivedPayrollRegulations = "GetDerivedPayrollRegulations";
     // collector

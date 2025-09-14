@@ -4,9 +4,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportParameterRepository(IReportParameterAuditRepository auditRepository) :
+public class ReportParameterRepository(IReportParameterAuditRepository auditRepository, bool auditDisabled) :
     TrackChildDomainRepository<ReportParameter, ReportParameterAudit>(DbSchema.Tables.ReportParameter,
-        DbSchema.ReportParameterColumn.ReportId, auditRepository), IReportParameterRepository
+        DbSchema.ReportParameterColumn.ReportId, auditRepository, auditDisabled), IReportParameterRepository
 {
     protected override void GetObjectCreateData(ReportParameter parameter, DbParameterCollection parameters)
     {

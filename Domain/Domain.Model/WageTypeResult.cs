@@ -56,6 +56,11 @@ public class WageTypeResult : DomainObjectBase, ITagObject, IDomainAttributeObje
     /// The wage type result value (immutable)
     /// </summary>
     public decimal Value { get; set; }
+    
+    /// <summary>
+    /// The case field culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// The starting date for the value

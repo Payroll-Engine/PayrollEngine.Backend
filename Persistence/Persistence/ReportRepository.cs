@@ -4,5 +4,5 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class ReportRepository(IScriptRepository scriptRepository,
-        IReportAuditRepository auditRepository)
-    : ReportRepositoryBase<Report>(scriptRepository, auditRepository), IReportRepository;
+        IReportAuditRepository auditRepository, bool auditDisabled)
+    : ReportRepositoryBase<Report>(scriptRepository, auditRepository, auditDisabled), IReportRepository;

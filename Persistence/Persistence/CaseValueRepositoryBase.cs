@@ -48,6 +48,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         parameters.Add(nameof(caseValue.ValueType), caseValue.ValueType);
         parameters.Add(nameof(caseValue.Value), caseValue.Value);
         parameters.Add(nameof(caseValue.NumericValue), caseValue.NumericValue);
+        parameters.Add(nameof(caseValue.Culture), caseValue.Culture);
         parameters.Add(nameof(caseValue.CaseRelation), caseValue.CaseRelation);
         parameters.Add(nameof(caseValue.CancellationDate), caseValue.CancellationDate);
         parameters.Add(nameof(caseValue.Start), caseValue.Start);

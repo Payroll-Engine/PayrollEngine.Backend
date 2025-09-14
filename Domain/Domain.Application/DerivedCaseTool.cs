@@ -336,51 +336,36 @@ public abstract class DerivedCaseTool : FunctionToolBase
                 }
                 else if (initValues)
                 {
-                    // init case field without time value
-                    if (caseField.TimeType is CaseFieldTimeType.Timeless or CaseFieldTimeType.Moment)
+                    // default values
+                    if (caseField.DefaultStart != null)
                     {
-                        if (caseField.DefaultStart != null)
-                        {
-                            caseField.Start = Date.Parse(caseField.DefaultStart, caseCulture);
-                        }
-                        if (caseField.DefaultEnd != null)
-                        {
-                            caseField.End = Date.Parse(caseField.DefaultEnd, caseCulture);
-                        }
-                        if (caseField.DefaultValue != null)
-                        {
-                            caseField.Value = caseField.ValueType is ValueType.Date or ValueType.DateTime
-                                ? ValueConvert.ToJson(Date.Parse(caseField.DefaultValue, caseCulture))
-                                : caseField.DefaultValue;
-                        }
+                        caseField.Start = Date.Parse(caseField.DefaultStart, caseCulture);
                     }
-                    else
+                    if (caseField.DefaultEnd != null)
                     {
-                        // init time value
-                        var caseValueReference = new CaseValueReference(caseField.Name, caseSlot);
-                        var currentCaseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(
-                            valueDate: EvaluationDate,
-                            caseType: derivedCase.CaseType,
-                            caseFieldNames: [caseValueReference.Reference])).FirstOrDefault();
+                        caseField.End = Date.Parse(caseField.DefaultEnd, caseCulture);
+                    }
+                    if (caseField.DefaultValue != null)
+                    {
+                        caseField.Value = ParseDefaultCaseFieldValue(caseField, caseCulture);
+                    }
 
-                        // default or previous values
-                        caseField.Start = currentCaseValue?.Start ??
-                                          (caseField.DefaultStart != null ?
-                                            Date.Parse(caseField.DefaultStart, caseCulture) : null);
-                        caseField.End = currentCaseValue?.End ??
-                                        (caseField.DefaultEnd != null ?
-                                            Date.Parse(caseField.DefaultEnd, caseCulture) : null);
-                        if (currentCaseValue?.Value == null)
+                    // change history
+                    var caseValueReference = new CaseValueReference(caseField.Name, caseSlot);
+                    var currentCaseValue = (await CaseValueProvider.GetTimeCaseValuesAsync(
+                        valueDate: EvaluationDate,
+                        caseType: derivedCase.CaseType,
+                        caseFieldNames: [caseValueReference.Reference])).FirstOrDefault();
+                    if (currentCaseValue != null)
+                    {
+                        // init case field value from previous change
+                        caseField.Value ??= currentCaseValue.Value;
+                        // init time data
+                        if (caseField.TimeType is CaseFieldTimeType.Period or CaseFieldTimeType.CalendarPeriod)
                         {
-                            caseField.Value = caseField.ValueType is ValueType.Date or ValueType.DateTime ?
-                                ValueConvert.ToJson(Date.Parse(caseField.DefaultValue, caseCulture)) :
-                                caseField.DefaultValue;
+                            caseField.Start ??= currentCaseValue.Start;
+                            caseField.End ??= currentCaseValue.End;
                         }
-                        else
-                        {
-                            caseField.Value = currentCaseValue.Value;
-                        }
-                        caseField.CancellationDate = currentCaseValue?.CancellationDate;
                     }
                 }
             }
@@ -388,6 +373,11 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         return derivedCase;
     }
+
+    private static string ParseDefaultCaseFieldValue(CaseField caseField, CultureInfo culture) =>
+        caseField.ValueType is ValueType.Date or ValueType.DateTime
+            ? ValueConvert.ToJson(Date.Parse(caseField.DefaultValue, culture))
+            : caseField.DefaultValue;
 
     private async Task<List<ChildCaseField>> GetDerivedCaseFieldsAsync(CaseSet derivedCase) =>
         await ResolveCaseFieldsAsync(derivedCase);

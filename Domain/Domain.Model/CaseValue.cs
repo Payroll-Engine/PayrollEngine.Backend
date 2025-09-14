@@ -10,7 +10,7 @@ namespace PayrollEngine.Domain.Model;
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<CaseValue>
 {
-    private CultureInfo Culture => CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+    private CultureInfo DefaultCulture => CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
 
     /// <summary>
     /// The division id (immutable)
@@ -82,12 +82,17 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
     }
 
     private void UpdateNumericValue() =>
-        NumericValue = ValueConvert.ToNumber(Value, ValueType, Culture);
+        NumericValue = ValueConvert.ToNumber(Value, ValueType, GetCultureInfo());
 
     /// <summary>
     /// The case numeric value
     /// </summary>
     public decimal? NumericValue { get; set; }
+
+    /// <summary>
+    /// The case field culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// The case relation
@@ -147,7 +152,7 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
     /// </summary>
     /// <returns>The .net value</returns>
     public object GetValue() =>
-        ValueConvert.ToValue(Value, ValueType, Culture);
+        ValueConvert.ToValue(Value, ValueType, GetCultureInfo());
 
     /// <summary>
     /// Set native value
@@ -178,5 +183,14 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
 
         // with limits
         return $"{toString} [{new DatePeriod(Start, End)}]";
+    }
+
+    private CultureInfo GetCultureInfo()
+    {
+        if (string.IsNullOrWhiteSpace(Culture))
+        {
+            return DefaultCulture;
+        }
+        return CultureInfo.GetCultureInfo(Culture);
     }
 }

@@ -99,7 +99,7 @@ public abstract class RuntimeBase : IRuntime
     #region Culture and Calendar
 
     /// <inheritdoc />
-    public string GetDerivedCulture(int divisionId, int employeeId)
+    public virtual string GetDerivedCulture(int divisionId, int employeeId)
     {
         if (divisionId <= 0 && employeeId > 0)
         {

@@ -55,6 +55,11 @@ public class WageType : ApiObjectBase
     public string Calendar { get; set; }
 
     /// <summary>
+    /// The wage type culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// Associated collectors
     /// </summary>
     public List<string> Collectors { get; set; }

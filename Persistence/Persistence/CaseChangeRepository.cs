@@ -13,6 +13,9 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
     : ChildDomainRepository<T>(tableName, parentFieldName), ICaseChangeRepository<T>
     where T : CaseChange
 {
+    private ITenantRepository TenantRepository { get; } = settings.TenantRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.TenantRepository));
+    private IDivisionRepository DivisionRepository { get; } = settings.DivisionRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.DivisionRepository));
+    private IEmployeeRepository EmployeeRepository { get; } = settings.EmployeeRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.EmployeeRepository));
     private IPayrollRepository PayrollRepository { get; } = settings.PayrollRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.PayrollRepository));
     private ICaseRepository CaseRepository { get; } = settings.CaseRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.CaseRepository));
     private ICaseFieldRepository CaseFieldRepository { get; } = settings.CaseFieldRepository ?? throw new ArgumentNullException(nameof(CaseChangeRepositorySettings.CaseFieldRepository));
@@ -161,6 +164,9 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
         {
             throw new PayrollException("Case change without values.");
         }
+
+        // culture
+        var culture = await GetChangeCultureAsync(context, tenantId, caseChange);
 
         CaseType? caseType = null;
 
@@ -381,6 +387,10 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             // ensure json string
             caseValue.Value ??= string.Empty;
 
+            // culture
+            // [culture by priority]: case-field > employee > division > tenant
+            caseValue.Culture = caseField.Culture ?? culture;
+
             // case value setup
             if (caseValue is CaseValueSetup caseValueSetup)
             {
@@ -420,6 +430,45 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
 
         txScope.Complete();
         return caseChange;
+    }
+
+    private async Task<string> GetChangeCultureAsync(IDbContext context, int tenantId, T caseChange)
+    {
+        // priority 1: employee culture
+        if (caseChange.EmployeeId.HasValue)
+        {
+            var employee = await EmployeeRepository.GetAsync(context, tenantId, caseChange.EmployeeId.Value);
+            if (employee == null)
+            {
+                throw new PayrollException($"Unknown case change employee with id {caseChange.EmployeeId}.");
+            }
+            if (!string.IsNullOrWhiteSpace(employee.Culture))
+            {
+                return employee.Culture;
+            }
+        }
+
+        // priority 2: division culture
+        if (caseChange.DivisionId.HasValue)
+        {
+            var division = await DivisionRepository.GetAsync(context, tenantId, caseChange.DivisionId.Value);
+            if (division == null)
+            {
+                throw new PayrollException($"Unknown case change division with id {caseChange.DivisionId}.");
+            }
+            if (!string.IsNullOrWhiteSpace(division.Culture))
+            {
+                return division.Culture;
+            }
+        }
+
+        // priority 3: tenant culture
+        var tenant = await TenantRepository.GetAsync(context, tenantId);
+        if (tenant == null)
+        {
+            throw new PayrollException($"Unknown case change tenant with id {tenantId}.");
+        }
+        return tenant.Culture;
     }
 
     private static bool EqualCaseValue(CaseValue left, CaseValue right)

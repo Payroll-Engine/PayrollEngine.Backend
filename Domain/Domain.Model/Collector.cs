@@ -70,6 +70,11 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     }
 
     /// <summary>
+    /// The collector culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// Associated collector groups
     /// </summary>
     public List<string> CollectorGroups { get; set; }
@@ -288,8 +293,9 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
             CollectMode = CollectMode,
             Negated = Negated,
             OverrideType = OverrideType,
-            CollectorGroups = CollectorGroups,
             ValueType = ValueType,
+            Culture = Culture,
+            CollectorGroups = CollectorGroups,
             Threshold = Threshold,
             MinResult = MinResult,
             MaxResult = MaxResult,
@@ -316,8 +322,9 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
         CollectMode = audit.CollectMode;
         Negated = audit.Negated;
         OverrideType = audit.OverrideType;
-        CollectorGroups = audit.CollectorGroups;
         ValueType = audit.ValueType;
+        Culture = audit.Culture;
+        CollectorGroups = audit.CollectorGroups;
         Threshold = audit.Threshold;
         MinResult = audit.MinResult;
         MaxResult = audit.MaxResult;

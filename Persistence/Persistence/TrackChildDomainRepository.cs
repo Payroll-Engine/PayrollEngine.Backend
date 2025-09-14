@@ -7,13 +7,14 @@ using Task = System.Threading.Tasks.Task;
 namespace PayrollEngine.Persistence;
 
 public abstract class TrackChildDomainRepository<TDomain, TAudit>(string tableName, string parentFieldName,
-        IAuditChildDomainRepository<TAudit> auditRepository)
+        IAuditChildDomainRepository<TAudit> auditRepository, bool auditDisabled)
     : ChildDomainRepository<TDomain>(tableName, parentFieldName),
         ITrackChildDomainRepository<TDomain, TAudit>
     where TDomain : TrackDomainObject<TAudit>, new()
     where TAudit : AuditDomainObject
 {
     private IAuditChildDomainRepository<TAudit> AuditRepository { get; } = auditRepository ?? throw new ArgumentNullException(nameof(auditRepository));
+    private bool AuditDisabled { get; } = auditDisabled;
 
     #region Audit
 
@@ -27,11 +28,16 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit>(string tableNa
         return item;
     }
 
-    private TAudit CreateAuditObject(TDomain item) =>
+    private static TAudit CreateAuditObject(TDomain item) =>
         item.ToAuditObject();
 
     protected override async Task OnCreatedAsync(IDbContext context, int parentId, TDomain item)
     {
+        if (AuditDisabled)
+        {
+            return;
+        }
+
         // create audit record after a new track item has been created
         var audit = CreateAuditObject(item);
         await AuditRepository.CreateAsync(context, item.Id, audit);
@@ -39,6 +45,11 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit>(string tableNa
 
     protected override async Task OnUpdatedAsync(IDbContext context, int parentId, TDomain item)
     {
+        if (AuditDisabled)
+        {
+            return;
+        }
+
         // create audit object after updating the tracked item
         var audit = CreateAuditObject(item);
         await AuditRepository.CreateAsync(context, item.Id, audit);
@@ -50,6 +61,11 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit>(string tableNa
         if (!deleting)
         {
             return false;
+        }
+
+        if (AuditDisabled)
+        {
+            return true;
         }
 
         // remove all audit records before deleting the track

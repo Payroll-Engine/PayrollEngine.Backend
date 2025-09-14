@@ -76,6 +76,7 @@ BEGIN
   [dbo].[CompanyCaseValue].[ValueType],
   [dbo].[CompanyCaseValue].[Value],
   [dbo].[CompanyCaseValue].[NumericValue],
+  [dbo].[CompanyCaseValue].[Culture],
   [dbo].[CompanyCaseValue].[Start],
   [dbo].[CompanyCaseValue].[End],
   [dbo].[CompanyCaseValue].[Forecast],

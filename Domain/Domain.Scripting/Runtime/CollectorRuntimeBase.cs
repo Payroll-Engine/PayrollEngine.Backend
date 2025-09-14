@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using PayrollEngine.Client.Scripting;
 using PayrollEngine.Client.Scripting.Runtime;
@@ -82,6 +83,14 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     /// <inheritdoc />
     public void Reset() => Collector.Reset();
 
+    #region Culture and Calendar
+
+    /// <inheritdoc />
+    public override string GetDerivedCulture(int divisionId, int employeeId) =>
+        Collector.Culture ?? base.GetDerivedCulture(divisionId, employeeId);
+
+    #endregion
+
     #region Internal
 
     /// <summary>The collector</summary>
@@ -132,10 +141,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
         // remove attribute
         if (value == null)
         {
-            if (CurrentCollectorResult.Attributes.ContainsKey(name))
-            {
-                CurrentCollectorResult.Attributes.Remove(name);
-            }
+            CurrentCollectorResult.Attributes.Remove(name);
         }
         else
         {
@@ -150,7 +156,8 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
 
     /// <inheritdoc />
     public void AddPayrunResult(string source, string name, string value, int valueType,
-        DateTime startDate, DateTime endDate, string slot, List<string> tags, Dictionary<string, object> attributes)
+        DateTime startDate, DateTime endDate, string slot, List<string> tags, 
+        Dictionary<string, object> attributes, string culture)
     {
         if (string.IsNullOrWhiteSpace(source))
         {
@@ -170,6 +177,12 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
             throw new ArgumentException($"Unknown value type: {valueType}.");
         }
 
+        // culture
+        if (string.IsNullOrWhiteSpace(culture))
+        {
+            culture = GetDerivedCulture(DivisionId, Employee.Id);
+        }
+
         // result
         var result = new PayrunResult
         {
@@ -179,7 +192,11 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
             Slot = slot,
             ValueType = (ValueType)valueType,
             Value = value,
-            NumericValue = ValueConvert.ToNumber(value, (ValueType)valueType, TenantCulture),
+            NumericValue = ValueConvert.ToNumber(
+                json: value, 
+                valueType: (ValueType)valueType,
+                culture: CultureInfo.GetCultureInfo(culture)),
+            Culture = culture,
             Start = startDate,
             End = endDate,
             Tags = tags,
@@ -190,7 +207,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
 
     /// <inheritdoc />
     public void AddCustomResult(string source, decimal value, DateTime startDate, DateTime endDate,
-        List<string> tags, Dictionary<string, object> attributes, int? valueType)
+        List<string> tags, Dictionary<string, object> attributes, int? valueType, string culture)
     {
         if (string.IsNullOrWhiteSpace(source))
         {
@@ -215,6 +232,12 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
             throw new ScriptException($"Value type for custom result must be numeric: {collectorValueType}.");
         }
 
+        // culture
+        if (string.IsNullOrWhiteSpace(culture))
+        {
+            culture = GetDerivedCulture(DivisionId, Employee.Id);
+        }
+
         // result
         var customResult = new Model.CollectorCustomResult
         {
@@ -223,6 +246,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
             Source = source,
             Value = value,
             ValueType = collectorValueType,
+            Culture = culture,
             Start = startDate,
             End = endDate,
             Tags = tags,

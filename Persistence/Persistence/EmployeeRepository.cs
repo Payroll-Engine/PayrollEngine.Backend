@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -86,6 +87,37 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
         // query compilation
         var compileQuery = CompileQuery(dbQuery);
         return compileQuery;
+    }
+
+    /// <inheritdoc />
+    /// <remarks>Do not call the base class method</remarks>
+    public override async Task<bool> DeleteAsync(IDbContext context, int tenantId, int employeeId)
+    {
+        if (!await ExistsAsync(context, employeeId))
+        {
+            throw new PayrollException($"Unknown employee with id {employeeId}.");
+        }
+
+        var parameters = new DbParameterCollection();
+        parameters.Add(DbSchema.ParameterDeleteEmployee.TenantId, tenantId);
+        parameters.Add(DbSchema.ParameterDeleteEmployee.EmployeeId, employeeId);
+        parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+        try
+        {
+            // delete employee (stored procedure)
+            await QueryAsync<Tenant>(context, DbSchema.Procedures.DeleteEmployee,
+                parameters, commandType: CommandType.StoredProcedure);
+
+            // stored procedure return value
+            var result = parameters.Get<int>("@sp_return");
+            return result == 1;
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, exception.GetBaseMessage());
+            return false;
+        }
     }
 
     #region Divisions (see also Payroll)
@@ -188,4 +220,5 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
     }
 
     #endregion
+
 }

@@ -27,7 +27,7 @@ public class CollectorAudit : ScriptAuditDomainObject, IDomainAttributeObject
     /// The collect mode
     /// </summary>
     public CollectMode CollectMode { get; set; }
-    
+
     /// <summary>
     /// Negated collector result
     /// </summary>
@@ -42,6 +42,11 @@ public class CollectorAudit : ScriptAuditDomainObject, IDomainAttributeObject
     /// The value type
     /// </summary>
     public ValueType ValueType { get; set; }
+
+    /// <summary>
+    /// The collector culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
 
     /// <summary>
     /// Associated collector groups

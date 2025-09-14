@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using PayrollEngine.Domain.Scripting;
 using PayrollEngine.Persistence;
 using DomainModel = PayrollEngine.Domain.Model;
 
@@ -77,6 +78,7 @@ public static class ApiStartupExtensions
         {
             InitializeScriptCompiler();
         }
+        ScriptCompiler.DumpCompilerSources = serverConfiguration.DumpCompilerSources;
 
         // culture
         var cultureName = serverConfiguration.StartupCulture;

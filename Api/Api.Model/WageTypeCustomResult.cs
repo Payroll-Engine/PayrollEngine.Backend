@@ -49,6 +49,11 @@ public class WageTypeCustomResult : ApiObjectBase
     public decimal Value { get; set; }
 
     /// <summary>
+    /// The wage type custom result culture name based on RFC 4646
+    /// </summary>
+    public string Culture { get; set; }
+
+    /// <summary>
     /// The period starting date for the value
     /// </summary>
     [Required]

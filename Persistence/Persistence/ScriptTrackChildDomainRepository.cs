@@ -10,8 +10,8 @@ using Task = System.Threading.Tasks.Task;
 namespace PayrollEngine.Persistence;
 
 public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string tableName, string parentFieldName,
-        IScriptRepository scriptRepository, IAuditChildDomainRepository<TAudit> auditRepository)
-    : TrackChildDomainRepository<TDomain, TAudit>(tableName, parentFieldName, auditRepository),
+        IScriptRepository scriptRepository, IAuditChildDomainRepository<TAudit> auditRepository, bool auditDisabled)
+    : TrackChildDomainRepository<TDomain, TAudit>(tableName, parentFieldName, auditRepository, auditDisabled),
         IScriptTrackDomainObjectRepository<TDomain, TAudit>
     where TDomain : TrackDomainObject<TAudit>, new()
     where TAudit : AuditDomainObject

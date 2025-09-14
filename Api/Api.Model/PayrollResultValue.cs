@@ -35,7 +35,7 @@ public class PayrollResultValue
     /// The result parent id (e.g. wage typo on custom wage type)
     /// </summary>
     public int ResultParentId { get; set; }
-    
+
     /// <summary>
     /// The result creation date
     /// </summary>
@@ -82,6 +82,12 @@ public class PayrollResultValue
     /// The result numeric value
     /// </summary>
     public decimal? ResultNumericValue { get; set; }
+
+    /// <summary>
+    /// The result culture
+    /// </summary>
+    [StringLength(128)]
+    public string ResultCulture { get; set; }
 
     /// <summary>
     /// The result attributes

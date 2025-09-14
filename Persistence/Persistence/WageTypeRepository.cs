@@ -7,9 +7,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository)
+public class WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository, bool auditDisabled)
     : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>(DbSchema.Tables.WageType,
-        DbSchema.WageTypeColumn.RegulationId, scriptRepository, auditRepository), IWageTypeRepository
+        DbSchema.WageTypeColumn.RegulationId, scriptRepository, auditRepository, auditDisabled), IWageTypeRepository
 {
     protected override void GetObjectCreateData(WageType wageType, DbParameterCollection parameters)
     {
@@ -26,6 +26,7 @@ public class WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAud
         parameters.Add(nameof(wageType.OverrideType), wageType.OverrideType);
         parameters.Add(nameof(wageType.ValueType), wageType.ValueType);
         parameters.Add(nameof(wageType.Calendar), wageType.Calendar);
+        parameters.Add(nameof(wageType.Culture), wageType.Culture);
         parameters.Add(nameof(wageType.Collectors), JsonSerializer.SerializeList(wageType.Collectors));
         parameters.Add(nameof(wageType.CollectorGroups), JsonSerializer.SerializeList(wageType.CollectorGroups));
         parameters.Add(nameof(wageType.ValueExpression), wageType.ValueExpression);

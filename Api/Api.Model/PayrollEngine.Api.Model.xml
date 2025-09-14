@@ -1446,6 +1446,11 @@
             The case numeric value
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CaseValue.Culture">
+            <summary>
+            The case field culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CaseValue.CaseRelation">
             <summary>
             The case relation
@@ -1549,6 +1554,11 @@
             The value type, default is value type money
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.Culture">
+            <summary>
+            The collector culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Collector.CollectorGroups">
             <summary>
             Associated collector groups
@@ -1637,6 +1647,11 @@
             The value type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.Culture">
+            <summary>
+            The collector culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CollectorAudit.CollectorGroups">
             <summary>
             Associated collector groups
@@ -1720,6 +1735,11 @@
             The collector result value (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.Culture">
+            <summary>
+            The collector custom result culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.Start">
             <summary>
             The period starting date for the value
@@ -1786,6 +1806,11 @@
         <member name="P:PayrollEngine.Api.Model.CollectorResult.Value">
             <summary>
             The collector result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.Culture">
+            <summary>
+            The collector result culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CollectorResult.Start">
@@ -2536,6 +2561,11 @@
             The result numeric value
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.PayrollResultValue.ResultCulture">
+            <summary>
+            The result culture
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.PayrollResultValue.Attributes">
             <summary>
             The result attributes
@@ -3095,6 +3125,11 @@
         <member name="P:PayrollEngine.Api.Model.PayrunResult.Value">
             <summary>
             The result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Culture">
+            <summary>
+            The payrun result culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunResult.NumericValue">
@@ -3954,6 +3989,11 @@
             The wage type calendar (fallback: employee calendar)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.Culture">
+            <summary>
+            The wage type culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.WageType.Collectors">
             <summary>
             Associated collectors
@@ -4037,6 +4077,11 @@
             The wage type calendar
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Culture">
+            <summary>
+            The wage type culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Collectors">
             <summary>
             Associated collectors
@@ -4110,6 +4155,11 @@
             The wage type custom result value (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.Culture">
+            <summary>
+            The wage type custom result culture name based on RFC 4646
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.Start">
             <summary>
             The period starting date for the value
@@ -4171,6 +4221,11 @@
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.Value">
             <summary>
             The wage type result value (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.Culture">
+            <summary>
+            The wage type result culture name based on RFC 4646
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.Start">

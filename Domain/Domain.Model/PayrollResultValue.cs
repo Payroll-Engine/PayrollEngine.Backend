@@ -27,7 +27,7 @@ public class PayrollResultValue : IEquatable<PayrollResultValue>
     /// The result id (e.g. the collector id)
     /// </summary>
     public int ResultId { get; set; }
-    
+
     /// <summary>
     /// The result parent id (e.g. wage typo on custom wage type)
     /// </summary>
@@ -77,6 +77,11 @@ public class PayrollResultValue : IEquatable<PayrollResultValue>
     /// The result numeric value
     /// </summary>
     public decimal? ResultNumericValue { get; set; }
+
+    /// <summary>
+    /// The result culture
+    /// </summary>
+    public string ResultCulture { get; set; }
 
     /// <summary>
     /// The result attributes

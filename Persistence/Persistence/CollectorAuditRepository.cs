@@ -17,6 +17,7 @@ public class CollectorAuditRepository() : AuditChildDomainRepository<CollectorAu
         parameters.Add(nameof(audit.Negated), audit.Negated);
         parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
         parameters.Add(nameof(audit.ValueType), audit.ValueType);
+        parameters.Add(nameof(audit.Culture), audit.Culture);
         parameters.Add(nameof(audit.CollectorGroups), JsonSerializer.SerializeList(audit.CollectorGroups));
         parameters.Add(nameof(audit.Threshold), audit.Threshold);
         parameters.Add(nameof(audit.MinResult), audit.MinResult);

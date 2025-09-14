@@ -7,9 +7,9 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CollectorRepository(IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository)
+public class CollectorRepository(IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository, bool auditDisabled)
     : ScriptTrackChildDomainRepository<Collector, CollectorAudit>(DbSchema.Tables.Collector,
-        DbSchema.CollectorColumn.RegulationId, scriptRepository, auditRepository), ICollectorRepository
+        DbSchema.CollectorColumn.RegulationId, scriptRepository, auditRepository, auditDisabled), ICollectorRepository
 {
     protected override void GetObjectCreateData(Collector collector, DbParameterCollection parameters)
     {
@@ -24,6 +24,7 @@ public class CollectorRepository(IScriptRepository scriptRepository, ICollectorA
         parameters.Add(nameof(collector.NameLocalizations), JsonSerializer.SerializeNamedDictionary(collector.NameLocalizations));
         parameters.Add(nameof(collector.OverrideType), collector.OverrideType);
         parameters.Add(nameof(collector.ValueType), collector.ValueType);
+        parameters.Add(nameof(collector.Culture), collector.Culture);
         parameters.Add(nameof(collector.CollectorGroups), JsonSerializer.SerializeList(collector.CollectorGroups));
         parameters.Add(nameof(collector.Threshold), collector.Threshold);
         parameters.Add(nameof(collector.MinResult), collector.MinResult);

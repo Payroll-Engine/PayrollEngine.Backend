@@ -10,8 +10,8 @@ using Task = System.Threading.Tasks.Task;
 namespace PayrollEngine.Persistence;
 
 public class LookupSetRepository(ILookupValueRepository valueRepository,
-        ILookupAuditRepository auditRepository)
-    : LookupRepositoryBase<LookupSet>(auditRepository), ILookupSetRepository
+        ILookupAuditRepository auditRepository, bool auditDisabled)
+    : LookupRepositoryBase<LookupSet>(auditRepository, auditDisabled), ILookupSetRepository
 {
     private ILookupValueRepository ValueRepository { get; } = valueRepository ?? throw new ArgumentNullException(nameof(valueRepository));
 

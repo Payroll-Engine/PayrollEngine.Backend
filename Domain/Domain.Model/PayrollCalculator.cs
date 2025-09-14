@@ -437,7 +437,6 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = Calendar.TimeMap switch
         {
             CalendarTimeMap.Cycle => calculation.CaseValue / cycleFactor,
-            CalendarTimeMap.Period => calculation.CaseValue,
             _ => calculation.CaseValue
         };
         return caseValue;
