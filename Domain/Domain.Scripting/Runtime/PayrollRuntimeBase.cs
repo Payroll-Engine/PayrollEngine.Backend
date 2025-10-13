@@ -359,6 +359,18 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     #region Regulation Lookup
 
     /// <inheritdoc />
+    public bool HasLookup(string lookupName)
+    {
+        if (string.IsNullOrEmpty(lookupName))
+        {
+            return false;
+        }
+        var result = Task.Run(() =>
+            RegulationLookupProvider.HasLookupAsync(Settings.DbContext, lookupName)).Result;
+        return result;
+    }
+
+    /// <inheritdoc />
     public virtual string GetLookup(string lookupName, string lookupKey, string culture = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))

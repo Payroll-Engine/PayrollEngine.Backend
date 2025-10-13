@@ -24,12 +24,8 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
         }
     }
 
-    public async Task<LookupSet> GetLookupSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId)
+    public async Task<LookupSet> GetLookupSetAsync(IDbContext context, int regulationId, int lookupId)
     {
-        if (tenantId <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(tenantId));
-        }
         if (regulationId <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(regulationId));
@@ -57,21 +53,57 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
             throw new ArgumentNullException(nameof(items));
         }
 
+        var lookups = new List<LookupSet>();
+        var newLookups = new List<LookupSet>();
+        foreach (var item in items)
+        {
+            var existing = await QueryLookupSetAsync(context, regulationId, item.Name);
+            if (existing != null)
+            {
+                item.Id = existing.Id;
+                lookups.Add(item);
+            }
+            else
+            {
+                newLookups.Add(item);
+            }
+        }
+
         // transaction
         using var txScope = TransactionFactory.NewTransactionScope();
 
         // create lookups
-        var createdLookups = (await base.CreateAsync(context, regulationId, items)).ToList();
+        if (newLookups.Any())
+        {
+            var created = (await base.CreateAsync(context, regulationId, newLookups)).ToList();
+            if (created.Any())
+            {
+                lookups.AddRange(created);
+            }
+        }
 
         // create lookup values for each created lookup
-        foreach (var createdLookup in createdLookups)
+        foreach (var lookup in lookups)
         {
             // performance optimization: insert case values with bulk mode
-            await ValueRepository.CreateBulkAsync(context, createdLookup.Id, createdLookup.Values);
+            await ValueRepository.CreateBulkAsync(context, lookup.Id, lookup.Values);
         }
 
         txScope.Complete();
-        return createdLookups;
+        return lookups;
+    }
+
+    private async Task<LookupSet> QueryLookupSetAsync(IDbContext context, int regulationId, string name)
+    {
+        // query
+        var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, regulationId);
+
+        // filter by calendar ids
+        query.WhereIn(DbSchema.LookupColumn.Name, name);
+
+        // execute query
+        var compileQuery = CompileQuery(query);
+        return (await QueryAsync(context, compileQuery)).FirstOrDefault();
     }
 
     public override async Task<bool> DeleteAsync(IDbContext context, int regulationId, int lookupId)
@@ -90,12 +122,12 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
     }
 
     public async Task<LookupData> GetLookupDataAsync(IDbContext context,
-        int tenantId, int regulationId, int lookupId, string culture = null)
+        int regulationId, int lookupId, string culture = null)
     {
         var lookupData = new LookupData();
 
         // lookup set
-        var lookupSet = await GetLookupSetAsync(context, tenantId, regulationId, lookupId);
+        var lookupSet = await GetLookupSetAsync(context, regulationId, lookupId);
         if (lookupSet == null)
         {
             return lookupData;
@@ -127,7 +159,7 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
     }
 
     public async Task<LookupValueData> GetLookupValueDataAsync(IDbContext context,
-        int tenantId, int lookupId, string lookupKey, string culture = null)
+        int lookupId, string lookupKey, string culture = null)
     {
         if (lookupId <= 0)
         {
@@ -166,7 +198,7 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
     }
 
     public async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
-        int tenantId, int lookupId, decimal rangeValue, string lookupKey = null, string culture = null)
+        int lookupId, decimal rangeValue, string lookupKey = null, string culture = null)
     {
         if (lookupId <= 0)
         {

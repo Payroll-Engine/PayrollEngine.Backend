@@ -10,9 +10,8 @@ public interface ILookupSetService : IChildApplicationService<ILookupSetReposito
     /// Get a lookup set, including the lookup values
     /// </summary>
     /// <param name="context">The database context</param>
-    /// <param name="tenantId">The tenant id</param>
     /// <param name="regulationId">The regulation id</param>
     /// <param name="lookupId">The lookup id</param>
     /// <returns>The lookup set</returns>
-    Task<LookupSet> GetSetAsync(IDbContext context, int tenantId, int regulationId, int lookupId);
+    Task<LookupSet> GetSetAsync(IDbContext context, int regulationId, int lookupId);
 }

@@ -1,7 +1,8 @@
 ﻿//#define SCRIPT_RESULT_REQUESTS
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
+using System.Collections.Generic;
 using PayrollEngine.Client.Scripting.Runtime;
 using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
@@ -213,6 +214,61 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             employeeValues[key] = value;
         }
+    }
+
+    #endregion
+
+    #region Payrun Results
+
+    /// <inheritdoc />
+    public void AddPayrunResult(string source, string name, string value, int valueType,
+        DateTime startDate, DateTime endDate, string slot, List<string> tags,
+        Dictionary<string, object> attributes, string culture)
+    {
+        if (string.IsNullOrWhiteSpace(source))
+        {
+            throw new ArgumentException(nameof(source));
+        }
+        if (startDate >= endDate)
+        {
+            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}.");
+        }
+
+        // ensure attributes collection
+        attributes ??= new();
+
+        // value type
+        if (!Enum.IsDefined(typeof(ValueType), valueType))
+        {
+            throw new ArgumentException($"Unknown value type: {valueType}.");
+        }
+
+        // culture
+        if (string.IsNullOrWhiteSpace(culture))
+        {
+            culture = GetDerivedCulture(DivisionId, Employee.Id);
+        }
+
+        // result
+        var result = new PayrunResult
+        {
+            Source = source,
+            Name = name,
+            // currently no support for localized custom wage type results
+            Slot = slot,
+            ValueType = (ValueType)valueType,
+            Value = value,
+            NumericValue = ValueConvert.ToNumber(
+                json: value,
+                valueType: (ValueType)valueType,
+                culture: CultureInfo.GetCultureInfo(culture)),
+            Culture = culture,
+            Start = startDate,
+            End = endDate,
+            Tags = tags,
+            Attributes = attributes
+        };
+        PayrunResults.Add(result);
     }
 
     #endregion

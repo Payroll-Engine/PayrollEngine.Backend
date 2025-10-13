@@ -176,7 +176,7 @@ public class LookupController : Api.Controller.LookupController
         {
             return authResult;
         }
-        return await GetSetAsync(tenantId, regulationId, lookupId);
+        return await GetSetAsync(regulationId, lookupId);
     }
 
     /// <summary>

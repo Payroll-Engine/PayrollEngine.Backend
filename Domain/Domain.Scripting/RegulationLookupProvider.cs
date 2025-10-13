@@ -48,14 +48,11 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         LookupSetRepository = lookupSetRepository ?? throw new ArgumentNullException(nameof(lookupSetRepository));
     }
 
-    /// <summary>
-    /// Get a derived lookup value
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="lookupName">The name of the lookup</param>
-    /// <param name="lookupKey">The lookup value key</param>
-    /// <param name="culture">The value culture</param>
-    /// <returns>The lookup value</returns>
+    /// <inheritdoc />
+    public Task<bool> HasLookupAsync(IDbContext context, string lookupName) =>
+        System.Threading.Tasks.Task.FromResult(DerivedLookups.Contains(lookupName));
+
+    /// <inheritdoc />
     public async Task<LookupValueData> GetLookupValueDataAsync(IDbContext context, string lookupName, string lookupKey,
         string culture = null)
     {
@@ -96,7 +93,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             }
 
             // lookup value
-            var value = await LookupSetRepository.GetLookupValueDataAsync(context, tenantId.Value, lookup.Id, lookupKey, culture);
+            var value = await LookupSetRepository.GetLookupValueDataAsync(context, lookup.Id, lookupKey, culture);
             if (value != null)
             {
                 return value;
@@ -106,15 +103,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         return null;
     }
 
-    /// <summary>
-    /// Get a derived range lookup value
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="lookupName">The name of the lookup</param>
-    /// <param name="rangeValue">The range value</param>
-    /// <param name="lookupKey">The lookup key</param>
-    /// <param name="culture">The value culture</param>
-    /// <returns>The lookup value</returns>
+    /// <inheritdoc />
     public async Task<LookupValueData> GetRangeLookupValueDataAsync(IDbContext context,
         string lookupName, decimal rangeValue, string lookupKey = null, string culture = null)
     {
@@ -151,7 +140,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             }
 
             // lookup value
-            var value = await LookupSetRepository.GetRangeLookupValueDataAsync(context, tenantId.Value, lookup.Id, rangeValue, lookupKey, culture);
+            var value = await LookupSetRepository.GetRangeLookupValueDataAsync(context, lookup.Id, rangeValue, lookupKey, culture);
             if (value != null)
             {
                 return value;

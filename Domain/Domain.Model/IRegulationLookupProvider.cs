@@ -8,6 +8,15 @@ namespace PayrollEngine.Domain.Model;
 public interface IRegulationLookupProvider
 {
     /// <summary>
+    /// Test for existing lookup
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="lookupName">The name of the lookup</param>
+    /// <returns>True for existing lookup</returns>
+    // ReSharper disable once UnusedParameter.Global
+    Task<bool> HasLookupAsync(IDbContext context, string lookupName);
+
+    /// <summary>
     /// Get a derived lookup value
     /// </summary>
     /// <param name="context">The database context</param>

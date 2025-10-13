@@ -1379,7 +1379,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
                     }
 
                     var currentLookupData = await RegulationLookupSetService.Repository.GetLookupDataAsync(
-                        Runtime.DbContext, query.TenantId, regulationId.Value, lookup.Id, culture);
+                        Runtime.DbContext, regulationId.Value, lookup.Id, culture);
 
                     // first/base regulation
                     if (lookupData == null)

@@ -139,7 +139,7 @@ public abstract class LookupController(IRegulationService regulationService, ILo
         }
     }
 
-    protected async Task<ActionResult<ApiObject.LookupSet>> GetSetAsync(int tenantId, int regulationId, int lookupId)
+    protected async Task<ActionResult<ApiObject.LookupSet>> GetSetAsync(int regulationId, int lookupId)
     {
         try
         {
@@ -150,7 +150,7 @@ public abstract class LookupController(IRegulationService regulationService, ILo
             }
 
             // get object
-            var lookupSet = await LookupSetService.GetSetAsync(Runtime.DbContext, tenantId, regulationId, lookupId);
+            var lookupSet = await LookupSetService.GetSetAsync(Runtime.DbContext, regulationId, lookupId);
             if (lookupSet == null)
             {
                 return ObjectNotFoundRequest(lookupId);

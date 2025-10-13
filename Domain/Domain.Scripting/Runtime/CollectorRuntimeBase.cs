@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Collections.Generic;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Client.Scripting;
 using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -28,7 +27,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
     public string CollectMode => Enum.GetName(typeof(CollectMode), Collector.CollectMode);
 
     /// <inheritdoc />
-    public bool Negated  => Collector.Negated;
+    public bool Negated => Collector.Negated;
 
     /// <inheritdoc />
     public decimal? CollectorThreshold => Collector.Threshold;
@@ -152,58 +151,7 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
 
     #endregion
 
-    #region Results
-
-    /// <inheritdoc />
-    public void AddPayrunResult(string source, string name, string value, int valueType,
-        DateTime startDate, DateTime endDate, string slot, List<string> tags, 
-        Dictionary<string, object> attributes, string culture)
-    {
-        if (string.IsNullOrWhiteSpace(source))
-        {
-            throw new ArgumentException(nameof(source));
-        }
-        if (startDate >= endDate)
-        {
-            throw new ArgumentException($"Invalid start date {startDate} on end {endDate}.");
-        }
-
-        // ensure attributes collection
-        attributes ??= new();
-
-        // value type
-        if (!Enum.IsDefined(typeof(ValueType), valueType))
-        {
-            throw new ArgumentException($"Unknown value type: {valueType}.");
-        }
-
-        // culture
-        if (string.IsNullOrWhiteSpace(culture))
-        {
-            culture = GetDerivedCulture(DivisionId, Employee.Id);
-        }
-
-        // result
-        var result = new PayrunResult
-        {
-            Source = source,
-            Name = name,
-            // currently no support for localized custom payrun results
-            Slot = slot,
-            ValueType = (ValueType)valueType,
-            Value = value,
-            NumericValue = ValueConvert.ToNumber(
-                json: value, 
-                valueType: (ValueType)valueType,
-                culture: CultureInfo.GetCultureInfo(culture)),
-            Culture = culture,
-            Start = startDate,
-            End = endDate,
-            Tags = tags,
-            Attributes = attributes
-        };
-        PayrunResults.Add(result);
-    }
+    #region Custom Results
 
     /// <inheritdoc />
     public void AddCustomResult(string source, decimal value, DateTime startDate, DateTime endDate,
