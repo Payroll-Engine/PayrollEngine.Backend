@@ -17,6 +17,15 @@ public interface IRegulationLookupProvider
     Task<bool> HasLookupAsync(IDbContext context, string lookupName);
 
     /// <summary>
+    /// Get lookup
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="lookupName">The name of the lookup</param>
+    /// <returns>The lookup</returns>
+    // ReSharper disable once UnusedParameter.Global
+    Task<LookupSet> GetLookupAsync(IDbContext context, string lookupName);
+
+    /// <summary>
     /// Get a derived lookup value
     /// </summary>
     /// <param name="context">The database context</param>

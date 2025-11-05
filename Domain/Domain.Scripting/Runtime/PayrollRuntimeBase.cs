@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using PayrollEngine.Client.Scripting.Runtime;
+using System.Globalization;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Client.Scripting.Runtime;
 using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
@@ -321,7 +321,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     }
 
     /// <summary>Gets a value indicating whether to track the case field requests</summary>
-    private bool TrackCaseFieldRequests => false;
+    private static bool TrackCaseFieldRequests => false;
 
     /// <inheritdoc />
     public virtual Dictionary<string, List<Tuple<DateTime, DateTime?, DateTime?, object>>> GetCasePeriodValues(DateTime startDate,
@@ -386,7 +386,11 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         culture ??= CultureInfo.CurrentCulture.Name;
 
         var result = Task.Run(() =>
-                RegulationLookupProvider.GetLookupValueDataAsync(Settings.DbContext, lookupName, lookupKey, culture)).Result?.Value;
+                RegulationLookupProvider.GetLookupValueDataAsync(
+                    context: Settings.DbContext,
+                    lookupName: lookupName,
+                    lookupKey: lookupKey,
+                    culture: culture)).Result?.Value;
         return result;
     }
 
@@ -401,8 +405,32 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // culture
         culture ??= CultureInfo.CurrentCulture.Name;
 
-        return Task.Run(() => RegulationLookupProvider.GetRangeLookupValueDataAsync(Settings.DbContext, lookupName, rangeValue, lookupKey, culture)).
+        return Task.Run(() => RegulationLookupProvider.GetRangeLookupValueDataAsync(
+                context: Settings.DbContext,
+                lookupName: lookupName,
+                rangeValue: rangeValue,
+                lookupKey: lookupKey,
+                culture: culture)).
             Result?.Value;
+    }
+
+    /// <inheritdoc />
+    public virtual decimal ApplyRangeValue(string lookupName, decimal rangeValue, string valueFieldName = null)
+    {
+        if (string.IsNullOrWhiteSpace(lookupName))
+        {
+            throw new ArgumentException(nameof(lookupName));
+        }
+
+        if (rangeValue <= 0)
+        {
+            return 0;
+        }
+
+        var lookup = Task.Run(() => RegulationLookupProvider.GetLookupAsync(
+                context: Settings.DbContext,
+                lookupName: lookupName)).Result;
+        return lookup?.ApplyRangeValue(rangeValue, valueFieldName) ?? 0;
     }
 
     #endregion

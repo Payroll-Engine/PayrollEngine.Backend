@@ -63,20 +63,6 @@ internal sealed class PayrunProcessorRegulation
         return deriveWageTypes.ToLookup(wt => wt.WageTypeNumber, wt => wt);
     }
 
-    internal async Task<ILookup<string, Lookup>> GetDerivedLookupsAsync(PayrunJob payrunJob)
-    {
-        var lookups = (await Settings.PayrollRepository.GetDerivedLookupsAsync(Settings.DbContext,
-            new()
-            {
-                TenantId = Tenant.Id,
-                PayrollId = Payroll.Id,
-                RegulationDate = payrunJob.PeriodEnd,
-                EvaluationDate = payrunJob.EvaluationDate
-            },
-            overrideType: OverrideType.Active)).ToList();
-        return lookups.ToLookup(lookup => lookup.Name, col => col);
-    }
-
     #endregion
 
     #region Wage Type

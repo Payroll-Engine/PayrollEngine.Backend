@@ -12,7 +12,7 @@ namespace PayrollEngine.Persistence.SqlServer;
 public class DbContext : IDbContext
 {
     /// <summary>The current database version</summary>
-    private static System.Version MinVersion => new(0, 9, 3);
+    private static System.Version MinVersion => new(0, 9, 4);
 
     // minimum command timeout is 30 seconds
     private const int MinCommandTimeout = 30;

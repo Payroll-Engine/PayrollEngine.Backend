@@ -10,7 +10,7 @@ namespace PayrollEngine.Domain.Model;
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<CaseValue>
 {
-    private CultureInfo DefaultCulture => CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+    private static CultureInfo DefaultCulture => CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
 
     /// <summary>
     /// The division id (immutable)

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Model;
@@ -201,25 +199,25 @@ internal static class PayrollControllerExtensions
         }
     }
 
-    internal static async Task<IRegulationLookupProvider> NewRegulationLookupProviderAsync(this PayrollController controller,
+    internal static IRegulationLookupProvider NewRegulationLookupProvider(this PayrollController controller,
         IDbContext context, Tenant tenant, Payroll payroll, DateTime? regulationDate = null, DateTime? evaluationDate = null)
     {
         var currentEvaluationDate = controller.CurrentEvaluationDate;
         regulationDate ??= currentEvaluationDate;
         evaluationDate ??= currentEvaluationDate;
 
-        // retrieve lookups
-        var lookups = (await controller.PayrollService.Repository.GetDerivedLookupsAsync(context,
-            new()
+        // new lookup provider
+        return new RegulationLookupProvider(
+            dbContext: context,
+            payrollRepository: controller.PayrollService.Repository,
+            payrollQuery: new()
             {
                 TenantId = tenant.Id,
                 PayrollId = payroll.Id,
                 RegulationDate = regulationDate.Value.ToUtc(),
                 EvaluationDate = evaluationDate.Value.ToUtc()
             },
-            overrideType: OverrideType.Active)).ToList();
-
-        // new lookup provider
-        return new RegulationLookupProvider(lookups, controller.RegulationService.Repository, controller.RegulationLookupSetService.Repository);
+            regulationRepository: controller.RegulationService.Repository,
+            lookupSetRepository: controller.RegulationLookupSetService.Repository);
     }
 }

@@ -40,6 +40,11 @@ public class Lookup : ApiObjectBase
     public OverrideType OverrideType { get; set; }
 
     /// <summary>
+    /// Lookup range mode
+    /// </summary>
+    public LookupRangeMode RangeMode { get; set; }
+
+    /// <summary>
     /// The lookup range size
     /// </summary>
     public decimal? RangeSize { get; set; }

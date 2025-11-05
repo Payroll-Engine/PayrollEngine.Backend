@@ -1439,7 +1439,7 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         var querySetup = setupQuery.Item1;
 
         // lookups
-        var lookupProvider = await this.NewRegulationLookupProviderAsync(Runtime.DbContext, querySetup.Tenant,
+        var lookupProvider = this.NewRegulationLookupProvider(Runtime.DbContext, querySetup.Tenant,
             querySetup.Payroll, query.RegulationDate, query.EvaluationDate);
 
         // range value request

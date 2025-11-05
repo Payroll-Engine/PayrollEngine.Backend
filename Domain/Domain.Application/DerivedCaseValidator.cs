@@ -407,7 +407,7 @@ public class DerivedCaseValidator : DerivedCaseTool
         CaseChangeSetup caseChangeSetup, List<CaseValidationIssue> issues, string culture, bool ignoreUnknownRelations)
     {
         // case validation
-        await CaseValidateAsync(cases, caseSet, issues);
+        CaseValidate(cases, caseSet, issues);
 
         // case relations (active only)
         var relations = (await PayrollRepository.GetDerivedCaseRelationsAsync(Settings.DbContext,
@@ -464,7 +464,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             targetCaseSet.CancellationDate = caseSet.CancellationDate;
 
             // validate case relation
-            if (await CaseRelationValidateAsync(targetRelation.ToList(), caseSet, targetCaseSet, issues))
+            if (CaseRelationValidate(targetRelation.ToList(), caseSet, targetCaseSet, issues))
             {
                 // process related case (recursive)
                 await ValidateCaseAsync(targetCase, targetCaseSet, caseChangeSetup, issues, culture, ignoreUnknownRelations);
@@ -501,10 +501,10 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
     }
 
-    private async Task CaseValidateAsync(IEnumerable<Case> cases, CaseSet caseSet,
+    private void CaseValidate(IEnumerable<Case> cases, CaseSet caseSet,
         List<CaseValidationIssue> caseIssues)
     {
-        var lookupProvider = await NewRegulationLookupProviderAsync();
+        var lookupProvider = NewRegulationLookupProvider();
 
         var settings = new CaseChangeRuntimeSettings
         {
@@ -556,10 +556,10 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
     }
 
-    private async Task<bool> CaseRelationValidateAsync(IEnumerable<CaseRelation> derivedCaseRelation, CaseSet sourceCaseSet,
+    private bool CaseRelationValidate(IEnumerable<CaseRelation> derivedCaseRelation, CaseSet sourceCaseSet,
         CaseSet targetCaseSet, List<CaseValidationIssue> caseRelationIssues)
     {
-        var lookupProvider = await NewRegulationLookupProviderAsync();
+        var lookupProvider = NewRegulationLookupProvider();
 
         var settings = new CaseRelationRuntimeSettings
         {

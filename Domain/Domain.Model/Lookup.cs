@@ -36,6 +36,11 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDomainAttributeObject,
     public OverrideType OverrideType { get; set; }
 
     /// <summary>
+    /// Lookup range mode
+    /// </summary>
+    public LookupRangeMode RangeMode { get; set; }
+
+    /// <summary>
     /// The lookup range size
     /// </summary>
     public decimal? RangeSize { get; set; }
@@ -77,6 +82,7 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDomainAttributeObject,
             NameLocalizations = NameLocalizations,
             Description = Description,
             DescriptionLocalizations = DescriptionLocalizations,
+            RangeMode = RangeMode,
             RangeSize = RangeSize,
             Attributes = Attributes
         };
@@ -92,6 +98,7 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDomainAttributeObject,
         NameLocalizations = audit.NameLocalizations;
         Description = audit.Description;
         DescriptionLocalizations = audit.DescriptionLocalizations;
+        RangeMode = audit.RangeMode;
         RangeSize = audit.RangeSize;
         Attributes = audit.Attributes;
     }

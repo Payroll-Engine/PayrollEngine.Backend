@@ -145,9 +145,18 @@ public class PayrunProcessor : FunctionToolBase
         var processorRegulation = new PayrunProcessorRegulation(FunctionHost, Settings, ResultProvider, Tenant, context.Payroll, Payrun);
 
         // context derived lookups by lookup name
-        var derivedLookups = await processorRegulation.GetDerivedLookupsAsync(context.PayrunJob);
-        context.RegulationLookupProvider = new RegulationLookupProvider(derivedLookups,
-            Settings.RegulationRepository, Settings.RegulationLookupSetRepository);
+        context.RegulationLookupProvider = new RegulationLookupProvider(
+            dbContext: Settings.DbContext,
+            payrollRepository: Settings.PayrollRepository,
+            payrollQuery: new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = context.Payroll.Id,
+                RegulationDate = context.PayrunJob.PeriodEnd,
+                EvaluationDate = context.PayrunJob.EvaluationDate
+            },
+            regulationRepository: Settings.RegulationRepository,
+            lookupSetRepository: Settings.RegulationLookupSetRepository);
 
         // employees
         var employees = setup.Employees ?? await SetupEmployeesAsync(context, jobInvocation.EmployeeIdentifiers);

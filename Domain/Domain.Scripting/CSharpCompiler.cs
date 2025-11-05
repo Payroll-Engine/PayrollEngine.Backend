@@ -331,11 +331,42 @@ internal sealed class CSharpCompiler
                      diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error))
         {
             var failure = $"{diagnostic.GetMessage()}";
+
+            // line
             var spanStart = diagnostic.Location.GetLineSpan().Span.Start;
-            failure += $" [{diagnostic.Id}: Line {spanStart.Line + 1}, Column {spanStart.Character + 1}]";
+            failure += $" [{diagnostic.Id}: Line {spanStart.Line + 1}, Column {spanStart.Character + 1}";
+
+            // file
+            var comment = GetSourceFileComment(diagnostic.Location);
+            if (comment != null)
+            {
+                failure += $", {comment}";
+            }
+            failure += "]";
             failures.Add(failure);
         }
         return failures;
+    }
+
+    private static string GetSourceFileComment(Location location)
+    {
+        var text = location.SourceTree?.ToString();
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return null;
+        }
+        var commentStart = text.IndexOf("/*", StringComparison.InvariantCulture);
+        var commentEnd = text.IndexOf("*/", StringComparison.InvariantCulture);
+        if (commentStart < 0 || commentEnd <= commentStart)
+        {
+            return null;
+        }
+        var comment = text.Substring(commentStart, commentEnd - commentStart + 2);
+        if (comment.Length > 100)
+        {
+            comment = comment.Substring(0, 100) + "...";
+        }
+        return comment;
     }
 
     private string GetAssemblyAttributes()

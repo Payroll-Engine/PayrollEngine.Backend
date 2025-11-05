@@ -25,6 +25,12 @@ public class LookupSet : Lookup, IEquatable<LookupSet>
         CopyTool.CopyProperties(copySource, this);
     }
 
+    /// <inheritdoc/>
+    public LookupSet(Lookup copySource) :
+        base(copySource)
+    {
+    }
+
     /// <summary>Compare two objects</summary>
     /// <param name="compare">The object to compare with this</param>
     /// <returns>True for objects with the same data</returns>

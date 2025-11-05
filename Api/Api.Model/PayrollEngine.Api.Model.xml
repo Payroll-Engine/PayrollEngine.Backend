@@ -2040,6 +2040,11 @@
             The override type
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Lookup.RangeMode">
+            <summary>
+            Lookup range mode
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Lookup.RangeSize">
             <summary>
             The lookup range size

@@ -15,42 +15,57 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
     /// <summary>
     /// The derived lookup
     /// </summary>
-    private ILookup<string, Lookup> DerivedLookups { get; }
+    private ILookup<string, Lookup> Lookups { get; set; }
 
-    /// <summary>
-    /// The regulation repository
-    /// </summary>
+    private IDbContext DbContext { get; }
+    private IPayrollRepository PayrollRepository { get; }
+    private PayrollQuery PayrollQuery { get; }
     private IRegulationRepository RegulationRepository { get; }
-
-    /// <summary>
-    /// The lookup repository
-    /// </summary>
     private ILookupSetRepository LookupSetRepository { get; }
 
     /// <summary>
     /// Constructor for national time value provider
     /// </summary>
-    public RegulationLookupProvider(IEnumerable<Lookup> lookups,
-        IRegulationRepository regulationRepository, ILookupSetRepository lookupSetRepository) :
-        this(lookups.ToLookup(col => col.Name, col => col),
-            regulationRepository, lookupSetRepository)
+    public RegulationLookupProvider(IDbContext dbContext,
+        IPayrollRepository payrollRepository, PayrollQuery payrollQuery,
+        IRegulationRepository regulationRepository,
+        ILookupSetRepository lookupSetRepository)
     {
-    }
-
-    /// <summary>
-    /// Constructor for national time value provider
-    /// </summary>
-    public RegulationLookupProvider(ILookup<string, Lookup> derivedLookups,
-        IRegulationRepository regulationRepository, ILookupSetRepository lookupSetRepository)
-    {
-        DerivedLookups = derivedLookups ?? throw new ArgumentNullException(nameof(derivedLookups));
+        DbContext = dbContext;
+        PayrollRepository = payrollRepository;
+        PayrollQuery = payrollQuery;
         RegulationRepository = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
         LookupSetRepository = lookupSetRepository ?? throw new ArgumentNullException(nameof(lookupSetRepository));
     }
 
     /// <inheritdoc />
-    public Task<bool> HasLookupAsync(IDbContext context, string lookupName) =>
-        System.Threading.Tasks.Task.FromResult(DerivedLookups.Contains(lookupName));
+    public async Task<bool> HasLookupAsync(IDbContext context, string lookupName)
+    {
+        var lookups = await GetLookupsAsync();
+        return lookups.Contains(lookupName);
+    }
+
+    /// <inheritdoc />
+    public async Task<LookupSet> GetLookupAsync(IDbContext context, string lookupName)
+    {
+        // lookup
+        var lookups = await GetLookupsAsync();
+        if (!lookups.Contains(lookupName))
+        {
+            return null;
+        }
+        var lookup = new LookupSet(lookups[lookupName].First());
+
+        // lookup values
+        var values = await GetLookupValuesAsync(lookup.Name);
+        if (values.Any())
+        {
+            lookup.Values ??= [];
+            lookup.Values.AddRange(values);
+        }
+
+        return lookup;
+    }
 
     /// <inheritdoc />
     public async Task<LookupValueData> GetLookupValueDataAsync(IDbContext context, string lookupName, string lookupKey,
@@ -60,7 +75,8 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         {
             throw new ArgumentException(nameof(lookupName));
         }
-        if (!DerivedLookups.Contains(lookupName))
+        var lookups = await GetLookupsAsync();
+        if (!lookups.Contains(lookupName))
         {
             return null;
         }
@@ -70,13 +86,13 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         }
 
         // unknown lookup
-        if (!DerivedLookups[lookupName].Any())
+        if (!lookups[lookupName].Any())
         {
             throw new ArgumentException($"Missing lookup with name {lookupName}.");
         }
 
         // derived lookups
-        foreach (var lookup in DerivedLookups[lookupName])
+        foreach (var lookup in lookups[lookupName])
         {
             // lookup regulation
             var regulationId = await LookupSetRepository.GetParentIdAsync(context, lookup.Id);
@@ -111,19 +127,20 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         {
             throw new ArgumentException(nameof(lookupName));
         }
-        if (!DerivedLookups.Contains(lookupName))
+        var lookups = await GetLookupsAsync();
+        if (!lookups.Contains(lookupName))
         {
             return null;
         }
 
         // unknown lookup
-        if (!DerivedLookups[lookupName].Any())
+        if (!lookups[lookupName].Any())
         {
             throw new ArgumentException($"Missing lookup with name {lookupName}.");
         }
 
         // derived lookups
-        foreach (var lookup in DerivedLookups[lookupName])
+        foreach (var lookup in lookups[lookupName])
         {
             // lookup regulation
             var regulationId = await LookupSetRepository.GetParentIdAsync(context, lookup.Id);
@@ -148,5 +165,26 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         }
 
         return null;
+    }
+
+    private async Task<ILookup<string, Lookup>> GetLookupsAsync()
+    {
+        if (Lookups == null)
+        {
+            var lookups = (await PayrollRepository.GetDerivedLookupsAsync(DbContext,
+                PayrollQuery,
+                overrideType: OverrideType.Active)).ToList();
+            Lookups = lookups.ToLookup(col => col.Name, col => col);
+        }
+        return Lookups;
+    }
+
+    private async Task<List<LookupValue>> GetLookupValuesAsync(string lookupName)
+    {
+        var lookupValues = (await PayrollRepository.GetDerivedLookupValuesAsync(DbContext,
+            PayrollQuery,
+            lookupNames: [lookupName],
+            overrideType: OverrideType.Active)).ToList();
+        return lookupValues;
     }
 }

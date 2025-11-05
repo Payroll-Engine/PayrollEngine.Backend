@@ -185,7 +185,7 @@ public class DerivedCaseCollector : DerivedCaseTool
 
     private async Task<bool> CaseAvailable(IEnumerable<Case> cases, string culture)
     {
-        var lookupProvider = await NewRegulationLookupProviderAsync();
+        var lookupProvider = NewRegulationLookupProvider();
 
         // case available expression
         var caseList = (cases as Case[] ?? cases.ToArray()).ToList();

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -23,6 +23,7 @@ public abstract class LookupRepositoryBase<T>(ILookupAuditRepository auditReposi
         parameters.Add(nameof(lookup.Description), lookup.Description);
         parameters.Add(nameof(lookup.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(lookup.DescriptionLocalizations));
         parameters.Add(nameof(lookup.OverrideType), lookup.OverrideType);
+        parameters.Add(nameof(lookup.RangeMode), lookup.RangeMode);
         parameters.Add(nameof(lookup.RangeSize), lookup.RangeSize);
         parameters.Add(nameof(lookup.Attributes), JsonSerializer.SerializeNamedDictionary(lookup.Attributes));
         base.GetObjectData(lookup, parameters);

@@ -119,7 +119,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
     private async Task<bool> BuildCaseAsync(IList<Case> cases, CaseSet caseSet,
         CaseChangeSetup caseChangeSetup, string culture)
     {
-        var build = await CaseBuildAsync(cases, caseSet);
+        var build = CaseBuild(cases, caseSet);
         if (!build)
         {
             Log.Trace($"Build failed for case {caseSet.Name}");
@@ -178,7 +178,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             var targetCaseSet = await GetDerivedCaseSetAsync(targetCases, targetRelation.Key.TargetCaseSlot, caseChangeSetup, culture, true);
 
             // build case relation
-            if (!await CaseRelationBuildAsync(targetRelation.ToList(), caseSet, targetCaseSet))
+            if (!CaseRelationBuild(targetRelation.ToList(), caseSet, targetCaseSet))
             {
                 Log.Trace($"Ignoring case relation from {caseSet.Name} to {targetCaseSet.Name}");
                 continue;
@@ -217,9 +217,9 @@ public class DerivedCaseBuilder : DerivedCaseTool
         return true;
     }
 
-    private async Task<bool> CaseBuildAsync(IEnumerable<Case> cases, CaseSet caseSet)
+    private bool CaseBuild(IEnumerable<Case> cases, CaseSet caseSet)
     {
-        var lookupProvider = await NewRegulationLookupProviderAsync();
+        var lookupProvider = NewRegulationLookupProvider();
 
         // case build expression
         var build = true;
@@ -262,9 +262,9 @@ public class DerivedCaseBuilder : DerivedCaseTool
         return build;
     }
 
-    private async Task<bool> CaseRelationBuildAsync(IEnumerable<CaseRelation> derivedCaseRelation, CaseSet sourceCaseSet, CaseSet targetCaseSet)
+    private bool CaseRelationBuild(IEnumerable<CaseRelation> derivedCaseRelation, CaseSet sourceCaseSet, CaseSet targetCaseSet)
     {
-        var lookupProvider = await NewRegulationLookupProviderAsync();
+        var lookupProvider = NewRegulationLookupProvider();
 
         var settings = new CaseRelationRuntimeSettings
         {

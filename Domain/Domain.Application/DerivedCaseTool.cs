@@ -271,18 +271,20 @@ public abstract class DerivedCaseTool : FunctionToolBase
         return culture;
     }
 
-    protected async Task<IRegulationLookupProvider> NewRegulationLookupProviderAsync()
+    protected IRegulationLookupProvider NewRegulationLookupProvider()
     {
-        var lookups = (await PayrollRepository.GetDerivedLookupsAsync(Settings.DbContext,
-            new()
+        return new RegulationLookupProvider(
+            dbContext: Settings.DbContext,
+            payrollRepository: PayrollRepository,
+            payrollQuery: new()
             {
                 TenantId = Tenant.Id,
                 PayrollId = Payroll.Id,
                 RegulationDate = RegulationDate,
                 EvaluationDate = EvaluationDate
             },
-            overrideType: OverrideType.Active)).ToList();
-        return new RegulationLookupProvider(lookups, RegulationRepository, RegulationLookupSetRepository);
+            regulationRepository: RegulationRepository,
+            lookupSetRepository: RegulationLookupSetRepository);
     }
 
     /// <summary>

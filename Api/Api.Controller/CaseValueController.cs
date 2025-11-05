@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Api.Map;
-using PayrollEngine.Domain.Application.Service;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Domain.Application.Service;
 using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 
@@ -34,25 +33,25 @@ public abstract class CaseValueController<TParentService, TParentRepo, TRepo, TP
     protected async Task<IEnumerable<string>> GetCaseValueSlotsAsync(int parentId, string caseFieldName) =>
         await Service.GetCaseValueSlotsAsync(Runtime.DbContext, parentId, caseFieldName);
 
-    protected async Task<DomainObject.IRegulationLookupProvider> NewLookupProviderAsync(DomainObject.Tenant tenant,
+    protected DomainObject.IRegulationLookupProvider NewLookupProvider(DomainObject.Tenant tenant,
         DomainObject.Payroll payroll, DateTime? regulationDate = null, DateTime? evaluationDate = null)
     {
         var currentEvaluationDate = CurrentEvaluationDate;
         regulationDate ??= currentEvaluationDate;
         evaluationDate ??= currentEvaluationDate;
 
-        // retrieve lookups
-        var lookups = (await PayrollsService.Repository.GetDerivedLookupsAsync(Runtime.DbContext,
-            new()
+        // new lookup provider
+        return new Domain.Scripting.RegulationLookupProvider(
+            dbContext: Runtime.DbContext,
+            payrollRepository: PayrollsService.Repository,
+            payrollQuery: new()
             {
                 TenantId = tenant.Id,
                 PayrollId = payroll.Id,
                 RegulationDate = regulationDate.Value.ToUtc(),
                 EvaluationDate = evaluationDate.Value.ToUtc()
             },
-            overrideType: OverrideType.Active)).ToList();
-
-        // new lookup provider
-        return new Domain.Scripting.RegulationLookupProvider(lookups, RegulationService.Repository, LookupSetService.Repository);
+            regulationRepository: RegulationService.Repository,
+            lookupSetRepository: LookupSetService.Repository);
     }
 }
