@@ -16,7 +16,6 @@ END
 
 -- lookup range mode
 
-/****** Object:  Table [dbo].[Lookup]    Script Date: 04.11.2025 09:42:19 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -28,7 +27,6 @@ ALTER TABLE [dbo].[Lookup]
 
 GO
 
-/****** Object:  Table [dbo].[LookupAudit]    Script Date: 04.11.2025 09:42:19 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -52,7 +50,7 @@ VALUES (
 	9,
 	4,
 	CURRENT_USER,
-	'Payroll Engine: Full setup v0.9.4' )
+	'Payroll Engine: Update v0.9.3 to v0.9.4' )
 SET @errorID = @@ERROR
 IF ( @errorID <> 0 ) BEGIN
 	PRINT 'Error while updating the Payroll Engine database version.'
