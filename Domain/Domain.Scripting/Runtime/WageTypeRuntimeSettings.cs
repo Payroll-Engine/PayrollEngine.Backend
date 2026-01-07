@@ -9,7 +9,7 @@ public class WageTypeRuntimeSettings : PayrunRuntimeSettings
     public int ExecutionCount { get; init; }
 
     /// <summary>The wage type</summary>
-    public WageType WageType { get; init; }
+    public DerivedWageType WageType { get; init; }
 
     /// <summary>The wage type attributes</summary>
     public Dictionary<string, object> WageTypeAttributes { get; init; }

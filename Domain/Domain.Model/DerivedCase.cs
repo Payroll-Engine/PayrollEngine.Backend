@@ -1,13 +1,14 @@
-﻿using PayrollEngine.Domain.Model;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace PayrollEngine.Persistence;
+namespace PayrollEngine.Domain.Model;
 
 /// <summary>Derived case</summary>
 public sealed class DerivedCase : Case
 {
+    /// <summary>The regulation id</summary>
+    public int RegulationId { get; set; }
+
     /// <summary>The layer level</summary>
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public int Level { get; set; }
 
     /// <summary>The layer priority</summary>

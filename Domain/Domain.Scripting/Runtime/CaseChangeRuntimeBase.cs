@@ -52,11 +52,14 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
             throw new ArgumentException(nameof(attributeName));
         }
 
+        // case
+        var @case = GetCase(caseName);
+
         // ensure attribute collection
-        Case.Attributes ??= new();
+        @case.Attributes ??= new();
 
         // set or update attribute value
-        Case.Attributes[attributeName] = value ?? throw new ArgumentNullException(nameof(value));
+        @case.Attributes[attributeName] = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     /// <inheritdoc />
@@ -71,14 +74,17 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
             throw new ArgumentException(nameof(attributeName));
         }
 
+        // case
+        var @case = GetCase(caseName);
+
         // missing attribute
-        if (Case.Attributes == null || !Case.Attributes.ContainsKey(attributeName))
+        if (@case.Attributes == null || !@case.Attributes.ContainsKey(attributeName))
         {
             return false;
         }
 
         // remove attribute
-        return Case.Attributes.Remove(attributeName);
+        return @case.Attributes.Remove(attributeName);
     }
 
     /// <inheritdoc />
@@ -109,6 +115,9 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
             throw new ArgumentException(nameof(caseName));
         }
 
+        // namespace
+        caseName = caseName.EnsureNamespace(Namespace);
+
         // cache or search
         return Case.FindCase(caseName) ?? CaseProvider.GetCaseAsync(Settings.DbContext, Payroll.Id, caseName).Result;
     }
@@ -126,8 +135,12 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         Case.Fields?.Any() ?? false;
 
     /// <inheritdoc />
-    public bool HasField(string caseFieldName) =>
-        Case.Fields?.Any(x => string.Equals(caseFieldName, x.Name)) ?? false;
+    public bool HasField(string caseFieldName)
+    {
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Namespace);
+        return Case.Fields?.Any(x => string.Equals(caseFieldName, x.Name)) ?? false;
+    }
 
     /// <inheritdoc />
     public bool IsFieldComplete(string caseFieldName) =>
@@ -375,6 +388,9 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
     /// <returns>The case field matching the name, script exception on missing case field</returns>
     protected CaseFieldSet GetCaseFieldSet(string caseFieldName, bool addField = false)
     {
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Namespace);
+
         var caseFieldSet = Case.FindCaseField(caseFieldName);
         if (caseFieldSet == null)
         {

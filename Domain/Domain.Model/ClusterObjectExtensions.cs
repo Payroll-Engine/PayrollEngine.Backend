@@ -24,7 +24,7 @@ public static class ClusterObjectExtensions
 
         foreach (var clusterObject in clusterObjects)
         {
-            if (!AvailableCluster(clusterObject, clusterSet))
+            if (!clusterObject.AvailableCluster(clusterSet))
             {
                 return false;
             }

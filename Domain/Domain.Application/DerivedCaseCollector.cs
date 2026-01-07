@@ -162,7 +162,7 @@ public class DerivedCaseCollector : DerivedCaseTool
             var groupedCases = allCases.GroupBy(x => x.Name, y => y);
             foreach (var groupedCase in groupedCases)
             {
-                var cases = groupedCase.ToList();
+                var cases = groupedCase.Cast<Case>().ToList();
 
                 // case available
                 var available = await CaseAvailable(cases, culture);

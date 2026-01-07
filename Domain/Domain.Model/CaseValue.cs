@@ -53,30 +53,28 @@ public class CaseValue : DomainObjectBase, IDomainAttributeObject, IEquatable<Ca
     /// </summary>
     public Dictionary<string, string> CaseSlotLocalizations { get; set; }
 
-    private ValueType valueType = ValueType.String;
     /// <summary>
     /// The type of the value (immutable)
     /// </summary>
     public ValueType ValueType
     {
-        get => valueType;
+        get;
         set
         {
-            valueType = value;
+            field = value;
             UpdateNumericValue();
         }
-    }
+    } = ValueType.String;
 
-    private string jsonValue;
     /// <summary>
     /// The case value (JSON format)
     /// </summary>
     public string Value
     {
-        get => jsonValue;
+        get;
         set
         {
-            jsonValue = value;
+            field = value;
             UpdateNumericValue();
         }
     }

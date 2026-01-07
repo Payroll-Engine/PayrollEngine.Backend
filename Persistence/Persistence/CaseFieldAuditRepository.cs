@@ -37,8 +37,6 @@ public class CaseFieldAuditRepository() : AuditChildDomainRepository<CaseFieldAu
         parameters.Add(nameof(audit.DefaultValue), audit.DefaultValue);
         parameters.Add(nameof(audit.LookupSettings), audit.LookupSettings);
         parameters.Add(nameof(audit.Clusters), JsonSerializer.SerializeList(audit.Clusters));
-        parameters.Add(nameof(audit.BuildActions), JsonSerializer.SerializeList(audit.BuildActions));
-        parameters.Add(nameof(audit.ValidateActions), JsonSerializer.SerializeList(audit.ValidateActions));
         parameters.Add(nameof(audit.Attributes), JsonSerializer.SerializeNamedDictionary(audit.Attributes));
         parameters.Add(nameof(audit.ValueAttributes), JsonSerializer.SerializeNamedDictionary(audit.ValueAttributes));
       

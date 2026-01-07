@@ -134,7 +134,7 @@ public class DerivedCaseValidator : DerivedCaseTool
             caseType: caseType,
             caseNames: [caseName],
             clusterSet: ClusterSet,
-            overrideType: OverrideType.Active)).ToList();
+            overrideType: OverrideType.Active)).Cast<Case>().ToList();
         if (!cases.Any())
         {
             var message = $"Missing case {caseName} in payroll with id {Payroll.Id}";
@@ -451,7 +451,7 @@ public class DerivedCaseValidator : DerivedCaseTool
                 },
                 caseNames: [targetRelation.Key.TargetCaseName],
                 clusterSet: ClusterSet,
-                overrideType: OverrideType.Active)).ToList();
+                overrideType: OverrideType.Active)).Cast<Case>().ToList();
             if (!targetCase.Any())
             {
                 throw new PayrollException($"Unknown related case with name {targetRelation.Key} in derived case {caseSet.Name}.");

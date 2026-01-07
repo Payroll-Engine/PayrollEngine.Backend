@@ -7,8 +7,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportSetRepository(ReportSetRepositorySettings settings, bool auditDisabled) : ReportRepositoryBase<ReportSet>(
-    settings.ScriptRepository, settings.AuditRepository, auditDisabled), IReportSetRepository
+public class ReportSetRepository(ReportSetRepositorySettings settings, bool auditDisabled) : 
+    ReportRepositoryBase<ReportSet>(settings.RegulationRepository,
+        settings.ScriptRepository, settings.AuditRepository, auditDisabled), IReportSetRepository
 {
     private ReportSetRepositorySettings Settings { get; } = settings;
     private IReportParameterRepository ReportParameterRepository { get; } = settings.ReportParameterRepository ??

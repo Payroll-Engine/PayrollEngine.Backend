@@ -77,6 +77,16 @@ public class WageTypeAudit : ScriptAuditDomainObject, IDomainAttributeObject
     /// Expression: calculates of the wage type result attributes
     /// </summary>
     public string ResultExpression { get; set; }
+    
+    /// <summary>
+    /// The wage type value actions
+    /// </summary>
+    public List<string> ValueActions { get; set; }
+
+    /// <summary>
+    /// The wage type result actions
+    /// </summary>
+    public List<string> ResultActions { get; set; }
 
     /// <summary>
     /// Custom attributes

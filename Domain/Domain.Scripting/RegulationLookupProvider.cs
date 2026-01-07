@@ -174,7 +174,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             var lookups = (await PayrollRepository.GetDerivedLookupsAsync(DbContext,
                 PayrollQuery,
                 overrideType: OverrideType.Active)).ToList();
-            Lookups = lookups.ToLookup(col => col.Name, col => col);
+            Lookups = lookups.Cast<Lookup>().ToLookup(col => col.Name, col => col);
         }
         return Lookups;
     }
@@ -185,6 +185,6 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
             PayrollQuery,
             lookupNames: [lookupName],
             overrideType: OverrideType.Active)).ToList();
-        return lookupValues;
+        return lookupValues.Cast<LookupValue>().ToList();
     }
 }

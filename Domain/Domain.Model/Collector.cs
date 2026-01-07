@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -8,19 +8,13 @@ namespace PayrollEngine.Domain.Model;
 /// A payroll collector
 /// </summary>
 public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObject, IClusterObject,
-    INamedObject, IDomainAttributeObject, IEquatable<Collector>
+    INamedObject, INamespaceObject, IDomainAttributeObject, IEquatable<Collector>
 {
     private static readonly List<FunctionType> FunctionTypes =
     [
         FunctionType.CollectorStart,
         FunctionType.CollectorApply,
         FunctionType.CollectorEnd
-    ];
-    private static readonly IEnumerable<string> EmbeddedScriptNames =
-    [
-        "Cache\\Cache.cs",
-        "Function\\PayrunFunction.cs",
-        "Function\\CollectorFunction.cs"
     ];
 
     // collected values
@@ -40,7 +34,7 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     /// The collect mode (immutable)
     /// </summary>
     public CollectMode CollectMode { get; set; }
-    
+
     /// <summary>
     /// Negated collector result (immutable)
     /// </summary>
@@ -51,13 +45,12 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     /// </summary>
     public OverrideType OverrideType { get; set; }
 
-    private ValueType valueType = ValueType.Money;
     /// <summary>
     /// The value type, default is value type money
     /// </summary>
     public ValueType ValueType
     {
-        get => valueType;
+        get;
         set
         {
             if (!value.IsNumber())
@@ -65,9 +58,10 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
                 throw new ArgumentOutOfRangeException(nameof(value),
                     $"Value type of collector must be a number: {value}");
             }
-            valueType = value;
+
+            field = value;
         }
-    }
+    } = ValueType.Money;
 
     /// <summary>
     /// The collector culture name based on RFC 4646
@@ -108,6 +102,21 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     /// Expression used while the collector is ended
     /// </summary>
     public string EndExpression { get; set; }
+
+    /// <summary>
+    /// The collector start actions
+    /// </summary>
+    public List<string> StartActions { get; set; }
+
+    /// <summary>
+    /// The collector apply actions
+    /// </summary>
+    public List<string> ApplyActions { get; set; }
+
+    /// <summary>
+    /// The collector end actions
+    /// </summary>
+    public List<string> EndActions { get; set; }
 
     /// <summary>
     /// Custom attributes
@@ -271,6 +280,14 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
         CopyTool.CopyProperties(copySource, this);
     }
 
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
+        CollectorGroups = CollectorGroups.EnsureNamespace(@namespace);
+        Clusters = Clusters.EnsureNamespace(@namespace);
+    }
+
     /// <summary>Compare two objects</summary>
     /// <param name="compare">The object to compare with this</param>
     /// <returns>True for objects with the same data</returns>
@@ -306,6 +323,9 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
             StartExpression = StartExpression,
             ApplyExpression = ApplyExpression,
             EndExpression = EndExpression,
+            StartActions = StartActions,
+            ApplyActions = ApplyActions,
+            EndActions = EndActions,
             Attributes = Attributes,
             Clusters = Clusters
         };
@@ -331,15 +351,62 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
         StartExpression = audit.StartExpression;
         ApplyExpression = audit.ApplyExpression;
         EndExpression = audit.EndExpression;
+        StartActions = audit.StartActions;
+        ApplyActions = audit.ApplyActions;
+        EndActions = audit.EndActions;
         Attributes = audit.Attributes;
         Clusters = audit.Clusters;
     }
 
     #region Scripting
 
+    /// <summary>
+    /// Test for start script
+    /// </summary>
+    public string StartScript =>
+        HasStartScript ? StartExpression ?? "0" : null;
+
+    /// <summary>
+    /// Test for apply script
+    /// </summary>
+    public string ApplyScript =>
+        HasApplyScript ? ApplyExpression ?? "0" : null;
+
+    /// <summary>
+    /// Test for end script
+    /// </summary>
+    public string EndScript =>
+        HasEndScript ? EndExpression ?? "0" : null;
+
+    /// <summary>
+    /// Test for start script
+    /// </summary>
+    private bool HasStartScript =>
+        AnyExpressionOrActions(StartExpression, StartActions);
+
+    /// <summary>
+    /// Test for apply script
+    /// </summary>
+    private bool HasApplyScript =>
+        AnyExpressionOrActions(ApplyExpression, ApplyActions);
+
+    /// <summary>
+    /// Test for end script
+    /// </summary>
+    private bool HasEndScript =>
+        AnyExpressionOrActions(EndExpression, EndActions);
+
     /// <inheritdoc/>
-    public override bool HasExpression =>
-        GetFunctionScripts().Values.Any(x => !string.IsNullOrWhiteSpace(x));
+    public override bool HasAnyExpression =>
+        HasStartScript ||
+        HasApplyScript ||
+        HasEndScript;
+
+    /// <inheritdoc/>
+    public override bool HasAnyAction =>
+        AnyActions(StartActions) ||
+        AnyActions(ApplyActions) ||
+        AnyActions(EndActions);
 
     /// <inheritdoc/>
     public override bool HasObjectScripts => true;
@@ -348,27 +415,32 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     public override List<FunctionType> GetFunctionTypes() => FunctionTypes;
 
     /// <inheritdoc/>
-    public override IDictionary<FunctionType, string> GetFunctionScripts()
-    {
-        var scripts = new Dictionary<FunctionType, string>();
-        if (!string.IsNullOrWhiteSpace(StartExpression))
+    public override string GetFunctionScript(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.CollectorStart, StartExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(ApplyExpression))
+            FunctionType.CollectorStart => StartExpression,
+            FunctionType.CollectorApply => ApplyExpression,
+            FunctionType.CollectorEnd => EndExpression,
+            _ => null
+        };
+
+    /// <inheritdoc/>
+    public override List<string> GetFunctionActions(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.CollectorApply, ApplyExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(EndExpression))
-        {
-            scripts.Add(FunctionType.CollectorEnd, EndExpression);
-        }
-        return scripts;
-    }
+            FunctionType.CollectorStart => StartActions,
+            FunctionType.CollectorApply => ApplyActions,
+            FunctionType.CollectorEnd => EndActions,
+            _ => null
+        };
 
     /// <inheritdoc/>
     public override IEnumerable<string> GetEmbeddedScriptNames() =>
-        EmbeddedScriptNames;
+        GetEmbeddedScriptNames([
+            new(StartExpression, StartActions, FunctionType.CollectorStart),
+            new(ApplyExpression, ApplyActions, FunctionType.CollectorApply),
+            new(EndExpression, EndActions, FunctionType.CollectorEnd)
+        ]);
 
     #endregion
 

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -14,7 +14,7 @@ internal sealed class PayrollRepositoryReportParametersCommand : PayrollReposito
     {
     }
 
-    internal async Task<IEnumerable<ReportParameter>> GetDerivedReportParametersAsync(PayrollQuery query,
+    internal async Task<IEnumerable<DerivedReportParameter>> GetDerivedReportParametersAsync(PayrollQuery query,
         IEnumerable<string> reportNames = null, OverrideType? overrideType = null)
     {
         // query check

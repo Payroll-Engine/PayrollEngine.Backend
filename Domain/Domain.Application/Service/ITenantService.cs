@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 
@@ -21,4 +21,13 @@ public interface ITenantService : IRootApplicationService<ITenantRepository, Ten
     /// <param name="functionType">The function types (default: all)</param>
     /// <returns>The system action infos</returns>
     Task<IEnumerable<ActionInfo>> GetSystemScriptActionsAsync(FunctionType functionType = FunctionType.All);
+
+    /// <summary>
+    /// Get system script action properties
+    /// </summary>
+    /// <param name="functionType">The function types (default: all)</param>
+    /// <param name="readOnly">Read only properties (default: true)</param>
+    /// <returns>The system action property infos</returns>
+    Task<IEnumerable<ActionInfo>> GetSystemScriptActionPropertiesAsync(FunctionType functionType = FunctionType.All,
+        bool readOnly = true);
 }

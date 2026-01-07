@@ -18,8 +18,6 @@ namespace PayrollEngine.Api.Core;
 /// <inheritdoc />
 public class QueryService(IServiceProvider serviceProvider) : IQueryService
 {
-    private Dictionary<string, QueryMethodInfo> queryMethods;
-
     private IServiceProvider ServiceProvider { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     /// <inheritdoc />
@@ -393,6 +391,6 @@ public class QueryService(IServiceProvider serviceProvider) : IQueryService
     /// Loads queries on demand
     /// </summary>
     private Dictionary<string, QueryMethodInfo> Queries =>
-        queryMethods ??= ApiQueryFactory.GetQueryMethods();
+        field ??= ApiQueryFactory.GetQueryMethods();
 
 }

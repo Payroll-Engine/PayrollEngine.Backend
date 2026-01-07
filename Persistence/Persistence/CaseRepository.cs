@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseRepository(IScriptRepository scriptRepository, ICaseAuditRepository auditRepository, bool auditDisabled)
+public class CaseRepository(IRegulationRepository regulationRepository,
+    IScriptRepository scriptRepository, ICaseAuditRepository auditRepository, bool auditDisabled)
     : ScriptTrackChildDomainRepository<Case, CaseAudit>(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId,
-        scriptRepository, auditRepository, auditDisabled), ICaseRepository
+        regulationRepository, scriptRepository, auditRepository, auditDisabled), ICaseRepository
 {
     public async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
     {

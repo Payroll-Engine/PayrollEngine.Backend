@@ -116,6 +116,9 @@ public abstract class CollectorRuntimeBase : PayrunRuntimeBase, ICollectorRuntim
             throw new ArgumentException(nameof(collectorName));
         }
 
+        // namespace
+        collectorName = collectorName.EnsureNamespace(Namespace);
+
         var collectorResult =
             CurrentPayrollResult.CollectorResults.FirstOrDefault(cr => string.Equals(cr.CollectorName, collectorName));
         return collectorResult?.Value ?? 0;

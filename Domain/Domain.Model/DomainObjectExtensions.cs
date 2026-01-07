@@ -7,34 +7,35 @@ namespace PayrollEngine.Domain.Model;
 /// </summary>
 public static class DomainObjectExtensions
 {
-    /// <summary>
-    /// Check if the domain object has an id
-    /// </summary>
     /// <param name="domainObject">The domain object</param>
-    /// <returns>True, if the domain object contains an id</returns>
-    public static bool HasId(this IDomainObject domainObject) => domainObject.Id > 0;
-
-    /// <summary>
-    /// Set object created and updated date
-    /// </summary>
-    /// <param name="domainObject">The domain object</param>
-    /// <param name="created">The creation moment</param>
-    public static void SetCreatedDate(this IDomainObject domainObject, DateTime created)
+    extension(IDomainObject domainObject)
     {
-        domainObject.Created = created;
-        domainObject.Updated = created;
-    }
+        /// <summary>
+        /// Check if the domain object has an id
+        /// </summary>
+        /// <returns>True, if the domain object contains an id</returns>
+        public bool HasId() => domainObject.Id > 0;
 
-    /// <summary>
-    /// Set object created and updated date
-    /// </summary>
-    /// <param name="domainObject">The domain object</param>
-    /// <param name="created">The creation moment</param>
-    public static void InitCreatedDate(this IDomainObject domainObject, DateTime created)
-    {
-        if (domainObject.Created == Date.MinValue)
+        /// <summary>
+        /// Set object created and updated date
+        /// </summary>
+        /// <param name="created">The creation moment</param>
+        public void SetCreatedDate(DateTime created)
         {
-            SetCreatedDate(domainObject, created);
+            domainObject.Created = created;
+            domainObject.Updated = created;
+        }
+
+        /// <summary>
+        /// Set object created and updated date
+        /// </summary>
+        /// <param name="created">The creation moment</param>
+        public void InitCreatedDate(DateTime created)
+        {
+            if (domainObject.Created == Date.MinValue)
+            {
+                domainObject.SetCreatedDate(created);
+            }
         }
     }
 }

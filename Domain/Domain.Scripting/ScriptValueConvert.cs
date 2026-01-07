@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using PayrollEngine.Client.Scripting;
 
 namespace PayrollEngine.Domain.Scripting;
 
 public static class ScriptValueConvert
 {
+    private static Dictionary<Type, bool> ValueTypes { get; } = new();
+
     public static decimal? ToDecimalValue(dynamic scriptValue)
     {
         // undefined wage type value
@@ -13,34 +17,36 @@ public static class ScriptValueConvert
             return null;
         }
 
-        decimal? value;
-        var typeName = scriptValue.GetType().FullName;
-        if (typeName.Equals(typeof(PayrollValue).FullName) ||
-            typeName.Equals(typeof(PeriodValue).FullName) ||
-            typeName.Equals(typeof(CasePayrollValue).FullName))
-        {
-            // result from payroll value
-            value = scriptValue.Value as decimal?;
-        }
-        else if (scriptValue is decimal decimalValue)
+        // decimal value
+        if (scriptValue is decimal decimalValue)
         {
             // result from decimal value
-            value = decimalValue;
-        }
-        else
-        {
-            // convert to decimal value
-            try
-            {
-                value = Convert.ToDecimal(scriptValue);
-            }
-            catch (Exception exception)
-            {
-                throw new ScriptException($"Error converting type {scriptValue.GetType()} to decimal.", exception);
-            }
+            return decimalValue;
         }
 
-        // result
-        return value;
+        // value object
+        if (IsValueType(scriptValue.GetType()))
+        {
+            return scriptValue.Value as decimal?;
+        }
+
+        // convert to decimal value
+        try
+        {
+            return Convert.ToDecimal(scriptValue);
+        }
+        catch (Exception exception)
+        {
+            throw new ScriptException($"Error converting type {scriptValue.GetType()} to decimal.", exception);
+        }
+    }
+
+    private static bool IsValueType(Type type)
+    {
+        if (!ValueTypes.ContainsKey(type))
+        {
+            ValueTypes[type] = type.GetProperties().Any(x => string.Equals(x.Name, "Value"));
+        }
+        return ValueTypes[type];
     }
 }

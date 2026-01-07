@@ -11,7 +11,7 @@ namespace PayrollEngine.Domain.Application;
 /// <summary>
 /// Employee independent data used during the payrun
 /// </summary>
-internal sealed class PayrunContext
+internal sealed class PayrunContext : IRegulationProvider
 {
     internal bool StoreEmptyResults { get; init; }
 
@@ -35,11 +35,19 @@ internal sealed class PayrunContext
     internal CaseValueCache NationalCaseValues { get; set; }
     internal CaseValueCache CompanyCaseValues { get; set; }
 
-    internal ILookup<string, Collector> DerivedCollectors { get; set; }
-    internal ILookup<decimal, WageType> DerivedWageTypes { get; set; }
+    internal List<Regulation> DerivedRegulations { get; set; }
+    internal ILookup<string, DerivedCollector> DerivedCollectors { get; set; }
+    internal ILookup<decimal, DerivedWageType> DerivedWageTypes { get; set; }
 
     internal IRegulationLookupProvider RegulationLookupProvider { get; set; }
     internal IRuntimeValueProvider RuntimeValueProvider { get; } = new RuntimeValueProvider();
+
+    #region IRegulationProvider
+
+    ILookup<string, DerivedCollector> IRegulationProvider.DerivedCollectors => DerivedCollectors;
+    ILookup<decimal, DerivedWageType> IRegulationProvider.DerivedWageTypes => DerivedWageTypes;
+
+    #endregion
 
     #region Calendar and Culture
 

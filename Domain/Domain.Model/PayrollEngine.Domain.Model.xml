@@ -293,46 +293,63 @@
             <remarks>Client service contains a copy</remarks>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWeekOfYear(PayrollEngine.Domain.Model.Calendar,System.Globalization.CultureInfo,System.DateTime)">
-            <summary>Returns the week of year for the specified DateTime</summary>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetWeekOfYear(System.Globalization.CultureInfo,System.DateTime)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.IsWorkDay(PayrollEngine.Domain.Model.Calendar,PayrollEngine.DayOfWeek)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.IsWorkDay(PayrollEngine.DayOfWeek)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.IsWorkDay(PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.IsWorkDay(System.DateTime)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWeekDays(PayrollEngine.Domain.Model.Calendar)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetWeekDays"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetPreviousWorkDays(PayrollEngine.Domain.Model.Calendar,System.DateTime,System.Int32)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetPreviousWorkDays(System.DateTime,System.Int32)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetNextWorkDays(PayrollEngine.Domain.Model.Calendar,System.DateTime,System.Int32)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetNextWorkDays(System.DateTime,System.Int32)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.ValidTimeUnits(PayrollEngine.Domain.Model.Calendar)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.ValidTimeUnits"/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.&lt;M&gt;$9B3729051A80656CC5115E22D5FD72D3">
             <param name="calendar">The payroll calendar</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetWeekOfYear(System.Globalization.CultureInfo,System.DateTime)">
+            <summary>Returns the week of year for the specified DateTime</summary>
             <param name="culture">The culture</param>
             <param name="moment">The moment of the week</param>
             <returns>The returned value is an integer between 1 and 53</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.IsWorkDay(PayrollEngine.Domain.Model.Calendar,PayrollEngine.DayOfWeek)">
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.IsWorkDay(PayrollEngine.DayOfWeek)">
             <summary>Test for working days</summary>
-            <param name="calendar">The payroll calendar</param>
             <param name="workDay">The work day</param>
             <returns>Returns true for valid time units</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.IsWorkDay(PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.IsWorkDay(System.DateTime)">
             <summary>Test for working day</summary>
-            <param name="calendar">The payroll calendar</param>
             <param name="moment">Test day</param>
             <returns>Returns true for valid time units</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetWeekDays(PayrollEngine.Domain.Model.Calendar)">
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetWeekDays">
             <summary>Get week days</summary>
-            <param name="calendar">The payroll calendar</param>
             <returns>Returns true for valid time units</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetPreviousWorkDays(PayrollEngine.Domain.Model.Calendar,System.DateTime,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetPreviousWorkDays(System.DateTime,System.Int32)">
             <summary>Get previous working days</summary>
-            <param name="calendar">The payroll calendar</param>
             <param name="moment">The start moment (not included in results)</param>
             <param name="count">The number of days (default: 1)</param>
             <returns>Returns true for valid time units</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetNextWorkDays(PayrollEngine.Domain.Model.Calendar,System.DateTime,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetNextWorkDays(System.DateTime,System.Int32)">
             <summary>Get next working days</summary>
-            <param name="calendar">The payroll calendar</param>
             <param name="moment">The start moment (not included in results)</param>
             <param name="count">The number of days (default: 1)</param>
             <returns>Returns true for valid time units</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.ValidTimeUnits(PayrollEngine.Domain.Model.Calendar)">
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.ValidTimeUnits">
             <summary>Test for valid time units</summary>
-            <param name="calendar">The payroll calendar</param>
             <returns>Returns true for valid time units</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod">
@@ -499,6 +516,9 @@
         <member name="M:PayrollEngine.Domain.Model.Case.#ctor(PayrollEngine.Domain.Model.Case)">
             <inheritdoc/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.Case.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.Case.Equals(PayrollEngine.Domain.Model.Case)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -525,7 +545,25 @@
             Test for validate script
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Case.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.Case.HasAvailableScript">
+            <summary>
+            Test for available script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Case.HasBuildScript">
+            <summary>
+            Test for build script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Case.HasValidateScript">
+            <summary>
+            Test for validate script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Case.HasAnyExpression">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Case.HasAnyAction">
             <inheritdoc/>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Case.HasObjectScripts">
@@ -534,7 +572,10 @@
         <member name="M:PayrollEngine.Domain.Model.Case.GetFunctionTypes">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Case.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.Case.GetFunctionScript(PayrollEngine.FunctionType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Case.GetFunctionActions(PayrollEngine.FunctionType)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Case.GetEmbeddedScriptNames">
@@ -927,18 +968,10 @@
             <returns>The case value or null on missing case value</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.FindDuplicatedCaseValue(PayrollEngine.Domain.Model.CaseChangeSetup)">
-            <summary>
-            Search for duplicated case value
-            </summary>
-            <param name="caseChangeSetup">The case change setup</param>
-            <returns>The duplicated case value, null without duplicates</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.&lt;G&gt;$05F7988D863BF441BB3DB8065E3132A3.FindDuplicatedCaseValue"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.CollectCaseSetups(PayrollEngine.Domain.Model.CaseChangeSetup)">
-            <summary>
-            Collect all case setups
-            </summary>
-            <param name="caseChangeSetup">The case change setup</param>
-            <returns>List if case setups</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.&lt;G&gt;$05F7988D863BF441BB3DB8065E3132A3.CollectCaseSetups"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.CollectCaseValues(PayrollEngine.Domain.Model.CaseChangeSetup)">
             <summary>
@@ -946,6 +979,21 @@
             </summary>
             <param name="caseChangeSetup">The case change setup</param>
             <returns>List if case values</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.&lt;G&gt;$05F7988D863BF441BB3DB8065E3132A3.&lt;M&gt;$D18003430CB8038051383E9BFD098EDC">
+            <param name="caseChangeSetup">The case change setup</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.&lt;G&gt;$05F7988D863BF441BB3DB8065E3132A3.FindDuplicatedCaseValue">
+            <summary>
+            Search for duplicated case value
+            </summary>
+            <returns>The duplicated case value, null without duplicates</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseChangeSetupExtensions.&lt;G&gt;$05F7988D863BF441BB3DB8065E3132A3.CollectCaseSetups">
+            <summary>
+            Collect all case setups
+            </summary>
+            <returns>List if case setups</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.CaseDocument">
             <summary>
@@ -1123,16 +1171,6 @@
             The case field clusters
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseField.BuildActions">
-            <summary>
-            The case field build actions
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseField.ValidateActions">
-            <summary>
-            The case field validate actions
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Domain.Model.CaseField.Attributes">
             <summary>
             Custom attributes
@@ -1147,6 +1185,9 @@
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseField.#ctor(PayrollEngine.Domain.Model.CaseField)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseField.ApplyNamespace(System.String)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseField.Equals(PayrollEngine.Domain.Model.CaseField)">
@@ -1291,16 +1332,6 @@
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.Clusters">
             <summary>
             The case field clusters
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.BuildActions">
-            <summary>
-            The case field build actions
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.ValidateActions">
-            <summary>
-            The case field validate actions
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.Attributes">
@@ -1589,6 +1620,9 @@
         <member name="M:PayrollEngine.Domain.Model.CaseRelation.#ctor(PayrollEngine.Domain.Model.CaseRelation)">
             <inheritdoc/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseRelation.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.CaseRelation.Equals(PayrollEngine.Domain.Model.CaseRelation)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -1610,7 +1644,20 @@
             Test for validate script
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.CaseRelation.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.CaseRelation.HasBuildScript">
+            <summary>
+            Test for build script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseRelation.HasValidateScript">
+            <summary>
+            Test for validate script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseRelation.HasAnyExpression">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CaseRelation.HasAnyAction">
             <inheritdoc/>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseRelation.HasObjectScripts">
@@ -1619,7 +1666,10 @@
         <member name="M:PayrollEngine.Domain.Model.CaseRelation.GetFunctionTypes">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CaseRelation.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.CaseRelation.GetFunctionScript(PayrollEngine.FunctionType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseRelation.GetFunctionActions(PayrollEngine.FunctionType)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseRelation.GetEmbeddedScriptNames">
@@ -1849,27 +1899,13 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseSetExtensions.FindCase(PayrollEngine.Domain.Model.CaseSet,System.String)">
-            <summary>
-            Find case by name, considering related cases
-            </summary>
-            <param name="caseSet">The case to search</param>
-            <param name="caseName">The name of the case</param>
-            <returns>The value case field matching the name, null on missing case field</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CaseSetExtensions.&lt;G&gt;$4EDE7686EFD57897D9F43FFEAE9A4CE4.FindCase(System.String)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseSetExtensions.FindCaseField(PayrollEngine.Domain.Model.CaseSet,System.String)">
-            <summary>
-            Find case field by name, considering related cases
-            </summary>
-            <param name="caseSet">The case to search</param>
-            <param name="caseFieldName">The name of the case field</param>
-            <returns>The value case field matching the name, null on missing case field</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CaseSetExtensions.&lt;G&gt;$4EDE7686EFD57897D9F43FFEAE9A4CE4.FindCaseField(System.String)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseSetExtensions.CollectFields(PayrollEngine.Domain.Model.CaseSet)">
-            <summary>
-            Collect case fields
-            </summary>
-            <param name="caseSet">The case to collect</param>
-            <returns>List of case fields, including fields of related cases</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CaseSetExtensions.&lt;G&gt;$4EDE7686EFD57897D9F43FFEAE9A4CE4.CollectFields"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseSetExtensions.SetCancellationDate(PayrollEngine.Domain.Model.CaseSet,System.Nullable{System.DateTime})">
             <summary>
@@ -1877,6 +1913,29 @@
             </summary>
             <param name="caseSet">The case to set up</param>
             <param name="cancellationDate">The case cancellation date</param>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.CaseSetExtensions.&lt;G&gt;$4EDE7686EFD57897D9F43FFEAE9A4CE4.&lt;M&gt;$5A64B21E84661D5FDE7647C853DC778D">
+            <param name="caseSet">The case to search</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseSetExtensions.&lt;G&gt;$4EDE7686EFD57897D9F43FFEAE9A4CE4.FindCase(System.String)">
+            <summary>
+            Find case by name, considering related cases
+            </summary>
+            <param name="caseName">The name of the case</param>
+            <returns>The value case field matching the name, null on missing case field</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseSetExtensions.&lt;G&gt;$4EDE7686EFD57897D9F43FFEAE9A4CE4.FindCaseField(System.String)">
+            <summary>
+            Find case field by name, considering related cases
+            </summary>
+            <param name="caseFieldName">The name of the case field</param>
+            <returns>The value case field matching the name, null on missing case field</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseSetExtensions.&lt;G&gt;$4EDE7686EFD57897D9F43FFEAE9A4CE4.CollectFields">
+            <summary>
+            Collect case fields
+            </summary>
+            <returns>List of case fields, including fields of related cases</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.CaseSetup">
             <summary>
@@ -2226,17 +2285,24 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.CaseValueExtensions.GetPeriod(PayrollEngine.Domain.Model.CaseValue)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CaseValueExtensions.&lt;G&gt;$382738D5C3C5E65CA28163A95B827C98.GetPeriod"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseValueExtensions.GetCaseValueReference(PayrollEngine.Domain.Model.CaseValue)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CaseValueExtensions.&lt;G&gt;$382738D5C3C5E65CA28163A95B827C98.GetCaseValueReference"/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.CaseValueExtensions.&lt;G&gt;$382738D5C3C5E65CA28163A95B827C98.&lt;M&gt;$482DAEAFD34B1E617B02F185C1DC2596">
+            <param name="caseValue">The case value</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CaseValueExtensions.&lt;G&gt;$382738D5C3C5E65CA28163A95B827C98.GetPeriod">
             <summary>
             Get case value date period
             </summary>
-            <param name="caseValue">The case value</param>
             <returns>The date period</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.CaseValueExtensions.GetCaseValueReference(PayrollEngine.Domain.Model.CaseValue)">
+        <member name="M:PayrollEngine.Domain.Model.CaseValueExtensions.&lt;G&gt;$382738D5C3C5E65CA28163A95B827C98.GetCaseValueReference">
             <summary>
             Get case value reference
             </summary>
-            <param name="caseValue">The case value</param>
             <returns>The case value reference</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.CaseValueQuery">
@@ -2296,6 +2362,11 @@
         <member name="P:PayrollEngine.Domain.Model.ChildCaseField.CaseId">
             <summary>
             The case id
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ChildCaseField.RegulationId">
+            <summary>
+            The regulation id
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ChildCaseField.CaseType">
@@ -2432,6 +2503,21 @@
             Expression used while the collector is ended
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.StartActions">
+            <summary>
+            The collector start actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.ApplyActions">
+            <summary>
+            The collector apply actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.EndActions">
+            <summary>
+            The collector end actions
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.Attributes">
             <summary>
             Custom attributes
@@ -2525,6 +2611,9 @@
         <member name="M:PayrollEngine.Domain.Model.Collector.#ctor(PayrollEngine.Domain.Model.Collector)">
             <inheritdoc/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.Collector.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.Collector.Equals(PayrollEngine.Domain.Model.Collector)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -2536,7 +2625,40 @@
         <member name="M:PayrollEngine.Domain.Model.Collector.FromAuditObject(PayrollEngine.Domain.Model.CollectorAudit)">
             <inheritdoc/>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Collector.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.Collector.StartScript">
+            <summary>
+            Test for start script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.ApplyScript">
+            <summary>
+            Test for apply script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.EndScript">
+            <summary>
+            Test for end script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.HasStartScript">
+            <summary>
+            Test for start script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.HasApplyScript">
+            <summary>
+            Test for apply script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.HasEndScript">
+            <summary>
+            Test for end script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.HasAnyExpression">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Collector.HasAnyAction">
             <inheritdoc/>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Collector.HasObjectScripts">
@@ -2545,7 +2667,10 @@
         <member name="M:PayrollEngine.Domain.Model.Collector.GetFunctionTypes">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Collector.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.Collector.GetFunctionScript(PayrollEngine.FunctionType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Collector.GetFunctionActions(PayrollEngine.FunctionType)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Collector.GetEmbeddedScriptNames">
@@ -2632,6 +2757,21 @@
         <member name="P:PayrollEngine.Domain.Model.CollectorAudit.EndExpression">
             <summary>
             Expression used while the collector is ended
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorAudit.StartActions">
+            <summary>
+            The collector start actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorAudit.ApplyActions">
+            <summary>
+            The collector apply actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorAudit.EndActions">
+            <summary>
+            The collector end actions
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorAudit.Attributes">
@@ -3009,6 +3149,143 @@
         <member name="M:PayrollEngine.Domain.Model.DefaultPayrollCalculatorProvider.CreateCalculator(System.Int32,System.Nullable{System.Int32},System.Globalization.CultureInfo,PayrollEngine.Domain.Model.Calendar)">
             <inheritdoc />
         </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedCase">
+            <summary>Derived case</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCase.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCase.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCase.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedCaseField">
+            <summary>
+            Derived case field
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCaseField.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCaseField.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedCaseRelation">
+            <summary>Derived case relation</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCaseRelation.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCaseRelation.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCaseRelation.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedCollector">
+            <summary>Derived collector</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCollector.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCollector.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedCollector.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedLookup">
+            <summary>Derived lookup</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedLookup.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedLookup.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedLookup.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedLookupValue">
+            <summary>Derived lookup value</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedLookupValue.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedLookupValue.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedLookupValue.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedReport">
+            <summary>Derived report</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReport.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReport.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReport.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedReportParameter">
+            <summary>Derived report parameter</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReportParameter.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReportParameter.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReportParameter.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedReportTemplate">
+            <summary>Derived report template</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReportTemplate.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReportTemplate.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedReportTemplate.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedScript">
+            <summary>Derived script</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DerivedScript.#ctor">
+            <summary>Default constructor</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DerivedScript.#ctor(PayrollEngine.Domain.Model.Script)">
+            <summary>Base class constructor</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedScript.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedScript.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedScript.Priority">
+            <summary>The layer priority</summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DerivedWageType">
+            <summary>Derived wage type</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedWageType.RegulationId">
+            <summary>The regulation id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedWageType.Level">
+            <summary>The layer level</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DerivedWageType.Priority">
+            <summary>The layer priority</summary>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.Division">
             <summary>
             A division
@@ -3094,20 +3371,26 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.DomainEnumerableExtensions.GetNewestObject``1(System.Collections.Generic.IEnumerable{``0},System.DateTime)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.DomainEnumerableExtensions.&lt;G&gt;$C95D70FBC766B2EC2AE17E666388203A`1.GetNewestObject(System.DateTime)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DomainEnumerableExtensions.GetDerivedExpressionObjects``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.String})">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.DomainEnumerableExtensions.&lt;G&gt;$C95D70FBC766B2EC2AE17E666388203A`1.GetDerivedExpressionObjects(System.Func{`0,System.String})"/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DomainEnumerableExtensions.&lt;G&gt;$C95D70FBC766B2EC2AE17E666388203A`1.&lt;M&gt;$9C7E02555F16AC71CC7770783D680AF5">
+            <param name="derivedObjects">The objects sorted from leaf to root</param>
+            <typeparam name="T">The domain object</typeparam>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DomainEnumerableExtensions.&lt;G&gt;$C95D70FBC766B2EC2AE17E666388203A`1.GetNewestObject(System.DateTime)">
             <summary>
             Get newest derived object
             </summary>
-            <param name="derivedObjects">The objects sorted from leaf to root</param>
             <param name="createdBefore">The object creation date</param>
-            <typeparam name="T">The domain object</typeparam>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.DomainEnumerableExtensions.GetDerivedExpressionObjects``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.String})">
+        <member name="M:PayrollEngine.Domain.Model.DomainEnumerableExtensions.&lt;G&gt;$C95D70FBC766B2EC2AE17E666388203A`1.GetDerivedExpressionObjects(System.Func{`0,System.String})">
             <summary>
             Get derived script object using a script provider
             </summary>
-            <param name="derivedObjects">The objects sorted from leaf to root</param>
             <param name="scriptProvider">Object value provider function</param>
-            <typeparam name="T">The domain object</typeparam>
         </member>
         <member name="T:PayrollEngine.Domain.Model.DomainObjectBase">
             <summary>
@@ -3163,24 +3446,33 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.HasId(PayrollEngine.Domain.Model.IDomainObject)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.DomainObjectExtensions.&lt;G&gt;$2B60FE8DB9A768215290F59AED109C4A.HasId"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.SetCreatedDate(PayrollEngine.Domain.Model.IDomainObject,System.DateTime)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.DomainObjectExtensions.&lt;G&gt;$2B60FE8DB9A768215290F59AED109C4A.SetCreatedDate(System.DateTime)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.InitCreatedDate(PayrollEngine.Domain.Model.IDomainObject,System.DateTime)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.DomainObjectExtensions.&lt;G&gt;$2B60FE8DB9A768215290F59AED109C4A.InitCreatedDate(System.DateTime)"/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.DomainObjectExtensions.&lt;G&gt;$2B60FE8DB9A768215290F59AED109C4A.&lt;M&gt;$E37028485B1C0C5DB0B117E4A85172BB">
+            <param name="domainObject">The domain object</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.&lt;G&gt;$2B60FE8DB9A768215290F59AED109C4A.HasId">
             <summary>
             Check if the domain object has an id
             </summary>
-            <param name="domainObject">The domain object</param>
             <returns>True, if the domain object contains an id</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.SetCreatedDate(PayrollEngine.Domain.Model.IDomainObject,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.&lt;G&gt;$2B60FE8DB9A768215290F59AED109C4A.SetCreatedDate(System.DateTime)">
             <summary>
             Set object created and updated date
             </summary>
-            <param name="domainObject">The domain object</param>
             <param name="created">The creation moment</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.InitCreatedDate(PayrollEngine.Domain.Model.IDomainObject,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.DomainObjectExtensions.&lt;G&gt;$2B60FE8DB9A768215290F59AED109C4A.InitCreatedDate(System.DateTime)">
             <summary>
             Set object created and updated date
             </summary>
-            <param name="domainObject">The domain object</param>
             <param name="created">The creation moment</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Employee">
@@ -3643,6 +3935,12 @@
             <param name="periodMoment">The moment within the payrun period</param>
             <returns>The payroll period</returns>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetCalendarDayCount(PayrollEngine.DatePeriod)">
+            <summary>
+            Count the calendar days from a date period
+            </summary>
+            <param name="period">The date period</param>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.CalculateCasePeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <summary>
             Calculate the case period value over a time period
@@ -3706,6 +4004,21 @@
             <param name="lookupKey">The lookup key</param>
             <param name="culture">The value culture</param>
             <returns>The lookup value</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.IRegulationProvider">
+            <summary>
+            Regulation provider
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IRegulationProvider.DerivedCollectors">
+            <summary>
+            Derived regulation collectors
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IRegulationProvider.DerivedWageTypes">
+            <summary>
+            Derived regulation wage types
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IResultProvider">
             <summary>
@@ -3824,9 +4137,14 @@
             The script hash value
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.IScriptObject.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.IScriptObject.HasAnyExpression">
             <summary>
             True, if any expression is available
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IScriptObject.HasAnyAction">
+            <summary>
+            True, if any action is available
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.IScriptObject.HasObjectScripts">
@@ -3850,11 +4168,17 @@
             </summary>
             <returns>Name list of embedded scripts</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IScriptObject.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.IScriptObject.GetFunctionScript(PayrollEngine.FunctionType)">
             <summary>
-            Get object function scripts
+            Get object function script
             </summary>
-            <returns>Object scripts by function type</returns>
+            <param name="functionType">Function type</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IScriptObject.GetFunctionActions(PayrollEngine.FunctionType)">
+            <summary>
+            Get object function actions
+            </summary>
+            <param name="functionType">Function type</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IScriptProvider">
             <summary>
@@ -4001,6 +4325,9 @@
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Lookup.#ctor(PayrollEngine.Domain.Model.Lookup)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Lookup.ApplyNamespace(System.String)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Lookup.Equals(PayrollEngine.Domain.Model.Lookup)">
@@ -4249,6 +4576,9 @@
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.LookupValue.#ctor(PayrollEngine.Domain.Model.LookupValue)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupValue.ApplyNamespace(System.String)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.LookupValue.Equals(PayrollEngine.Domain.Model.LookupValue)">
@@ -4530,6 +4860,9 @@
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayrunPeriod(System.DateTime)">
             <inheritdoc />
         </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetCalendarDayCount(PayrollEngine.DatePeriod)">
+            <inheritdoc />
+        </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.CalculateCasePeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <inheritdoc />
         </member>
@@ -4596,18 +4929,18 @@
             <param name="calculation">The calculation</param>
             <returns>The case week period value</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPeriodWeekDayCount(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetEvaluationDayCount(PayrollEngine.Domain.Model.CaseValueCalculation,System.Nullable{System.Decimal})">
             <summary>
-            Get the week day count form the case value period
+            Get the evaluation day count form the case value period
             </summary>
             <param name="calculation">The calculation</param>
-            <param name="weekCount">The week mode day count</param>
+            <param name="evaluationDayCount">Evaluation day count</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPeriodDayCount(PayrollEngine.DatePeriod)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetValueDayCount(PayrollEngine.Domain.Model.CaseValueCalculation)">
             <summary>
-            Get the period day count
+            Get the value count form the case value period
             </summary>
-            <param name="period">The period to count</param>
+            <param name="calculation">The calculation</param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.MapPeriodValue(PayrollEngine.Domain.Model.CaseValueCalculation,System.Decimal)">
             <summary>
@@ -4701,25 +5034,34 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.GetDatePeriod(PayrollEngine.IPayrollPeriod)">
-            <summary>Get date period</summary>
-            <param name="payrollPeriod">The payrun period</param>
-            <returns>Date period</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.&lt;G&gt;$5F6E58118A1A3CA89A90BC5666951369.GetDatePeriod"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.GetOffsetDatePeriod(PayrollEngine.IPayrollPeriod,System.Int32)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.&lt;G&gt;$5F6E58118A1A3CA89A90BC5666951369.GetOffsetDatePeriod(System.Int32)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.GetContinuePeriods(PayrollEngine.IPayrollPeriod,System.DateTime,System.Int32)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.&lt;G&gt;$5F6E58118A1A3CA89A90BC5666951369.GetContinuePeriods(System.DateTime,System.Int32)"/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.PayrollPeriodExtensions.&lt;G&gt;$5F6E58118A1A3CA89A90BC5666951369.&lt;M&gt;$E715F4CFE3D3A61BA7C95031513BEA31">
+            <param name="payrollPeriod">The payrun period</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.&lt;G&gt;$5F6E58118A1A3CA89A90BC5666951369.GetDatePeriod">
+            <summary>Get date period</summary>
+            <returns>Date period</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.&lt;G&gt;$5F6E58118A1A3CA89A90BC5666951369.GetOffsetDatePeriod(System.Int32)">
             <summary>
             Get offset period
             </summary>
-            <param name="payrollPeriod">The payrun period</param>
             <param name="offset">The period offset count</param>
             <returns>Offset period</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.GetContinuePeriods(PayrollEngine.IPayrollPeriod,System.DateTime,System.Int32)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollPeriodExtensions.&lt;G&gt;$5F6E58118A1A3CA89A90BC5666951369.GetContinuePeriods(System.DateTime,System.Int32)">
             <summary>
             Get all periods between this period and the period containing the target moment
             The starting payrun period is not included
             The payrun period containing the target moment is included
             </summary>
-            <param name="payrollPeriod">The payrun period</param>
             <param name="targetMoment">Target moment</param>
             <param name="maxCount">Maximum result count</param>
             <returns>Payrun periods between this and the target moment,
@@ -4908,23 +5250,32 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.IsEmpty(PayrollEngine.Domain.Model.PayrollResultSet)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.IsEmpty"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetResultDate(PayrollEngine.Domain.Model.PayrollResultSet,System.DateTime)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetResultDate(System.DateTime)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.AddTags(PayrollEngine.Domain.Model.PayrollResultSet,System.Collections.Generic.List{System.String})">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.AddTags(System.Collections.Generic.List{System.String})"/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.&lt;M&gt;$92131209D7FB553EB434C00D3778BF23">
+            <param name="payrollResultSet">The payroll result set</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.IsEmpty">
             <summary>
             Test for empty result set
             </summary>
-            <param name="payrollResultSet">The payroll result set</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetResultDate(PayrollEngine.Domain.Model.PayrollResultSet,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetResultDate(System.DateTime)">
             <summary>
             Set creation date for all results
             </summary>
-            <param name="payrollResultSet">The payroll result set</param>
             <param name="moment">The moment to set</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.AddTags(PayrollEngine.Domain.Model.PayrollResultSet,System.Collections.Generic.List{System.String})">
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.AddTags(System.Collections.Generic.List{System.String})">
             <summary>
             Add tags to all results
             </summary>
-            <param name="payrollResultSet">The payroll result set</param>
             <param name="tags">The tags to add</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrollResultValue">
@@ -5203,7 +5554,10 @@
             <param name="compare">The object to compare with this</param>
             <returns>True for objects with the same data</returns>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Payrun.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.Payrun.HasAnyExpression">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Payrun.HasAnyAction">
             <inheritdoc/>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payrun.HasObjectScripts">
@@ -5212,7 +5566,10 @@
         <member name="M:PayrollEngine.Domain.Model.Payrun.GetFunctionTypes">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Payrun.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.Payrun.GetFunctionScript(PayrollEngine.FunctionType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Payrun.GetFunctionActions(PayrollEngine.FunctionType)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Payrun.GetEmbeddedScriptNames">
@@ -5812,6 +6169,11 @@
             The localized regulation names
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Regulation.Namespace">
+            <summary>
+            The regulation namespace
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Regulation.Version">
             <summary>
             The regulation version, unique per regulation name
@@ -6024,6 +6386,9 @@
         <member name="M:PayrollEngine.Domain.Model.Report.#ctor(PayrollEngine.Domain.Model.Report)">
             <inheritdoc/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.Report.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.Report.Equals(PayrollEngine.Domain.Model.Report)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -6035,7 +6400,10 @@
         <member name="M:PayrollEngine.Domain.Model.Report.FromAuditObject(PayrollEngine.Domain.Model.ReportAudit)">
             <inheritdoc/>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Report.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.Report.HasAnyExpression">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Report.HasAnyAction">
             <inheritdoc/>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Report.HasObjectScripts">
@@ -6044,7 +6412,10 @@
         <member name="M:PayrollEngine.Domain.Model.Report.GetFunctionTypes">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Report.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.Report.GetFunctionScript(PayrollEngine.FunctionType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Report.GetFunctionActions(PayrollEngine.FunctionType)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Report.GetEmbeddedScriptNames">
@@ -6261,6 +6632,9 @@
             </summary>
             <param name="copySource">The copy source.</param>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.ReportParameter.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.ReportParameter.Equals(PayrollEngine.Domain.Model.ReportParameter)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -6469,6 +6843,9 @@
         <member name="M:PayrollEngine.Domain.Model.ReportSet.#ctor(PayrollEngine.Domain.Model.ReportSet)">
             <inheritdoc/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.ReportSet.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.ReportSet.Equals(PayrollEngine.Domain.Model.ReportSet)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -6529,6 +6906,9 @@
             Initializes a new instance of the <see cref="T:PayrollEngine.Domain.Model.ReportTemplate"/> class
             </summary>
             <param name="copySource">The copy source.</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ReportTemplate.ApplyNamespace(System.String)">
+            <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.ReportTemplate.Equals(PayrollEngine.Domain.Model.ReportTemplate)">
             <summary>Compare two objects</summary>
@@ -8171,6 +8551,9 @@
         <member name="M:PayrollEngine.Domain.Model.Script.#ctor(PayrollEngine.Domain.Model.Script)">
             <inheritdoc/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.Script.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.Script.Equals(PayrollEngine.Domain.Model.Script)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -8277,7 +8660,10 @@
         <member name="P:PayrollEngine.Domain.Model.ScriptDomainObject.ScriptHash">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.Domain.Model.ScriptDomainObject.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.ScriptDomainObject.HasAnyExpression">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptDomainObject.HasAnyAction">
             <inheritdoc />
         </member>
         <member name="P:PayrollEngine.Domain.Model.ScriptDomainObject.HasObjectScripts">
@@ -8305,8 +8691,49 @@
         <member name="M:PayrollEngine.Domain.Model.ScriptDomainObject.GetEmbeddedScriptNames">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.ScriptDomainObject.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.ScriptDomainObject.GetFunctionScript(PayrollEngine.FunctionType)">
             <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ScriptDomainObject.GetFunctionActions(PayrollEngine.FunctionType)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.ScriptItemInfo">
+            <summary>
+            Script item info
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ScriptItemInfo.#ctor(System.String,System.Collections.Generic.List{System.String},PayrollEngine.FunctionType)">
+            <summary>
+            Default constructor
+            </summary>
+            <param name="expression">Script expression</param>
+            <param name="actions">Script actions</param>
+            <param name="functionType">Script function type</param>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptItemInfo.Expression">
+            <summary>
+            Script expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptItemInfo.HasExpression">
+            <summary>
+            Test for expression
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptItemInfo.Actions">
+            <summary>
+            Script actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptItemInfo.HasActions">
+            <summary>
+            Test for actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptItemInfo.FunctionType">
+            <summary>
+            Script function type
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1">
             <summary>
@@ -8325,7 +8752,10 @@
         <member name="P:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.ScriptHash">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.HasAnyExpression">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.HasAnyAction">
             <inheritdoc />
         </member>
         <member name="P:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.HasObjectScripts">
@@ -8353,7 +8783,10 @@
         <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.GetEmbeddedScriptNames">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.GetFunctionScript(PayrollEngine.FunctionType)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.GetFunctionActions(PayrollEngine.FunctionType)">
             <inheritdoc />
         </member>
         <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.FromAuditObject(`0)">
@@ -8361,6 +8794,25 @@
             Setup from audit object
             </summary>
             <returns>A new audit object instance</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.AnyActions(System.Collections.Generic.List{System.String})">
+            <summary>
+            Test for actions
+            </summary>
+            <param name="actions">Script actions</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.AnyExpressionOrActions(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Test for expression and actions
+            </summary>
+            <param name="expression">Script expression</param>
+            <param name="actions">Script actions</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.ScriptTrackDomainObject`1.GetEmbeddedScriptNames(System.Collections.Generic.List{PayrollEngine.Domain.Model.ScriptItemInfo})">
+            <summary>
+            Get embedded script item names
+            </summary>
+            <param name="items">Script items</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.SemiMonthPayrollPeriod">
             <summary>Payroll semi month payroll period</summary>
@@ -8442,56 +8894,28 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.EnsureStart(System.String,System.String)">
-            <summary>Ensures a start prefix</summary>
-            <param name="source">The source value</param>
-            <param name="prefix">The prefix to add</param>
-            <returns>The string with prefix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureStart(System.String)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.EnsureStart(System.String,System.String,System.StringComparison)">
-            <summary>Ensures a start prefix</summary>
-            <param name="source">The source value</param>
-            <param name="prefix">The prefix to add</param>
-            <param name="comparison">The comparison culture</param>
-            <returns>The string with prefix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureStart(System.String,System.StringComparison)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.EnsureEnd(System.String,System.String)">
-            <summary>Ensures an ending suffix</summary>
-            <param name="source">The source value</param>
-            <param name="suffix">The suffix to add</param>
-            <returns>The string with suffix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureEnd(System.String)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.EnsureEnd(System.String,System.String,System.StringComparison)">
-            <summary>Ensures an ending suffix</summary>
-            <param name="source">The source value</param>
-            <param name="suffix">The suffix to add</param>
-            <param name="comparison">The comparison culture</param>
-            <returns>The string with suffix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureEnd(System.String,System.StringComparison)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.RemoveFromStart(System.String,System.String)">
-            <summary>Remove prefix from string</summary>
-            <param name="source">The source value</param>
-            <param name="prefix">The prefix to remove</param>
-            <returns>The string without suffix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromStart(System.String)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.RemoveFromStart(System.String,System.String,System.StringComparison)">
-            <summary>Remove prefix from string</summary>
-            <param name="source">The source value</param>
-            <param name="prefix">The prefix to remove</param>
-            <param name="comparison">The comparison culture</param>
-            <returns>The string without the starting prefix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromStart(System.String,System.StringComparison)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.RemoveFromEnd(System.String,System.String)">
-            <summary>Remove suffix from string</summary>
-            <param name="source">The source value</param>
-            <param name="suffix">The suffix to remove</param>
-            <returns>The string without the ending suffix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromEnd(System.String)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.RemoveFromEnd(System.String,System.String,System.StringComparison)">
-            <summary>Remove suffix from string</summary>
-            <param name="source">The source value</param>
-            <param name="suffix">The suffix to remove</param>
-            <param name="comparison">The comparison culture</param>
-            <returns>The string without the ending suffix</returns>
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromEnd(System.String,System.StringComparison)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.ContainsCsvToken(System.String,System.String,System.Char)">
             <summary>Test for a cSV token</summary>
@@ -8501,19 +8925,73 @@
             <returns>True if the token is available</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.StringExtensions.GetScriptTags(System.String)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.GetScriptTags"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.IsSealedScript(System.String)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsSealedScript"/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.&lt;M&gt;$27302F26897B534C0241C770B4B4CC15">
+            <param name="source">The source value</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureStart(System.String)">
+            <summary>Ensures a start prefix</summary>
+            <param name="prefix">The prefix to add</param>
+            <returns>The string with prefix</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureStart(System.String,System.StringComparison)">
+            <summary>Ensures a start prefix</summary>
+            <param name="prefix">The prefix to add</param>
+            <param name="comparison">The comparison culture</param>
+            <returns>The string with prefix</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureEnd(System.String)">
+            <summary>Ensures an ending suffix</summary>
+            <param name="suffix">The suffix to add</param>
+            <returns>The string with suffix</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.EnsureEnd(System.String,System.StringComparison)">
+            <summary>Ensures an ending suffix</summary>
+            <param name="suffix">The suffix to add</param>
+            <param name="comparison">The comparison culture</param>
+            <returns>The string with suffix</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromStart(System.String)">
+            <summary>Remove prefix from string</summary>
+            <param name="prefix">The prefix to remove</param>
+            <returns>The string without suffix</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromStart(System.String,System.StringComparison)">
+            <summary>Remove prefix from string</summary>
+            <param name="prefix">The prefix to remove</param>
+            <param name="comparison">The comparison culture</param>
+            <returns>The string without the starting prefix</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromEnd(System.String)">
+            <summary>Remove suffix from string</summary>
+            <param name="suffix">The suffix to remove</param>
+            <returns>The string without the ending suffix</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveFromEnd(System.String,System.StringComparison)">
+            <summary>Remove suffix from string</summary>
+            <param name="suffix">The suffix to remove</param>
+            <param name="comparison">The comparison culture</param>
+            <returns>The string without the ending suffix</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.&lt;M&gt;$33561D62B1CF6F3E4D864E3E77706854">
+            <param name="script">The script</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.GetScriptTags">
             <summary>
             Extract the code tags from script.
             Script tag example:
               /* #sealed */ MyScriptExpression
             </summary>
-            <param name="script">The script</param>
             <returns>A list of code tags</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.StringExtensions.IsSealedScript(System.String)">
+        <member name="M:PayrollEngine.Domain.Model.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsSealedScript">
             <summary>
             Test if string is a sealed script
             </summary>
-            <param name="script">The script</param>
             <returns>True if the script is sealed</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.SystemCalendarExtensions">
@@ -8799,6 +9277,16 @@
             Expression: calculates of the wage type result attributes
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.ValueActions">
+            <summary>
+            The wage type value actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.ResultActions">
+            <summary>
+            The wage type result actions
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.WageType.Attributes">
             <summary>
             Custom attributes
@@ -8815,6 +9303,9 @@
         <member name="M:PayrollEngine.Domain.Model.WageType.#ctor(PayrollEngine.Domain.Model.WageType)">
             <inheritdoc/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.WageType.ApplyNamespace(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.WageType.Equals(PayrollEngine.Domain.Model.WageType)">
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
@@ -8826,7 +9317,30 @@
         <member name="M:PayrollEngine.Domain.Model.WageType.FromAuditObject(PayrollEngine.Domain.Model.WageTypeAudit)">
             <inheritdoc/>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.WageType.HasExpression">
+        <member name="P:PayrollEngine.Domain.Model.WageType.ValueScript">
+            <summary>
+            Test for value script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.ResultScript">
+            <summary>
+            Test for result script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.HasValueScript">
+            <summary>
+            Test for value script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.HasResultScript">
+            <summary>
+            Test for result script
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.HasAnyExpression">
+            <inheritdoc/>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageType.HasAnyAction">
             <inheritdoc/>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageType.HasObjectScripts">
@@ -8835,7 +9349,10 @@
         <member name="M:PayrollEngine.Domain.Model.WageType.GetFunctionTypes">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.WageType.GetFunctionScripts">
+        <member name="M:PayrollEngine.Domain.Model.WageType.GetFunctionScript(PayrollEngine.FunctionType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.WageType.GetFunctionActions(PayrollEngine.FunctionType)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.WageType.GetEmbeddedScriptNames">
@@ -8917,6 +9434,16 @@
         <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.ResultExpression">
             <summary>
             Expression: calculates of the wage type result attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.ValueActions">
+            <summary>
+            The wage type value actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.ResultActions">
+            <summary>
+            The wage type result actions
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeAudit.Attributes">

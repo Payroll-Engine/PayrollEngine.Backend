@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -8,19 +7,13 @@ namespace PayrollEngine.Domain.Model;
 /// A case field used in national, company and employee
 /// </summary>
 public class CaseRelation : ScriptTrackDomainObject<CaseRelationAudit>, IDerivableObject,
-    IClusterObject, IDomainAttributeObject, IEquatable<CaseRelation>
+    INamespaceObject, IClusterObject, IDomainAttributeObject, IEquatable<CaseRelation>
 {
     private static readonly List<FunctionType> FunctionTypes =
     [
         FunctionType.CaseRelationBuild,
         FunctionType.CaseRelationValidate
     ];
-
-    // scripts
-    private const string CaseRelationFunctionScript = "Function\\CaseRelationFunction.cs";
-    private const string CaseActionScript = "Function\\CaseAction.cs";
-    private const string CaseRelationBuildActionsScript = "Function\\CaseRelationBuildActions.cs";
-    private const string CaseRelationValidateActionsScript = "Function\\CaseRelationValidateActions.cs";
 
     /// <summary>
     /// The relation source case name (immutable)
@@ -126,6 +119,13 @@ public class CaseRelation : ScriptTrackDomainObject<CaseRelationAudit>, IDerivab
         CopyTool.CopyProperties(copySource, this);
     }
 
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        SourceCaseName = SourceCaseName.EnsureNamespace(@namespace);
+        TargetCaseName = TargetCaseName.EnsureNamespace(@namespace);
+    }
+
     /// <summary>Compare two objects</summary>
     /// <param name="compare">The object to compare with this</param>
     /// <returns>True for objects with the same data</returns>
@@ -196,38 +196,36 @@ public class CaseRelation : ScriptTrackDomainObject<CaseRelationAudit>, IDerivab
     /// <summary>
     /// Test for build script
     /// </summary>
-    public string BuildScript
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(BuildExpression) &&
-                BuildActions != null && BuildActions.Any())
-            {
-                return "true";
-            }
-            return BuildExpression;
-        }
-    }
+    public string BuildScript =>
+        HasBuildScript ? BuildExpression ?? "true" : null;
 
     /// <summary>
     /// Test for validate script
     /// </summary>
-    public string ValidateScript
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(ValidateExpression) &&
-                ValidateActions != null && ValidateActions.Any())
-            {
-                return "true";
-            }
-            return ValidateExpression;
-        }
-    }
+    public string ValidateScript =>
+        HasValidateScript ? ValidateExpression ?? "true" : null;
+
+    /// <summary>
+    /// Test for build script
+    /// </summary>
+    private bool HasBuildScript =>
+        AnyExpressionOrActions(BuildExpression, BuildActions);
+
+    /// <summary>
+    /// Test for validate script
+    /// </summary>
+    private bool HasValidateScript =>
+        AnyExpressionOrActions(ValidateExpression, ValidateActions);
 
     /// <inheritdoc/>
-    public override bool HasExpression =>
-         GetFunctionScripts().Values.Any(x => !string.IsNullOrWhiteSpace(x));
+    public override bool HasAnyExpression =>
+        HasBuildScript ||
+        HasValidateScript;
+
+    /// <inheritdoc/>
+    public override bool HasAnyAction =>
+        AnyActions(BuildActions) ||
+        AnyActions(ValidateActions);
 
     /// <inheritdoc/>
     public override bool HasObjectScripts => true;
@@ -236,43 +234,29 @@ public class CaseRelation : ScriptTrackDomainObject<CaseRelationAudit>, IDerivab
     public override List<FunctionType> GetFunctionTypes() => FunctionTypes;
 
     /// <inheritdoc/>
-    public override IDictionary<FunctionType, string> GetFunctionScripts()
-    {
-        var scripts = new Dictionary<FunctionType, string>();
-
-        // case relation build
-        var buildScript = BuildScript;
-        if (!string.IsNullOrWhiteSpace(buildScript))
+    public override string GetFunctionScript(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.CaseRelationBuild, buildScript);
-        }
-
-        // case relation validate
-        var validateScript = ValidateScript;
-        if (!string.IsNullOrWhiteSpace(validateScript))
-        {
-            scripts.Add(FunctionType.CaseRelationValidate, validateScript);
-        }
-        return scripts;
-    }
+            FunctionType.CaseRelationBuild => BuildExpression,
+            FunctionType.CaseRelationValidate => ValidateExpression,
+            _ => null
+        };
 
     /// <inheritdoc/>
-    public override IEnumerable<string> GetEmbeddedScriptNames()
-    {
-        // case relation scripts
-        var scripts = new List<string>
+    public override List<string> GetFunctionActions(FunctionType functionType) =>
+        functionType switch
         {
-            CaseRelationFunctionScript,
-            CaseActionScript
+            FunctionType.CaseRelationBuild => BuildActions,
+            FunctionType.CaseRelationValidate => ValidateActions,
+            _ => null
         };
-        // case relation build and validate
-        if (!string.IsNullOrWhiteSpace(BuildScript) || !string.IsNullOrWhiteSpace(ValidateScript))
-        {
-            scripts.Add(CaseRelationBuildActionsScript);
-            scripts.Add(CaseRelationValidateActionsScript);
-        }
-        return scripts;
-    }
+
+    /// <inheritdoc/>
+    public override IEnumerable<string> GetEmbeddedScriptNames() =>
+        GetEmbeddedScriptNames([
+            new(BuildExpression, BuildActions, FunctionType.CaseRelationBuild),
+            new(ValidateExpression, ValidateActions, FunctionType.CaseRelationValidate)
+        ]);
 
     #endregion
 

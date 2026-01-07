@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using PayrollEngine.Client.Scripting;
-using PayrollEngine.Client.Scripting.Function;
-using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
-
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Client.Scripting;
+using PayrollEngine.Client.Scripting.Runtime;
+using PayrollEngine.Client.Scripting.Function;
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
 /// <summary>
@@ -31,6 +30,11 @@ public class WageTypeValueRuntime : WageTypeRuntimeBase, IWageTypeValueRuntime
 
     /// <summary>The log owner type</summary>
     protected override string LogOwnerType => nameof(WageTypeValueFunction);
+
+    /// <inheritdoc />
+    public string[] GetValueActions() =>
+        WageType.ValueActions == null ? [] :
+            WageType.ValueActions.ToArray();
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     internal decimal? EvaluateValue(WageType wageType)

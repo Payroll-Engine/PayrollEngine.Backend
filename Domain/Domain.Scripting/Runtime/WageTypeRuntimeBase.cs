@@ -42,12 +42,16 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
     public override string GetDerivedCulture(int divisionId, int employeeId) =>
         WageType.Culture ?? base.GetDerivedCulture(divisionId, employeeId);
 
+    /// <inheritdoc />
+    public override string GetDerivedCalendar(int divisionId, int employeeId) =>
+        WageTypeCalendar ?? base.GetDerivedCalendar(divisionId, employeeId);
+
     #endregion
 
     #region Internal
 
     /// <summary>The wage type</summary>
-    private WageType WageType => Settings.WageType;
+    protected WageType WageType => Settings.WageType;
 
     /// <summary>The wage type attributes</summary>
     private Dictionary<string, object> WageTypeAttributes => Settings.WageTypeAttributes;
@@ -112,7 +116,7 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
     protected override string LogOwner => $"WT {WageTypeNumber:0.####}";
 
     /// <inheritdoc />
-    public decimal GetWageTypeValue(decimal wageTypeNumber)
+    public decimal GetWageType(decimal wageTypeNumber)
     {
         if (wageTypeNumber <= 0)
         {
@@ -125,12 +129,31 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
     }
 
     /// <inheritdoc />
-    public decimal GetCollectorValue(string collectorName)
+    public decimal GetWageType(string wageTypeName)
+    {
+        if (string.IsNullOrWhiteSpace(wageTypeName))
+        {
+            throw new ArgumentException(nameof(wageTypeName));
+        }
+
+        // namespace
+        wageTypeName = wageTypeName.EnsureNamespace(Namespace);
+
+        var wageTypeResult =
+            CurrentPayrollResult.WageTypeResults.FirstOrDefault(wtr => string.Equals(wtr.WageTypeName, wageTypeName));
+        return wageTypeResult?.Value ?? 0;
+    }
+
+    /// <inheritdoc />
+    public decimal GetCollector(string collectorName)
     {
         if (string.IsNullOrWhiteSpace(collectorName))
         {
             throw new ArgumentException(nameof(collectorName));
         }
+
+        // namespace
+        collectorName = collectorName.EnsureNamespace(Namespace);
 
         var collectorResult =
             CurrentPayrollResult.CollectorResults.FirstOrDefault(cr => string.Equals(cr.CollectorName, collectorName));
@@ -144,6 +167,10 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
         {
             throw new ArgumentException(nameof(collectorName));
         }
+
+        // namespace
+        collectorName = collectorName.EnsureNamespace(Namespace);
+
         if (Settings.DisabledCollectors.Contains(collectorName))
         {
             Settings.DisabledCollectors.Remove(collectorName);
@@ -157,6 +184,10 @@ public abstract class WageTypeRuntimeBase : PayrunRuntimeBase, IWageTypeRuntime
         {
             throw new ArgumentException(nameof(collectorName));
         }
+
+        // namespace
+        collectorName = collectorName.EnsureNamespace(Namespace);
+
         if (!Settings.DisabledCollectors.Contains(collectorName))
         {
             Settings.DisabledCollectors.Add(collectorName);

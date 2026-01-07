@@ -1,9 +1,10 @@
-﻿using PayrollEngine.Domain.Model;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace PayrollEngine.Persistence;
+namespace PayrollEngine.Domain.Model;
 
-// <summary>Derived case field</summary>
+/// <summary>
+/// Derived case field
+/// </summary>
 public sealed class DerivedCaseField : ChildCaseField
 {
     /// <summary>The layer level</summary>

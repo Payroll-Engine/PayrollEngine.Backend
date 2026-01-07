@@ -43,13 +43,12 @@ public class CollectorCustomResult : DomainObjectBase, ITagObject,
     /// </summary>
     public string Source { get; set; }
 
-    private ValueType valueType = ValueType.Decimal;
     /// <summary>
     /// The value type (immutable)
     /// </summary>
     public ValueType ValueType
     {
-        get => valueType;
+        get;
         set
         {
             if (!value.IsNumber())
@@ -57,9 +56,10 @@ public class CollectorCustomResult : DomainObjectBase, ITagObject,
                 throw new ArgumentOutOfRangeException(nameof(value),
                     $"Value type of collector custom result must be a number: {value}");
             }
-            valueType = value;
+
+            field = value;
         }
-    }
+    } = ValueType.Decimal;
 
     /// <summary>
     /// The collector custom result value (immutable)

@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class CaseFieldRepository(ICaseFieldAuditRepository auditRepository, bool auditDisabled) :
-    TrackChildDomainRepository<CaseField, CaseFieldAudit>(DbSchema.Tables.CaseField, DbSchema.CaseFieldColumn.CaseId,
-        auditRepository, auditDisabled), ICaseFieldRepository
+public class CaseFieldRepository(IRegulationRepository regulationRepository, ICaseRepository caseRepository,
+    ICaseFieldAuditRepository auditRepository, bool auditDisabled) :
+    TrackChildDomainRepository<CaseField, CaseFieldAudit>(regulationRepository, DbSchema.Tables.CaseField,
+        DbSchema.CaseFieldColumn.CaseId, auditRepository, auditDisabled), ICaseFieldRepository
 {
+    private ICaseRepository CaseRepository { get; } = caseRepository;
+
     public async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
         await ExistsAnyAsync(context, DbSchema.CaseFieldColumn.CaseId, caseId, DbSchema.CaseFieldColumn.Name, caseFieldNames);
 
@@ -81,12 +85,35 @@ public class CaseFieldRepository(ICaseFieldAuditRepository auditRepository, bool
         // json collections
         parameters.Add(nameof(caseField.Tags), JsonSerializer.SerializeList(caseField.Tags));
         parameters.Add(nameof(caseField.Clusters), JsonSerializer.SerializeList(caseField.Clusters));
-        parameters.Add(nameof(caseField.BuildActions), JsonSerializer.SerializeList(caseField.BuildActions));
-        parameters.Add(nameof(caseField.ValidateActions), JsonSerializer.SerializeList(caseField.ValidateActions));
         parameters.Add(nameof(caseField.Attributes), JsonSerializer.SerializeNamedDictionary(caseField.Attributes));
         parameters.Add(nameof(caseField.ValueAttributes), JsonSerializer.SerializeNamedDictionary(caseField.ValueAttributes));
 
         // base fields
         base.GetObjectData(caseField, parameters);
+    }
+
+    public override async Task<CaseField> CreateAsync(IDbContext context, int caseId, CaseField caseField)
+    {
+        await EnsureNamespaceAsync(context, caseId, caseField);
+        return await base.CreateAsync(context, caseId, caseField);
+    }
+
+    public override async Task<CaseField> UpdateAsync(IDbContext context, int caseId, CaseField caseField)
+    {
+        await EnsureNamespaceAsync(context, caseId, caseField);
+        return await base.UpdateAsync(context, caseId, caseField);
+    }
+
+    private async Task EnsureNamespaceAsync(IDbContext context, int caseId, CaseField caseField)
+    {
+        // regulation
+        var regulationId = await CaseRepository.GetParentIdAsync(context, caseId);
+        if (!regulationId.HasValue)
+        {
+            return;
+        }
+
+        // namespace
+        await ApplyNamespaceAsync(context, regulationId.Value, caseField);
     }
 }

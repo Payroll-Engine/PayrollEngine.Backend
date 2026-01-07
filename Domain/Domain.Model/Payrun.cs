@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using PayrollEngine.Client.Scripting;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -17,11 +17,6 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
         FunctionType.PayrunEmployeeEnd,
         FunctionType.PayrunWageTypeAvailable,
         FunctionType.PayrunEnd
-    ];
-    private static readonly IEnumerable<string> EmbeddedScriptNames =
-    [
-        "Cache\\Cache.cs",
-        "Function\\PayrunFunction.cs"
     ];
 
     /// <summary>
@@ -105,8 +100,16 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
     #region Scripting
 
     /// <inheritdoc/>
-    public override bool HasExpression =>
-        GetFunctionScripts().Values.Any(x => !string.IsNullOrWhiteSpace(x));
+    public override bool HasAnyExpression =>
+        !string.IsNullOrWhiteSpace(StartExpression) ||
+        !string.IsNullOrWhiteSpace(EmployeeAvailableExpression) ||
+        !string.IsNullOrWhiteSpace(EmployeeStartExpression) ||
+        !string.IsNullOrWhiteSpace(EmployeeEndExpression) ||
+        !string.IsNullOrWhiteSpace(WageTypeAvailableExpression) ||
+        !string.IsNullOrWhiteSpace(EndExpression);
+
+    /// <inheritdoc/>
+    public override bool HasAnyAction => false;
 
     /// <inheritdoc/>
     public override bool HasObjectScripts => false;
@@ -115,39 +118,24 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
     public override List<FunctionType> GetFunctionTypes() => FunctionTypes;
 
     /// <inheritdoc/>
-    public override IDictionary<FunctionType, string> GetFunctionScripts()
-    {
-        var scripts = new Dictionary<FunctionType, string>();
-        if (!string.IsNullOrWhiteSpace(StartExpression))
+    public override string GetFunctionScript(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.PayrunStart, StartExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(EmployeeAvailableExpression))
-        {
-            scripts.Add(FunctionType.PayrunEmployeeAvailable, EmployeeAvailableExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(EmployeeStartExpression))
-        {
-            scripts.Add(FunctionType.PayrunEmployeeStart, EmployeeStartExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(EmployeeEndExpression))
-        {
-            scripts.Add(FunctionType.PayrunEmployeeEnd, EmployeeEndExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(WageTypeAvailableExpression))
-        {
-            scripts.Add(FunctionType.PayrunWageTypeAvailable, WageTypeAvailableExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(EndExpression))
-        {
-            scripts.Add(FunctionType.PayrunEnd, EndExpression);
-        }
-        return scripts;
-    }
+            FunctionType.PayrunStart => StartExpression,
+            FunctionType.PayrunEmployeeAvailable => EmployeeAvailableExpression,
+            FunctionType.PayrunEmployeeStart => EmployeeStartExpression,
+            FunctionType.PayrunEmployeeEnd => EmployeeEndExpression,
+            FunctionType.PayrunWageTypeAvailable => WageTypeAvailableExpression,
+            FunctionType.PayrunEnd => EndExpression,
+            _ => null
+        };
+
+    /// <inheritdoc/>
+    public override List<string> GetFunctionActions(FunctionType functionType) => null;
 
     /// <inheritdoc/>
     public override IEnumerable<string> GetEmbeddedScriptNames() =>
-        EmbeddedScriptNames;
+        ScriptProvider.GetEmbeddedScriptNames(FunctionType.PayrunBase);
 
     #endregion
 

@@ -14,6 +14,11 @@ public class ChildCaseField : CaseField, IEquatable<ChildCaseField>
     public int CaseId { get; set; }
 
     /// <summary>
+    /// The regulation id
+    /// </summary>
+    public int RegulationId { get; set; }
+
+    /// <summary>
     /// The case type
     /// </summary>
     public CaseType CaseType { get; set; }

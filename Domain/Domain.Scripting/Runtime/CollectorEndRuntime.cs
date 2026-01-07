@@ -29,6 +29,11 @@ public class CollectorEndRuntime : CollectorRuntimeBase, ICollectorEndRuntime
     /// <inheritdoc />
     public void SetValues(decimal[] values) =>
         Collector.SetValues(values);
+    
+    /// <inheritdoc />
+    public string[] GetEndActions() =>
+        Collector.EndActions == null ? [] :
+            Collector.EndActions.ToArray();
 
     /// <summary>
     /// Execute the collector end script

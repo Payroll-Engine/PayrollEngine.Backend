@@ -71,6 +71,21 @@ public class CollectorAudit : ApiObjectBase
     public string EndExpression { get; set; }
 
     /// <summary>
+    /// The collector start actions
+    /// </summary>
+    public List<string> StartActions { get; set; }
+
+    /// <summary>
+    /// The collector apply actions
+    /// </summary>
+    public List<string> ApplyActions { get; set; }
+
+    /// <summary>
+    /// The collector end actions
+    /// </summary>
+    public List<string> EndActions { get; set; }
+
+    /// <summary>
     /// The threshold value
     /// </summary>
     public decimal? Threshold { get; set; }

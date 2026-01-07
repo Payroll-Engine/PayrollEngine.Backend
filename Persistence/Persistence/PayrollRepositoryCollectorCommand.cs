@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -14,7 +14,7 @@ internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryComma
     {
     }
 
-    internal async Task<IEnumerable<Collector>> GetDerivedCollectorsAsync(PayrollQuery query,
+    internal async Task<IEnumerable<DerivedCollector>> GetDerivedCollectorsAsync(PayrollQuery query,
         IEnumerable<string> collectorNames = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null)
     {
@@ -117,6 +117,9 @@ internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryComma
                 derivedCollector.Threshold = CollectDerivedValue(derivedCollectors, x => x.Threshold);
                 derivedCollector.MinResult = CollectDerivedValue(derivedCollectors, x => x.MinResult);
                 derivedCollector.MaxResult = CollectDerivedValue(derivedCollectors, x => x.MaxResult);
+                derivedCollector.StartActions = CollectDerivedList(derivedCollectors, x => x.StartActions);
+                derivedCollector.ApplyActions = CollectDerivedList(derivedCollectors, x => x.ApplyActions);
+                derivedCollector.EndActions = CollectDerivedList(derivedCollectors, x => x.EndActions);
                 derivedCollector.Attributes = CollectDerivedAttributes(derivedCollectors);
                 derivedCollector.Clusters = CollectDerivedList(derivedCollectors, x => x.Clusters);
                 // remove the current level for the next iteration

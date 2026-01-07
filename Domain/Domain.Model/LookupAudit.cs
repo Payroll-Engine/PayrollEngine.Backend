@@ -6,7 +6,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A payroll lookup audit
 /// </summary>
-public class LookupAudit : ScriptAuditDomainObject, IDerivableObject
+public class LookupAudit : ScriptAuditDomainObject
 {
     /// <summary>
     /// The case relation id

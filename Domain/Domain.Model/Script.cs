@@ -7,7 +7,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// A payroll script
 /// </summary>
-public class Script : TrackDomainObject<ScriptAudit>, INamedObject, IDerivableObject, IEquatable<Script>
+public class Script : TrackDomainObject<ScriptAudit>, INamedObject, INamespaceObject, IDerivableObject, IEquatable<Script>
 {
     /// <summary>
     /// The script name
@@ -44,10 +44,16 @@ public class Script : TrackDomainObject<ScriptAudit>, INamedObject, IDerivableOb
     }
 
     /// <inheritdoc/>
-    public Script(Script copySource) :
+    protected Script(Script copySource) :
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);
+    }
+
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
     }
 
     /// <summary>Compare two objects</summary>
@@ -89,4 +95,5 @@ public class Script : TrackDomainObject<ScriptAudit>, INamedObject, IDerivableOb
     /// <inheritdoc/>
     public override string ToString() =>
         $"{Name} {base.ToString()}";
+
 }

@@ -31,6 +31,11 @@ public class CollectorStartRuntime : CollectorRuntimeBase, ICollectorStartRuntim
     public void SetValues(decimal[] values) =>
         Collector.SetValues(values);
 
+    /// <inheritdoc />
+    public string[] GetStartActions() =>
+        Collector.StartActions == null ? [] :
+            Collector.StartActions.ToArray();
+
     /// <summary>
     /// Execute the collector start script
     /// </summary>

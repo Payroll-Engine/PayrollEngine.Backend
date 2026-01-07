@@ -19,6 +19,9 @@ public class PayrollServerConfiguration
     /// <summary>Disable the audit trail (default: false)</summary>
     public bool AuditTrailDisabled { get; set; }
 
+    /// <summary>https redirection (default: false)</summary>
+    public bool HttpsRedirection { get; set; }
+
     /// <summary>Log http request (default: false)</summary>
     public bool LogHttpRequests { get; set; }
 

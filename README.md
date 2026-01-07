@@ -32,6 +32,7 @@ The server configuration file `appsetings.json` contains the following settings:
 | `StartupCulture`           | The culture of the backend process                          | string     | System culture |
 | `AuditTrailDisabled`       | Disable the audit trail for regulation objects              | bool       | false          |
 | `LogHttpRequests`          | Log http requested to log file                              | bool       | false          |
+| `HttpsRedirection`         | Https redirection                                           | bool       | false          |
 | `InitializeScriptCompiler` | Initialize the script compiler to reduce startup time       | bool       | false          |
 | `DumpCompilerSources`      | Store compiler source files <sup>1)</sup>                   | bool       | false          |
 | `DbTransactionTimeout`     | Database transaction timeout                                | timespan   | 10 minutes     |

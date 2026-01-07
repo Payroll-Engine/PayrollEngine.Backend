@@ -12,7 +12,7 @@ namespace PayrollEngine.Persistence.SqlServer;
 public class DbContext : IDbContext
 {
     /// <summary>The current database version</summary>
-    private static System.Version MinVersion => new(0, 9, 4);
+    private static System.Version MinVersion => new(0, 9, 5);
 
     // minimum command timeout is 30 seconds
     private const int MinCommandTimeout = 30;
@@ -83,7 +83,7 @@ public class DbContext : IDbContext
             await connection.OpenAsync();
 
             await using var reader = await command.ExecuteReaderAsync();
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var major = reader.GetInt32(0);
                 var minor = reader.GetInt32(1);

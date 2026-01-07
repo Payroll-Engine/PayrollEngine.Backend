@@ -1,6 +1,6 @@
 ﻿using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -17,6 +17,7 @@ public class RegulationRepository() : ChildDomainRepository<Regulation>(DbSchema
     {
         parameters.Add(nameof(regulation.Name), regulation.Name);
         parameters.Add(nameof(regulation.NameLocalizations), JsonSerializer.SerializeNamedDictionary(regulation.NameLocalizations));
+        parameters.Add(nameof(regulation.Namespace), regulation.Namespace);
         parameters.Add(nameof(regulation.Version), regulation.Version);
         parameters.Add(nameof(regulation.ValidFrom), regulation.ValidFrom);
         parameters.Add(nameof(regulation.Owner), regulation.Owner);

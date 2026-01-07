@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -24,6 +25,24 @@ internal sealed class PayrunProcessorRepositories
             throw new PayrunException($"Unknown payroll with id {payrollId}");
         }
         return payroll;
+    }
+
+    internal async Task<List<Regulation>> LoadDerivedRegulationsAsync(int payrollId,
+        DateTime regulationDate, DateTime evaluationDate)
+    {
+        var regulations = (await Settings.PayrollRepository.GetDerivedRegulationsAsync(Settings.DbContext,
+            new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = payrollId,
+                RegulationDate = regulationDate,
+                EvaluationDate = evaluationDate
+            })).ToList();
+        if (regulations == null)
+        {
+            throw new PayrunException($"Unknown payroll with id {payrollId}");
+        }
+        return regulations;
     }
 
     internal async Task<string> ValidatePayrollAsync(Payroll payroll, Division division,

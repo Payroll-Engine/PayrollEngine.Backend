@@ -29,7 +29,7 @@ public abstract class ScriptChildDomainRepository<TDomain>(string tableName, str
         return await base.UpdateAsync(context, parentId, item);
     }
 
-    // duplicated in ScriptTrackChildDomainRepository!
+    // variation in ScriptTrackChildDomainRepository!
     protected async Task SetupBinaryAsync(IDbContext context, int parentId, TDomain item)
     {
         if (item is not IScriptObject scriptObject)
@@ -37,14 +37,25 @@ public abstract class ScriptChildDomainRepository<TDomain>(string tableName, str
             return;
         }
 
-        if (!scriptObject.HasExpression)
+        if (!scriptObject.HasAnyExpression)
         {
             scriptObject.Clear();
             return;
         }
 
-        // used object functions
-        var functionScripts = scriptObject.GetFunctionScripts();
+        // collect function scripts
+        var functionScripts = new Dictionary<FunctionType, string>();
+        foreach (var functionType in scriptObject.GetFunctionTypes())
+        {
+            var script = scriptObject.GetFunctionScript(functionType);
+            var actions = scriptObject.GetFunctionActions(functionType);
+            if (string.IsNullOrWhiteSpace(script) &&
+                (actions == null || !actions.Any()))
+            {
+                continue;
+            }
+            functionScripts[functionType] = script;
+        }
 
         // object scripts (optional)
         IEnumerable<Script> scripts = null;
@@ -54,10 +65,14 @@ public abstract class ScriptChildDomainRepository<TDomain>(string tableName, str
         }
 
         // embedded scripts (optional)
-        var embeddedScripts = scriptObject.GetEmbeddedScriptNames();
+        var embeddedScriptNames = scriptObject.GetEmbeddedScriptNames();
 
         // compilation
-        var result = new ScriptCompiler(item, functionScripts, scripts, embeddedScripts).Compile();
+        var result = new ScriptCompiler(
+            scriptObject: scriptObject,
+            functionScripts: functionScripts,
+            scripts: scripts,
+            embeddedScriptNames: embeddedScriptNames).Compile();
 
         // result
         if (result == null)

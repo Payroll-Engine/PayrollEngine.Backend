@@ -61,6 +61,8 @@ BEGIN
     dbo.[WageType].[CollectorGroups],
     dbo.[WageType].[ValueExpression],
     dbo.[WageType].[ResultExpression],
+    dbo.[WageType].[ValueActions],
+    dbo.[WageType].[ResultActions],
   --  dbo.[WageType].[Binary],
     dbo.[WageType].[ScriptHash],
     dbo.[WageType].[Attributes],

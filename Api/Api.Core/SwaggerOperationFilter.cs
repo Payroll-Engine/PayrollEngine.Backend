@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace PayrollEngine.Api.Core;

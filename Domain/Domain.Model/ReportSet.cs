@@ -36,6 +36,26 @@ public class ReportSet : Report, IEquatable<ReportSet>
         CopyTool.CopyProperties(copySource, this);
     }
 
+    /// <inheritdoc/>
+    public override void ApplyNamespace(string @namespace)
+    {
+        base.ApplyNamespace(@namespace);
+        if (Parameters != null)
+        {
+            foreach (var parameter in Parameters)
+            {
+                parameter.ApplyNamespace(@namespace);
+            }
+        }
+        if (Templates != null)
+        {
+            foreach (var template in Templates)
+            {
+                template.ApplyNamespace(@namespace);
+            }
+        }
+    }
+
     /// <summary>Compare two objects</summary>
     /// <param name="compare">The object to compare with this</param>
     /// <returns>True for objects with the same data</returns>

@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository, bool auditDisabled)
+public class WageTypeRepository(IRegulationRepository regulationRepository,
+    IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository, bool auditDisabled)
     : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>(DbSchema.Tables.WageType,
-        DbSchema.WageTypeColumn.RegulationId, scriptRepository, auditRepository, auditDisabled), IWageTypeRepository
+        DbSchema.WageTypeColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditDisabled), IWageTypeRepository
 {
     protected override void GetObjectCreateData(WageType wageType, DbParameterCollection parameters)
     {
@@ -31,6 +32,8 @@ public class WageTypeRepository(IScriptRepository scriptRepository, IWageTypeAud
         parameters.Add(nameof(wageType.CollectorGroups), JsonSerializer.SerializeList(wageType.CollectorGroups));
         parameters.Add(nameof(wageType.ValueExpression), wageType.ValueExpression);
         parameters.Add(nameof(wageType.ResultExpression), wageType.ResultExpression);
+        parameters.Add(nameof(wageType.ValueActions), JsonSerializer.SerializeList(wageType.ValueActions));
+        parameters.Add(nameof(wageType.ResultActions), JsonSerializer.SerializeList(wageType.ResultActions));
         parameters.Add(nameof(wageType.Script), wageType.Script);
         parameters.Add(nameof(wageType.ScriptVersion), wageType.ScriptVersion);
         parameters.Add(nameof(wageType.Binary), wageType.Binary, DbType.Binary);

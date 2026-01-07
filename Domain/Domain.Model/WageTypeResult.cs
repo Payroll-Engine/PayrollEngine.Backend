@@ -34,13 +34,12 @@ public class WageTypeResult : DomainObjectBase, ITagObject, IDomainAttributeObje
     /// </summary>
     public Dictionary<string, string> WageTypeNameLocalizations { get; set; }
 
-    private ValueType valueType = ValueType.Decimal;
     /// <summary>
     /// The value type (immutable)
     /// </summary>
     public ValueType ValueType
     {
-        get => valueType;
+        get;
         set
         {
             if (!value.IsNumber())
@@ -48,9 +47,10 @@ public class WageTypeResult : DomainObjectBase, ITagObject, IDomainAttributeObje
                 throw new ArgumentOutOfRangeException(nameof(value),
                     $"Value type of wage type result must be a number: {value}");
             }
-            valueType = value;
+
+            field = value;
         }
-    }
+    } = ValueType.Decimal;
 
     /// <summary>
     /// The wage type result value (immutable)

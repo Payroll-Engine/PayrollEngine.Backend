@@ -7,7 +7,7 @@ namespace PayrollEngine.Domain.Model;
 /// A payroll report template
 /// </summary>
 public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAttributeObject,
-    IDerivableObject, IEquatable<ReportTemplate>
+    INamespaceObject, IDerivableObject, IEquatable<ReportTemplate>
 {
     /// <summary>
     /// The report template name
@@ -63,6 +63,12 @@ public class ReportTemplate : TrackDomainObject<ReportTemplateAudit>, IDomainAtt
     public ReportTemplate(ReportTemplate copySource)
     {
         CopyTool.CopyProperties(copySource, this);
+    }
+
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
     }
 
     /// <summary>Compare two objects</summary>

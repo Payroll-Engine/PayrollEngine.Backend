@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 

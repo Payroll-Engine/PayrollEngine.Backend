@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using PayrollEngine.Client.Scripting;
-using PayrollEngine.Client.Scripting.Function;
-using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Client.Scripting;
+using PayrollEngine.Client.Scripting.Runtime;
+using PayrollEngine.Client.Scripting.Function;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -21,11 +21,6 @@ public class CaseRelationBuildRuntime : CaseRelationRuntimeBase, ICaseRelationBu
 
     /// <summary>The log owner type</summary>
     protected override string LogOwnerType => nameof(CaseRelationBuildFunction);
-
-    /// <inheritdoc />
-    public string[] GetBuildActions() =>
-        CaseRelation.BuildActions == null ? [] :
-            CaseRelation.BuildActions.ToArray();
 
     /// <summary>
     /// Execute the case relation build script

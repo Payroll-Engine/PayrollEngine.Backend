@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class CollectorRepository(IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository, bool auditDisabled)
+public class CollectorRepository(IRegulationRepository regulationRepository,
+    IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository, bool auditDisabled)
     : ScriptTrackChildDomainRepository<Collector, CollectorAudit>(DbSchema.Tables.Collector,
-        DbSchema.CollectorColumn.RegulationId, scriptRepository, auditRepository, auditDisabled), ICollectorRepository
+        DbSchema.CollectorColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditDisabled), ICollectorRepository
 {
     protected override void GetObjectCreateData(Collector collector, DbParameterCollection parameters)
     {
@@ -32,6 +33,9 @@ public class CollectorRepository(IScriptRepository scriptRepository, ICollectorA
         parameters.Add(nameof(collector.StartExpression), collector.StartExpression);
         parameters.Add(nameof(collector.ApplyExpression), collector.ApplyExpression);
         parameters.Add(nameof(collector.EndExpression), collector.EndExpression);
+        parameters.Add(nameof(collector.StartActions), JsonSerializer.SerializeList(collector.StartActions));
+        parameters.Add(nameof(collector.ApplyActions), JsonSerializer.SerializeList(collector.ApplyActions));
+        parameters.Add(nameof(collector.EndActions), JsonSerializer.SerializeList(collector.EndActions));
         parameters.Add(nameof(collector.Script), collector.Script);
         parameters.Add(nameof(collector.ScriptVersion), collector.ScriptVersion);
         parameters.Add(nameof(collector.Binary), collector.Binary, DbType.Binary);

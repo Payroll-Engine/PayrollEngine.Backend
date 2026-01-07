@@ -127,6 +127,8 @@ internal static class ApiRepositoryFactory
 
         internal static ICaseFieldRepository NewCaseFieldRepository(bool auditDisabled) =>
             new CaseFieldRepository(
+                NewRegulationRepository(),
+                NewCaseRepository(auditDisabled),
                 NewCaseFieldAuditRepository(),
                 auditDisabled);
 
@@ -135,6 +137,7 @@ internal static class ApiRepositoryFactory
 
         private static ICaseRelationRepository NewCaseRelationRepository(bool auditDisabled) =>
             new CaseRelationRepository(
+                NewRegulationRepository(),
                 NewScriptRepository(auditDisabled),
                 NewCaseRelationAuditService(),
                 auditDisabled);
@@ -144,6 +147,7 @@ internal static class ApiRepositoryFactory
 
         private static IWageTypeRepository NewWageTypeRepository(bool auditDisabled) =>
             new WageTypeRepository(
+                NewRegulationRepository(),
                 NewScriptRepository(auditDisabled),
                 NewWageTypeAuditRepository(),
                 auditDisabled);
@@ -153,6 +157,7 @@ internal static class ApiRepositoryFactory
 
         internal static ICaseRepository NewCaseRepository(bool auditDisabled) =>
             new CaseRepository(
+                NewRegulationRepository(),
                 NewScriptRepository(auditDisabled),
                 NewCaseAuditRepository(),
                 auditDisabled);
@@ -162,6 +167,7 @@ internal static class ApiRepositoryFactory
 
         private static ICollectorRepository NewCollectorRepository(bool auditDisabled) =>
             new CollectorRepository(
+                NewRegulationRepository(),
                 NewScriptRepository(auditDisabled),
                 NewCollectorAuditRepository(),
                 auditDisabled);
@@ -171,6 +177,7 @@ internal static class ApiRepositoryFactory
 
         private static ILookupValueRepository NewLookupValueRepository(bool auditDisabled) =>
             new LookupValueRepository(
+                NewRegulationRepository(),
                 NewLookupValueAuditRepository(),
                 auditDisabled);
 
@@ -179,11 +186,13 @@ internal static class ApiRepositoryFactory
 
         private static ILookupRepository NewLookupRepository(bool auditDisabled) =>
             new LookupRepository(
+                NewRegulationRepository(),
                 NewLookupAuditRepository(),
                 auditDisabled);
 
         private static ILookupSetRepository NewLookupSetRepository(bool auditDisabled) =>
             new LookupSetRepository(
+                NewRegulationRepository(),
                 NewLookupValueRepository(auditDisabled),
                 NewLookupAuditRepository(),
                 auditDisabled);
@@ -193,6 +202,7 @@ internal static class ApiRepositoryFactory
 
         internal static IScriptRepository NewScriptRepository(bool auditDisabled) =>
             new ScriptRepository(
+                NewRegulationRepository(),
                 NewScriptAuditRepository(),
                 auditDisabled);
 
@@ -440,6 +450,7 @@ internal static class ApiRepositoryFactory
 
         private static IReportRepository NewReportRepository(bool auditDisabled) =>
             new ReportRepository(
+                RegulationRepositoryFactory.NewRegulationRepository(),
                 RegulationRepositoryFactory.NewScriptRepository(auditDisabled),
                 NewReportAuditRepository(),
                 auditDisabled);
@@ -451,6 +462,7 @@ internal static class ApiRepositoryFactory
             new ReportSetRepository(
                 new()
                 {
+                    RegulationRepository = RegulationRepositoryFactory.NewRegulationRepository(),
                     ReportParameterRepository = NewReportParameterRepository(auditDisabled),
                     ReportTemplateRepository = NewReportTemplateRepository(auditDisabled),
                     ScriptRepository = RegulationRepositoryFactory.NewScriptRepository(auditDisabled),
@@ -461,6 +473,8 @@ internal static class ApiRepositoryFactory
 
         private static IReportParameterRepository NewReportParameterRepository(bool auditDisabled) =>
             new ReportParameterRepository(
+                RegulationRepositoryFactory.NewRegulationRepository(),
+                NewReportRepository(auditDisabled),
                 new ReportParameterAuditRepository(),
                 auditDisabled);
 
@@ -469,6 +483,8 @@ internal static class ApiRepositoryFactory
 
         private static IReportTemplateRepository NewReportTemplateRepository(bool auditDisabled) =>
             new ReportTemplateRepository(
+                RegulationRepositoryFactory.NewRegulationRepository(),
+                NewReportRepository(auditDisabled),
                 new ReportTemplateAuditRepository(),
                 auditDisabled);
 

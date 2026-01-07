@@ -36,6 +36,11 @@ public class CollectorApplyRuntime : CollectorRuntimeBase, ICollectorApplyRuntim
     /// <summary>The wage type result value</summary>
     public decimal WageTypeValue => WageTypeResult.Value;
 
+    /// <inheritdoc />
+    public string[] GetApplyActions() =>
+        Collector.ApplyActions == null ? [] :
+            Collector.ApplyActions.ToArray();
+
     /// <summary>
     /// Execute the collector apply script
     /// </summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace PayrollEngine.Api.Core;
@@ -11,7 +12,10 @@ public static class SwaggerExtensions
         string apiDocumentationName, string apiName, string apiVersion, bool darkTheme,
         bool rootRedirect)
     {
-        appBuilder.UseSwagger();
+        appBuilder.UseSwagger(options =>
+        {
+            options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
+        });
         appBuilder.UseSwaggerUI(setupAction =>
         {
             setupAction.SetupSwaggerUI(apiDocumentationName, apiName, apiVersion);

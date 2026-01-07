@@ -7,7 +7,7 @@ namespace PayrollEngine.Domain.Model;
 /// A case field used in national, company and employee case
 /// </summary>
 public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IClusterObject,
-    INamedObject, IDomainAttributeObject, IEquatable<CaseField>
+    INamedObject, INamespaceObject, IDomainAttributeObject, IEquatable<CaseField>
 {
     /// <summary>
     /// The case field name (immutable)
@@ -130,16 +130,6 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
     public List<string> Clusters { get; set; }
 
     /// <summary>
-    /// The case field build actions
-    /// </summary>
-    public List<string> BuildActions { get; set; }
-
-    /// <summary>
-    /// The case field validate actions
-    /// </summary>
-    public List<string> ValidateActions { get; set; }
-
-    /// <summary>
     /// Custom attributes
     /// </summary>
     public Dictionary<string, object> Attributes { get; set; }
@@ -159,6 +149,17 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);
+    }
+
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
+        if (LookupSettings != null)
+        {
+            LookupSettings.LookupName = LookupSettings.LookupName.EnsureNamespace(@namespace);
+        }
+        Clusters = Clusters.EnsureNamespace(@namespace);
     }
 
     /// <summary>Compare two objects</summary>
@@ -200,8 +201,6 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
             Tags = Tags,
             LookupSettings = LookupSettings != null ? new LookupSettings(LookupSettings) : null,
             Clusters = Clusters,
-            BuildActions = BuildActions,
-            ValidateActions = ValidateActions,
             Attributes = Attributes,
             ValueAttributes = ValueAttributes
         };
@@ -240,8 +239,6 @@ public class CaseField : TrackDomainObject<CaseFieldAudit>, IDerivableObject, IC
         Tags = audit.Tags;
         LookupSettings = audit.LookupSettings;
         Clusters = audit.Clusters;
-        BuildActions = audit.BuildActions;
-        ValidateActions = audit.ValidateActions;
         Attributes = audit.Attributes;
         ValueAttributes = audit.ValueAttributes;
     }

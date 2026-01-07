@@ -8,6 +8,11 @@ public class PayrunRuntimeSettings : PayrollRuntimeSettings
     public Payrun Payrun { get; init; }
 
     /// <summary>
+    /// Provider for regulation items
+    /// </summary>
+    public IRegulationProvider RegulationProvider { get; init; }
+
+    /// <summary>
     /// Provider for employee results
     /// </summary>
     public IResultProvider ResultProvider { get; init; }

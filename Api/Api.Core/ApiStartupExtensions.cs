@@ -178,6 +178,7 @@ public static class ApiStartupExtensions
         // dev support
         if (environment.IsDevelopment())
         {
+            // dev error handling
             appBuilder.UseDeveloperExceptionPage();
         }
 

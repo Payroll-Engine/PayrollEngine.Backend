@@ -2,9 +2,9 @@
 //#define CASE_VALUE_RESULT_PERFORMANCE
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Scripting;
 using PayrollEngine.Domain.Scripting.Controller;
@@ -16,12 +16,13 @@ internal sealed class PayrunProcessorRegulation
     private IFunctionHost FunctionHost { get; }
     private PayrunProcessorSettings Settings { get; }
     private IResultProvider ResultProvider { get; }
+    //private IRegulationProvider RegulationProvider { get; }
     private Tenant Tenant { get; }
     private Payroll Payroll { get; }
     private Payrun Payrun { get; }
 
     internal PayrunProcessorRegulation(IFunctionHost functionHost, PayrunProcessorSettings settings,
-        IResultProvider resultProvider, Tenant tenant, Payroll payroll, Payrun payrun)
+         IResultProvider resultProvider, Tenant tenant, Payroll payroll, Payrun payrun)
     {
         FunctionHost = functionHost ?? throw new ArgumentNullException(nameof(functionHost));
         ResultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
@@ -33,7 +34,7 @@ internal sealed class PayrunProcessorRegulation
 
     #region Regulation
 
-    internal async Task<ILookup<string, Collector>> GetDerivedCollectorsAsync(PayrunJob payrunJob, ClusterSet clusterSet)
+    internal async Task<ILookup<string, DerivedCollector>> GetDerivedCollectorsAsync(PayrunJob payrunJob, ClusterSet clusterSet)
     {
         var collectors = (await Settings.PayrollRepository.GetDerivedCollectorsAsync(Settings.DbContext,
             new()
@@ -48,7 +49,7 @@ internal sealed class PayrunProcessorRegulation
         return collectors.ToLookup(col => col.Name, col => col);
     }
 
-    internal async Task<ILookup<decimal, WageType>> GetDerivedWageTypesAsync(PayrunJob payrunJob, ClusterSet clusterSet)
+    internal async Task<ILookup<decimal, DerivedWageType>> GetDerivedWageTypesAsync(PayrunJob payrunJob, ClusterSet clusterSet)
     {
         var deriveWageTypes = (await Settings.PayrollRepository.GetDerivedWageTypesAsync(Settings.DbContext,
             new()
@@ -67,7 +68,7 @@ internal sealed class PayrunProcessorRegulation
 
     #region Wage Type
 
-    internal bool IsWageTypeAvailable(PayrunContext context, IGrouping<decimal, WageType> derivedWageType,
+    internal bool IsWageTypeAvailable(PayrunContext context, IGrouping<decimal, DerivedWageType> derivedWageType,
         ICaseValueProvider caseValueProvider)
     {
         Log.Trace($"checking availability of wage type {derivedWageType.Key}");
@@ -81,12 +82,16 @@ internal sealed class PayrunProcessorRegulation
         var wageType = derivedWageType.First();
         var wageTypeAttributes = derivedWageType.ToList().CollectDerivedAttributes(wt => wt.Attributes);
 
+        // namespace
+        var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
+
         // execute wage type available script
         var isAvailable = new PayrunScriptController().IsWageTypeAvailable(wageType, wageTypeAttributes,
             new()
             {
                 DbContext = Settings.DbContext,
                 PayrollCulture = context.PayrollCulture,
+                Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -95,6 +100,7 @@ internal sealed class PayrunProcessorRegulation
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 CaseValueProvider = caseValueProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
@@ -108,8 +114,9 @@ internal sealed class PayrunProcessorRegulation
         return isAvailable ?? true;
     }
 
-    internal Tuple<WageTypeResultSet, List<RetroPayrunJob>, List<string>, bool> CalculateWageTypeValue(PayrunContext context, IGrouping<decimal, WageType> derivedWageType,
-        PayrollResultSet currentPayrollResult, ICaseValueProvider caseValueProvider, int executionCount)
+    internal Tuple<WageTypeResultSet, List<RetroPayrunJob>, List<string>, bool> CalculateWageTypeValue(PayrunContext context, 
+        IGrouping<decimal, DerivedWageType> derivedWageType, PayrollResultSet currentPayrollResult, 
+        ICaseValueProvider caseValueProvider, int executionCount)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
 
@@ -146,18 +153,22 @@ internal sealed class PayrunProcessorRegulation
 
         //  wage type value script
         decimal? wageTypeValue = null;
-        var valueExpressions = derivedWageType.GetDerivedExpressionObjects(x => x.ValueExpression).ToList();
+        var valueExpressions = derivedWageType.GetDerivedExpressionObjects(x => x.ValueScript).ToList();
         while (valueExpressions.Count > 0)
         {
             // current wage type with attributes
             var evalWageType = valueExpressions.First();
             var wageTypeAttributes = valueExpressions.CollectDerivedAttributes(wt => wt.Attributes);
 
+            // namespace
+            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
+
             // execute wage type value script
             var result = new WageTypeScriptController().GetValue(new()
             {
                 DbContext = Settings.DbContext,
                 PayrollCulture = context.PayrollCulture,
+                Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -170,6 +181,7 @@ internal sealed class PayrunProcessorRegulation
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
@@ -217,17 +229,22 @@ internal sealed class PayrunProcessorRegulation
         resultSet.Value = wageTypeValue.Value;
 
         // wage type result script: special case with reverse/bottom-up order
-        var resultExpressions = derivedWageType.GetDerivedExpressionObjects(x => x.ResultExpression).Reverse().ToList();
+        var resultExpressions = derivedWageType.GetDerivedExpressionObjects(x => x.ResultScript).Reverse().ToList();
         while (resultExpressions.Count > 0)
         {
             // current wage type
             var evalWageType = resultExpressions.First();
             var wageTypeAttributes = evalWageType.Attributes ?? new Dictionary<string, object>();
+
+            // namespace
+            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
+
             // execute wage type result script
             var retroJobs = new WageTypeScriptController().Result(resultSet.Value, new()
             {
                 DbContext = Settings.DbContext,
                 PayrollCulture = context.PayrollCulture,
+                Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -240,6 +257,7 @@ internal sealed class PayrunProcessorRegulation
                 PayrunJob = context.PayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
                 ParentPayrunJob = context.ParentPayrunJob,
+                RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
@@ -271,7 +289,7 @@ internal sealed class PayrunProcessorRegulation
 
     #region Collector
 
-    internal static bool IsCollectorAvailable(IGrouping<decimal, WageType> derivedWageType, IGrouping<string, Collector> derivedCollector)
+    internal static bool IsCollectorAvailable(IGrouping<decimal, DerivedWageType> derivedWageType, IGrouping<string, DerivedCollector> derivedCollector)
     {
         Log.Trace($"checking availability of collector {derivedCollector.Key} on wage type {derivedWageType.Key}");
 
@@ -280,33 +298,38 @@ internal sealed class PayrunProcessorRegulation
         return wageType.CollectorAvailable(collector.Name, collector.CollectorGroups);
     }
 
-    internal List<RetroPayrunJob> CollectorStart(PayrunContext context, IGrouping<string, Collector> derivedCollector,
+    internal List<RetroPayrunJob> CollectorStart(PayrunContext context, IGrouping<string, DerivedCollector> derivedCollector,
         ICaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult, CollectorResultSet collectorResult)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
 
         // start expression
-        var startExpressions = derivedCollector.GetDerivedExpressionObjects(x => x.StartExpression).ToList();
+        var startExpressions = derivedCollector.GetDerivedExpressionObjects(x => x.StartScript).ToList();
         while (startExpressions.Count > 0)
         {
             // current collector with attributes
-            var startCollector = startExpressions.First();
-            startCollector.Attributes = startExpressions.CollectDerivedAttributes(col => col.Attributes);
+            var first = startExpressions.First();
+            first.Attributes = startExpressions.CollectDerivedAttributes(col => col.Attributes);
+
+            // namespace
+            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == first.RegulationId)?.Namespace;
 
             // execute collector start script
             var retroJobs = new CollectorScriptController().Start(new()
             {
                 DbContext = Settings.DbContext,
                 PayrollCulture = context.PayrollCulture,
+                Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
                 Payroll = context.Payroll,
-                Collector = startCollector,
+                Collector = first,
                 Payrun = Payrun,
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
@@ -330,7 +353,7 @@ internal sealed class PayrunProcessorRegulation
         return retroPayrunJobs;
     }
 
-    internal Tuple<decimal, List<RetroPayrunJob>> CollectorApply(PayrunContext context, IGrouping<string, Collector> derivedCollector,
+    internal Tuple<decimal, List<RetroPayrunJob>> CollectorApply(PayrunContext context, IGrouping<string, DerivedCollector> derivedCollector,
         ICaseValueProvider caseValueProvider, WageTypeResult wageTypeResult,
         PayrollResultSet currentPayrollResult, CollectorResultSet collectorResult)
     {
@@ -340,18 +363,22 @@ internal sealed class PayrunProcessorRegulation
         var collector = derivedCollector.First();
 
         // apply expression
-        var applyExpressions = derivedCollector.GetDerivedExpressionObjects(x => x.ApplyExpression).ToList();
+        var applyExpressions = derivedCollector.GetDerivedExpressionObjects(x => x.ApplyScript).ToList();
         while (applyExpressions.Count > 0)
         {
             // current collector with attributes
             var applyCollector = applyExpressions.First();
             applyCollector.Attributes = applyExpressions.CollectDerivedAttributes(col => col.Attributes);
 
+            // namespace
+            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == applyCollector.RegulationId)?.Namespace;
+
             // execute collector apply script
             var result = new CollectorScriptController().ApplyValue(wageTypeResult, new()
             {
                 DbContext = Settings.DbContext,
                 PayrollCulture = context.PayrollCulture,
+                Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -361,6 +388,7 @@ internal sealed class PayrunProcessorRegulation
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
@@ -396,25 +424,29 @@ internal sealed class PayrunProcessorRegulation
         return new(collector.Result, retroPayrunJobs);
     }
 
-    internal List<RetroPayrunJob> CollectorEnd(PayrunContext context, IGrouping<string, Collector> derivedCollector,
+    internal List<RetroPayrunJob> CollectorEnd(PayrunContext context, IGrouping<string, DerivedCollector> derivedCollector,
         ICaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult,
         CollectorResultSet collectorResult)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
 
         // end expression
-        var endExpressions = derivedCollector.GetDerivedExpressionObjects(x => x.EndExpression).ToList();
+        var endExpressions = derivedCollector.GetDerivedExpressionObjects(x => x.EndScript).ToList();
         while (endExpressions.Count > 0)
         {
             // current collector with attributes
             var endCollector = endExpressions.First();
             endCollector.Attributes = endExpressions.CollectDerivedAttributes(col => col.Attributes);
 
+            // namespace
+            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == endCollector.RegulationId)?.Namespace;
+
             // execute collector end script
             var retroJobs = new CollectorScriptController().End(new()
             {
                 DbContext = Settings.DbContext,
                 PayrollCulture = context.PayrollCulture,
+                Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -424,6 +456,7 @@ internal sealed class PayrunProcessorRegulation
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
@@ -474,7 +507,7 @@ internal sealed class PayrunProcessorRegulation
 #endif
 
         // cases, only available for slot payrun results
-        List<Case> cases = null;
+        List<DerivedCase> cases = null;
         if (expandCaseSlots)
         {
             cases = (await Settings.PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,

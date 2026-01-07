@@ -32,6 +32,12 @@ public interface IPayrollCalculator
     IPayrollPeriod GetPayrunPeriod(DateTime periodMoment);
 
     /// <summary>
+    /// Count the calendar days from a date period
+    /// </summary>
+    /// <param name="period">The date period</param>
+    int GetCalendarDayCount(DatePeriod period);
+
+    /// <summary>
     /// Calculate the case period value over a time period
     /// </summary>
     /// <param name="calculation">The calculation</param>

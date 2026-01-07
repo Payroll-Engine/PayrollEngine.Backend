@@ -8,7 +8,7 @@ namespace PayrollEngine.Domain.Model;
 /// A value lookup
 /// </summary>
 public class Lookup : TrackDomainObject<LookupAudit>, IDomainAttributeObject,
-    IDerivableObject, INamedObject, IEquatable<Lookup>
+    IDerivableObject, INamedObject, INamespaceObject, IEquatable<Lookup>
 {
     /// <summary>
     /// The lookup name
@@ -60,6 +60,12 @@ public class Lookup : TrackDomainObject<LookupAudit>, IDomainAttributeObject,
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);
+    }
+    
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
     }
 
     /// <summary>Compare two objects</summary>

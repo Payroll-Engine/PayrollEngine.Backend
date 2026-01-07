@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -8,18 +7,12 @@ namespace PayrollEngine.Domain.Model;
 /// A payroll wage type
 /// </summary>
 public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject, IClusterObject,
-    INamedObject, IDomainAttributeObject, IEquatable<WageType>
+    INamedObject, INamespaceObject, IDomainAttributeObject, IEquatable<WageType>
 {
     private static readonly List<FunctionType> FunctionTypes =
     [
         FunctionType.WageTypeValue,
         FunctionType.WageTypeResult
-    ];
-    private static readonly IEnumerable<string> EmbeddedScriptNames =
-    [
-        "Cache\\Cache.cs",
-        "Function\\PayrunFunction.cs",
-        "Function\\WageTypeFunction.cs"
     ];
 
     /// <summary>
@@ -52,13 +45,12 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
     /// </summary>
     public OverrideType OverrideType { get; set; }
 
-    private ValueType valueType = ValueType.Money;
     /// <summary>
     /// The value type, default is value type money
     /// </summary>
     public ValueType ValueType
     {
-        get => valueType;
+        get;
         set
         {
             if (!value.IsNumber())
@@ -66,9 +58,10 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
                 throw new ArgumentOutOfRangeException(nameof(value),
                     $"Value type of wage type must be a number: {value}");
             }
-            valueType = value;
+
+            field = value;
         }
-    }
+    } = ValueType.Money;
 
     /// <summary>
     /// The wage type calendar (fallback: employee calendar)
@@ -101,6 +94,16 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
     public string ResultExpression { get; set; }
 
     /// <summary>
+    /// The wage type value actions
+    /// </summary>
+    public List<string> ValueActions { get; set; }
+
+    /// <summary>
+    /// The wage type result actions
+    /// </summary>
+    public List<string> ResultActions { get; set; }
+
+    /// <summary>
     /// Custom attributes
     /// </summary>
     public Dictionary<string, object> Attributes { get; set; }
@@ -120,6 +123,15 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);
+    }
+
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
+        Collectors = Collectors.EnsureNamespace(@namespace);
+        CollectorGroups = CollectorGroups.EnsureNamespace(@namespace);
+        Clusters = Clusters.EnsureNamespace(@namespace);
     }
 
     /// <summary>Compare two objects</summary>
@@ -149,6 +161,8 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
             CollectorGroups = CollectorGroups,
             ValueExpression = ValueExpression,
             ResultExpression = ResultExpression,
+            ValueActions = ValueActions,
+            ResultActions = ResultActions,
             Script = Script,
             ScriptVersion = ScriptVersion,
             Binary = Binary,
@@ -175,15 +189,47 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
         CollectorGroups = audit.CollectorGroups;
         ValueExpression = audit.ValueExpression;
         ResultExpression = audit.ResultExpression;
+        ValueActions = audit.ValueActions;
+        ResultActions = audit.ResultActions;
         Attributes = audit.Attributes;
         Clusters = audit.Clusters;
     }
 
     #region Scripting
 
+    /// <summary>
+    /// Test for value script
+    /// </summary>
+    public string ValueScript =>
+        HasValueScript ? ValueExpression ?? "0" : null;
+
+    /// <summary>
+    /// Test for result script
+    /// </summary>
+    public string ResultScript =>
+        HasResultScript ? ResultExpression ?? "0" : null;
+
+    /// <summary>
+    /// Test for value script
+    /// </summary>
+    private bool HasValueScript =>
+        AnyExpressionOrActions(ValueExpression, ValueActions);
+
+    /// <summary>
+    /// Test for result script
+    /// </summary>
+    private bool HasResultScript =>
+        AnyExpressionOrActions(ResultExpression, ResultActions);
+
     /// <inheritdoc/>
-    public override bool HasExpression =>
-        GetFunctionScripts().Values.Any(x => !string.IsNullOrWhiteSpace(x));
+    public override bool HasAnyExpression =>
+        HasValueScript ||
+        HasResultScript;
+
+    /// <inheritdoc/>
+    public override bool HasAnyAction =>
+        AnyActions(ValueActions) ||
+        AnyActions(ResultActions);
 
     /// <inheritdoc/>
     public override bool HasObjectScripts => true;
@@ -192,23 +238,29 @@ public class WageType : ScriptTrackDomainObject<WageTypeAudit>, IDerivableObject
     public override List<FunctionType> GetFunctionTypes() => FunctionTypes;
 
     /// <inheritdoc/>
-    public override IDictionary<FunctionType, string> GetFunctionScripts()
-    {
-        var scripts = new Dictionary<FunctionType, string>();
-        if (!string.IsNullOrWhiteSpace(ValueExpression))
+    public override string GetFunctionScript(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.WageTypeValue, ValueExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(ResultExpression))
+            FunctionType.WageTypeValue => ValueExpression,
+            FunctionType.WageTypeResult => ResultExpression,
+            _ => null
+        };
+
+    /// <inheritdoc/>
+    public override List<string> GetFunctionActions(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.WageTypeResult, ResultExpression);
-        }
-        return scripts;
-    }
+            FunctionType.WageTypeValue => ValueActions,
+            FunctionType.WageTypeResult => ResultActions,
+            _ => null
+        };
 
     /// <inheritdoc/>
     public override IEnumerable<string> GetEmbeddedScriptNames() =>
-        EmbeddedScriptNames;
+        GetEmbeddedScriptNames([
+            new(ValueExpression, ValueActions, FunctionType.WageTypeValue),
+            new(ResultExpression, ResultActions, FunctionType.WageTypeResult)
+        ]);
 
     #endregion
 

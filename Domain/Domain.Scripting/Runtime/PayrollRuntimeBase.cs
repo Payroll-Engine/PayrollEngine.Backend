@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Client.Scripting.Runtime;
-using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -73,6 +73,13 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
 
     #endregion
 
+    #region Namespace
+
+    /// <inheritdoc />
+    public string Namespace => Settings.Namespace;
+
+    #endregion
+
     #region Division
 
     /// <inheritdoc />
@@ -80,7 +87,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
 
     #endregion
 
-    #region Culture
+    #region Culture & Calendar
 
     /// <inheritdoc />
     public virtual string PayrollCulture => Settings.PayrollCulture;
@@ -155,6 +162,10 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
+
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
+
         var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         return caseField != null ? (int)caseField.ValueType : null;
     }
@@ -166,6 +177,10 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
+
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
+
         var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         return caseField?.Attributes?.GetValue<object>(attributeName);
     }
@@ -177,6 +192,10 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
+
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
+
         var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
         return caseField?.ValueAttributes?.GetValue<object>(attributeName);
     }
@@ -189,6 +208,9 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             throw new ArgumentException(nameof(caseFieldName));
         }
 
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
+
         var caseValueSlots = Task.Run(() => CaseValueProvider.GetCaseValueSlotsAsync(caseFieldName)).Result;
         return caseValueSlots.ToList();
     }
@@ -196,6 +218,14 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     /// <inheritdoc />
     public virtual List<string> GetCaseValueTags(string caseFieldName, DateTime valueDate)
     {
+        if (string.IsNullOrWhiteSpace(caseFieldName))
+        {
+            throw new ArgumentException(nameof(caseFieldName));
+        }
+
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
+
         var caseValue = GetTimeCaseValue(caseFieldName, valueDate).Result;
         return caseValue == null ? [] : caseValue.Tags;
     }
@@ -208,6 +238,9 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
+
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
 
         var caseValue = GetTimeCaseValue(caseFieldName, valueDate).Result;
         if (caseValue == null)
@@ -232,6 +265,16 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             throw new ArgumentNullException(nameof(caseFieldNames));
         }
 
+        // namespace
+        if (!string.IsNullOrWhiteSpace(Settings.Namespace))
+        {
+            var fieldNames = new List<string>();
+            foreach (var caseFieldName in caseFieldNames)
+            {
+                fieldNames.Add(caseFieldName.EnsureNamespace(Settings.Namespace));
+            }
+            caseFieldNames = fieldNames;
+        }
 
         var caseValues = GetTimeCaseValues(caseFieldNames, valueDate).Result;
         var values =
@@ -287,6 +330,10 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(caseFieldName));
         }
+
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
+
         startDate ??= Date.MinValue;
         endDate ??= Date.MaxValue;
         if (endDate < startDate)
@@ -332,6 +379,17 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             throw new ArgumentException($"Invalid period end date: {endDate}.", nameof(endDate));
         }
 
+        // namespace
+        if (!string.IsNullOrWhiteSpace(Settings.Namespace))
+        {
+            var fieldNames = new List<string>();
+            foreach (var caseFieldName in caseFieldNames)
+            {
+                fieldNames.Add(caseFieldName.EnsureNamespace(Settings.Namespace));
+            }
+            caseFieldNames = fieldNames.ToArray();
+        }
+
         // period
         var period = new DatePeriod(startDate, endDate);
 
@@ -365,6 +423,10 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             return false;
         }
+
+        // namespace
+        lookupName = lookupName.EnsureNamespace(Settings.Namespace);
+
         var result = Task.Run(() =>
             RegulationLookupProvider.HasLookupAsync(Settings.DbContext, lookupName)).Result;
         return result;
@@ -381,6 +443,9 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             throw new ArgumentException(nameof(lookupKey));
         }
+
+        // namespace
+        lookupName = lookupName.EnsureNamespace(Settings.Namespace);
 
         // culture
         culture ??= CultureInfo.CurrentCulture.Name;
@@ -402,6 +467,9 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             throw new ArgumentException(nameof(lookupName));
         }
 
+        // namespace
+        lookupName = lookupName.EnsureNamespace(Settings.Namespace);
+
         // culture
         culture ??= CultureInfo.CurrentCulture.Name;
 
@@ -422,10 +490,14 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             throw new ArgumentException(nameof(lookupName));
         }
 
+        // range value
         if (rangeValue <= 0)
         {
             return 0;
         }
+
+        // namespace
+        lookupName = lookupName.EnsureNamespace(Settings.Namespace);
 
         var lookup = Task.Run(() => RegulationLookupProvider.GetLookupAsync(
                 context: Settings.DbContext,

@@ -41,6 +41,22 @@ public class PayrollCalculator : IPayrollCalculator
     public IPayrollPeriod GetPayrunPeriod(DateTime periodMoment) =>
         GetPayrunPeriod(periodMoment, Calendar.PeriodTimeUnit);
 
+    /// <inheritdoc />
+    public int GetCalendarDayCount(DatePeriod period)
+    {
+        var dayCount = 0m;
+        switch (Calendar.WeekMode)
+        {
+            case CalendarWeekMode.Week:
+                dayCount = (decimal)period.Duration.TotalDays;
+                break;
+            case CalendarWeekMode.WorkWeek:
+                dayCount = period.GetWorkingDaysCount(Calendar.GetWeekDays());
+                break;
+        }
+        return Convert.ToInt32(dayCount);
+    }
+
     private IPayrollPeriod GetPayrunPeriod(DateTime periodMoment, CalendarTimeUnit timeUnit)
     {
         return timeUnit switch
@@ -93,20 +109,16 @@ public class PayrollCalculator : IPayrollCalculator
     /// <returns>The case year period value</returns>
     private decimal? CalculateYearValue(CaseValueCalculation calculation)
     {
-        // year period
-        var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
-        var period = new DatePeriod(calculation.CaseValuePeriod.Start.Date, periodEnd);
-
         // year week days
-        var yearDayCount = GetPeriodWeekDayCount(calculation, (decimal)period.Duration.TotalDays);
-        if (yearDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in year
-        var yearTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
-        if (yearTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -115,8 +127,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = calculation.CaseValue;
 
         // year value: scale base value with the day factor
-        var yearValue = caseValue / yearTotalDayCount * yearDayCount;
-        return yearValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -126,20 +138,16 @@ public class PayrollCalculator : IPayrollCalculator
     /// <returns>The case semi year period value</returns>
     private decimal? CalculateSemiYearValue(CaseValueCalculation calculation)
     {
-        // semi year period
-        var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
-        var period = new DatePeriod(calculation.CaseValuePeriod.Start.Date, periodEnd);
-
         // semi year week days
-        var semiYearDayCount = GetPeriodWeekDayCount(calculation, (decimal)period.Duration.TotalDays);
-        if (semiYearDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in semi year
-        var semiYearTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
-        if (semiYearTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -148,8 +156,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.SemiYearsInYear);
 
         // semi year value: scale base value with the day factor
-        var semiYearValue = caseValue / semiYearTotalDayCount * semiYearDayCount;
-        return semiYearValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -159,20 +167,16 @@ public class PayrollCalculator : IPayrollCalculator
     /// <returns>The case quarter period value</returns>
     private decimal? CalculateQuarterValue(CaseValueCalculation calculation)
     {
-        // quarter period
-        var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
-        var period = new DatePeriod(calculation.CaseValuePeriod.Start.Date, periodEnd);
-
         // quarter week days
-        var quarterDayCount = GetPeriodWeekDayCount(calculation, (decimal)period.Duration.TotalDays);
-        if (quarterDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in quarter
-        var quarterTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
-        if (quarterTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -181,8 +185,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.QuartersInYear);
 
         // quarter value: scale base value with the day factor
-        var quarterValue = caseValue / quarterTotalDayCount * quarterDayCount;
-        return quarterValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -192,20 +196,16 @@ public class PayrollCalculator : IPayrollCalculator
     /// <returns>The case bi month period value</returns>
     private decimal? CalculateBiMonthValue(CaseValueCalculation calculation)
     {
-        // bi month period
-        var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
-        var period = new DatePeriod(calculation.CaseValuePeriod.Start.Date, periodEnd);
-
         // bi month week days
-        var biMonthDayCount = GetPeriodWeekDayCount(calculation, (decimal)period.Duration.TotalDays);
-        if (biMonthDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in bi month
-        var biMonthTotalDayCount = Calendar.PeriodDayCount ?? GetPeriodDayCount(period);
-        if (biMonthTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -214,8 +214,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.BiMonthsInYear);
 
         // bi month value: scale base value with the day factor
-        var biMonthValue = caseValue / biMonthTotalDayCount * biMonthDayCount;
-        return biMonthValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -230,22 +230,17 @@ public class PayrollCalculator : IPayrollCalculator
             throw new PayrollException($"Evaluation period {calculation.EvaluationPeriod} must be within a month.");
         }
 
-        // calendar month period
-        var periodStart = calculation.CaseValuePeriod.Start;
-        var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
-        var period = new DatePeriod(periodStart.Date, periodEnd);
-
         // calendar month days
-        var monthDayCount = GetPeriodWeekDayCount(calculation, (decimal)period.Duration.TotalDays);
-        if (monthDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in month
-        var monthTotalDayCount = Calendar.PeriodDayCount ??
-                                 DateTime.DaysInMonth(periodStart.Year, periodStart.Month);
-        if (monthTotalDayCount <= 0)
+        var periodStart = calculation.CaseValuePeriod.Start;
+        var evaluationDayCount = GetEvaluationDayCount(calculation, DateTime.DaysInMonth(periodStart.Year, periodStart.Month));
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -254,8 +249,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.MonthsInYear);
 
         // calendar month value: scale base value with the day factor
-        var monthValue = caseValue / monthTotalDayCount * monthDayCount;
-        return monthValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -265,20 +260,16 @@ public class PayrollCalculator : IPayrollCalculator
     /// <returns>The case semi month period value</returns>
     private decimal? CalculateLunisoralMonthValue(CaseValueCalculation calculation)
     {
-        // lunar month period
-        var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
-        var period = new DatePeriod(calculation.CaseValuePeriod.Start.Date, periodEnd);
-
         // lunar calendar month days
-        var monthDayCount = GetPeriodWeekDayCount(calculation, (decimal)period.Duration.TotalDays);
-        if (monthDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in lunisolar month
-        var lunisolarMonthTotalDayCount = Calendar.PeriodDayCount ?? Date.DaysInLunisolarMonth;
-        if (lunisolarMonthTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation, Date.DaysInLunisolarMonth);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -287,8 +278,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.LunisolarMonthsInYear);
 
         // lunisolar month value: scale base value with the day factor
-        var monthValue = caseValue / lunisolarMonthTotalDayCount * monthDayCount;
-        return monthValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -298,28 +289,16 @@ public class PayrollCalculator : IPayrollCalculator
     /// <returns>The case semi month period value</returns>
     private decimal? CalculateSemiMonthValue(CaseValueCalculation calculation)
     {
-        // semi month period
-        var periodStart = calculation.CaseValuePeriod.Start;
-        var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
-        var period = new DatePeriod(periodStart.Date, periodEnd);
-
         // semi month day count
-        var semiMonthDayCount = GetPeriodWeekDayCount(calculation, (decimal)period.Duration.TotalDays);
-        if (semiMonthDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total semi month days
-        var daysInMonth = DateTime.DaysInMonth(periodStart.Year, periodStart.Month);
-        var secondHalfStartDay = Date.DaysInSemiMonth + 1;
-        var semiMonthTotalDayCount = Calendar.PeriodDayCount ??
-                                     (periodStart.Day < secondHalfStartDay ?
-                                        // first half: always 15
-                                        Date.DaysInSemiMonth :
-                                        // second half: 13/14 (february) or 15 (months with 30 days) or 16 (months with 31 days)
-                                        daysInMonth - Date.DaysInSemiMonth);
-        if (semiMonthTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -328,8 +307,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.SemiMonthsInYear);
 
         // semi month value: scale base value with the day factor
-        var monthValue = caseValue / semiMonthTotalDayCount * semiMonthDayCount;
-        return monthValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -340,15 +319,15 @@ public class PayrollCalculator : IPayrollCalculator
     private decimal? CalculateBiWeekValue(CaseValueCalculation calculation)
     {
         // bi-week days
-        var biWeekDayCount = GetPeriodWeekDayCount(calculation, Date.DaysInBiWeek);
-        if (biWeekDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in bi-week
-        var biWeekTotalDayCount = Calendar.PeriodDayCount ?? Date.DaysInBiWeek;
-        if (biWeekTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation, Date.DaysInBiWeek);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -357,8 +336,8 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.BiWeeksInYear);
 
         // bi-week value: scale base value with the day factor
-        var biWeekValue = caseValue / biWeekTotalDayCount * biWeekDayCount;
-        return biWeekValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
@@ -369,15 +348,15 @@ public class PayrollCalculator : IPayrollCalculator
     private decimal? CalculateWeekValue(CaseValueCalculation calculation)
     {
         // week days
-        var weekDayCount = GetPeriodWeekDayCount(calculation, Date.DaysInWeek);
-        if (weekDayCount <= 0)
+        var valueDayCount = GetValueDayCount(calculation);
+        if (valueDayCount <= 0)
         {
             return null;
         }
 
         // total days in week
-        var weekTotalDayCount = Calendar.PeriodDayCount ?? Date.DaysInWeek;
-        if (weekTotalDayCount <= 0)
+        var evaluationDayCount = GetEvaluationDayCount(calculation, Date.DaysInWeek);
+        if (evaluationDayCount <= 0)
         {
             return null;
         }
@@ -386,45 +365,62 @@ public class PayrollCalculator : IPayrollCalculator
         var caseValue = MapPeriodValue(calculation, Date.WeeksInYear);
 
         // week value: scale base value with the day factor
-        var weekValue = caseValue / weekTotalDayCount * weekDayCount;
-        return weekValue;
+        var value = caseValue / evaluationDayCount * valueDayCount;
+        return value.RoundPayroll();
     }
 
     /// <summary>
-    /// Get the week day count form the case value period
+    /// Get the evaluation day count form the case value period
     /// </summary>
     /// <param name="calculation">The calculation</param>
-    /// <param name="weekCount">The week mode day count</param>
-    private decimal GetPeriodWeekDayCount(CaseValueCalculation calculation, decimal weekCount)
+    /// <param name="evaluationDayCount">Evaluation day count</param>
+    private decimal GetEvaluationDayCount(CaseValueCalculation calculation, decimal? evaluationDayCount = null)
     {
-        var weekDayCount = 0m;
+        // fixed period day count
+        if (Calendar.PeriodDayCount != null)
+        {
+            return Calendar.PeriodDayCount.Value;
+        }
+
+        var dayCount = 0m;
         switch (Calendar.WeekMode)
         {
             case CalendarWeekMode.Week:
-                weekDayCount = weekCount;
+                if (evaluationDayCount.HasValue)
+                {
+                    dayCount = evaluationDayCount.Value;
+                }
+                else
+                {
+                    dayCount = (decimal)calculation.EvaluationPeriod.TotalDays;
+                }
                 break;
             case CalendarWeekMode.WorkWeek:
-                weekDayCount = calculation.CaseValuePeriod.GetWorkingDaysCount(Calendar.GetWeekDays());
+                dayCount = calculation.EvaluationPeriod.GetWorkingDaysCount(Calendar.GetWeekDays());
                 break;
         }
-        return weekDayCount;
+        return dayCount;
     }
 
     /// <summary>
-    /// Get the period day count
+    /// Get the value count form the case value period
     /// </summary>
-    /// <param name="period">The period to count</param>
-    private decimal GetPeriodDayCount(DatePeriod period)
+    /// <param name="calculation">The calculation</param>
+    private decimal GetValueDayCount(CaseValueCalculation calculation)
     {
-        var daysInPeriod = 0m;
-        var month = period.Start.Date;
-        while (month < period.End)
+        var dayCount = 0m;
+        switch (Calendar.WeekMode)
         {
-            var daysInMonth = (decimal)Date.DaysInMonth(month);
-            daysInPeriod += daysInMonth;
-            month = month.AddMonths(1);
+            case CalendarWeekMode.Week:
+                var periodEnd = calculation.CaseValuePeriod.End.RoundLastMoment();
+                var period = new DatePeriod(calculation.CaseValuePeriod.Start.Date, periodEnd);
+                dayCount = (decimal)period.Duration.TotalDays;
+                break;
+            case CalendarWeekMode.WorkWeek:
+                dayCount = calculation.CaseValuePeriod.GetWorkingDaysCount(Calendar.GetWeekDays());
+                break;
         }
-        return daysInPeriod;
+        return dayCount;
     }
 
     /// <summary>

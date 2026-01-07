@@ -6,25 +6,27 @@ namespace PayrollEngine.Domain.Model;
 /// </summary>
 public static class CaseValueExtensions
 {
-    /// <summary>
-    /// Get case value date period
-    /// </summary>
     /// <param name="caseValue">The case value</param>
-    /// <returns>The date period</returns>
-    public static DatePeriod GetPeriod(this CaseValue caseValue) =>
-        new(caseValue.Start, caseValue.End);
-
-    /// <summary>
-    /// Get case value reference
-    /// </summary>
-    /// <param name="caseValue">The case value</param>
-    /// <returns>The case value reference</returns>
-    public static string GetCaseValueReference(this CaseValue caseValue)
+    extension(CaseValue caseValue)
     {
-        if (caseValue == null)
+        /// <summary>
+        /// Get case value date period
+        /// </summary>
+        /// <returns>The date period</returns>
+        public DatePeriod GetPeriod() =>
+            new(caseValue.Start, caseValue.End);
+
+        /// <summary>
+        /// Get case value reference
+        /// </summary>
+        /// <returns>The case value reference</returns>
+        public string GetCaseValueReference()
         {
-            return null;
+            if (caseValue == null)
+            {
+                return null;
+            }
+            return CaseValueReference.ToReference(caseValue.CaseFieldName, caseValue.CaseSlot);
         }
-        return CaseValueReference.ToReference(caseValue.CaseFieldName, caseValue.CaseSlot);
     }
 }

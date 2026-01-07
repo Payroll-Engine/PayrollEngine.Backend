@@ -9,14 +9,16 @@ internal sealed class PayrunProcessorScripts
 {
     private IFunctionHost FunctionHost { get; }
     private PayrunProcessorSettings Settings { get; }
+    private IRegulationProvider RegulationProvider { get; }
     private IResultProvider ResultProvider { get; }
     private Tenant Tenant { get; }
     private Payrun Payrun { get; }
 
     internal PayrunProcessorScripts(IFunctionHost functionHost, PayrunProcessorSettings settings,
-        IResultProvider resultProvider, Tenant tenant, Payrun payrun)
+        IRegulationProvider regulationProvider, IResultProvider resultProvider, Tenant tenant, Payrun payrun)
     {
         FunctionHost = functionHost ?? throw new ArgumentNullException(nameof(functionHost));
+        RegulationProvider = regulationProvider ?? throw new ArgumentNullException(nameof(regulationProvider));
         ResultProvider = resultProvider ?? throw new ArgumentNullException(nameof(resultProvider));
         Settings = settings ?? throw new ArgumentNullException(nameof(settings));
         Tenant = tenant ?? throw new ArgumentNullException(nameof(tenant));
@@ -52,6 +54,7 @@ internal sealed class PayrunProcessorScripts
         {
             DbContext = Settings.DbContext,
             PayrollCulture = context.PayrollCulture,
+            Namespace = null,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -60,6 +63,7 @@ internal sealed class PayrunProcessorScripts
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
             ExecutionPhase = context.ExecutionPhase,
+            RegulationProvider = RegulationProvider,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,
@@ -102,6 +106,7 @@ internal sealed class PayrunProcessorScripts
         {
             DbContext = Settings.DbContext,
             PayrollCulture = context.PayrollCulture,
+            Namespace = null,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -110,6 +115,7 @@ internal sealed class PayrunProcessorScripts
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
             ExecutionPhase = context.ExecutionPhase,
+            RegulationProvider = RegulationProvider,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,
@@ -141,6 +147,7 @@ internal sealed class PayrunProcessorScripts
         {
             DbContext = Settings.DbContext,
             PayrollCulture = context.PayrollCulture,
+            Namespace = null,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -149,6 +156,7 @@ internal sealed class PayrunProcessorScripts
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
             ExecutionPhase = context.ExecutionPhase,
+            RegulationProvider = RegulationProvider,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,
@@ -181,6 +189,7 @@ internal sealed class PayrunProcessorScripts
         {
             DbContext = Settings.DbContext,
             PayrollCulture = context.PayrollCulture,
+            Namespace = null,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
             User = context.User,
@@ -189,6 +198,7 @@ internal sealed class PayrunProcessorScripts
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
             ExecutionPhase = context.ExecutionPhase,
+            RegulationProvider = RegulationProvider,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
             RegulationLookupProvider = context.RegulationLookupProvider,

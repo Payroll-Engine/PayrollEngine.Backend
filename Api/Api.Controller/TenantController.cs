@@ -122,4 +122,26 @@ public abstract class TenantController(ITenantService tenantService, IRegulation
             return InternalServerError(exception);
         }
     }
+
+    public virtual async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionPropertiesAsync(
+        int tenantId, FunctionType functionType = FunctionType.All, bool readOnly = true)
+    {
+        try
+        {
+            // tenant
+            var tenant = await Service.GetAsync(Runtime.DbContext, tenantId);
+            if (tenant == null)
+            {
+                return BadRequest($"Unknown tenant with id {tenantId}");
+            }
+
+            // system actions
+            var actions = await Service.GetSystemScriptActionPropertiesAsync(functionType, readOnly);
+            return new ActionInfoMap().ToApi(actions);
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
+    }
 }

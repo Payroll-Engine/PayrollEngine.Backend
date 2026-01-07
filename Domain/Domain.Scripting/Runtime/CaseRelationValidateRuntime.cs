@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using PayrollEngine.Client.Scripting;
-using PayrollEngine.Client.Scripting.Function;
-using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Client.Scripting;
+using PayrollEngine.Client.Scripting.Runtime;
+using PayrollEngine.Client.Scripting.Function;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -32,15 +32,10 @@ public class CaseRelationValidateRuntime : CaseRelationRuntimeBase, ICaseRelatio
     protected override string LogOwnerType => nameof(CaseRelationValidateFunction);
 
     /// <inheritdoc />
-    public string[] GetValidateActions() =>
-        CaseRelation.ValidateActions == null ? [] :
-            CaseRelation.ValidateActions.ToArray();
-
-    /// <inheritdoc />
     public bool HasIssues() => Issues.Any();
 
     /// <inheritdoc />
-    public void AddIssue(string message, int number)
+    public void AddCaseIssue(string message, int number)
     {
         if (string.IsNullOrWhiteSpace(message))
         {
@@ -64,7 +59,7 @@ public class CaseRelationValidateRuntime : CaseRelationRuntimeBase, ICaseRelatio
     }
 
     /// <inheritdoc />
-    public void AddIssue(string message, string caseFieldName, int number)
+    public void AddCaseFieldIssue(string message, string caseFieldName, int number)
     {
         if (string.IsNullOrWhiteSpace(message))
         {

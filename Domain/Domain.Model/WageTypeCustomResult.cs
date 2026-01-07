@@ -35,14 +35,12 @@ public class WageTypeCustomResult : DomainObjectBase, ITagObject,
     /// </summary>
     public string Source { get; set; }
 
-    private ValueType valueType = ValueType.Decimal;
-
     /// <summary>
     /// The value type (immutable)
     /// </summary>
     public ValueType ValueType
     {
-        get => valueType;
+        get;
         set
         {
             if (!value.IsNumber())
@@ -50,9 +48,10 @@ public class WageTypeCustomResult : DomainObjectBase, ITagObject,
                 throw new ArgumentOutOfRangeException(nameof(value),
                     $"Value type of wage type custom result must be a number: {value}");
             }
-            valueType = value;
+
+            field = value;
         }
-    }
+    } = ValueType.Decimal;
 
     /// <summary>
     /// The wage type custom result value (immutable)

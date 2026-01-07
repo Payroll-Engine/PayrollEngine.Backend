@@ -19,6 +19,11 @@ public class Regulation : DomainObjectBase, INamedObject, IDomainAttributeObject
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
+    /// The regulation namespace
+    /// </summary>
+    public string Namespace { get; set; }
+
+    /// <summary>
     /// The regulation version, unique per regulation name
     /// </summary>
     public int Version { get; set; }

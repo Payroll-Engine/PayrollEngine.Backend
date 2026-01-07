@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -8,7 +7,7 @@ namespace PayrollEngine.Domain.Model;
 /// A national, company and employee case
 /// </summary>
 public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClusterObject,
-    INamedObject, IDomainAttributeObject, IEquatable<Case>
+    INamedObject, INamespaceObject, IDomainAttributeObject, IEquatable<Case>
 {
     private static readonly List<FunctionType> FunctionTypes =
     [
@@ -16,15 +15,6 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
         FunctionType.CaseBuild,
         FunctionType.CaseValidate
     ];
-
-    // scripts
-    private const string CaseFunctionScript = "Function\\CaseFunction.cs";
-    private const string CaseChangeFunctionScript = "Function\\CaseChangeFunction.cs";
-    private const string CaseActionScript = "Function\\CaseAction.cs";
-    private const string CaseAvailableActionsScript = "Function\\CaseAvailableActions.cs";
-    private const string CaseBuildActionsScript = "Function\\CaseBuildActions.cs";
-    private const string CaseInputActionsScript = "Function\\CaseInputActions.cs";
-    private const string CaseValidateActionsScript = "Function\\CaseValidateActions.cs";
 
     /// <summary>
     /// The case name (immutable)
@@ -153,6 +143,27 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
         CopyTool.CopyProperties(copySource, this);
     }
 
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
+        BaseCase = BaseCase.EnsureNamespace(@namespace);
+        if (BaseCaseFields != null)
+        {
+            var baseCaseFields = new List<CaseFieldReference>();
+            foreach (var baseCaseField in BaseCaseFields)
+            {
+                baseCaseFields.Add(new CaseFieldReference
+                {
+                    Name = baseCaseField.Name.EnsureNamespace(@namespace),
+                    Order = baseCaseField.Order
+                });
+            }
+            BaseCaseFields = baseCaseFields;
+        }
+        Clusters = Clusters.EnsureNamespace(@namespace);
+    }
+
     /// <summary>Compare two objects</summary>
     /// <param name="compare">The object to compare with this</param>
     /// <returns>True for objects with the same data</returns>
@@ -234,58 +245,54 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
     }
 
     #region Scripting
-    
+
     /// <summary>
     /// Test for available script
     /// </summary>
-    public string AvailableScript
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(AvailableExpression) &&
-                AvailableActions != null && AvailableActions.Any())
-            {
-                return "true";
-            }
-            return AvailableExpression;
-        }
-    }
+    public string AvailableScript =>
+        HasAvailableScript ? AvailableExpression ?? "true" : null;
 
     /// <summary>
     /// Test for build script
     /// </summary>
-    public string BuildScript
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(BuildExpression) &&
-                BuildActions != null && BuildActions.Any())
-            {
-                return "true";
-            }
-            return BuildExpression;
-        }
-    }
+    public string BuildScript =>
+        HasBuildScript ? BuildExpression ?? "true" : null;
 
     /// <summary>
     /// Test for validate script
     /// </summary>
-    public string ValidateScript
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(ValidateExpression) &&
-                ValidateActions != null && ValidateActions.Any())
-            {
-                return "true";
-            }
-            return ValidateExpression;
-        }
-    }
+    public string ValidateScript =>
+        HasValidateScript ? ValidateExpression ?? "true" : null;
+
+    /// <summary>
+    /// Test for available script
+    /// </summary>
+    private bool HasAvailableScript =>
+        AnyExpressionOrActions(AvailableExpression, AvailableActions);
+
+    /// <summary>
+    /// Test for build script
+    /// </summary>
+    private bool HasBuildScript =>
+        AnyExpressionOrActions(BuildExpression, BuildActions);
+
+    /// <summary>
+    /// Test for validate script
+    /// </summary>
+    private bool HasValidateScript =>
+        AnyExpressionOrActions(ValidateExpression, ValidateActions);
 
     /// <inheritdoc/>
-    public override bool HasExpression =>
-        GetFunctionScripts().Values.Any(x => !string.IsNullOrWhiteSpace(x));
+    public override bool HasAnyExpression =>
+        HasAvailableScript ||
+        HasBuildScript ||
+        HasValidateScript;
+
+    /// <inheritdoc/>
+    public override bool HasAnyAction =>
+        AnyActions(AvailableActions) ||
+        AnyActions(BuildActions) ||
+        AnyActions(ValidateActions);
 
     /// <inheritdoc/>
     public override bool HasObjectScripts => true;
@@ -294,59 +301,32 @@ public class Case : ScriptTrackDomainObject<CaseAudit>, IDerivableObject, IClust
     public override List<FunctionType> GetFunctionTypes() => FunctionTypes;
 
     /// <inheritdoc/>
-    public override IDictionary<FunctionType, string> GetFunctionScripts()
-    {
-        var scripts = new Dictionary<FunctionType, string>();
-
-        // case available
-        var availableScript = AvailableScript;
-        if (!string.IsNullOrWhiteSpace(availableScript))
+    public override string GetFunctionScript(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.CaseAvailable, availableScript);
-        }
-
-        // case build
-        var buildScript = BuildScript;
-        if (!string.IsNullOrWhiteSpace(buildScript))
-        {
-            scripts.Add(FunctionType.CaseBuild, buildScript);
-        }
-
-        // case validate
-        var validateScript = ValidateScript;
-        if (!string.IsNullOrWhiteSpace(validateScript))
-        {
-            scripts.Add(FunctionType.CaseValidate, validateScript);
-        }
-        return scripts;
-    }
-
-    /// <inheritdoc/>
-    public override IEnumerable<string> GetEmbeddedScriptNames()
-    {
-        // case scripts
-        var scripts = new List<string>
-        {
-            CaseFunctionScript,
-            CaseChangeFunctionScript,
-            CaseActionScript
+            FunctionType.CaseAvailable => AvailableExpression,
+            FunctionType.CaseBuild => BuildExpression,
+            FunctionType.CaseValidate => ValidateExpression,
+            _ => null
         };
 
-        // case available
-        if (!string.IsNullOrWhiteSpace(AvailableScript))
+    /// <inheritdoc/>
+    public override List<string> GetFunctionActions(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(CaseAvailableActionsScript);
-        }
+            FunctionType.CaseAvailable => AvailableActions,
+            FunctionType.CaseBuild => BuildActions,
+            FunctionType.CaseValidate => ValidateActions,
+            _ => null
+        };
 
-        // case build and validate
-        if (!string.IsNullOrWhiteSpace(BuildScript) || !string.IsNullOrWhiteSpace(ValidateScript))
-        {
-            scripts.Add(CaseBuildActionsScript);
-            scripts.Add(CaseInputActionsScript);
-            scripts.Add(CaseValidateActionsScript);
-        }
-        return scripts;
-    }
+    /// <inheritdoc/>
+    public override IEnumerable<string> GetEmbeddedScriptNames() =>
+        GetEmbeddedScriptNames([
+            new(AvailableExpression, AvailableActions, FunctionType.CaseAvailable),
+            new(BuildExpression, BuildActions, FunctionType.CaseBuild),
+            new(ValidateExpression, ValidateActions, FunctionType.CaseValidate)
+        ]);
 
     #endregion
 

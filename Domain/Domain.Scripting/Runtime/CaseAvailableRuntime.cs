@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using PayrollEngine.Client.Scripting;
-using PayrollEngine.Client.Scripting.Function;
-using PayrollEngine.Client.Scripting.Runtime;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Client.Scripting;
+using PayrollEngine.Client.Scripting.Runtime;
+using PayrollEngine.Client.Scripting.Function;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -19,11 +19,6 @@ public class CaseAvailableRuntime : CaseRuntimeBase, ICaseAvailableRuntime
 
     /// <summary>The log owner type</summary>
     protected override string LogOwnerType => nameof(CaseAvailableFunction);
-    
-    /// <inheritdoc />
-    public string[] GetAvailableActions() =>
-        Case.AvailableActions == null ? [] :
-            Case.AvailableActions.ToArray();
 
     /// <summary>
     /// Execute the case available script

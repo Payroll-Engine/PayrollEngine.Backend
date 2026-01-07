@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -15,7 +15,7 @@ internal sealed class PayrollRepositoryWageTypeCommand : PayrollRepositoryComman
     {
     }
 
-    internal async Task<IEnumerable<WageType>> GetDerivedWageTypesAsync(PayrollQuery query,
+    internal async Task<IEnumerable<DerivedWageType>> GetDerivedWageTypesAsync(PayrollQuery query,
         IEnumerable<decimal> wageTypeNumbers = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null)
     {
@@ -120,6 +120,8 @@ internal sealed class PayrollRepositoryWageTypeCommand : PayrollRepositoryComman
                 derivedWageType.Calendar = CollectDerivedValue(derivedWageTypes, x => x.Calendar);
                 derivedWageType.Collectors = CollectDerivedList(derivedWageTypes, x => x.Collectors);
                 derivedWageType.CollectorGroups = CollectDerivedList(derivedWageTypes, x => x.CollectorGroups);
+                derivedWageType.ValueActions = CollectDerivedList(derivedWageTypes, x => x.ValueActions);
+                derivedWageType.ResultActions = CollectDerivedList(derivedWageTypes, x => x.ResultActions);
                 derivedWageType.Attributes = CollectDerivedAttributes(derivedWageTypes);
                 derivedWageType.Clusters = CollectDerivedList(derivedWageTypes, x => x.Clusters);
                 // remove the current level for the next iteration

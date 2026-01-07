@@ -1,13 +1,20 @@
-﻿using PayrollEngine.Domain.Model;
+﻿using System;
+using System.Threading.Tasks;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportParameterRepository(IReportParameterAuditRepository auditRepository, bool auditDisabled) :
-    TrackChildDomainRepository<ReportParameter, ReportParameterAudit>(DbSchema.Tables.ReportParameter,
-        DbSchema.ReportParameterColumn.ReportId, auditRepository, auditDisabled), IReportParameterRepository
+public class ReportParameterRepository(IRegulationRepository regulationRepository,
+    IReportRepository reportRepository, IReportParameterAuditRepository auditRepository, bool auditDisabled) :
+    TrackChildDomainRepository<ReportParameter, ReportParameterAudit>(regulationRepository,
+        DbSchema.Tables.ReportParameter, DbSchema.ReportParameterColumn.ReportId,
+        auditRepository, auditDisabled), IReportParameterRepository
 {
+    private IReportRepository ReportRepository { get; } = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
+
     protected override void GetObjectCreateData(ReportParameter parameter, DbParameterCollection parameters)
     {
         parameters.Add(nameof(parameter.Name), parameter.Name);
@@ -27,5 +34,27 @@ public class ReportParameterRepository(IReportParameterAuditRepository auditRepo
         parameters.Add(nameof(parameter.OverrideType), parameter.OverrideType);
         parameters.Add(nameof(parameter.Attributes), JsonSerializer.SerializeNamedDictionary(parameter.Attributes));
         base.GetObjectData(parameter, parameters);
+    }
+
+    public override async Task<ReportParameter> CreateAsync(IDbContext context, int reportId, ReportParameter parameter)
+    {
+        await EnsureNamespaceAsync(context, reportId, parameter);
+        return await base.CreateAsync(context, reportId, parameter);
+    }
+
+    public override async Task<ReportParameter> UpdateAsync(IDbContext context, int reportId, ReportParameter parameter)
+    {
+        await EnsureNamespaceAsync(context, reportId, parameter);
+        return await base.UpdateAsync(context, reportId, parameter);
+    }
+
+    private async Task EnsureNamespaceAsync(IDbContext context, int reportId, ReportParameter parameter)
+    {
+        var regulationId = await ReportRepository.GetParentIdAsync(context, reportId);
+        if (!regulationId.HasValue)
+        {
+            return;
+        }
+        await ApplyNamespaceAsync(context, regulationId.Value, parameter);
     }
 }

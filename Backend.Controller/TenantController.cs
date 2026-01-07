@@ -120,7 +120,7 @@ public class TenantController : Api.Controller.TenantController
     /// <param name="tenantId">The tenant id</param>
     /// <param name="functionType">The function type</param>
     /// <returns>List of system actions</returns>
-    [HttpGet("{tenantId}/actions")]
+    [HttpGet("{tenantId}/system/actions")]
     [OkResponse]
     [ApiOperationId("GetSystemScriptActions")]
     [QueryIgnore]
@@ -134,6 +134,29 @@ public class TenantController : Api.Controller.TenantController
             return authResult;
         }
         return await base.GetSystemScriptActionsAsync(tenantId, functionType);
+    }
+
+    /// <summary>
+    /// Get the system script action properties
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="functionType">The function type</param>
+    /// <param name="readOnly">Read-only properties (default: true)</param>
+    /// <returns>List of system actions</returns>
+    [HttpGet("{tenantId}/system/properties")]
+    [OkResponse]
+    [ApiOperationId("GetSystemScriptActionProperties")]
+    [QueryIgnore]
+    public override async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionPropertiesAsync(
+        int tenantId, FunctionType functionType = FunctionType.All, bool readOnly = true)
+    {
+        // authorization
+        var authResult = await TenantRequestAsync(tenantId);
+        if(authResult != null)
+        {
+            return authResult;
+        }
+        return await base.GetSystemScriptActionPropertiesAsync(tenantId, functionType, readOnly);
     }
 
     /// <summary>

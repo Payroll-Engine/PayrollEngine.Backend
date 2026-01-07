@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using PayrollEngine.Data;
 
 namespace PayrollEngine.Domain.Model;
@@ -9,7 +8,7 @@ namespace PayrollEngine.Domain.Model;
 /// A payroll report
 /// </summary>
 public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IClusterObject,
-    INamedObject, IDomainAttributeObject, IEquatable<Report>
+    INamedObject, INamespaceObject, IDomainAttributeObject, IEquatable<Report>
 {
     private static readonly List<FunctionType> FunctionTypes =
     [
@@ -111,6 +110,13 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
         CopyTool.CopyProperties(copySource, this);
     }
 
+    /// <inheritdoc/>
+    public virtual void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
+        Clusters = Clusters.EnsureNamespace(@namespace);
+    }
+
     /// <summary>Compare two objects</summary>
     /// <param name="compare">The object to compare with this</param>
     /// <returns>True for objects with the same data</returns>
@@ -169,10 +175,14 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
     }
 
     #region Scripting
+    /// <inheritdoc/>
+    public override bool HasAnyExpression =>
+        !string.IsNullOrWhiteSpace(BuildExpression) ||
+        !string.IsNullOrWhiteSpace(StartExpression) ||
+        !string.IsNullOrWhiteSpace(EndExpression);
 
     /// <inheritdoc/>
-    public override bool HasExpression =>
-        GetFunctionScripts().Values.Any(x => !string.IsNullOrWhiteSpace(x));
+    public override bool HasAnyAction => false;
 
     /// <inheritdoc/>
     public override bool HasObjectScripts => true;
@@ -181,23 +191,17 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
     public override List<FunctionType> GetFunctionTypes() => FunctionTypes;
 
     /// <inheritdoc/>
-    public override IDictionary<FunctionType, string> GetFunctionScripts()
-    {
-        var scripts = new Dictionary<FunctionType, string>();
-        if (!string.IsNullOrWhiteSpace(BuildExpression))
+    public override string GetFunctionScript(FunctionType functionType) =>
+        functionType switch
         {
-            scripts.Add(FunctionType.ReportBuild, BuildExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(StartExpression))
-        {
-            scripts.Add(FunctionType.ReportStart, StartExpression);
-        }
-        if (!string.IsNullOrWhiteSpace(EndExpression))
-        {
-            scripts.Add(FunctionType.ReportEnd, EndExpression);
-        }
-        return scripts;
-    }
+            FunctionType.ReportBuild => BuildExpression,
+            FunctionType.ReportStart => StartExpression,
+            FunctionType.ReportEnd => EndExpression,
+            _ => null
+        };
+
+    /// <inheritdoc/>
+    public override List<string> GetFunctionActions(FunctionType functionType) => null;
 
     /// <inheritdoc/>
     public override IEnumerable<string> GetEmbeddedScriptNames() =>

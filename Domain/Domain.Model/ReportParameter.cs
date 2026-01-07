@@ -7,7 +7,7 @@ namespace PayrollEngine.Domain.Model;
 /// A payroll report parameter
 /// </summary>
 public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDerivableObject,
-    IDomainAttributeObject, IEquatable<ReportParameter>
+    INamespaceObject, IDomainAttributeObject, IEquatable<ReportParameter>
 {
     /// <summary>
     /// The report parameter name (immutable)
@@ -78,6 +78,12 @@ public class ReportParameter : TrackDomainObject<ReportParameterAudit>, IDerivab
     public ReportParameter(ReportParameter copySource)
     {
         CopyTool.CopyProperties(copySource, this);
+    }
+
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        Name = Name.EnsureNamespace(@namespace);
     }
 
     /// <summary>Compare two objects</summary>

@@ -19,7 +19,7 @@ public abstract class CaseRelationRuntimeBase : PayrollRuntimeBase, ICaseRelatio
     /// <summary>
     /// The case relation
     /// </summary>
-    // ReSharper disable once MemberCanBeProtected.Global
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public CaseRelation CaseRelation { get; }
 
     /// <summary>

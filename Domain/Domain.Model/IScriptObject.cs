@@ -31,7 +31,12 @@ public interface IScriptObject : IDomainObject
     /// <summary>
     /// True, if any expression is available
     /// </summary>
-    bool HasExpression { get; }
+    bool HasAnyExpression { get; }
+
+    /// <summary>
+    /// True, if any action is available
+    /// </summary>
+    bool HasAnyAction { get; }
 
     /// <summary>
     /// True, if object scripts are supported
@@ -55,8 +60,14 @@ public interface IScriptObject : IDomainObject
     IEnumerable<string> GetEmbeddedScriptNames();
 
     /// <summary>
-    /// Get object function scripts
+    /// Get object function script
     /// </summary>
-    /// <returns>Object scripts by function type</returns>
-    IDictionary<FunctionType, string> GetFunctionScripts();
+    /// <param name="functionType">Function type</param>
+    string GetFunctionScript(FunctionType functionType);
+
+    /// <summary>
+    /// Get object function actions
+    /// </summary>
+    /// <param name="functionType">Function type</param>
+    List<string> GetFunctionActions(FunctionType functionType);
 }

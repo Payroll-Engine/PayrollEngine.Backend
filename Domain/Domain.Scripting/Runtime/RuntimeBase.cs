@@ -141,7 +141,7 @@ public abstract class RuntimeBase : IRuntime
     }
 
     /// <inheritdoc />
-    public string GetDerivedCalendar(int divisionId, int employeeId)
+    public virtual string GetDerivedCalendar(int divisionId, int employeeId)
     {
         if (divisionId <= 0 && employeeId > 0)
         {
@@ -183,15 +183,35 @@ public abstract class RuntimeBase : IRuntime
     }
 
     /// <inheritdoc />
+    public int GetCalendarDayCount(string calendarName, DateTime start, DateTime end, string culture)
+    {
+        if (string.IsNullOrWhiteSpace(calendarName))
+        {
+            throw new ArgumentException(nameof(calendarName));
+        }
+
+        // calendar
+        var calendar = GetCalendar(calendarName);
+
+        // calculator
+        var calculator = Settings.PayrollCalculatorProvider.CreateCalculator(
+            calendar: calendar,
+            tenantId: TenantId,
+            culture: culture != null ? new(culture) : null);
+        var count = calculator.GetCalendarDayCount(new(start, end));
+        return count;
+    }
+
+    /// <inheritdoc />
     public bool IsCalendarWorkDay(string calendarName, DateTime moment) =>
         GetCalendar(calendarName).IsWorkDay(moment);
 
     /// <inheritdoc />
-    public List<DateTime> GetPreviousWorkDays(string calendarName, DateTime moment, int count) =>
+    public List<DateTime> GetPreviousWorkDays(string calendarName, DateTime moment) =>
         GetCalendar(calendarName).GetPreviousWorkDays(moment);
 
     /// <inheritdoc />
-    public List<DateTime> GetNextWorkDays(string calendarName, DateTime moment, int count) =>
+    public List<DateTime> GetNextWorkDays(string calendarName, DateTime moment) =>
         GetCalendar(calendarName).GetNextWorkDays(moment);
 
     /// <inheritdoc />

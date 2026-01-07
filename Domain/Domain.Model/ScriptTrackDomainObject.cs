@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PayrollEngine.Client.Scripting;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -9,6 +10,7 @@ namespace PayrollEngine.Domain.Model;
 public abstract class ScriptTrackDomainObject<TAudit> : TrackDomainObject<TAudit>, IScriptObject, IEquatable<ScriptTrackDomainObject<TAudit>>
     where TAudit : ScriptAuditDomainObject
 {
+
     /// <inheritdoc />
     public string Script { get; set; }
 
@@ -22,7 +24,10 @@ public abstract class ScriptTrackDomainObject<TAudit> : TrackDomainObject<TAudit
     public int ScriptHash { get; set; }
 
     /// <inheritdoc />
-    public abstract bool HasExpression { get; }
+    public abstract bool HasAnyExpression { get; }
+
+    /// <inheritdoc />
+    public abstract bool HasAnyAction { get; }
 
     /// <inheritdoc />
     public abstract bool HasObjectScripts { get; }
@@ -61,7 +66,7 @@ public abstract class ScriptTrackDomainObject<TAudit> : TrackDomainObject<TAudit
         Binary = null;
         ScriptHash = 0;
     }
-        
+
     /// <inheritdoc />
     public abstract List<FunctionType> GetFunctionTypes();
 
@@ -69,7 +74,10 @@ public abstract class ScriptTrackDomainObject<TAudit> : TrackDomainObject<TAudit
     public abstract IEnumerable<string> GetEmbeddedScriptNames();
 
     /// <inheritdoc />
-    public abstract IDictionary<FunctionType, string> GetFunctionScripts();
+    public abstract string GetFunctionScript(FunctionType functionType);
+
+    /// <inheritdoc />
+    public abstract List<string> GetFunctionActions(FunctionType functionType);
 
     /// <summary>
     /// Setup from audit object
@@ -83,5 +91,44 @@ public abstract class ScriptTrackDomainObject<TAudit> : TrackDomainObject<TAudit
         ScriptVersion = audit.ScriptVersion;
         Binary = audit.Binary;
         ScriptHash = audit.ScriptHash;
+    }
+
+    /// <summary>
+    /// Test for actions
+    /// </summary>
+    /// <param name="actions">Script actions</param>
+    protected bool AnyActions(List<string> actions) =>
+        actions != null && actions.Count > 0;
+
+    /// <summary>
+    /// Test for expression and actions
+    /// </summary>
+    /// <param name="expression">Script expression</param>
+    /// <param name="actions">Script actions</param>
+    protected bool AnyExpressionOrActions(string expression, List<string> actions) =>
+        !string.IsNullOrWhiteSpace(expression) || AnyActions(actions);
+
+    /// <summary>
+    /// Get embedded script item names
+    /// </summary>
+    /// <param name="items">Script items</param>
+    protected IEnumerable<string> GetEmbeddedScriptNames(List<ScriptItemInfo> items)
+    {
+        FunctionType functionType = default;
+        FunctionType actionFunctionType = default;
+        foreach (var item in items)
+        {
+            // function
+            if (item.HasExpression || item.HasActions)
+            {
+                functionType |= item.FunctionType;
+            }
+            // action
+            if (item.HasActions)
+            {
+                actionFunctionType |= item.FunctionType;
+            }
+        }
+        return ScriptProvider.GetScriptNames(functionType, actionFunctionType);
     }
 }

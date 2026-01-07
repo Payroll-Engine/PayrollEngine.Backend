@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using PayrollEngine.Client.Scripting;
-using PayrollEngine.Client.Scripting.Function;
-using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Client.Scripting;
+using PayrollEngine.Client.Scripting.Runtime;
+using PayrollEngine.Client.Scripting.Function;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -31,32 +31,10 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
     protected override string LogOwnerType => nameof(CaseValidateFunction);
 
     /// <inheritdoc />
-    public string[] GetValidateActions() =>
-        Case.ValidateActions == null ? [] :
-            Case.ValidateActions.ToArray();
-
-    /// <inheritdoc />
-    public string[] GetFieldValidateActions(string caseFieldName)
-    {
-        if (string.IsNullOrWhiteSpace(caseFieldName))
-        {
-            throw new ArgumentException(nameof(caseFieldName));
-        }
-
-        // case field
-        var caseField = GetCaseFieldSet(caseFieldName);
-        if (caseField == null)
-        {
-            throw new ArgumentException($"unknown case field {caseFieldName}.");
-        }
-        return caseField.ValidateActions == null ? [] : caseField.ValidateActions.ToArray();
-    }
-
-    /// <inheritdoc />
     public bool HasIssues() => Issues.Any();
 
     /// <inheritdoc />
-    public void AddIssue(string message)
+    public void AddCaseIssue(string message)
     {
         if (string.IsNullOrWhiteSpace(message))
         {
@@ -76,7 +54,7 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
     }
 
     /// <inheritdoc />
-    public void AddIssue(string caseFieldName, string message)
+    public void AddCaseFieldIssue(string caseFieldName, string message)
     {
         if (string.IsNullOrWhiteSpace(caseFieldName))
         {
@@ -87,6 +65,10 @@ public class CaseValidateRuntime : CaseChangeRuntimeBase, ICaseValidateRuntime
             throw new ArgumentException(nameof(message));
         }
 
+        // namespace
+        caseFieldName = caseFieldName.EnsureNamespace(Namespace);
+
+        // case field
         var caseField = GetCaseFieldSet(caseFieldName);
         if (caseField == null)
         {

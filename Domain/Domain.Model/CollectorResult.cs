@@ -52,13 +52,12 @@ public class CollectorResult : DomainObjectBase, ITagObject, IDomainAttributeObj
     /// </summary>
     public bool Negated { get; set; }
 
-    private ValueType valueType = ValueType.Decimal;
     /// <summary>
     /// The value type (immutable)
     /// </summary>
     public ValueType ValueType
     {
-        get => valueType;
+        get;
         set
         {
             if (!value.IsNumber())
@@ -66,9 +65,10 @@ public class CollectorResult : DomainObjectBase, ITagObject, IDomainAttributeObj
                 throw new ArgumentOutOfRangeException(nameof(value),
                     $"Value type of collector result must be a number: {value}");
             }
-            valueType = value;
+
+            field = value;
         }
-    }
+    } = ValueType.Decimal;
 
     /// <summary>
     /// The collector result value (immutable)

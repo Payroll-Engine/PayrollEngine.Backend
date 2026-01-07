@@ -98,7 +98,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
             caseType: caseType,
             caseNames: [caseName],
             clusterSet: ClusterSet,
-            overrideType: OverrideType.Active)).ToList();
+            overrideType: OverrideType.Active)).Cast<Case>().ToList();
         if (!cases.Any())
         {
             Log.Trace($"Missing case {caseName} in payroll with id {Payroll.Id}");
@@ -169,7 +169,7 @@ public class DerivedCaseBuilder : DerivedCaseTool
                 },
                 caseNames: [targetRelation.Key.TargetCaseName],
                 clusterSet: ClusterSet,
-                overrideType: OverrideType.Active)).ToList();
+                overrideType: OverrideType.Active)).Cast<Case>().ToList();
             if (!targetCases.Any())
             {
                 throw new PayrollException($"Unknown related case with name {targetRelation.Key.TargetCaseName} in derived case {caseSet.Name}.");

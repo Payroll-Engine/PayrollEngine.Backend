@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class ScriptRepository(IScriptAuditRepository auditRepository, bool auditDisabled) : TrackChildDomainRepository<Script, ScriptAudit>(
+public class ScriptRepository(IRegulationRepository regulationRepository, IScriptAuditRepository auditRepository, 
+    bool auditDisabled) : TrackChildDomainRepository<Script, ScriptAudit>(regulationRepository,
     DbSchema.Tables.Script, DbSchema.ScriptColumn.RegulationId, auditRepository, auditDisabled), IScriptRepository
 {
     protected override void GetObjectCreateData(Script script, DbParameterCollection parameters)
@@ -61,5 +62,17 @@ public class ScriptRepository(IScriptAuditRepository auditRepository, bool audit
         await OnRetrieved(context, regulationId, scripts);
 
         return scripts;
+    }
+
+    public override async Task<Script> CreateAsync(IDbContext context, int regulationId, Script script)
+    {
+        await ApplyNamespaceAsync(context, regulationId, script);
+        return await base.CreateAsync(context, regulationId, script);
+    }
+
+    public override async Task<Script> UpdateAsync(IDbContext context, int regulationId, Script script)
+    {
+        await ApplyNamespaceAsync(context, regulationId, script);
+        return await base.UpdateAsync(context, regulationId, script);
     }
 }

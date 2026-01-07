@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -328,6 +329,13 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
             caseValue.CaseName = @case.Name;
             caseValue.CaseNameLocalizations = @case.NameLocalizations;
 
+            // culture
+            caseField.Culture =
+                // culture priority 1: case value
+                caseValue.Culture ??
+                // culture priority 2 to 5: employee > division > tenant > system
+                culture;
+
             // case field name
             caseValue.CaseFieldNameLocalizations = caseField.NameLocalizations;
 
@@ -468,7 +476,13 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
         {
             throw new PayrollException($"Unknown case change tenant with id {tenantId}.");
         }
-        return tenant.Culture;
+        if (!string.IsNullOrWhiteSpace(tenant.Culture))
+        {
+            return tenant.Culture;
+        }
+
+        // priority 4: system
+        return CultureInfo.CurrentCulture.Name;
     }
 
     private static bool EqualCaseValue(CaseValue left, CaseValue right)

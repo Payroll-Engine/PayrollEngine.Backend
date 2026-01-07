@@ -37,8 +37,7 @@ public class PayrunProcessor : FunctionToolBase
     private IResultProvider ResultProvider { get; }
     private bool LogWatch { get; }
 
-    public PayrunProcessor(Tenant tenant, Payrun payrun,
-        PayrunProcessorSettings settings) :
+    public PayrunProcessor(Tenant tenant, Payrun payrun, PayrunProcessorSettings settings) :
         base(settings)
     {
         // global
@@ -104,10 +103,18 @@ public class PayrunProcessor : FunctionToolBase
         context.CalendarName = calendarName;
 
         // calculator
-        context.Calculator = await GetCalculatorAsync(Tenant.Id, context.User.Id, context.PayrollCulture, context.CalendarName);
+        context.Calculator = await GetCalculatorAsync(
+            tenantId: Tenant.Id,
+            userId: context.User.Id,
+            culture: context.PayrollCulture,
+            calendarName: context.CalendarName);
 
         // create payrun job and retro payrun jobs
-        context.PayrunJob = PayrunJobFactory.CreatePayrunJob(jobInvocation, context.Division.Id, payrollId, context.Calculator);
+        context.PayrunJob = PayrunJobFactory.CreatePayrunJob(
+            jobInvocation: jobInvocation,
+            divisionId: context.Division.Id,
+            payrollId: payrollId,
+            payrollCalculator: context.Calculator);
         if (context.PayrunJob.ParentJobId.HasValue)
         {
             context.ParentPayrunJob = await processorRepositories.LoadPayrunJobAsync(context.PayrunJob.ParentJobId.Value);
@@ -119,6 +126,12 @@ public class PayrunProcessor : FunctionToolBase
         // context dates
         context.EvaluationDate = context.PayrunJob.EvaluationDate;
         context.EvaluationPeriod = context.PayrunJob.GetEvaluationPeriod();
+
+        // derived regulation
+        context.DerivedRegulations = await processorRepositories.LoadDerivedRegulationsAsync(
+            payrollId: context.Payroll.Id,
+            regulationDate: context.PayrunJob.PeriodEnd,
+            evaluationDate: context.EvaluationDate);
 
         // context case field provider
         ClusterSet caseFieldClusterSet = null;
@@ -132,17 +145,38 @@ public class PayrunProcessor : FunctionToolBase
 
         // context global, national and company case values
         context.GlobalCaseValues = setup.GlobalCaseValues ??
-                                   new CaseValueCache(Settings.DbContext, Settings.GlobalCaseValueRepository,
-                                       Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
+                                   new CaseValueCache(
+                                       context: Settings.DbContext,
+                                       caseValueRepository: Settings.GlobalCaseValueRepository,
+                                       parentId: Tenant.Id,
+                                       divisionId: context.Division.Id,
+                                       evaluationDate: context.EvaluationDate,
+                                       forecast: context.PayrunJob.Forecast);
         context.NationalCaseValues = setup.NationalCaseValues ??
-                                     new CaseValueCache(Settings.DbContext, Settings.NationalCaseValueRepository,
-                                         Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
+                                     new CaseValueCache(
+                                         context: Settings.DbContext,
+                                         caseValueRepository: Settings.NationalCaseValueRepository,
+                                         parentId: Tenant.Id,
+                                         divisionId: context.Division.Id,
+                                         evaluationDate: context.EvaluationDate,
+                                         forecast: context.PayrunJob.Forecast);
         context.CompanyCaseValues = setup.CompanyCaseValues ??
-                                    new CaseValueCache(Settings.DbContext, Settings.CompanyCaseValueRepository,
-                                        Tenant.Id, context.Division.Id, context.EvaluationDate, context.PayrunJob.Forecast);
+                                    new CaseValueCache(
+                                        context: Settings.DbContext,
+                                        caseValueRepository: Settings.CompanyCaseValueRepository,
+                                        parentId: Tenant.Id,
+                                        divisionId: context.Division.Id,
+                                        evaluationDate: context.EvaluationDate,
+                                        forecast: context.PayrunJob.Forecast);
 
         // payrun processor regulation
-        var processorRegulation = new PayrunProcessorRegulation(FunctionHost, Settings, ResultProvider, Tenant, context.Payroll, Payrun);
+        var processorRegulation = new PayrunProcessorRegulation(
+            functionHost: FunctionHost,
+            settings: Settings,
+            resultProvider: ResultProvider,
+            tenant: Tenant,
+            payroll: context.Payroll,
+            payrun: Payrun);
 
         // context derived lookups by lookup name
         context.RegulationLookupProvider = new RegulationLookupProvider(
@@ -157,6 +191,22 @@ public class PayrunProcessor : FunctionToolBase
             },
             regulationRepository: Settings.RegulationRepository,
             lookupSetRepository: Settings.RegulationLookupSetRepository);
+
+        // derived collectors (optional)
+        context.DerivedCollectors = await GetDerivedCollectors(
+            payroll: context.Payroll,
+            payrunJob: context.PayrunJob,
+            processorRegulation: processorRegulation);
+
+        // derived wage types
+        context.DerivedWageTypes = await GetDerivedWageTypes(
+            payroll: context.Payroll,
+            payrunJob: context.PayrunJob,
+            processorRegulation: processorRegulation);
+        if (!context.DerivedWageTypes.Any())
+        {
+            return await AbortJobAsync(context.PayrunJob, $"No wage types available for payrun with id {Payrun}");
+        }
 
         // employees
         var employees = setup.Employees ?? await SetupEmployeesAsync(context, jobInvocation.EmployeeIdentifiers);
@@ -175,20 +225,94 @@ public class PayrunProcessor : FunctionToolBase
         context.PayrunJob.Message =
             $"Started payrun calculation with payroll {payrollId} on period {context.PayrunJob.PeriodName} for cycle {context.PayrunJob.CycleName}";
         Log.Debug(context.PayrunJob.Message);
-        await Settings.PayrunJobRepository.CreateAsync(Settings.DbContext, Tenant.Id, context.PayrunJob);
+        await Settings.PayrunJobRepository.CreateAsync(
+            context: Settings.DbContext,
+            parentId: Tenant.Id,
+            item: context.PayrunJob);
 
         // validate payroll regulations
-        var validation = await new PayrollValidator(Settings.PayrollRepository)
-            .ValidateRegulations(Settings.DbContext, Tenant.Id, context.Payroll,
-                context.PayrunJob.PeriodEnd, context.PayrunJob.EvaluationDate);
+        var validation = await new PayrollValidator(Settings.PayrollRepository).ValidateRegulations(
+            context: Settings.DbContext,
+            tenantId: Tenant.Id,
+            payroll: context.Payroll,
+            regulationDate: context.PayrunJob.PeriodEnd,
+            evaluationDate: context.PayrunJob.EvaluationDate);
         if (!string.IsNullOrWhiteSpace(validation))
         {
             return await AbortJobAsync(context.PayrunJob, $"Payroll validation error: {validation}");
         }
 
         // job processing
-        var payrunJob = await ProcessAllEmployeesAsync(setup, context, processorRegulation, processorRepositories, employees);
+        var payrunJob = await ProcessAllEmployeesAsync(
+            setup: setup,
+            context: context,
+            processorRegulation: processorRegulation,
+            processorRepositories: processorRepositories,
+            employees: employees);
         return payrunJob;
+    }
+
+    private async Task<ILookup<string, DerivedCollector>> GetDerivedCollectors(Payroll payroll,
+        PayrunJob payrunJob, PayrunProcessorRegulation processorRegulation)
+    {
+        // performance measure
+        System.Diagnostics.Stopwatch stopwatch = null;
+        if (LogWatch)
+        {
+            stopwatch = new();
+            stopwatch.Start();
+        }
+        // context derived collectors grouped by collector name
+        var collectorCluster = payroll.ClusterSetCollector;
+        if (payrunJob.IsRetroJob && !string.IsNullOrWhiteSpace(payroll.ClusterSetCollectorRetro))
+        {
+            // retro job override
+            collectorCluster = payroll.ClusterSetCollectorRetro;
+        }
+        var clusterSetCollector = payroll.ClusterSets?.FirstOrDefault(x => string.Equals(collectorCluster, x.Name));
+        var derivedCollectors = await processorRegulation.GetDerivedCollectorsAsync(payrunJob, clusterSetCollector);
+
+        Log.Trace($"{Payrun} with {derivedCollectors.Count} collectors");
+
+        if (stopwatch != null)
+        {
+            stopwatch.Stop();
+            Log.Debug($"{Payrun} load derived collectors [{derivedCollectors.Count}]: {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Restart();
+        }
+
+        return derivedCollectors;
+    }
+
+    private async Task<ILookup<decimal, DerivedWageType>> GetDerivedWageTypes(Payroll payroll, PayrunJob payrunJob,
+        PayrunProcessorRegulation processorRegulation)
+    {
+        // performance measure
+        System.Diagnostics.Stopwatch stopwatch = null;
+        if (LogWatch)
+        {
+            stopwatch = new();
+            stopwatch.Start();
+        }
+
+        // context derived wage types grouped by wage type identifier
+        var wageTypeCluster = payroll.ClusterSetWageType;
+        if (payrunJob.IsRetroJob && !string.IsNullOrWhiteSpace(payroll.ClusterSetWageTypeRetro))
+        {
+            // retro job override
+            wageTypeCluster = payroll.ClusterSetWageTypeRetro;
+        }
+        var clusterSetWageType = payroll.ClusterSets?.FirstOrDefault(x => string.Equals(wageTypeCluster, x.Name));
+        var derivedWageTypes = await processorRegulation.GetDerivedWageTypesAsync(payrunJob, clusterSetWageType);
+
+        Log.Trace($"Payrun with {derivedWageTypes.Count} wage types");
+        if (stopwatch != null)
+        {
+            stopwatch.Stop();
+            Log.Debug($"{Payrun} load derived wage types [{derivedWageTypes.Count}]: {stopwatch.ElapsedMilliseconds} ms");
+        }
+
+        return derivedWageTypes;
     }
 
     private async Task<PayrunJob> ProcessAllEmployeesAsync(PayrunSetup setup, PayrunContext context,
@@ -247,7 +371,13 @@ public class PayrunProcessor : FunctionToolBase
             Log.Trace($"{Payrun} with {context.DerivedCollectors.Count} collectors");
 
             // process scripts
-            var processorScript = new PayrunProcessorScripts(FunctionHost, Settings, ResultProvider, Tenant, Payrun);
+            var processorScript = new PayrunProcessorScripts(
+                functionHost: FunctionHost,
+                settings: Settings,
+                regulationProvider: context,
+                resultProvider: ResultProvider,
+                tenant: Tenant,
+                payrun: Payrun);
             // payrun start script
             if (!processorScript.PayrunStart(context))
             {
@@ -947,6 +1077,7 @@ public class PayrunProcessor : FunctionToolBase
             {
                 DbContext = Settings.DbContext,
                 PayrollCulture = context.PayrollCulture,
+                Namespace = null,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
                 User = context.User,
@@ -955,6 +1086,7 @@ public class PayrunProcessor : FunctionToolBase
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 CaseValueProvider = caseValueProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<NDepend AppName="PayrollEngine.Backend" Platform="DotNet" FileWrittenByProductVersion="2023.1.0.9670">
-  <OutputDir KeepXmlFiles="False">.\NDependOut</OutputDir>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<NDepend AppName="PayrollEngine.Backend" Platform="DotNet" FileWrittenByProductVersion="2026.1.2.9787">
+  <OutputDir KeepXmlFiles="False">.\NDependOut1</OutputDir>
   <IDEFiles>
     <IDEFile FilePath=".\PayrollEngine.Backend.sln" Filters="-test" Configuration="DEBUG|AnyCPU">
       <RootDirResolvingInfo Enabled="False" Hints="Debug|bin|.bin|b|AnyCPU|x64|x86|v*.*|net*" TimeOut="10">
@@ -8,18 +8,52 @@
       </RootDirResolvingInfo>
     </IDEFile>
   </IDEFiles>
-  <RuntimeProfileDesc>.NET 7.0</RuntimeProfileDesc>
+  <RuntimeProfileDesc>.NET 10.0</RuntimeProfileDesc>
   <Assemblies />
   <Dirs />
   <MergeCodeGeneratedByCompiler>True</MergeCodeGeneratedByCompiler>
+  <CompressNDar>True</CompressNDar>
   <ZipSourceFiles>True</ZipSourceFiles>
-  <Report Kind="0" SectionsEnabled="110591" XslPath="" Flags="261120" NbItemsToUnfold="5" />
-  <BuildComparisonSetting ProjectMode="DontCompare" BuildMode="NDaysAgoAnalysisResult" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="30" />
-  <BaselineInUISetting ProjectMode="DontCompare" BuildMode="NDaysAgoAnalysisResult" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="30" />
+  <ForceReturnZeroExitCode>False</ForceReturnZeroExitCode>
+  <Report Kind="0" SectionsEnabled="110591" XslPath="" DefaultTheme="dark" Flags="4455424" NbItemsToUnfold="3" NbItemsPerRule="20" MaxNbSourceFiles="2000" />
+  <BuildComparisonSetting ProjectMode="CurrentProject" BuildMode="NDaysAgoAnalysisResult" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="30" />
+  <BaselineInUISetting ProjectMode="CurrentProject" BuildMode="NDaysAgoAnalysisResult" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="30" />
   <CoverageFiles CoverageDir="" CoverageDirFilter="" UncoverableAttribute="" CoverageExclusionFile="" />
-  <TrendMetrics UseCustomLog="False" LogRecurrence="3" LogLabel="2" UseCustomDir="False" CustomDir="" />
+  <TrendMetrics UseCustomLog="False" LogRecurrence="3" LogLabel="2" UseCustomDir="False" CustomDir="">
+    <Chart Name="Size" ShowInReport="True">
+      <Serie MetricName="# Lines of Code" MetricUnit="Loc" Color="#FF00BFFF" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Lines of Code Covered" MetricUnit="Loc" Color="#FF32CD32" ChartType="Area" ScaleExp="0" />
+      <Serie MetricName="# Lines of Code (NotMyCode)" MetricUnit="Loc" Color="#FFA9A9A9" ChartType="Area" ScaleExp="0" />
+      <Serie MetricName="# Lines of Comments" MetricUnit="Lines" Color="#FF008000" ChartType="Line" ScaleExp="0" />
+    </Chart>
+    <Chart Name="% Coverage and % Debt" ShowInReport="True">
+      <Serie MetricName="Percentage Code Coverage" MetricUnit="%" Color="#FF32CD32" ChartType="Area" ScaleExp="0" />
+      <Serie MetricName="Percentage Debt (Metric)" MetricUnit="%" Color="#FFFF0000" ChartType="Line" ScaleExp="0" />
+    </Chart>
+    <Chart Name="Issues" ShowInReport="True">
+      <Serie MetricName="# New Issues since Baseline" MetricUnit="issues" Color="#FFFF0000" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Issues Fixed since Baseline" MetricUnit="issues" Color="#FF32CD32" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Blocker/Critical/High Issues" MetricUnit="issues" Color="#FFFF8C00" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Issues" MetricUnit="issues" Color="#FFFFD700" ChartType="Line" ScaleExp="-2" />
+    </Chart>
+    <Chart Name="Rules" ShowInReport="True">
+      <Serie MetricName="# Rules" MetricUnit="Rules" Color="#FF66CDAA" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Rules Violated" MetricUnit="Rules" Color="#FFFF8C00" ChartType="Area" ScaleExp="0" />
+      <Serie MetricName="# Critical Rules Violated" MetricUnit="Rules" Color="#FFFF0000" ChartType="Area" ScaleExp="0" />
+    </Chart>
+    <Chart Name="Quality Gates" ShowInReport="True">
+      <Serie MetricName="# Quality Gates Fail" MetricUnit="quality gates" Color="#FFFF0000" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Quality Gates Warn" MetricUnit="quality gates" Color="#FFFF8C00" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="# Quality Gates" MetricUnit="quality gates" Color="#FF32CD32" ChartType="Line" ScaleExp="0" />
+    </Chart>
+    <Chart Name="Debt" ShowInReport="True">
+      <Serie MetricName="Debt (Metric)" MetricUnit="man-days" Color="#FFFF0000" ChartType="Line" ScaleExp="0" />
+      <Serie MetricName="Annual Interest (Metric)" MetricUnit="man-days" Color="#FFFF8C00" ChartType="Line" ScaleExp="0" />
+    </Chart>
+  </TrendMetrics>
   <GitHub Account="" Repo="" />
-  <HistoricAnalysisResult PersistRecurrence="3" UseCustomDir="False" CustomDir="" />
+  <IssueImport ResolveSarifInSolutionDirectories="True" />
+  <HistoricAnalysisResult PersistRecurrence="3" UseCustomDir="False" CustomDir="" RetentionNDays="60" />
   <SourceFileRebasing FromPath="" ToPath="" />
   <PathVariables />
   <RuleFiles />
@@ -47,7 +81,8 @@
       <High2Critical_SeverityThreshold>72000000000</High2Critical_SeverityThreshold>
       <Critical2Blocker_SeverityThreshold>360000000000</Critical2Blocker_SeverityThreshold>
     </DebtSettings>
-  </ProjectDebtSettings><Queries>
+  </ProjectDebtSettings>
+  <Queries>
     <Group Name="Quality Gates" Active="True" ShownInReport="False">
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Quality Gates Evolution$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Percentage Coverage$]]></Query>
@@ -57,12 +92,14 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Critical Issues$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$New Blocker / Critical / High Issues$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Critical Rules Violated$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Treat Compiler Warnings as Error$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Percentage Debt$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Debt$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$New Debt since Baseline$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Debt Rating per Namespace$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Annual Interest$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$New Annual Interest since Baseline$]]></Query>
+      <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Unnecessary NDepend SuppressMessageAttribute Usage$]]></Query>
     </Group>
     <Group Name="Hot Spots" Active="True" ShownInReport="True">
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Types Hot Spots$]]></Query>
@@ -83,6 +120,7 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1006$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1007$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1008$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1009$]]></Query>
     </Group>
     <Group Name="Code Smells Regression" Active="True" ShownInReport="False">
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1100$]]></Query>
@@ -137,6 +175,7 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1405$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1406$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1407$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1410$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1408$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1409$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND9900$]]></Query>
@@ -163,6 +202,7 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1607$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1608$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1609$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1610$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Test Methods$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Methods directly called by test Methods$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Methods directly and indirectly called by test Methods$]]></Query>
@@ -174,6 +214,8 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1703$]]></Query>
     </Group>
     <Group Name="Security" Active="True" ShownInReport="False">
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="True"><![CDATA[$ND3120$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="True"><![CDATA[$ND3121$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND3100$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND3101$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND3102$]]></Query>
@@ -195,6 +237,7 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1807$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1808$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1809$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1810$]]></Query>
       <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$Methods that should be declared as 'public' in C#, 'Public' in VB.NET$]]></Query>
     </Group>
     <Group Name="Immutability" Active="True" ShownInReport="False">
@@ -207,7 +250,7 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1905$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1906$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1907$]]></Query>
-      <Query Active="True" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1908$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1908$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1909$]]></Query>
       <Query Active="True" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1910$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND1911$]]></Query>
@@ -237,6 +280,7 @@
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2019$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2020$]]></Query>
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2021$]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2022$]]></Query>
     </Group>
     <Group Name="Source Files Organization" Active="True" ShownInReport="False">
       <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2100$]]></Query>
@@ -263,7 +307,7 @@
       </Group>
       <Group Name="System.Collections" Active="True" ShownInReport="False">
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2300$]]></Query>
-        <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2301$]]></Query>
+        <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2301$]]></Query>
         <Query Active="True" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2302$]]></Query>
         <Query Active="True" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2303$]]></Query>
       </Group>
@@ -290,9 +334,10 @@
       <Group Name="System.Reflection" Active="True" ShownInReport="False">
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2800$]]></Query>
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2801$]]></Query>
+        <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2802$]]></Query>
       </Group>
       <Group Name="Microsoft.Contracts" Active="True" ShownInReport="False">
-        <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2900$]]></Query>
+        <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND2900$]]></Query>
       </Group>
     </Group>
     <Group Name="API Usage" Active="True" ShownInReport="False">
@@ -356,6 +401,7 @@
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$# Lines of Code (NotMyCode)$]]></Query>
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$# Lines of Code Added since the Baseline$]]></Query>
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$# Source Files$]]></Query>
+        <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$# Line Feed$]]></Query>
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$# IL Instructions$]]></Query>
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$# IL Instructions (NotMyCode)$]]></Query>
         <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$# Lines of Comments$]]></Query>
@@ -478,4 +524,6 @@
         <Query Active="False" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[$ND9916$]]></Query>
       </Group>
     </Group>
-  </Queries></NDepend>
+  </Queries>
+  <WarnFilter />
+</NDepend>

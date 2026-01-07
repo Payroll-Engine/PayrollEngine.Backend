@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="SqlKata" Version="4.0.1" />
 		<PackageReference Include="SqlKata.Execution" Version="4.0.1" />
-		<PackageReference Include="Microsoft.OData.Core" Version="8.4.2" />
+		<PackageReference Include="Microsoft.OData.Core" Version="8.4.3" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -14,7 +14,7 @@ internal sealed class PayrollRepositoryLookupValuesCommand : PayrollRepositoryCo
     {
     }
 
-    internal async Task<IEnumerable<LookupValue>> GetDerivedLookupValuesAsync(PayrollQuery query,
+    internal async Task<IEnumerable<DerivedLookupValue>> GetDerivedLookupValuesAsync(PayrollQuery query,
         IEnumerable<string> lookupNames = null, IEnumerable<string> lookupKeys = null,
         OverrideType? overrideType = null)
     {

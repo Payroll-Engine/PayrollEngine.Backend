@@ -22,7 +22,12 @@ public class CollectorAuditRepository() : AuditChildDomainRepository<CollectorAu
         parameters.Add(nameof(audit.Threshold), audit.Threshold);
         parameters.Add(nameof(audit.MinResult), audit.MinResult);
         parameters.Add(nameof(audit.MaxResult), audit.MaxResult);
+        parameters.Add(nameof(audit.StartExpression), audit.StartExpression);
         parameters.Add(nameof(audit.ApplyExpression), audit.ApplyExpression);
+        parameters.Add(nameof(audit.EndExpression), audit.EndExpression);
+        parameters.Add(nameof(audit.StartActions), JsonSerializer.SerializeList(audit.StartActions));
+        parameters.Add(nameof(audit.ApplyActions), JsonSerializer.SerializeList(audit.ApplyActions));
+        parameters.Add(nameof(audit.EndActions), JsonSerializer.SerializeList(audit.EndActions));
         parameters.Add(nameof(audit.Script), audit.Script);
         parameters.Add(nameof(audit.ScriptVersion), audit.ScriptVersion);
         parameters.Add(nameof(audit.Binary), audit.Binary, DbType.Binary);

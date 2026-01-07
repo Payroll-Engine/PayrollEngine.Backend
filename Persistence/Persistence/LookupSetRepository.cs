@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class LookupSetRepository(ILookupValueRepository valueRepository,
-        ILookupAuditRepository auditRepository, bool auditDisabled)
-    : LookupRepositoryBase<LookupSet>(auditRepository, auditDisabled), ILookupSetRepository
+public class LookupSetRepository(IRegulationRepository regulationRepository,
+        ILookupValueRepository valueRepository, ILookupAuditRepository auditRepository, bool auditDisabled)
+    : LookupRepositoryBase<LookupSet>(regulationRepository, auditRepository, auditDisabled), ILookupSetRepository
 {
     private ILookupValueRepository ValueRepository { get; } = valueRepository ?? throw new ArgumentNullException(nameof(valueRepository));
 
@@ -53,10 +53,12 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
             throw new ArgumentNullException(nameof(items));
         }
 
+        var @namespace = await GetRegulationNamespaceAsync(context, regulationId);
         var lookups = new List<LookupSet>();
         var newLookups = new List<LookupSet>();
         foreach (var item in items)
         {
+            item.Name = item.Name.EnsureNamespace(@namespace);
             var existing = await QueryLookupSetAsync(context, regulationId, item.Name);
             if (existing != null)
             {
@@ -98,27 +100,12 @@ public class LookupSetRepository(ILookupValueRepository valueRepository,
         // query
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, regulationId);
 
-        // filter by calendar ids
+        // filter by lookup name
         query.WhereIn(DbSchema.LookupColumn.Name, name);
 
         // execute query
         var compileQuery = CompileQuery(query);
         return (await QueryAsync(context, compileQuery)).FirstOrDefault();
-    }
-
-    public override async Task<bool> DeleteAsync(IDbContext context, int regulationId, int lookupId)
-    {
-        using var txScope = TransactionFactory.NewTransactionScope();
-
-        // lookup values
-        await ValueRepository.DeleteAll(context, lookupId);
-
-        // lookup
-        var deleted = await base.DeleteAsync(context, regulationId, lookupId);
-
-        txScope.Complete();
-
-        return deleted;
     }
 
     public async Task<LookupData> GetLookupDataAsync(IDbContext context,

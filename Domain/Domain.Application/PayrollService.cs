@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Application.Service;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Domain.Scripting;
+using PayrollEngine.Domain.Application.Service;
+using PayrollEngine.Domain.Scripting.Action;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -99,7 +99,7 @@ public class PayrollService(IPayrollRepository payrollRepository,
                 continue;
             }
 
-            var scriptActions = ActionParser.Parse(derivedScript.Value, functionType);
+            var scriptActions = ActionReflector.GetActionInfo(derivedScript.Value, functionType);
             actions.AddRange(scriptActions);
         }
 

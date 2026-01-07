@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -14,7 +14,7 @@ internal sealed class PayrollRepositoryCaseRelationCommand : PayrollRepositoryCo
     {
     }
 
-    internal async Task<IEnumerable<CaseRelation>> GetDerivedCaseRelationsAsync(PayrollQuery query,
+    internal async Task<IEnumerable<DerivedCaseRelation>> GetDerivedCaseRelationsAsync(PayrollQuery query,
         string sourceCaseName = null, string targetCaseName = null,
         OverrideType? overrideType = null, ClusterSet clusterSet = null)
     {

@@ -24,6 +24,8 @@ public class WageTypeAuditRepository() : AuditChildDomainRepository<WageTypeAudi
         parameters.Add(nameof(audit.CollectorGroups), JsonSerializer.SerializeList(audit.CollectorGroups));
         parameters.Add(nameof(audit.ValueExpression), audit.ValueExpression);
         parameters.Add(nameof(audit.ResultExpression), audit.ResultExpression);
+        parameters.Add(nameof(audit.ValueActions), JsonSerializer.SerializeList(audit.ValueActions));
+        parameters.Add(nameof(audit.ResultActions), JsonSerializer.SerializeList(audit.ResultActions));
         parameters.Add(nameof(audit.Script), audit.Script);
         parameters.Add(nameof(audit.ScriptVersion), audit.ScriptVersion);
         parameters.Add(nameof(audit.Binary), audit.Binary, DbType.Binary);

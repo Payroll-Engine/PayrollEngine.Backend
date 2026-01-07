@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -14,7 +14,7 @@ internal sealed class PayrollRepositoryLookupCommand : PayrollRepositoryCommandB
     {
     }
 
-    internal async Task<IEnumerable<Lookup>> GetDerivedLookupsAsync(PayrollQuery query,
+    internal async Task<IEnumerable<DerivedLookup>> GetDerivedLookupsAsync(PayrollQuery query,
         IEnumerable<string> lookupNames = null, OverrideType? overrideType = null)
     {
         // query validation
@@ -57,7 +57,7 @@ internal sealed class PayrollRepositoryLookupCommand : PayrollRepositoryCommandB
             parameters.Add(DbSchema.ParameterGetDerivedLookups.LookupNames,
                 System.Text.Json.JsonSerializer.Serialize(names));
         }
-        var lookups = (await DbContext.QueryAsync<Lookup>(DbSchema.Procedures.GetDerivedLookups,
+        var lookups = (await DbContext.QueryAsync<DerivedLookup>(DbSchema.Procedures.GetDerivedLookups,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         // consolidation

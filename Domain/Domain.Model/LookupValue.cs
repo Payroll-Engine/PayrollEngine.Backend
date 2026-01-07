@@ -6,7 +6,7 @@ namespace PayrollEngine.Domain.Model;
 /// <summary>
 /// Represents a value within a lookup
 /// </summary>
-public class LookupValue : TrackDomainObject<LookupValueAudit>, IDerivableObject, IEquatable<LookupValue>
+public class LookupValue : TrackDomainObject<LookupValueAudit>, INamespaceObject, IDerivableObject, IEquatable<LookupValue>
 {
     /// <summary>
     /// The lookup value key
@@ -71,6 +71,12 @@ public class LookupValue : TrackDomainObject<LookupValueAudit>, IDerivableObject
         base(copySource)
     {
         CopyTool.CopyProperties(copySource, this);
+    }
+    
+    /// <inheritdoc/>
+    public void ApplyNamespace(string @namespace)
+    {
+        // no namespace fields
     }
 
     /// <summary>Compare two objects</summary>

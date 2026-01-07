@@ -23,6 +23,12 @@ public class Regulation : ApiObjectBase
     public Dictionary<string, string> NameLocalizations { get; set; }
 
     /// <summary>
+    /// The regulation namespace
+    /// </summary>
+    [StringLength(128)]
+    public string Namespace { get; set; }
+
+    /// <summary>
     /// The regulation version, unique per regulation name
     /// </summary>
     public int Version { get; set; }

@@ -30,6 +30,7 @@ public static class Procedures
     public static readonly string GetDerivedLookups = "GetDerivedLookups";
     public static readonly string GetDerivedLookupValues = "GetDerivedLookupValues";
     public static readonly string GetLookupRangeValue = "GetLookupRangeValue";
+    public static readonly string DeleteLookup = "DeleteLookup";
     // script
     public static readonly string GetDerivedScripts = "GetDerivedScripts";
 

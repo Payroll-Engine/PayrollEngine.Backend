@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using PayrollEngine.Client.Scripting;
-using PayrollEngine.Client.Scripting.Function;
-using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Client.Scripting;
+using PayrollEngine.Client.Scripting.Runtime;
+using PayrollEngine.Client.Scripting.Function;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -20,28 +20,6 @@ public class CaseBuildRuntime : CaseChangeRuntimeBase, ICaseBuildRuntime
 
     /// <summary>The log owner type</summary>
     protected override string LogOwnerType => nameof(CaseBuildFunction);
-
-    /// <inheritdoc />
-    public string[] GetBuildActions() =>
-        Case.BuildActions == null ? [] :
-            Case.BuildActions.ToArray();
-
-    /// <inheritdoc />
-    public string[] GetFieldBuildActions(string caseFieldName)
-    {
-        if (string.IsNullOrWhiteSpace(caseFieldName))
-        {
-            throw new ArgumentException(nameof(caseFieldName));
-        }
-
-        // case field
-        var caseField = GetCaseFieldSet(caseFieldName);
-        if (caseField == null)
-        {
-            throw new ArgumentException($"unknown case field {caseFieldName}.");
-        }
-        return caseField.BuildActions == null ? [] : caseField.BuildActions.ToArray();
-    }
 
     /// <summary>
     /// Execute the case build script

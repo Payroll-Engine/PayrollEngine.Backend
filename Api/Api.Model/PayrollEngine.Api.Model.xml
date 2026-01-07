@@ -720,16 +720,6 @@
             The case field clusters
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.CaseField.BuildActions">
-            <summary>
-            The case field build actions
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.CaseField.ValidateActions">
-            <summary>
-            The case field validate actions
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.CaseField.Attributes">
             <summary>
             Custom attributes
@@ -1594,6 +1584,21 @@
             Expression used while the collector is ended
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.StartActions">
+            <summary>
+            The collector start actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.ApplyActions">
+            <summary>
+            The collector apply actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Collector.EndActions">
+            <summary>
+            The collector end actions
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Collector.Attributes">
             <summary>
             Custom attributes
@@ -1670,6 +1675,21 @@
         <member name="P:PayrollEngine.Api.Model.CollectorAudit.EndExpression">
             <summary>
             Expression used while the collector is ended
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.StartActions">
+            <summary>
+            The collector start actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.ApplyActions">
+            <summary>
+            The collector apply actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorAudit.EndActions">
+            <summary>
+            The collector end actions
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CollectorAudit.Threshold">
@@ -3180,6 +3200,11 @@
             The localized regulation names
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Regulation.Namespace">
+            <summary>
+            The regulation namespace
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Regulation.Version">
             <summary>
             The regulation version, unique per regulation name
@@ -4019,6 +4044,16 @@
             Expression: calculates of the wage type result attributes
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.ValueActions">
+            <summary>
+            The wage type value actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageType.ResultActions">
+            <summary>
+            The wage type result actions
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.WageType.Attributes">
             <summary>
             Custom attributes
@@ -4105,6 +4140,16 @@
         <member name="P:PayrollEngine.Api.Model.WageTypeAudit.ResultExpression">
             <summary>
             Expression: calculates of the wage type result attributes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.ValueActions">
+            <summary>
+            The wage type value actions
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeAudit.ResultActions">
+            <summary>
+            The wage type result actions
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeAudit.Attributes">

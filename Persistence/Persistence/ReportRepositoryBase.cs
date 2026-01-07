@@ -1,14 +1,14 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class ReportRepositoryBase<T>(IScriptRepository scriptRepository,
-        IReportAuditRepository auditRepository, bool auditDisabled)
+public abstract class ReportRepositoryBase<T>(IRegulationRepository regulationRepository,
+    IScriptRepository scriptRepository, IReportAuditRepository auditRepository, bool auditDisabled)
     : ScriptTrackChildDomainRepository<T, ReportAudit>(DbSchema.Tables.Report, DbSchema.ReportColumn.RegulationId,
-        scriptRepository, auditRepository, auditDisabled), IReportRepository<T>
+        regulationRepository, scriptRepository, auditRepository, auditDisabled), IReportRepository<T>
     where T : Report, new()
 {
     protected override void GetObjectCreateData(T report, DbParameterCollection parameters)

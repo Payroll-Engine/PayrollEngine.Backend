@@ -121,7 +121,8 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         // SELECT execution
         var result = await QueryAsync<int>(context, compileQuery);
-        return result.FirstOrDefault();
+        var parentId = result.FirstOrDefault();
+        return parentId > 0 ? parentId : null;
     }
 
     /// <inheritdoc />

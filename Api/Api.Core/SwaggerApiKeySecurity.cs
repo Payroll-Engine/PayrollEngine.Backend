@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace PayrollEngine.Api.Core;
@@ -17,16 +16,11 @@ public static class SwaggerApiKeySecurity
             In = ParameterLocation.Header,
             Scheme = "ApiKeyScheme"
         });
-        var key = new OpenApiSecurityScheme
+
+        // see https://www.reddit.com/r/dotnet/comments/1pd65xf/comment/ns2ogzf/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+        options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
         {
-            Reference = new OpenApiReference
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = BackendSpecification.ApiKeyHeader
-            },
-            In = ParameterLocation.Header
-        };
-        var requirement = new OpenApiSecurityRequirement { { key, new List<string>() } };
-        options.AddSecurityRequirement(requirement);
+            [new OpenApiSecuritySchemeReference(BackendSpecification.ApiKeyHeader, document)] = []
+        });
     }
 }

@@ -26,6 +26,11 @@ public class WageTypeResultRuntime : WageTypeRuntimeBase, IWageTypeResultRuntime
     /// <summary>The log owner type</summary>
     protected override string LogOwnerType => nameof(WageTypeResultFunction);
 
+    /// <inheritdoc />
+    public string[] GetResultActions() =>
+        WageType.ResultActions == null ? [] :
+            WageType.ResultActions.ToArray();
+
     [MethodImpl(MethodImplOptions.NoInlining)]
     internal void EvaluateResult(WageType wageType)
     {

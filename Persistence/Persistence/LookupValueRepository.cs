@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
-public class LookupValueRepository(ILookupValueAuditRepository auditRepository, bool auditDisabled) :
-    TrackChildDomainRepository<LookupValue, LookupValueAudit>(DbSchema.Tables.LookupValue,
+public class LookupValueRepository(IRegulationRepository regulationRepository,
+    ILookupValueAuditRepository auditRepository, bool auditDisabled) :
+    TrackChildDomainRepository<LookupValue, LookupValueAudit>(regulationRepository, DbSchema.Tables.LookupValue,
         DbSchema.LookupValueColumn.LookupId, auditRepository, auditDisabled), ILookupValueRepository
 {
     public async Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null)

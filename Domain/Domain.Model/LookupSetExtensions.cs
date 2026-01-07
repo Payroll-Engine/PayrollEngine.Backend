@@ -23,9 +23,9 @@ public static class LookupSetExtensions
         switch (lookup.RangeMode)
         {
             case LookupRangeMode.Threshold:
-                return ApplyThresholdRangeValue(lookup, rangeValue, valueFieldName);
+                return lookup.ApplyThresholdRangeValue(rangeValue, valueFieldName);
             case LookupRangeMode.Progressive:
-                return ApplyProgressiveRangeValue(lookup, rangeValue, valueFieldName);
+                return lookup.ApplyProgressiveRangeValue(rangeValue, valueFieldName);
         }
         return 0;
     }

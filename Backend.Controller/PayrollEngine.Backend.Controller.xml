@@ -2715,6 +2715,15 @@
             <param name="functionType">The function type</param>
             <returns>List of system actions</returns>
         </member>
+        <member name="M:PayrollEngine.Backend.Controller.TenantController.GetSystemScriptActionPropertiesAsync(System.Int32,PayrollEngine.FunctionType,System.Boolean)">
+            <summary>
+            Get the system script action properties
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="functionType">The function type</param>
+            <param name="readOnly">Read-only properties (default: true)</param>
+            <returns>List of system actions</returns>
+        </member>
         <member name="M:PayrollEngine.Backend.Controller.TenantController.ExecuteReportQueryAsync(System.Int32,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Execute a report query

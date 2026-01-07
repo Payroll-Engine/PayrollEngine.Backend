@@ -3,9 +3,9 @@ using System;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
-using PayrollEngine.Client.Scripting.Runtime;
-using PayrollEngine.Domain.Model;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Client.Scripting.Runtime;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -21,6 +21,11 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 
     /// <summary>The Payrun</summary>
     private Payrun Payrun => Settings.Payrun;
+
+    /// <summary>
+    /// Provider for regulation
+    /// </summary>
+    private IRegulationProvider RegulationProvider => Settings.RegulationProvider;
 
     /// <summary>
     /// Provider for employee results
@@ -41,7 +46,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     #region Internal
 
     /// <summary>Function execution timeout <see cref="BackendScriptingSpecification.PayrunScriptFunctionTimeout"/></summary>
-    protected override TimeSpan Timeout => 
+    protected override TimeSpan Timeout =>
         TimeSpan.FromMilliseconds(BackendScriptingSpecification.PayrunScriptFunctionTimeout);
 
     /// <summary>The log owner type</summary>
@@ -221,7 +226,18 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     #region Payrun Results
 
     /// <inheritdoc />
-    public void AddPayrunResult(string source, string name, string value, int valueType,
+    public object GetPayrunResult(string source, string name)
+    {
+        var result = FindPayrollResult(source, name);
+        if (string.IsNullOrWhiteSpace(result?.Value))
+        {
+            return null;
+        }
+        return ValueConvert.ToValue(result.Value, result.ValueType, new CultureInfo(result.Culture));
+    }
+
+    /// <inheritdoc />
+    public void SetPayrunResult(string source, string name, object value, int valueType,
         DateTime startDate, DateTime endDate, string slot, List<string> tags,
         Dictionary<string, object> attributes, string culture)
     {
@@ -232,6 +248,26 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         if (startDate >= endDate)
         {
             throw new ArgumentException($"Invalid start date {startDate} on end {endDate}.");
+        }
+
+        if (value == null)
+        {
+            return;
+        }
+
+        // value
+        var stringValue = value.ToString();
+
+        // update existing
+        var existing = FindPayrollResult(source, name);
+        if (existing != null)
+        {
+            existing.Value = stringValue;
+            existing.NumericValue = ValueConvert.ToNumber(
+                json: stringValue,
+                valueType: (ValueType)valueType,
+                culture: CultureInfo.GetCultureInfo(culture));
+            return;
         }
 
         // ensure attributes collection
@@ -257,9 +293,9 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             // currently no support for localized custom wage type results
             Slot = slot,
             ValueType = (ValueType)valueType,
-            Value = value,
+            Value = stringValue,
             NumericValue = ValueConvert.ToNumber(
-                json: value,
+                json: stringValue,
                 valueType: (ValueType)valueType,
                 culture: CultureInfo.GetCultureInfo(culture)),
             Culture = culture,
@@ -271,9 +307,42 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         PayrunResults.Add(result);
     }
 
+    private PayrunResult FindPayrollResult(string source, string name) =>
+        PayrunResults.FirstOrDefault(
+            x => string.Equals(x.Source, source) && string.Equals(x.Name, name));
+
     #endregion
 
-    #region Wage Type Results
+    #region Wage Type
+
+    /// <inheritdoc />
+    public decimal GetWageTypeNumber(string wageTypeName)
+    {
+        if (string.IsNullOrWhiteSpace(wageTypeName))
+        {
+            throw new ArgumentException(nameof(wageTypeName));
+        }
+
+        // namespace
+        wageTypeName = wageTypeName.EnsureNamespace(Settings.Namespace);
+
+        foreach (var derivedWageType in RegulationProvider.DerivedWageTypes)
+        {
+            var wageType = derivedWageType.FirstOrDefault();
+            if (wageType != null && string.Equals(wageType.Name, wageTypeName))
+            {
+                return wageType.WageTypeNumber;
+            }
+        }
+        return 0;
+    }
+
+    /// <inheritdoc />
+    public string GetWageTypeName(decimal wageTypeNumber)
+    {
+        var wageType = RegulationProvider.DerivedWageTypes.FirstOrDefault(x => x.Key == wageTypeNumber);
+        return wageType?.FirstOrDefault()?.Name;
+    }
 
     /// <inheritdoc />
     public IList<Tuple<decimal, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetWageTypeResults(
@@ -563,7 +632,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 
     #endregion
 
-    #region Collector Results
+    #region Collector
 
     /// <inheritdoc />
     public IList<Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetCollectorResults(
@@ -582,26 +651,20 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     public IList<Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetConsolidatedCollectorResults(
         IList<string> collectorNames, DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null)
     {
-        if (collectorNames == null)
-        {
-            throw new ArgumentNullException(nameof(collectorNames));
-        }
-        foreach (var collectorName in collectorNames)
-        {
-            if (string.IsNullOrWhiteSpace(collectorName))
-            {
-                throw new ArgumentException(nameof(collectorName));
-            }
-        }
-
-        var consolidatedResults = new List<Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (EmployeeId == null)
         {
             throw new PayrollException("Missing employee on consolidated collector custom result request.");
         }
 
+        // namespace
+        if (!string.IsNullOrWhiteSpace(Namespace))
+        {
+            collectorNames = collectorNames.EnsureNamespace(Namespace);
+        }
+
         // iterate from the start period until the job period
         var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
+        var consolidatedResults = new List<Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (periodStarts.Any() && EmployeeId != null)
         {
             var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorResultsAsync(Settings.DbContext,
@@ -634,6 +697,12 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         IList<string> collectorNames, DateTime start, DateTime end, string forecast = null,
         int? jobStatus = null, IList<string> tags = null)
     {
+        // namespace
+        if (!string.IsNullOrWhiteSpace(Namespace))
+        {
+            collectorNames = collectorNames.EnsureNamespace(Namespace);
+        }
+
         var collectorResults = GetCollectorCustomResultsInternal(collectorNames, start, end, forecast, jobStatus, tags);
         var results = collectorResults.Select(x => new Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
             x.CollectorName, x.Source, new(x.Start, x.End), x.Value, x.Tags, x.Attributes)).ToList();
@@ -647,26 +716,20 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     public IList<Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetConsolidatedCollectorCustomResults(IList<string> collectorNames,
         DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null)
     {
-        if (collectorNames == null)
-        {
-            throw new ArgumentNullException(nameof(collectorNames));
-        }
-        foreach (var collectorName in collectorNames)
-        {
-            if (string.IsNullOrWhiteSpace(collectorName))
-            {
-                throw new ArgumentException(nameof(collectorName));
-            }
-        }
-
-        var consolidatedResults = new List<Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (EmployeeId == null)
         {
             throw new PayrollException("Missing employee on consolidated collector custom result request.");
         }
 
+        // namespace
+        if (!string.IsNullOrWhiteSpace(Namespace))
+        {
+            collectorNames = collectorNames.EnsureNamespace(Namespace);
+        }
+
         // iterate from the start period until the job period
         var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
+        var consolidatedResults = new List<Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (periodStarts.Any() && EmployeeId != null)
         {
             var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorCustomResultsAsync(Settings.DbContext,
@@ -701,17 +764,6 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     private IList<CollectorResult> GetCollectorResultsInternal(IList<string> collectorNames, DateTime start, DateTime end,
         string forecast = null, int? jobStatus = null, IList<string> tags = null)
     {
-        if (collectorNames == null)
-        {
-            throw new ArgumentNullException(nameof(collectorNames));
-        }
-        foreach (var collectorName in collectorNames)
-        {
-            if (string.IsNullOrWhiteSpace(collectorName))
-            {
-                throw new ArgumentException(nameof(collectorName));
-            }
-        }
         if (!EmployeeId.HasValue)
         {
             throw new PayrollException("Missing employee on collector result request.");
@@ -720,6 +772,12 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         if (start >= end)
         {
             return new List<CollectorResult>();
+        }
+
+        // namespace
+        if (!string.IsNullOrWhiteSpace(Namespace))
+        {
+            collectorNames = collectorNames.EnsureNamespace(Namespace);
         }
 
         var results = Task.Run(() => ResultProvider.GetCollectorResultsAsync(Settings.DbContext,
@@ -744,17 +802,6 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     private IList<CollectorCustomResult> GetCollectorCustomResultsInternal(IList<string> collectorNames, DateTime start, DateTime end,
         string forecast = null, int? jobStatus = null, IList<string> tags = null)
     {
-        if (collectorNames == null)
-        {
-            throw new ArgumentNullException(nameof(collectorNames));
-        }
-        foreach (var collectorName in collectorNames)
-        {
-            if (string.IsNullOrWhiteSpace(collectorName))
-            {
-                throw new ArgumentException(nameof(collectorName));
-            }
-        }
         if (!EmployeeId.HasValue)
         {
             throw new PayrollException("Missing employee on wage type custom result request.");
@@ -764,6 +811,13 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             return new List<CollectorCustomResult>();
         }
+
+        // namespace
+        if (!string.IsNullOrWhiteSpace(Namespace))
+        {
+            collectorNames = collectorNames.EnsureNamespace(Namespace);
+        }
+
         return Task.Run(() => ResultProvider.GetCollectorCustomResultsAsync(Settings.DbContext,
             new()
             {

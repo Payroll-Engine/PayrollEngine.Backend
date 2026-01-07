@@ -21,7 +21,10 @@ public abstract class ScriptDomainObject : DomainObjectBase, IScriptObject, IEqu
     public int ScriptHash { get; set; }
 
     /// <inheritdoc />
-    public abstract bool HasExpression { get; }
+    public abstract bool HasAnyExpression { get; }
+
+    /// <inheritdoc />
+    public abstract bool HasAnyAction { get; }
 
     /// <inheritdoc />
     public abstract bool HasObjectScripts { get; }
@@ -61,5 +64,8 @@ public abstract class ScriptDomainObject : DomainObjectBase, IScriptObject, IEqu
     public abstract IEnumerable<string> GetEmbeddedScriptNames();
 
     /// <inheritdoc />
-    public abstract IDictionary<FunctionType, string> GetFunctionScripts();
+    public abstract string GetFunctionScript(FunctionType functionType);
+
+    /// <inheritdoc />
+    public abstract List<string> GetFunctionActions(FunctionType functionType);
 }

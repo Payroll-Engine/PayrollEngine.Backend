@@ -22,55 +22,34 @@ internal static class CodeFactory
     }
 
     /// <summary>
-    /// The embedded c# scripting files
-    /// </summary>
-    /// <remarks>Keep this in sync with the PayrollEngine.Client.Scripting project</remarks>
-    internal static readonly string[] EmbeddedScriptNames =
-    [
-        "ClientScript.cs",
-        "Extensions.cs",
-        "Date.cs",
-        "DatePeriod.cs",
-        "HourPeriod.cs",
-        "Tools.cs",
-        "PayrollValue.cs",
-        "PeriodValue.cs",
-        "CaseObject.cs",
-        "CaseValue.cs",
-        "CasePayrollValue.cs",
-        "Function\\Function.cs",
-        "Function\\PayrollFunction.cs",
-        "PayrollResults.cs"
-    ];
-
-    /// <summary>
     /// Gets embedded source code
     /// </summary>
     /// <param name="resourceName">Name of the resource</param>
     /// <returns>The source code</returns>
     internal static string GetEmbeddedCodeFile(string resourceName)
     {
-        // ensure valid embedded resource name
-        resourceName = GetCodeFileResourceName(resourceName);
+        resourceName = EnsureResourceName(resourceName);
 
-        string codeFile;
+        // cache success
         if (CodeFiles.TryGetValue(resourceName, out var file))
         {
-            codeFile = file;
+            return file;
         }
-        else
-        {
-            codeFile = Assembly.GetEmbeddedFile(resourceName);
-            CodeFiles.Add(resourceName, codeFile);
-        }
+
+        // load embedded resource
+        var codeFile = Assembly.GetEmbeddedFile(resourceName);
+
+        // cache update
+        CodeFiles.Add(resourceName, codeFile);
+
         return codeFile;
     }
 
     /// <summary>
-    /// Get code file resource name
+    /// Ensure valid embedded resource name
     /// </summary>
     /// <param name="resourceName">Name of the resource</param>
-    private static string GetCodeFileResourceName(string resourceName)
+    private static string EnsureResourceName(string resourceName)
     {
         if (string.IsNullOrWhiteSpace(resourceName))
         {

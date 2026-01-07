@@ -1,16 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportTemplateRepository(IReportTemplateAuditRepository auditRepository, bool auditDisabled) :
-    TrackChildDomainRepository<ReportTemplate, ReportTemplateAudit>(DbSchema.Tables.ReportTemplate,
-        DbSchema.ReportTemplateColumn.ReportId, auditRepository, auditDisabled), IReportTemplateRepository
+public class ReportTemplateRepository(IRegulationRepository regulationRepository,
+    IReportRepository reportRepository, IReportTemplateAuditRepository auditRepository, bool auditDisabled) :
+    TrackChildDomainRepository<ReportTemplate, ReportTemplateAudit>(regulationRepository,
+        DbSchema.Tables.ReportTemplate, DbSchema.ReportTemplateColumn.ReportId,
+        auditRepository, auditDisabled), IReportTemplateRepository
 {
+    private IReportRepository ReportRepository { get; } = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
+
     /// <inheritdoc />
     protected override void GetObjectCreateData(ReportTemplate template, DbParameterCollection parameters)
     {
@@ -32,19 +38,19 @@ public class ReportTemplateRepository(IReportTemplateAuditRepository auditReposi
     }
 
     /// <inheritdoc />
-    public override async Task<IEnumerable<ReportTemplate>> QueryAsync(IDbContext context, int regulationId, Query query = null)
+    public override async Task<IEnumerable<ReportTemplate>> QueryAsync(IDbContext context, int reportId, Query query = null)
     {
         // report template query
         if (query is ReportTemplateQuery reportTemplateQuery && !string.IsNullOrWhiteSpace(reportTemplateQuery.Culture))
         {
             // db query
-            var dbQuery = GetTemplateQuery(context, regulationId, reportTemplateQuery);
+            var dbQuery = GetTemplateQuery(context, reportId, reportTemplateQuery);
 
             // T-SQL SELECT execution
             var reportTemplates = (await QueryAsync<ReportTemplate>(context, dbQuery)).ToList();
 
             // notification
-            await OnRetrieved(context, regulationId, reportTemplates);
+            await OnRetrieved(context, reportId, reportTemplates);
 
             // exclude content
             if (reportTemplateQuery.ExcludeContent)
@@ -59,20 +65,42 @@ public class ReportTemplateRepository(IReportTemplateAuditRepository auditReposi
             return reportTemplates;
         }
 
-        return await base.QueryAsync(context, regulationId, query);
+        return await base.QueryAsync(context, reportId, query);
     }
 
     /// <inheritdoc />
-    public override async Task<long> QueryCountAsync(IDbContext context, int regulationId, Query query = null)
+    public override async Task<long> QueryCountAsync(IDbContext context, int reportId, Query query = null)
     {
         // report template query
         if (query is ReportTemplateQuery reportTemplateQuery && !string.IsNullOrWhiteSpace(reportTemplateQuery.Culture))
         {
             // db query
-            var dbQuery = GetTemplateQuery(context, regulationId, reportTemplateQuery);
+            var dbQuery = GetTemplateQuery(context, reportId, reportTemplateQuery);
             return await QuerySingleAsync<long>(context, dbQuery);
         }
-        return await base.QueryCountAsync(context, regulationId, query);
+        return await base.QueryCountAsync(context, reportId, query);
+    }
+
+    public override async Task<ReportTemplate> CreateAsync(IDbContext context, int reportId, ReportTemplate template)
+    {
+        await EnsureNamespaceAsync(context, reportId, template);
+        return await base.CreateAsync(context, reportId, template);
+    }
+
+    public override async Task<ReportTemplate> UpdateAsync(IDbContext context, int reportId, ReportTemplate template)
+    {
+        await EnsureNamespaceAsync(context, reportId, template);
+        return await base.UpdateAsync(context, reportId, template);
+    }
+
+    private async Task EnsureNamespaceAsync(IDbContext context, int reportId, ReportTemplate template)
+    {
+        var regulationId = await ReportRepository.GetParentIdAsync(context, reportId);
+        if (!regulationId.HasValue)
+        {
+            return;
+        }
+        await ApplyNamespaceAsync(context, regulationId.Value, template);
     }
 
     private string GetTemplateQuery(IDbContext context, int regulationId, ReportTemplateQuery query)

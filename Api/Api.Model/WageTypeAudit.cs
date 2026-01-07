@@ -83,6 +83,16 @@ public class WageTypeAudit : ApiObjectBase
     public string ResultExpression { get; set; }
 
     /// <summary>
+    /// The wage type value actions
+    /// </summary>
+    public List<string> ValueActions { get; set; }
+
+    /// <summary>
+    /// The wage type result actions
+    /// </summary>
+    public List<string> ResultActions { get; set; }
+
+    /// <summary>
     /// Custom attributes
     /// </summary>
     public Dictionary<string, object> Attributes { get; set; }

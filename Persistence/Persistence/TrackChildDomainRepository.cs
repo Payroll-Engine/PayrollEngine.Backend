@@ -1,20 +1,79 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public abstract class TrackChildDomainRepository<TDomain, TAudit>(string tableName, string parentFieldName,
-        IAuditChildDomainRepository<TAudit> auditRepository, bool auditDisabled)
+public abstract class TrackChildDomainRepository<TDomain, TAudit>(IRegulationRepository regulationRepository,
+    string tableName, string parentFieldName, IAuditChildDomainRepository<TAudit> auditRepository, bool auditDisabled)
     : ChildDomainRepository<TDomain>(tableName, parentFieldName),
         ITrackChildDomainRepository<TDomain, TAudit>
-    where TDomain : TrackDomainObject<TAudit>, new()
+    where TDomain : TrackDomainObject<TAudit>, INamespaceObject, new()
     where TAudit : AuditDomainObject
 {
+    protected IRegulationRepository RegulationRepository { get; } = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
     private IAuditChildDomainRepository<TAudit> AuditRepository { get; } = auditRepository ?? throw new ArgumentNullException(nameof(auditRepository));
     private bool AuditDisabled { get; } = auditDisabled;
+
+    #region Namespace
+
+    /// <summary>
+    /// Get the regulation namespace
+    /// </summary>
+    /// <param name="context">Database context</param>
+    /// <param name="regulationId">Regulation id</param>
+    /// <returns></returns>
+    protected async Task<string> GetRegulationNamespaceAsync(IDbContext context, int regulationId)
+    {
+        var tenantId = await RegulationRepository.GetParentIdAsync(context, regulationId);
+        if (tenantId == null || tenantId <= 0)
+        {
+            return null;
+        }
+        return await GetRegulationNamespaceAsync(context, tenantId.Value, regulationId);
+    }
+
+    /// <summary>
+    /// Get the regulation namespace
+    /// </summary>
+    /// <param name="context">Database context</param>
+    /// <param name="tenantId">Tenant id</param>
+    /// <param name="regulationId">Regulation id</param>
+    /// <returns></returns>
+    private async Task<string> GetRegulationNamespaceAsync(IDbContext context, int tenantId, int regulationId)
+    {
+        var query = new Query
+        {
+            Status = ObjectStatus.Active,
+            Filter = $"{nameof(Regulation.Id)} eq {regulationId}",
+            Select = $"{nameof(Regulation.Namespace)}"
+        };
+
+        var result = await RegulationRepository.QueryAsync(context, tenantId, query);
+        var @namespace = result.FirstOrDefault()?.Namespace;
+        return @namespace;
+    }
+
+    /// <summary>
+    /// Apply namespace to item
+    /// </summary>
+    /// <param name="context">Database context</param>
+    /// <param name="regulationId">Regulation id</param>
+    /// <param name="item">Item to apply the namespace</param>
+    /// <returns></returns>
+    protected async Task ApplyNamespaceAsync(IDbContext context, int regulationId, TDomain item)
+    {
+        var @namespace = await GetRegulationNamespaceAsync(context, regulationId);
+        if (!string.IsNullOrWhiteSpace(@namespace))
+        {
+            item.ApplyNamespace(@namespace.EnsureEnd("."));
+        }
+    }
+
+    #endregion
 
     #region Audit
 

@@ -52,8 +52,6 @@ internal abstract class PayrollRepositoryCaseFieldCommandBase(IDbContext dbConte
                 derivedCaseField.Tags = CollectDerivedList(derivedCaseFields, x => x.Tags);
                 derivedCaseField.LookupSettings = CollectDerivedValue(derivedCaseFields, x => x.LookupSettings);
                 derivedCaseField.Clusters = CollectDerivedList(derivedCaseFields, x => x.Clusters);
-                derivedCaseField.BuildActions = CollectDerivedList(derivedCaseFields, x => x.BuildActions);
-                derivedCaseField.ValidateActions = CollectDerivedList(derivedCaseFields, x => x.ValidateActions);
                 derivedCaseField.Attributes = CollectDerivedAttributes(derivedCaseFields);
                 derivedCaseField.ValueAttributes = CollectDerivedAttributes(derivedCaseFields);
                 // remove the current level for the next iteration

@@ -134,16 +134,6 @@ public class CaseFieldAudit : AuditDomainObject, IDomainAttributeObject
     public List<string> Clusters { get; set; }
 
     /// <summary>
-    /// The case field build actions
-    /// </summary>
-    public List<string> BuildActions { get; set; }
-
-    /// <summary>
-    /// The case field validate actions
-    /// </summary>
-    public List<string> ValidateActions { get; set; }
-
-    /// <summary>
     /// Custom attributes
     /// </summary>
     public Dictionary<string, object> Attributes { get; set; }
