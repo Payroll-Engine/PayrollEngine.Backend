@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
@@ -15,8 +16,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
 {
     /// <inheritdoc/>
     public PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
-        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime) :
-        base(tenantService, payrunJobService, webhookDispatcher, runtime)
+        IWebhookDispatchService webhookDispatcher, IPayrunJobQueue payrunJobQueue, IControllerRuntime runtime) :
+        base(tenantService, payrunJobService, webhookDispatcher, payrunJobQueue, runtime)
     {
     }
 
@@ -89,13 +90,15 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     }
 
     /// <summary>
-    /// Start a new payrun job
+    /// Start a new payrun job (asynchronously).
+    /// The job is queued for background processing and returns immediately.
+    /// Use the Location header to poll for job status.
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="jobInvocation">The payrun job invocation</param>
-    /// <returns>The started payrun job</returns>
+    /// <returns>HTTP 202 Accepted with the payrun job and Location header for status polling</returns>
     [HttpPost]
-    [CreatedResponse]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("StartPayrunJob")]

@@ -187,6 +187,7 @@ public static class ProviderStartupExtensions
             ctx.GetRequiredService<ITenantService>(),
             ctx.GetRequiredService<IPayrunJobService>(),
             ctx.GetRequiredService<IWebhookDispatchService>(),
+            ctx.GetRequiredService<IPayrunJobQueue>(),
             ctx.GetRequiredService<IControllerRuntime>()));
 
         // regulation controllers

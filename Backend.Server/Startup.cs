@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Api.Core;
+using PayrollEngine.Domain.Application;
+using PayrollEngine.Domain.Application.Service;
 
 namespace PayrollEngine.Backend.Server;
 
@@ -53,6 +55,10 @@ public class Startup
             Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds));
         services.AddApiServices(Configuration, apiSpecification, dbContext);
         services.AddLocalApiServices();
+
+        // Payrun job background processing
+        services.AddSingleton<IPayrunJobQueue, PayrunJobQueue>();
+        services.AddHostedService<PayrunJobWorkerService>();
     }
 
     /// <summary>
