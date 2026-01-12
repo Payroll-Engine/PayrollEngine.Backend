@@ -1292,6 +1292,7 @@ public class PayrunProcessor : FunctionToolBase
     private async Task<PayrunJob> CompleteJobAsync(PayrunJob payrunJob)
     {
         // setup
+        payrunJob.JobStatus = PayrunJobStatus.Draft;
         payrunJob.JobEnd = Date.Now;
         payrunJob.Message = "Completed payrun calculation successfully";
         Log.Debug(payrunJob.Message);
