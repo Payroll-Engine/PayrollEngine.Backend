@@ -62,7 +62,7 @@ public class CaseFieldAudit : ApiObjectBase
     public CaseFieldTimeUnit TimeUnit { get; set; }
 
     /// <summary>
-    /// The period aggregation type for <see cref="CaseFieldTimeType.Period"/>
+    /// The period aggregation type
     /// </summary>
     public CaseFieldAggregationType PeriodAggregation { get; set; }
 

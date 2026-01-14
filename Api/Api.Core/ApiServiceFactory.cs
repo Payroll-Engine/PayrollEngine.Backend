@@ -338,25 +338,12 @@ internal static class ApiServiceFactory
         private static IPayrunJobService NewPayrunJobService(IServiceProvider serviceProvider) =>
             new PayrunJobService(new()
             {
-                RegulationLookupSetRepository = serviceProvider.GetRequiredService<ILookupSetRepository>(),
                 CalendarRepository = serviceProvider.GetRequiredService<ICalendarRepository>(),
                 UserRepository = serviceProvider.GetRequiredService<IUserRepository>(),
-                TaskRepository = serviceProvider.GetRequiredService<ITaskRepository>(),
-                LogRepository = serviceProvider.GetRequiredService<ILogRepository>(),
                 DivisionRepository = serviceProvider.GetRequiredService<IDivisionRepository>(),
-                EmployeeRepository = serviceProvider.GetRequiredService<IEmployeeRepository>(),
-                GlobalCaseValueRepository = serviceProvider.GetRequiredService<IGlobalCaseValueRepository>(),
-                NationalCaseValueRepository = serviceProvider.GetRequiredService<INationalCaseValueRepository>(),
-                CompanyCaseValueRepository = serviceProvider.GetRequiredService<ICompanyCaseValueRepository>(),
-                EmployeeCaseValueRepository = serviceProvider.GetRequiredService<IEmployeeCaseValueRepository>(),
                 PayrunRepository = serviceProvider.GetRequiredService<IPayrunRepository>(),
                 PayrunJobRepository = serviceProvider.GetRequiredService<IPayrunJobRepository>(),
-                RegulationRepository = serviceProvider.GetRequiredService<IRegulationRepository>(),
-                RegulationShareRepository = serviceProvider.GetRequiredService<IRegulationShareRepository>(),
                 PayrollRepository = serviceProvider.GetRequiredService<IPayrollRepository>(),
-                PayrollResultRepository = serviceProvider.GetRequiredService<IPayrollResultRepository>(),
-                PayrollConsolidatedResultRepository = serviceProvider.GetRequiredService<IPayrollConsolidatedResultRepository>(),
-                PayrollResultSetRepository = serviceProvider.GetRequiredService<IPayrollResultSetRepository>(),
                 PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>()
             });
 

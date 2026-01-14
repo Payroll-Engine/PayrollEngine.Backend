@@ -3029,6 +3029,11 @@
             The payrun job result
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.JobStatus">
+            <summary>
+            The payrun job status
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PeriodStart">
             <summary>
             The period start date (immutable)

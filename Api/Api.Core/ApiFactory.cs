@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PayrollEngine.Domain.Application;
+using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Scripting;
 
@@ -44,6 +46,11 @@ internal static class ApiFactory
 
         // api controller runtime context
         services.AddScoped<IControllerRuntime, ControllerRuntime>();
+
+        // Payrun job background processing
+        services.AddSingleton<IPayrunJobQueue, PayrunJobQueue>();
+        services.AddHostedService<PayrunJobWorkerService>();
+
         // api query service: singleton to reduce assembly reflection on each query
         services.AddSingleton<IQueryService, QueryService>();
         // hot spot for custom payroll calculators

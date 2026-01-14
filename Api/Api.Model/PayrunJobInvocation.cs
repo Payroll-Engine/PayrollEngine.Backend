@@ -69,6 +69,11 @@ public class PayrunJobInvocation : ApiObjectBase
     public PayrunJobResult JobResult { get; set; }
 
     /// <summary>
+    /// The payrun job status
+    /// </summary>
+    public PayrunJobStatus JobStatus { get; set; }
+
+    /// <summary>
     /// The period start date (immutable)
     /// </summary>
     [Required]

@@ -1849,7 +1849,7 @@
         <member name="T:PayrollEngine.Backend.Controller.PayrunJobController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrunJobService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrunJobService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Domain.Application.Service.IPayrunJobQueue,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.QueryPayrunJobsAsync(System.Int32,PayrollEngine.Query)">
@@ -1879,11 +1879,13 @@
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.StartPayrunJobAsync(System.Int32,PayrollEngine.Api.Model.PayrunJobInvocation)">
             <summary>
-            Start a new payrun job
+            Start a new payrun job (asynchronously).
+            The job is queued for background processing and returns immediately.
+            Use the Location header to poll for job status.
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="jobInvocation">The payrun job invocation</param>
-            <returns>The started payrun job</returns>
+            <returns>HTTP 202 Accepted with the payrun job and Location header for status polling</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.GetPayrunJobStatusAsync(System.Int32,System.Int32)">
             <summary>

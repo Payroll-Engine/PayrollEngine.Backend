@@ -187,7 +187,17 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
         {
             foreach (var jobEmployee in payrunJob.Employees)
             {
-                await JobEmployeeRepository.UpdateAsync(context, payrunJob.Id, jobEmployee);
+                var query = new Query
+                {
+                    Filter =
+                        $"{nameof(PayrunJobEmployee.EmployeeId)} eq {jobEmployee.EmployeeId}"
+                };
+                var employee = (await JobEmployeeRepository.QueryAsync(context, payrunJob.Id, query)).FirstOrDefault();
+                // add missing (no update)
+                if (employee == null)
+                {
+                    await JobEmployeeRepository.CreateAsync(context, payrunJob.Id, jobEmployee);
+                }
             }
         }
         await base.OnUpdatedAsync(context, tenantId, payrunJob);

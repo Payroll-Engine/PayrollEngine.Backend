@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Api.Core;
@@ -8,7 +8,6 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
 using PayrollEngine.Domain.Model;
@@ -19,12 +18,13 @@ namespace PayrollEngine.Api.Controller;
 /// API controller for the payrun jobs
 /// </summary>
 public abstract class PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
-        IWebhookDispatchService webhookDispatcher, IControllerRuntime runtime)
+        IWebhookDispatchService webhookDispatcher, IPayrunJobQueue payrunJobQueue, IControllerRuntime runtime)
     : RepositoryChildObjectController<ITenantService, IPayrunJobService,
     ITenantRepository, IPayrunJobRepository,
     Tenant, PayrunJob, ApiObject.PayrunJob>(tenantService, payrunJobService, runtime, new PayrunJobMap())
 {
     private IWebhookDispatchService WebhookDispatcher { get; } = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
+    private IPayrunJobQueue PayrunJobQueue { get; } = payrunJobQueue ?? throw new ArgumentNullException(nameof(payrunJobQueue));
     private PayrunJobServiceSettings ServiceSettings => Service.Settings;
 
     public virtual async Task<ActionResult> QueryEmployeePayrunJobsAsync(int tenantId, int employeeId, Query query)
@@ -75,16 +75,15 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
     }
 
     /// <summary>
-    /// Start a new payrun job
+    /// Start a new payrun job (asynchronously).
+    /// The job is queued for background processing and returns immediately with HTTP 202 Accepted.
+    /// Use the Location header to poll for job status.
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="jobInvocation">The payrun jobs to add</param>
-    /// <returns>The started payrun job</returns>
+    /// <param name="jobInvocation">The payrun job invocation</param>
+    /// <returns>HTTP 202 Accepted with the payrun job and Location header for status polling</returns>
     public virtual async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunJobAsync(int tenantId, ApiObject.PayrunJobInvocation jobInvocation)
     {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-
         // tenant
         var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
         if (tenant == null)
@@ -135,53 +134,63 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
             }
         }
 
-        // processor
         try
         {
-            // settings
-            var serverConfiguration = Runtime.Configuration.GetConfiguration<PayrollServerConfiguration>();
-
-            var processor = new PayrunProcessor(
-                tenant,
-                payrun,
-                new()
-                {
-                    DbContext = Runtime.DbContext,
-                    UserRepository = ServiceSettings.UserRepository,
-                    DivisionRepository = ServiceSettings.DivisionRepository,
-                    TaskRepository = ServiceSettings.TaskRepository,
-                    LogRepository = ServiceSettings.LogRepository,
-                    EmployeeRepository = ServiceSettings.EmployeeRepository,
-                    GlobalCaseValueRepository = ServiceSettings.GlobalCaseValueRepository,
-                    NationalCaseValueRepository = ServiceSettings.NationalCaseValueRepository,
-                    CompanyCaseValueRepository = ServiceSettings.CompanyCaseValueRepository,
-                    EmployeeCaseValueRepository = ServiceSettings.EmployeeCaseValueRepository,
-                    PayrunRepository = ServiceSettings.PayrunRepository,
-                    PayrunJobRepository = ServiceSettings.PayrunJobRepository,
-                    RegulationLookupSetRepository = ServiceSettings.RegulationLookupSetRepository,
-                    RegulationRepository = ServiceSettings.RegulationRepository,
-                    RegulationShareRepository = ServiceSettings.RegulationShareRepository,
-                    PayrollRepository = ServiceSettings.PayrollRepository,
-                    PayrollResultRepository = ServiceSettings.PayrollResultRepository,
-                    PayrollConsolidatedResultRepository = ServiceSettings.PayrollConsolidatedResultRepository,
-                    PayrollResultSetRepository = ServiceSettings.PayrollResultSetRepository,
-                    CalendarRepository = ServiceSettings.CalendarRepository,
-                    PayrollCalculatorProvider = ServiceSettings.PayrollCalculatorProvider,
-                    WebhookDispatchService = WebhookDispatcher,
-                    FunctionLogTimeout = serverConfiguration.FunctionLogTimeout,
-                    AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout,
-                    ScriptProvider = Runtime.ScriptProvider,
-                });
-
-            // job
+            // Map API model to domain model
             var domainJobInvocation = new PayrunJobInvocationMap().ToDomain(jobInvocation);
-            var payrunJob = await processor.Process(domainJobInvocation);
 
-            stopwatch.Stop();
-            Log.Debug($"Created job {payrunJob.Name}: {stopwatch.ElapsedMilliseconds} ms");
+            // Get payroll and division for job creation
+            var payroll = await ServiceSettings.PayrollRepository.GetAsync(Runtime.DbContext, tenantId, payrollId);
+            var division = await ServiceSettings.DivisionRepository.GetAsync(Runtime.DbContext, tenantId, payroll.DivisionId);
 
-            // created resource
-            return new CreatedObjectResult(Request.Path, MapDomainToApi(payrunJob));
+            // Get calendar for period info
+            var calendarName = division.Calendar ?? tenant.Calendar;
+            Domain.Model.Calendar calendar = null;
+            if (!string.IsNullOrWhiteSpace(calendarName))
+            {
+                calendar = await ServiceSettings.CalendarRepository.GetByNameAsync(Runtime.DbContext, tenantId, calendarName);
+            }
+            calendar ??= new Domain.Model.Calendar(); // default calendar
+
+            // Get calculator for period info
+            var calculator = ServiceSettings.PayrollCalculatorProvider.CreateCalculator(
+                tenantId, domainJobInvocation.UserId,
+                CultureInfo.CurrentCulture,
+                calendar);
+
+            // Create the payrun job
+            var payrunJob = PayrunJobFactory.CreatePayrunJob(
+                jobInvocation: domainJobInvocation,
+                divisionId: division.Id,
+                payrollId: payrollId,
+                payrollCalculator: calculator);
+
+            // Set initial status for async processing
+            payrunJob.JobStart = Date.Now;
+            payrunJob.JobStatus = PayrunJobStatus.Process;
+            payrunJob.Message = "Payrun job queued for background processing";
+
+            // Persist the job to database
+            await ServiceSettings.PayrunJobRepository.CreateAsync(Runtime.DbContext, tenantId, payrunJob);
+
+            // Update invocation with job ID
+            domainJobInvocation.PayrunJobId = payrunJob.Id;
+
+            // Enqueue for background processing
+            await PayrunJobQueue.EnqueueAsync(new PayrunJobQueueItem
+            {
+                TenantId = tenantId,
+                PayrunJobId = payrunJob.Id,
+                Tenant = tenant,
+                Payrun = payrun,
+                JobInvocation = domainJobInvocation
+            });
+
+            Log.Debug($"Queued payrun job {payrunJob.Id} for background processing");
+
+            // Return HTTP 202 Accepted with Location header
+            var statusUrl = $"{Request.Path}/{payrunJob.Id}/status";
+            return new AcceptedObjectResult(statusUrl, MapDomainToApi(payrunJob));
         }
         catch (PayrunException exception)
         {

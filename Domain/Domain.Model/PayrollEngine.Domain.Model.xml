@@ -5828,6 +5828,17 @@
             <param name="payrollId">The payroll id</param>
             <param name="payrollCalculator">The payroll calculator</param>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.UpdatePayrunJob(PayrollEngine.Domain.Model.PayrunJob,PayrollEngine.Domain.Model.PayrunJobInvocation,System.Int32,System.Int32,PayrollEngine.Domain.Model.IPayrollCalculator)">
+            <summary>
+            Update an existing payrun job with calculated values.
+            Used for async processing when the job was pre-created by the controller.
+            </summary>
+            <param name="payrunJob">The existing payrun job to update</param>
+            <param name="jobInvocation">The job invocation</param>
+            <param name="divisionId">The division id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="payrollCalculator">The payroll calculator</param>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.PayrunJobInvocation">
             <summary>
             A payrun job invocation

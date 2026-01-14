@@ -110,18 +110,42 @@ public class PayrunProcessor : FunctionToolBase
             calendarName: context.CalendarName);
 
         // create payrun job and retro payrun jobs
-        context.PayrunJob = PayrunJobFactory.CreatePayrunJob(
-            jobInvocation: jobInvocation,
-            divisionId: context.Division.Id,
-            payrollId: payrollId,
-            payrollCalculator: context.Calculator);
+        // Check if job was pre-created by async controller
+        if (jobInvocation.PayrunJobId > 0)
+        {
+            // Job already created by async controller - load and update it
+            context.PayrunJob = await processorRepositories.LoadPayrunJobAsync(jobInvocation.PayrunJobId);
+            if (context.PayrunJob == null)
+            {
+                throw new PayrunException($"Payrun job with id {jobInvocation.PayrunJobId} not found");
+            }
+            // Update job with calculated period/cycle info from calculator
+            PayrunJobFactory.UpdatePayrunJob(
+                payrunJob: context.PayrunJob,
+                jobInvocation: jobInvocation,
+                divisionId: context.Division.Id,
+                payrollId: payrollId,
+                payrollCalculator: context.Calculator);
+        }
+        else
+        {
+            // Create new job (sync mode or retro jobs)
+            context.PayrunJob = PayrunJobFactory.CreatePayrunJob(
+                jobInvocation: jobInvocation,
+                divisionId: context.Division.Id,
+                payrollId: payrollId,
+                payrollCalculator: context.Calculator);
+        }
         if (context.PayrunJob.ParentJobId.HasValue)
         {
             context.ParentPayrunJob = await processorRepositories.LoadPayrunJobAsync(context.PayrunJob.ParentJobId.Value);
             context.RetroPayrunJobs = jobInvocation.RetroJobs;
         }
-        // update invocation
-        jobInvocation.PayrunJobId = context.PayrunJob.Id;
+        // update invocation (only needed for new jobs)
+        if (jobInvocation.PayrunJobId == 0)
+        {
+            jobInvocation.PayrunJobId = context.PayrunJob.Id;
+        }
 
         // context dates
         context.EvaluationDate = context.PayrunJob.EvaluationDate;
@@ -225,10 +249,24 @@ public class PayrunProcessor : FunctionToolBase
         context.PayrunJob.Message =
             $"Started payrun calculation with payroll {payrollId} on period {context.PayrunJob.PeriodName} for cycle {context.PayrunJob.CycleName}";
         Log.Debug(context.PayrunJob.Message);
-        await Settings.PayrunJobRepository.CreateAsync(
-            context: Settings.DbContext,
-            parentId: Tenant.Id,
-            item: context.PayrunJob);
+
+        // Create new job or update existing pre-created job
+        if (context.PayrunJob.Id == 0)
+        {
+            // New job (sync mode or retro jobs) - insert
+            await Settings.PayrunJobRepository.CreateAsync(
+                context: Settings.DbContext,
+                parentId: Tenant.Id,
+                item: context.PayrunJob);
+        }
+        else
+        {
+            // Pre-created job (async mode) - update
+            await Settings.PayrunJobRepository.UpdateAsync(
+                context: Settings.DbContext,
+                parentId: Tenant.Id,
+                item: context.PayrunJob);
+        }
 
         // validate payroll regulations
         var validation = await new PayrollValidator(Settings.PayrollRepository).ValidateRegulations(
@@ -401,8 +439,16 @@ public class PayrunProcessor : FunctionToolBase
                 try
                 {
                     await ProcessEmployeeAsync(processorRegulation, processorScript, employee, context, setup);
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception, exception.GetBaseMessage());
+                    context.Errors.Add(employee, exception);
+                }
 
-                    // update payrun job
+                // update payrun job
+                try
+                {
                     context.PayrunJob.ProcessedEmployeeCount++;
                     Log.Trace($"Payrun calculated {context.PayrunJob.ProcessedEmployeeCount} employees");
                     await UpdateJobAsync(context.PayrunJob);
@@ -424,9 +470,8 @@ public class PayrunProcessor : FunctionToolBase
             // payrun end script
             processorScript.PayrunEnd(context);
 
-            // completed successfully
-            var payrunJob = await CompleteJobAsync(context.PayrunJob);
-            return payrunJob;
+            // payrun job
+            return context.PayrunJob;
         }
         catch (Exception exception)
         {
@@ -574,6 +619,9 @@ public class PayrunProcessor : FunctionToolBase
                         // process retro payrun job (one level recursive)
                         var retroJob = await retroProcessor.Process(retroJobInvocation, payrunSetup);
                         retroJobs.Add(retroJob);
+
+                        // complete retro job
+                        await CompleteRetroJobAsync(retroJob);
 
                         // prepare period for the following retro payrun job
                         retroPeriod = retroPeriod.GetPayrollPeriod(retroPeriod.Start, 1);
@@ -1251,17 +1299,17 @@ public class PayrunProcessor : FunctionToolBase
         return payrunJob;
     }
 
-    private async Task<PayrunJob> CompleteJobAsync(PayrunJob payrunJob)
+    private async Task CompleteRetroJobAsync(PayrunJob payrunJob)
     {
         // setup
+        payrunJob.JobStatus = PayrunJobStatus.Complete;
         payrunJob.JobEnd = Date.Now;
-        payrunJob.Message = "Completed payrun calculation successfully";
+        var duration = payrunJob.JobEnd.Value - payrunJob.JobStart;
+        payrunJob.Message = $"Completed retro payrun calculation successfully in {duration.ToReadableString()}.";
         Log.Debug(payrunJob.Message);
 
         // persist
         await Settings.PayrunJobRepository.UpdateAsync(Settings.DbContext, Tenant.Id, payrunJob);
-
-        return payrunJob;
     }
 
     #endregion
