@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -32,10 +32,10 @@ internal sealed class CaseValueResultCommand : DomainRepositoryCommandBase
 
         // attributes requested, use the slow query
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterCaseValueQuery.ParentId, query.ParentId);
+        parameters.Add(DbSchema.ParameterCaseValueQuery.ParentId, query.ParentId, DbType.Int32);
         if (query.EmployeeId.HasValue)
         {
-            parameters.Add(DbSchema.ParameterCaseValueQuery.EmployeeId, query.EmployeeId.Value);
+            parameters.Add(DbSchema.ParameterCaseValueQuery.EmployeeId, query.EmployeeId.Value, DbType.Int32);
         }
         parameters.Add(DbSchema.ParameterCaseValueQuery.Sql, query.Query);
         if (query.QueryAttributes != null && query.QueryAttributes.Any())

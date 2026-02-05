@@ -41,7 +41,11 @@ internal sealed class CaseFieldToken : TokenBase
         /// </summary>
         End,
         /// <summary>
-        /// Case field period (read-only)
+        /// Duration between start and end (read-only)
+        /// </summary>
+        Duration,
+        /// <summary>
+        /// Period between start and end (read-only)
         /// </summary>
         Period
     }
@@ -87,12 +91,19 @@ internal sealed class CaseFieldToken : TokenBase
                 }
                 // get case field end date
                 return new(parseData, $"new {nameof(ActionValue)}({nameof(CaseChangeFunction.GetEnd)}(\"{caseFieldName}\"))");
+            case FieldProperty.Duration:
+                if (!string.IsNullOrWhiteSpace(parseData.PostCode))
+                {
+                    throw new ScriptException($"The action case field duration is read-only ({caseFieldName}).");
+                }
+                // case field period duration
+                return new(parseData, $"{nameof(CaseChangeFunction.GetPeriod)}(\"{caseFieldName}\").{nameof(Client.Scripting.DatePeriod.Duration)}");
             case FieldProperty.Period:
                 if (!string.IsNullOrWhiteSpace(parseData.PostCode))
                 {
                     throw new ScriptException($"The action case field period is read-only ({caseFieldName}).");
                 }
-                // no action value for period
+                // case field period
                 return new(parseData, $"{nameof(CaseChangeFunction.GetPeriod)}(\"{caseFieldName}\")");
             default:
                 throw new ArgumentOutOfRangeException();

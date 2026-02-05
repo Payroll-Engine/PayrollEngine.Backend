@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -24,7 +25,7 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
         parameters.Add(nameof(user.FirstName), user.FirstName);
         parameters.Add(nameof(user.LastName), user.LastName);
         parameters.Add(nameof(user.Culture), user.Culture);
-        parameters.Add(nameof(user.UserType), user.UserType);
+        parameters.Add(nameof(user.UserType), user.UserType, DbType.Int32);
         parameters.Add(nameof(user.Attributes), JsonSerializer.SerializeNamedDictionary(user.Attributes));
         base.GetObjectData(user, parameters);
     }
@@ -105,9 +106,9 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
         // update user password
         user.Updated = Date.Now;
         var parameters = new DbParameterCollection();
-        parameters.Add(nameof(user.Updated), user.Updated);
+        parameters.Add(nameof(user.Updated), user.Updated, DbType.DateTime2);
         parameters.Add(nameof(user.Password), user.Password);
-        parameters.Add(nameof(user.StoredSalt), user.StoredSalt);
+        parameters.Add(nameof(user.StoredSalt), user.StoredSalt, DbType.Binary);
         var queryBuilder = new StringBuilder();
         queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), userId);
         var sql = queryBuilder.ToString();

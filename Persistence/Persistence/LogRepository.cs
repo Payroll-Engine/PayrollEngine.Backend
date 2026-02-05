@@ -1,4 +1,5 @@
-﻿using PayrollEngine.Domain.Model.Repository;
+﻿using System.Data;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -7,7 +8,7 @@ public class LogRepository
 {
     protected override void GetObjectData(Domain.Model.Log log, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(log.Level), log.Level);
+        parameters.Add(nameof(log.Level), log.Level, DbType.Int32);
         parameters.Add(nameof(log.Message), log.Message);
         parameters.Add(nameof(log.User), log.User);
         parameters.Add(nameof(log.Comment), log.Comment);

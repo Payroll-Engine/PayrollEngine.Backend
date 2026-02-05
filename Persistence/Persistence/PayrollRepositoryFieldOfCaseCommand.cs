@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -56,8 +56,8 @@ internal sealed class PayrollRepositoryFieldOfCaseCommand : PayrollRepositoryCas
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.PayrollId, query.PayrollId);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.PayrollId, query.PayrollId, DbType.Int32);
         if (clusterSet != null)
         {
             if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())
@@ -76,8 +76,8 @@ internal sealed class PayrollRepositoryFieldOfCaseCommand : PayrollRepositoryCas
             parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.CaseNames,
                 System.Text.Json.JsonSerializer.Serialize(names));
         }
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFieldsOfCase.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
 
         // retrieve derived case fields (stored procedure)
         var caseFields = (await DbContext.QueryAsync<DerivedCaseField>(DbSchema.Procedures.GetDerivedCaseFieldsOfCase,

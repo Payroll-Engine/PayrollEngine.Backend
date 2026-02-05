@@ -374,40 +374,6 @@ public class PayrunProcessor : FunctionToolBase
                 stopwatch.Start();
             }
 
-            // context derived wage types grouped by wage type identifier
-            var wageTypeCluster = context.Payroll.ClusterSetWageType;
-            if (context.PayrunJob.IsRetroJob && !string.IsNullOrWhiteSpace(context.Payroll.ClusterSetWageTypeRetro))
-            {
-                // retro job override
-                wageTypeCluster = context.Payroll.ClusterSetWageTypeRetro;
-            }
-            var clusterSetWageType = context.Payroll.ClusterSets?.FirstOrDefault(x => string.Equals(wageTypeCluster, x.Name));
-            context.DerivedWageTypes = await processorRegulation.GetDerivedWageTypesAsync(context.PayrunJob, clusterSetWageType);
-
-            Log.Trace($"Payrun with {context.DerivedWageTypes.Count} wage types");
-            if (!context.DerivedWageTypes.Any())
-            {
-                return await AbortJobAsync(context.PayrunJob, $"No wage types available for payrun with id {Payrun}");
-            }
-
-            if (stopwatch != null)
-            {
-                stopwatch.Stop();
-                Log.Debug($"{Payrun} load wage types [{context.DerivedWageTypes.Count}]: {stopwatch.ElapsedMilliseconds} ms");
-                stopwatch.Restart();
-            }
-
-            // context derived collectors grouped by collector name
-            var collectorCluster = context.Payroll.ClusterSetCollector;
-            if (context.PayrunJob.IsRetroJob && !string.IsNullOrWhiteSpace(context.Payroll.ClusterSetCollectorRetro))
-            {
-                // retro job override
-                collectorCluster = context.Payroll.ClusterSetCollectorRetro;
-            }
-            var clusterSetCollector = context.Payroll.ClusterSets?.FirstOrDefault(x => string.Equals(collectorCluster, x.Name));
-            context.DerivedCollectors = await processorRegulation.GetDerivedCollectorsAsync(context.PayrunJob, clusterSetCollector);
-            Log.Trace($"{Payrun} with {context.DerivedCollectors.Count} collectors");
-
             // process scripts
             var processorScript = new PayrunProcessorScripts(
                 functionHost: FunctionHost,

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -48,10 +48,10 @@ internal sealed class PayrollRepositoryCaseFieldCommand : PayrollRepositoryCaseF
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.PayrollId, query.PayrollId);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
         if (clusterSet != null)
         {
             if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())

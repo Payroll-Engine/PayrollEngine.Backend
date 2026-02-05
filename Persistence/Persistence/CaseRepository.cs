@@ -44,7 +44,7 @@ public class CaseRepository(IRegulationRepository regulationRepository,
 
     protected override void GetObjectCreateData(Case @case, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(@case.CaseType), @case.CaseType);
+        parameters.Add(nameof(@case.CaseType), @case.CaseType, DbType.Int32);
         parameters.Add(nameof(@case.Name), @case.Name);
         base.GetObjectCreateData(@case, parameters);
     }
@@ -61,9 +61,9 @@ public class CaseRepository(IRegulationRepository regulationRepository,
         parameters.Add(nameof(@case.DefaultReasonLocalizations), JsonSerializer.SerializeNamedDictionary(@case.DefaultReasonLocalizations));
         parameters.Add(nameof(@case.BaseCase), @case.BaseCase);
         parameters.Add(nameof(@case.BaseCaseFields), JsonSerializer.SerializeList(@case.BaseCaseFields));
-        parameters.Add(nameof(@case.OverrideType), @case.OverrideType);
-        parameters.Add(nameof(@case.CancellationType), @case.CancellationType);
-        parameters.Add(nameof(@case.Hidden), @case.Hidden);
+        parameters.Add(nameof(@case.OverrideType), @case.OverrideType, DbType.Int32);
+        parameters.Add(nameof(@case.CancellationType), @case.CancellationType, DbType.Int32);
+        parameters.Add(nameof(@case.Hidden), @case.Hidden, DbType.Boolean);
         parameters.Add(nameof(@case.AvailableExpression), @case.AvailableExpression);
         parameters.Add(nameof(@case.BuildExpression), @case.BuildExpression);
         parameters.Add(nameof(@case.ValidateExpression), @case.ValidateExpression);
@@ -72,7 +72,7 @@ public class CaseRepository(IRegulationRepository regulationRepository,
         parameters.Add(nameof(@case.Script), @case.Script);
         parameters.Add(nameof(@case.ScriptVersion), @case.ScriptVersion);
         parameters.Add(nameof(@case.Binary), @case.Binary, DbType.Binary);
-        parameters.Add(nameof(@case.ScriptHash), @case.ScriptHash);
+        parameters.Add(nameof(@case.ScriptHash), @case.ScriptHash, DbType.Int32);
         parameters.Add(nameof(@case.AvailableActions), JsonSerializer.SerializeList(@case.AvailableActions));
         parameters.Add(nameof(@case.BuildActions), JsonSerializer.SerializeList(@case.BuildActions));
         parameters.Add(nameof(@case.ValidateActions), JsonSerializer.SerializeList(@case.ValidateActions));

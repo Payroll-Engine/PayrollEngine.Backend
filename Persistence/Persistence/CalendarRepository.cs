@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
@@ -14,21 +15,21 @@ public class CalendarRepository() : ChildDomainRepository<Calendar>(DbSchema.Tab
     {
         parameters.Add(nameof(calendar.Name), calendar.Name);
         parameters.Add(nameof(calendar.NameLocalizations), JsonSerializer.SerializeNamedDictionary(calendar.NameLocalizations));
-        parameters.Add(nameof(calendar.CycleTimeUnit), calendar.CycleTimeUnit);
-        parameters.Add(nameof(calendar.PeriodTimeUnit), calendar.PeriodTimeUnit);
-        parameters.Add(nameof(calendar.TimeMap), calendar.TimeMap);
-        parameters.Add(nameof(calendar.FirstMonthOfYear), calendar.FirstMonthOfYear);
-        parameters.Add(nameof(calendar.PeriodDayCount), calendar.PeriodDayCount);
-        parameters.Add(nameof(calendar.YearWeekRule), calendar.YearWeekRule);
-        parameters.Add(nameof(calendar.FirstDayOfWeek), calendar.FirstDayOfWeek);
-        parameters.Add(nameof(calendar.WeekMode), calendar.WeekMode);
-        parameters.Add(nameof(calendar.WorkMonday), calendar.WorkMonday);
-        parameters.Add(nameof(calendar.WorkTuesday), calendar.WorkTuesday);
-        parameters.Add(nameof(calendar.WorkWednesday), calendar.WorkWednesday);
-        parameters.Add(nameof(calendar.WorkThursday), calendar.WorkThursday);
-        parameters.Add(nameof(calendar.WorkFriday), calendar.WorkFriday);
-        parameters.Add(nameof(calendar.WorkSaturday), calendar.WorkSaturday);
-        parameters.Add(nameof(calendar.WorkSunday), calendar.WorkSunday);
+        parameters.Add(nameof(calendar.CycleTimeUnit), calendar.CycleTimeUnit, DbType.Int32);
+        parameters.Add(nameof(calendar.PeriodTimeUnit), calendar.PeriodTimeUnit, DbType.Int32);
+        parameters.Add(nameof(calendar.TimeMap), calendar.TimeMap, DbType.Int32);
+        parameters.Add(nameof(calendar.FirstMonthOfYear), calendar.FirstMonthOfYear, DbType.Int32);
+        parameters.Add(nameof(calendar.PeriodDayCount), calendar.PeriodDayCount, DbType.Int32);
+        parameters.Add(nameof(calendar.YearWeekRule), calendar.YearWeekRule, DbType.Int32);
+        parameters.Add(nameof(calendar.FirstDayOfWeek), calendar.FirstDayOfWeek, DbType.Int32);
+        parameters.Add(nameof(calendar.WeekMode), calendar.WeekMode, DbType.Int32);
+        parameters.Add(nameof(calendar.WorkMonday), calendar.WorkMonday, DbType.Boolean);
+        parameters.Add(nameof(calendar.WorkTuesday), calendar.WorkTuesday, DbType.Boolean);
+        parameters.Add(nameof(calendar.WorkWednesday), calendar.WorkWednesday, DbType.Boolean);
+        parameters.Add(nameof(calendar.WorkThursday), calendar.WorkThursday, DbType.Boolean);
+        parameters.Add(nameof(calendar.WorkFriday), calendar.WorkFriday, DbType.Boolean);
+        parameters.Add(nameof(calendar.WorkSaturday), calendar.WorkSaturday, DbType.Boolean);
+        parameters.Add(nameof(calendar.WorkSunday), calendar.WorkSunday, DbType.Boolean);
         parameters.Add(nameof(calendar.Attributes), JsonSerializer.SerializeNamedDictionary(calendar.Attributes));
         base.GetObjectData(calendar, parameters);
     }

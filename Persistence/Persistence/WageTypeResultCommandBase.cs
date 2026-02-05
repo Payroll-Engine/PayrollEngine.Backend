@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Text.Json;
 using PayrollEngine.Domain.Model;
@@ -61,23 +62,23 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.EmployeeId, query.EmployeeId);
+        parameters.Add(DbSchema.ParameterGetWageTypeResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetWageTypeResults.EmployeeId, query.EmployeeId, DbType.Int32);
 
         // division
         if (query.DivisionId.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.DivisionId, query.DivisionId.Value);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.DivisionId, query.DivisionId.Value, DbType.Int32);
         }
 
         // payrun job
         if (payrunJobId.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.PayrunJobId, payrunJobId.Value);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.PayrunJobId, payrunJobId.Value, DbType.Int32);
         }
         if (parentPayrunJobId.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.ParentPayrunJobId, parentPayrunJobId.Value);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.ParentPayrunJobId, parentPayrunJobId.Value, DbType.Int32);
         }
 
         // wage type numbers
@@ -90,8 +91,8 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
         // period
         if (query.Period != null)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.PeriodStart, query.Period.Start);
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.PeriodEnd, query.Period.End);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.PeriodStart, query.Period.Start, DbType.DateTime2);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.PeriodEnd, query.Period.End, DbType.DateTime2);
         }
 
         // forecast
@@ -103,13 +104,13 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
         // job status
         if (query.JobStatus != null)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.JobStatus, query.JobStatus);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.JobStatus, query.JobStatus, DbType.Int32);
         }
 
         // evaluation
         if (query.EvaluationDate.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.EvaluationDate, query.EvaluationDate.Value);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
         }
 
         return parameters;
@@ -163,13 +164,13 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.EmployeeId, query.EmployeeId);
+        parameters.Add(DbSchema.ParameterGetWageTypeResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetWageTypeResults.EmployeeId, query.EmployeeId, DbType.Int32);
 
         // division
         if (query.DivisionId.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.DivisionId, query.DivisionId.Value);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.DivisionId, query.DivisionId.Value, DbType.Int32);
         }
 
         // wage type numbers
@@ -195,13 +196,13 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
         // job status
         if (query.JobStatus != null)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.JobStatus, query.JobStatus);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.JobStatus, query.JobStatus, DbType.Int32);
         }
 
         // evaluation
         if (query.EvaluationDate.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.EvaluationDate, query.EvaluationDate.Value);
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
         }
 
         return parameters;

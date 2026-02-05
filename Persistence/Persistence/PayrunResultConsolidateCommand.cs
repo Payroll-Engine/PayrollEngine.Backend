@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
@@ -51,11 +51,11 @@ internal sealed class PayrunResultConsolidateCommand : ResultCommandBase
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetPayrunResults.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetPayrunResults.EmployeeId, query.EmployeeId);
+        parameters.Add(DbSchema.ParameterGetPayrunResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetPayrunResults.EmployeeId, query.EmployeeId, DbType.Int32);
         if (query.DivisionId.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.DivisionId, query.DivisionId.Value);
+            parameters.Add(DbSchema.ParameterGetPayrunResults.DivisionId, query.DivisionId.Value, DbType.Int32);
         }
         if (names != null && names.Any())
         {
@@ -73,11 +73,11 @@ internal sealed class PayrunResultConsolidateCommand : ResultCommandBase
         }
         if (query.JobStatus != null)
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.JobStatus, query.JobStatus);
+            parameters.Add(DbSchema.ParameterGetPayrunResults.JobStatus, query.JobStatus, DbType.Int32);
         }
         if (query.EvaluationDate.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.EvaluationDate, query.EvaluationDate.Value);
+            parameters.Add(DbSchema.ParameterGetPayrunResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
         }
 
         // query pre action

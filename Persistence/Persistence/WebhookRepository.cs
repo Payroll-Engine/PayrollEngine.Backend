@@ -1,4 +1,5 @@
-﻿using PayrollEngine.Domain.Model;
+﻿using System.Data;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
 
@@ -16,7 +17,7 @@ public class WebhookRepository() : ChildDomainRepository<Webhook>(DbSchema.Table
     protected override void GetObjectData(Webhook webhook, DbParameterCollection parameters)
     {
         parameters.Add(nameof(webhook.ReceiverAddress), webhook.ReceiverAddress);
-        parameters.Add(nameof(webhook.Action), webhook.Action);
+        parameters.Add(nameof(webhook.Action), webhook.Action, DbType.Int32);
         parameters.Add(nameof(webhook.Attributes), JsonSerializer.SerializeNamedDictionary(webhook.Attributes));
         base.GetObjectData(webhook, parameters);
     }

@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Persistence.DbQuery;
 using PayrollEngine.Serialization;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -35,24 +36,24 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         }
 
         // parent field
-        parameters.Add(ParentFieldName, parentId);
+        parameters.Add(ParentFieldName, parentId, DbType.Int32);
 
         // case value fields
-        parameters.Add(nameof(caseValue.DivisionId), caseValue.DivisionId);
+        parameters.Add(nameof(caseValue.DivisionId), caseValue.DivisionId, DbType.Int32);
         parameters.Add(nameof(caseValue.CaseName), caseValue.CaseName);
         parameters.Add(nameof(caseValue.CaseNameLocalizations), JsonSerializer.SerializeNamedDictionary(caseValue.CaseNameLocalizations));
         parameters.Add(nameof(caseValue.CaseFieldName), caseValue.CaseFieldName);
         parameters.Add(nameof(caseValue.CaseFieldNameLocalizations), JsonSerializer.SerializeNamedDictionary(caseValue.CaseFieldNameLocalizations));
         parameters.Add(nameof(caseValue.CaseSlot), caseValue.CaseSlot);
         parameters.Add(nameof(caseValue.CaseSlotLocalizations), JsonSerializer.SerializeNamedDictionary(caseValue.CaseSlotLocalizations));
-        parameters.Add(nameof(caseValue.ValueType), caseValue.ValueType);
+        parameters.Add(nameof(caseValue.ValueType), caseValue.ValueType, DbType.Int32);
         parameters.Add(nameof(caseValue.Value), caseValue.Value);
-        parameters.Add(nameof(caseValue.NumericValue), caseValue.NumericValue);
+        parameters.Add(nameof(caseValue.NumericValue), caseValue.NumericValue, DbType.Decimal);
         parameters.Add(nameof(caseValue.Culture), caseValue.Culture);
         parameters.Add(nameof(caseValue.CaseRelation), caseValue.CaseRelation);
-        parameters.Add(nameof(caseValue.CancellationDate), caseValue.CancellationDate);
-        parameters.Add(nameof(caseValue.Start), caseValue.Start);
-        parameters.Add(nameof(caseValue.End), caseValue.End);
+        parameters.Add(nameof(caseValue.CancellationDate), caseValue.CancellationDate, DbType.DateTime2);
+        parameters.Add(nameof(caseValue.Start), caseValue.Start, DbType.DateTime2);
+        parameters.Add(nameof(caseValue.End), caseValue.End, DbType.DateTime2);
         parameters.Add(nameof(caseValue.Forecast), caseValue.Forecast);
         parameters.Add(nameof(caseValue.Tags), JsonSerializer.SerializeList(caseValue.Tags));
         parameters.Add(nameof(caseValue.Attributes), JsonSerializer.SerializeNamedDictionary(caseValue.Attributes));

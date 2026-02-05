@@ -1,18 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Persistence.DbQuery;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
 public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDomainRepository<T>
     where T : IDomainObject
 {
+    /// Bulk chunk size
+    private int BulkChunkSize { get; } = 5000;
+
     /// <summary>
     /// The parent field name
     /// </summary>
@@ -235,23 +240,36 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
             throw new ArgumentOutOfRangeException(nameof(parentId));
         }
 
-        var objectList = items.ToList();
-        if (!objectList.Any())
-        {
-            return;
-        }
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
 
-        // bulk insert
-        string query = null;
-        var dataObjects = new List<DbParameterCollection>();
-        foreach (var result in objectList)
+        var count = 0;
+
+        // chunk process
+        var chunkSize = Math.Min(1000, BulkChunkSize);
+        foreach (var chunk in items.Chunk(chunkSize))
         {
-            var parameters = new DbParameterCollection();
-            GetCreateData(parentId, result, parameters);
-            dataObjects.Add(parameters);
-            query ??= DbQueryFactory.NewBulkInsertQuery(TableName, parameters.GetNames());
+
+            // collect data
+            var parameterSet = chunk.AsParallel()
+                .Select(result =>
+                {
+                    var parameters = new DbParameterCollection();
+                    GetCreateData(parentId, result, parameters);
+                    return parameters;
+                })
+                .ToList();
+
+            // convert to data table per chunk
+            var dataTable = parameterSet.ToDataTable(TableName);
+
+            // insert data table
+            await context.BulkInsertAsync(dataTable);
+
+            count += chunk.Length;
         }
-        await ExecuteAsync(context, query, dataObjects);
+        stopwatch.Stop();
+        Log.Debug($"Bulk import {count} items in {stopwatch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
@@ -309,11 +327,11 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
             throw new PayrollException($"Missing object data for object {item}.");
         }
 
-        parameters.Add(DbSchema.ObjectColumn.Status, item.Status);
-        parameters.Add(DbSchema.ObjectColumn.Created, item.Created);
-        parameters.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(item));
+        parameters.AddStatus(item.Status);
+        parameters.AddCreated(item.Created);
+        parameters.AddUpdated(GetValidUpdatedDate(item));
         // parent
-        parameters.Add(ParentFieldName, parentId);
+        parameters.Add(ParentFieldName, parentId, DbType.Int32);
     }
 
     /// <summary>
@@ -380,8 +398,8 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
     {
         GetObjectData(item, parameters);
         GetObjectUpdateData();
-        parameters.Add(DbSchema.ObjectColumn.Status, item.Status);
-        parameters.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(item));
+        parameters.AddStatus(item.Status);
+        parameters.AddUpdated(GetValidUpdatedDate(item));
     }
 
     #endregion

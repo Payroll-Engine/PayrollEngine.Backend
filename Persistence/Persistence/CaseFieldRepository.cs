@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
-using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -64,20 +65,20 @@ public class CaseFieldRepository(IRegulationRepository regulationRepository, ICa
         parameters.Add(nameof(caseField.NameLocalizations), JsonSerializer.SerializeNamedDictionary(caseField.NameLocalizations));
         parameters.Add(nameof(caseField.Description), caseField.Description);
         parameters.Add(nameof(caseField.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(caseField.DescriptionLocalizations));
-        parameters.Add(nameof(caseField.ValueType), caseField.ValueType);
-        parameters.Add(nameof(caseField.ValueScope), caseField.ValueScope);
-        parameters.Add(nameof(caseField.TimeType), caseField.TimeType);
-        parameters.Add(nameof(caseField.TimeUnit), caseField.TimeUnit);
-        parameters.Add(nameof(caseField.PeriodAggregation), caseField.PeriodAggregation);
-        parameters.Add(nameof(caseField.OverrideType), caseField.OverrideType);
-        parameters.Add(nameof(caseField.CancellationMode), caseField.CancellationMode);
-        parameters.Add(nameof(caseField.ValueCreationMode), caseField.ValueCreationMode);
+        parameters.Add(nameof(caseField.ValueType), caseField.ValueType, DbType.Int32);
+        parameters.Add(nameof(caseField.ValueScope), caseField.ValueScope, DbType.Int32);
+        parameters.Add(nameof(caseField.TimeType), caseField.TimeType, DbType.Int32);
+        parameters.Add(nameof(caseField.TimeUnit), caseField.TimeUnit, DbType.Int32);
+        parameters.Add(nameof(caseField.PeriodAggregation), caseField.PeriodAggregation, DbType.Int32);
+        parameters.Add(nameof(caseField.OverrideType), caseField.OverrideType, DbType.Int32);
+        parameters.Add(nameof(caseField.CancellationMode), caseField.CancellationMode, DbType.Int32);
+        parameters.Add(nameof(caseField.ValueCreationMode), caseField.ValueCreationMode, DbType.Int32);
         parameters.Add(nameof(caseField.Culture), caseField.Culture);
-        parameters.Add(nameof(caseField.ValueMandatory), caseField.ValueMandatory);
-        parameters.Add(nameof(caseField.Order), caseField.Order);
-        parameters.Add(nameof(caseField.StartDateType), caseField.StartDateType);
-        parameters.Add(nameof(caseField.EndDateType), caseField.EndDateType);
-        parameters.Add(nameof(caseField.EndMandatory), caseField.EndMandatory);
+        parameters.Add(nameof(caseField.ValueMandatory), caseField.ValueMandatory, DbType.Boolean);
+        parameters.Add(nameof(caseField.Order), caseField.Order, DbType.Int32);
+        parameters.Add(nameof(caseField.StartDateType), caseField.StartDateType, DbType.Int32);
+        parameters.Add(nameof(caseField.EndDateType), caseField.EndDateType, DbType.Int32);
+        parameters.Add(nameof(caseField.EndMandatory), caseField.EndMandatory, DbType.Boolean);
         parameters.Add(nameof(caseField.DefaultStart), caseField.DefaultStart);
         parameters.Add(nameof(caseField.DefaultEnd), caseField.DefaultEnd);
         parameters.Add(nameof(caseField.DefaultValue), caseField.DefaultValue);

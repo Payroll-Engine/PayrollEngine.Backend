@@ -24,8 +24,8 @@ public class WageTypeRepository(IRegulationRepository regulationRepository,
         parameters.Add(nameof(wageType.NameLocalizations), JsonSerializer.SerializeNamedDictionary(wageType.NameLocalizations));
         parameters.Add(nameof(wageType.Description), wageType.Description);
         parameters.Add(nameof(wageType.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(wageType.DescriptionLocalizations));
-        parameters.Add(nameof(wageType.OverrideType), wageType.OverrideType);
-        parameters.Add(nameof(wageType.ValueType), wageType.ValueType);
+        parameters.Add(nameof(wageType.OverrideType), wageType.OverrideType, DbType.Int32);
+        parameters.Add(nameof(wageType.ValueType), wageType.ValueType, DbType.Int32);
         parameters.Add(nameof(wageType.Calendar), wageType.Calendar);
         parameters.Add(nameof(wageType.Culture), wageType.Culture);
         parameters.Add(nameof(wageType.Collectors), JsonSerializer.SerializeList(wageType.Collectors));
@@ -37,7 +37,7 @@ public class WageTypeRepository(IRegulationRepository regulationRepository,
         parameters.Add(nameof(wageType.Script), wageType.Script);
         parameters.Add(nameof(wageType.ScriptVersion), wageType.ScriptVersion);
         parameters.Add(nameof(wageType.Binary), wageType.Binary, DbType.Binary);
-        parameters.Add(nameof(wageType.ScriptHash), wageType.ScriptHash);
+        parameters.Add(nameof(wageType.ScriptHash), wageType.ScriptHash, DbType.Int32);
         parameters.Add(nameof(wageType.Attributes), JsonSerializer.SerializeNamedDictionary(wageType.Attributes));
         parameters.Add(nameof(wageType.Clusters), JsonSerializer.SerializeList(wageType.Clusters));
         base.GetObjectData(wageType, parameters);

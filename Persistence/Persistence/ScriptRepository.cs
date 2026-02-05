@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -19,9 +20,9 @@ public class ScriptRepository(IRegulationRepository regulationRepository, IScrip
 
     protected override void GetObjectData(Script script, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(script.FunctionTypeMask), script.FunctionTypeMask);
+        parameters.Add(nameof(script.FunctionTypeMask), script.FunctionTypeMask, DbType.Int64);
         parameters.Add(nameof(script.Value), script.Value);
-        parameters.Add(nameof(script.OverrideType), script.OverrideType);
+        parameters.Add(nameof(script.OverrideType), script.OverrideType, DbType.Int32);
         base.GetObjectData(script, parameters);
     }
 

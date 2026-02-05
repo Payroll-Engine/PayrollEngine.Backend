@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
-using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -32,7 +33,7 @@ public class ReportTemplateRepository(IRegulationRepository regulationRepository
         parameters.Add(nameof(template.ContentType), template.ContentType);
         parameters.Add(nameof(template.Schema), template.Schema);
         parameters.Add(nameof(template.Resource), template.Resource);
-        parameters.Add(nameof(template.OverrideType), template.OverrideType);
+        parameters.Add(nameof(template.OverrideType), template.OverrideType, DbType.Int32);
         parameters.Add(nameof(template.Attributes), JsonSerializer.SerializeNamedDictionary(template.Attributes));
         base.GetObjectData(template, parameters);
     }

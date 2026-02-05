@@ -49,10 +49,10 @@ internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryComma
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.PayrollId, query.PayrollId);
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedCollectors.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCollectors.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCollectors.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedCollectors.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
         if (clusterSet != null)
         {
             if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())

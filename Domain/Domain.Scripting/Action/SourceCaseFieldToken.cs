@@ -41,7 +41,11 @@ internal sealed class SourceCaseFieldToken : TokenBase
         /// </summary>
         End,
         /// <summary>
-        /// Case field period (read-only)
+        /// Duration between start and end (read-only)
+        /// </summary>
+        Duration,
+        /// <summary>
+        /// Period between start and end (read-only)
         /// </summary>
         Period
     }
@@ -77,8 +81,11 @@ internal sealed class SourceCaseFieldToken : TokenBase
             case FieldProperty.End:
                 // get source case field end date
                 return new(parseData, $"new {nameof(ActionValue)}({nameof(CaseRelationFunction.GetSourceEnd)}(\"{caseFieldName}\"))");
+            case FieldProperty.Duration:
+                // source case field period duration
+                return new(parseData, $"{nameof(CaseRelationFunction.GetSourcePeriod)}(\"{caseFieldName}\").{nameof(Client.Scripting.DatePeriod.Duration)}");
             case FieldProperty.Period:
-                // no action value for period
+                // source case field period
                 return new(parseData, $"{nameof(CaseRelationFunction.GetSourcePeriod)}(\"{caseFieldName}\")");
             default:
                 throw new ArgumentOutOfRangeException();

@@ -3,12 +3,14 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 using Microsoft.Data.SqlClient;
 using Dapper;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence.SqlServer;
 
+/// <inheritdoc />
 public class DbContext : IDbContext
 {
     /// <summary>The current database version</summary>
@@ -162,7 +164,7 @@ public class DbContext : IDbContext
 
     #endregion
 
-    #region Requests
+    #region Query
 
     /// <inheritdoc />
     public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null,
@@ -204,11 +206,49 @@ public class DbContext : IDbContext
         return await connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
     }
 
-    /// <summary>New database connection for SQL Server</summary>
-    /// <returns>The connection</returns>
-    private IDbConnection NewConnection() =>
-        new SqlConnection(ConnectionString);
+    #endregion
+
+    #region Bulk
+
+    /// <inheritdoc />
+    public async Task BulkInsertAsync(DataTable dataTable)
+    {
+        await using var connection = NewSqlConnection();
+        await connection.OpenAsync();
+
+        await using var dbTransaction = connection.BeginTransaction();
+
+        try
+        {
+            // bulk insert
+            using var bulkCopy = new SqlBulkCopy(connection,
+                copyOptions: SqlBulkCopyOptions.Default,
+                externalTransaction: dbTransaction);
+            bulkCopy.DestinationTableName = dataTable.TableName;
+
+            foreach (DataColumn dataTableColumn in dataTable.Columns)
+            {
+                bulkCopy.ColumnMappings.Add(dataTableColumn.ColumnName, dataTableColumn.ColumnName);
+            }
+
+            await bulkCopy.WriteToServerAsync(dataTable);
+
+            dbTransaction.Commit();
+        }
+        catch
+        {
+            dbTransaction.Rollback();
+        }
+    }
 
     #endregion
 
+    /// <summary>New database connection for SQL Server</summary>
+    /// <returns>The connection</returns>
+    private IDbConnection NewConnection() => NewSqlConnection();
+
+    /// <summary>New database connection for SQL Server</summary>
+    /// <returns>The connection</returns>
+    private SqlConnection NewSqlConnection() =>
+        new(ConnectionString);
 }

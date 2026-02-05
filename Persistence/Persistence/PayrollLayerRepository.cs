@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -11,8 +12,8 @@ public class PayrollLayerRepository() : ChildDomainRepository<PayrollLayer>(DbSc
 {
     protected override void GetObjectData(PayrollLayer payrollLayer, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(payrollLayer.Level), payrollLayer.Level);
-        parameters.Add(nameof(payrollLayer.Priority), payrollLayer.Priority);
+        parameters.Add(nameof(payrollLayer.Level), payrollLayer.Level, DbType.Int32);
+        parameters.Add(nameof(payrollLayer.Priority), payrollLayer.Priority, DbType.Int32);
         parameters.Add(nameof(payrollLayer.RegulationName), payrollLayer.RegulationName);
         parameters.Add(nameof(payrollLayer.Attributes), JsonSerializer.SerializeNamedDictionary(payrollLayer.Attributes));
         base.GetObjectData(payrollLayer, parameters);

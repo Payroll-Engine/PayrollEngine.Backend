@@ -52,11 +52,11 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCases.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedCases.PayrollId, query.PayrollId);
+        parameters.Add(DbSchema.ParameterGetDerivedCases.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCases.PayrollId, query.PayrollId, DbType.Int32);
         if (caseType.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetDerivedCases.CaseType, caseType.Value);
+            parameters.Add(DbSchema.ParameterGetDerivedCases.CaseType, caseType.Value, DbType.Int32);
         }
         if (clusterSet != null)
         {
@@ -78,10 +78,10 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
         }
         if (hidden.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetDerivedCases.Hidden, hidden.Value);
+            parameters.Add(DbSchema.ParameterGetDerivedCases.Hidden, hidden.Value, DbType.Boolean);
         }
-        parameters.Add(DbSchema.ParameterGetDerivedCases.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedCases.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedCases.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedCases.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
 
         // retrieve all derived cases (stored procedure)
         var cases = (await DbContext.QueryAsync<DerivedCase>(DbSchema.Procedures.GetDerivedCases,

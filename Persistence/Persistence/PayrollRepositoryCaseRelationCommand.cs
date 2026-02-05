@@ -35,10 +35,10 @@ internal sealed class PayrollRepositoryCaseRelationCommand : PayrollRepositoryCo
         query.EvaluationDate ??= Date.Now;
         // retrieve all derived case relations (stored procedure)
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.PayrollId, query.PayrollId);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedCaseRelations.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
 
         // source and target case
         if (sourceCaseName != null)

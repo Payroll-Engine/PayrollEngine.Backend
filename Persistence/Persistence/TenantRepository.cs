@@ -2,8 +2,8 @@
 using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -36,7 +36,7 @@ public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.T
         }
 
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterDeleteTenant.TenantId, tenantId);
+        parameters.Add(DbSchema.ParameterDeleteTenant.TenantId, tenantId, DbType.Int32);
         parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
         try

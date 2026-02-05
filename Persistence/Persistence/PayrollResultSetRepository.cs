@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -20,17 +21,17 @@ public class PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeRes
 
     protected override void GetObjectCreateData(PayrollResultSet resultSet, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(resultSet.PayrollId), resultSet.PayrollId);
-        parameters.Add(nameof(resultSet.PayrunId), resultSet.PayrunId);
-        parameters.Add(nameof(resultSet.PayrunJobId), resultSet.PayrunJobId);
-        parameters.Add(nameof(resultSet.EmployeeId), resultSet.EmployeeId);
-        parameters.Add(nameof(resultSet.DivisionId), resultSet.DivisionId);
+        parameters.Add(nameof(resultSet.PayrollId), resultSet.PayrollId, DbType.Int32);
+        parameters.Add(nameof(resultSet.PayrunId), resultSet.PayrunId, DbType.Int32);
+        parameters.Add(nameof(resultSet.PayrunJobId), resultSet.PayrunJobId, DbType.Int32);
+        parameters.Add(nameof(resultSet.EmployeeId), resultSet.EmployeeId, DbType.Int32);
+        parameters.Add(nameof(resultSet.DivisionId), resultSet.DivisionId, DbType.Int32);
         parameters.Add(nameof(resultSet.CycleName), resultSet.CycleName);
-        parameters.Add(nameof(resultSet.CycleStart), resultSet.CycleStart);
-        parameters.Add(nameof(resultSet.CycleEnd), resultSet.CycleEnd);
+        parameters.Add(nameof(resultSet.CycleStart), resultSet.CycleStart, DbType.DateTime2);
+        parameters.Add(nameof(resultSet.CycleEnd), resultSet.CycleEnd, DbType.DateTime2);
         parameters.Add(nameof(resultSet.PeriodName), resultSet.PeriodName);
-        parameters.Add(nameof(resultSet.PeriodStart), resultSet.PeriodStart);
-        parameters.Add(nameof(resultSet.PeriodEnd), resultSet.PeriodEnd);
+        parameters.Add(nameof(resultSet.PeriodStart), resultSet.PeriodStart, DbType.DateTime2);
+        parameters.Add(nameof(resultSet.PeriodEnd), resultSet.PeriodEnd, DbType.DateTime2);
         base.GetObjectCreateData(resultSet, parameters);
     }
 

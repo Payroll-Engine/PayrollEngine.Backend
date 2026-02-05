@@ -1093,7 +1093,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseField.PeriodAggregation">
             <summary>
-            The period aggregation type for <see cref="F:PayrollEngine.CaseFieldTimeType.Period"/>
+            The period aggregation type
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseField.OverrideType">
@@ -1256,7 +1256,7 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.PeriodAggregation">
             <summary>
-            The period aggregation type for <see cref="F:PayrollEngine.CaseFieldTimeType.Period"/>
+            The period aggregation type
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CaseFieldAudit.OverrideType">
@@ -3845,6 +3845,13 @@
             <param name="commandTimeout">Number of seconds before command execution timeout.</param>
             <param name="commandType">Is it a stored proc or a batch?</param>
             <returns>The first cell returned, as <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.BulkInsertAsync(System.Data.DataTable)">
+            <summary>
+            Insert bulk data.
+            </summary>
+            <param name="dataTable">The data to insert.</param>
+            <remarks>Executed as transaction</remarks>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IDerivableObject">
             <summary>

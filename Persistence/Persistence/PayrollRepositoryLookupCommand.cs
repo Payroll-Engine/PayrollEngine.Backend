@@ -48,10 +48,10 @@ internal sealed class PayrollRepositoryLookupCommand : PayrollRepositoryCommandB
 
         // retrieve all derived lookups (stored procedure)
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.PayrollId, query.PayrollId);
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedLookups.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedLookups.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedLookups.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedLookups.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
         if (names != null && names.Any())
         {
             parameters.Add(DbSchema.ParameterGetDerivedLookups.LookupNames,

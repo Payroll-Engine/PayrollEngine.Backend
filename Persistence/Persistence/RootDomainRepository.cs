@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Persistence.DbQuery;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -125,9 +125,9 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
             throw new PayrollException($"Missing object data for object {obj}.");
         }
 
-        data.Add(DbSchema.ObjectColumn.Status, obj.Status);
-        data.Add(DbSchema.ObjectColumn.Created, obj.Created);
-        data.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(obj));
+        data.AddStatus(obj.Status);
+        data.AddCreated(obj.Created);
+        data.AddUpdated(GetValidUpdatedDate(obj));
     }
 
     private async Task<bool> InsertObject(IDbContext context, T item)
@@ -208,8 +208,8 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
             throw new PayrollException($"Missing object data for object {obj}.");
         }
 
-        parameters.Add(DbSchema.ObjectColumn.Status, obj.Status);
-        parameters.Add(DbSchema.ObjectColumn.Updated, GetValidUpdatedDate(obj));
+        parameters.AddStatus(obj.Status);
+        parameters.AddUpdated(GetValidUpdatedDate(obj));
     }
 
     #endregion

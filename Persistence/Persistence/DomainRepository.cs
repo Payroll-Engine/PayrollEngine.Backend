@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -338,7 +338,7 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
         attributeObject.Updated = Date.Now;
         var attributes = JsonSerializer.SerializeNamedDictionary(attributeObject.Attributes);
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ObjectColumn.Updated, attributeObject.Updated);
+        parameters.AddUpdated(attributeObject.Updated);
         parameters.Add(DbSchema.AttributeObjectColumn.Attributes, attributes);
 
         // build sql statement

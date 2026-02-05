@@ -26,7 +26,7 @@ public static class LogExtensions
             Log.Information($"{environment.ApplicationName} > {GetApplicationAddress(appBuilder)} [database: {dbInfo.Server} > {dbInfo.Database}].");
             if (Log.IsEnabled(SystemInfoLogEventLevel))
             {
-                Log.Write(SystemInfoLogEventLevel, $"Current culture: {CultureInfo.CurrentCulture}");
+                Log.Write(SystemInfoLogEventLevel, $"Culture: {CultureInfo.CurrentCulture}");
             }
         });
         // stopping

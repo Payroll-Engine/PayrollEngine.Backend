@@ -1,6 +1,7 @@
-﻿using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
+﻿using System.Data;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -14,12 +15,12 @@ public class ReportParameterAuditRepository() : AuditChildDomainRepository<Repor
         parameters.Add(nameof(audit.NameLocalizations), JsonSerializer.SerializeNamedDictionary(audit.NameLocalizations));
         parameters.Add(nameof(audit.Description), audit.Description);
         parameters.Add(nameof(audit.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(audit.DescriptionLocalizations));
-        parameters.Add(nameof(audit.Mandatory), audit.Mandatory);
-        parameters.Add(nameof(audit.Hidden), audit.Hidden);
+        parameters.Add(nameof(audit.Mandatory), audit.Mandatory, DbType.Boolean);
+        parameters.Add(nameof(audit.Hidden), audit.Hidden, DbType.Boolean);
         parameters.Add(nameof(audit.Value), audit.Value);
-        parameters.Add(nameof(audit.ValueType), audit.ValueType);
-        parameters.Add(nameof(audit.ParameterType), audit.ParameterType);
-        parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
+        parameters.Add(nameof(audit.ValueType), audit.ValueType, DbType.Int32);
+        parameters.Add(nameof(audit.ParameterType), audit.ParameterType, DbType.Int32);
+        parameters.Add(nameof(audit.OverrideType), audit.OverrideType, DbType.Int32);
         parameters.Add(nameof(audit.Attributes), JsonSerializer.SerializeNamedDictionary(audit.Attributes));
         base.GetObjectCreateData(audit, parameters);
     }

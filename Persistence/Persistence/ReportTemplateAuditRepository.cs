@@ -1,6 +1,7 @@
-﻿using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
+﻿using System.Data;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -16,7 +17,7 @@ public class ReportTemplateAuditRepository() : AuditChildDomainRepository<Report
         parameters.Add(nameof(audit.ContentType), audit.ContentType);
         parameters.Add(nameof(audit.Schema), audit.Schema);
         parameters.Add(nameof(audit.Resource), audit.Resource);
-        parameters.Add(nameof(audit.OverrideType), audit.OverrideType);
+        parameters.Add(nameof(audit.OverrideType), audit.OverrideType, DbType.Int32);
         parameters.Add(nameof(audit.Attributes), JsonSerializer.SerializeNamedDictionary(audit.Attributes));
         base.GetObjectCreateData(audit, parameters);
     }

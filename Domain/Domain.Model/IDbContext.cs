@@ -30,7 +30,7 @@ public interface IDbContext
 
     #endregion
 
-    #region Requests
+    #region Query
 
     /// <summary>
     /// Execute a query asynchronously using Task.
@@ -96,6 +96,17 @@ public interface IDbContext
     /// <returns>The first cell returned, as <typeparamref name="T"/>.</returns>
     Task<T> ExecuteScalarAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
         int? commandTimeout = null, CommandType? commandType = null);
+    
+    #endregion
+
+    #region Bulk
+
+    /// <summary>
+    /// Insert bulk data.
+    /// </summary>
+    /// <param name="dataTable">The data to insert.</param>
+    /// <remarks>Executed as transaction</remarks>
+    System.Threading.Tasks.Task BulkInsertAsync(DataTable dataTable);
 
     #endregion
 

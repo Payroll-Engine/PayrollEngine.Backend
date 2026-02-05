@@ -64,10 +64,10 @@ internal sealed class PayrollRepositoryScriptCommand : PayrollRepositoryCommandB
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.PayrollId, query.PayrollId);
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedScripts.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedScripts.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedScripts.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedScripts.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
         if (names != null && names.Any())
         {
             parameters.Add(DbSchema.ParameterGetDerivedScripts.ScriptNames,

@@ -25,9 +25,9 @@ public abstract class LookupRepositoryBase<T>(IRegulationRepository regulationRe
         parameters.Add(nameof(lookup.NameLocalizations), JsonSerializer.SerializeNamedDictionary(lookup.NameLocalizations));
         parameters.Add(nameof(lookup.Description), lookup.Description);
         parameters.Add(nameof(lookup.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(lookup.DescriptionLocalizations));
-        parameters.Add(nameof(lookup.OverrideType), lookup.OverrideType);
-        parameters.Add(nameof(lookup.RangeMode), lookup.RangeMode);
-        parameters.Add(nameof(lookup.RangeSize), lookup.RangeSize);
+        parameters.Add(nameof(lookup.OverrideType), lookup.OverrideType, DbType.Int32);
+        parameters.Add(nameof(lookup.RangeMode), lookup.RangeMode, DbType.Int32);
+        parameters.Add(nameof(lookup.RangeSize), lookup.RangeSize, DbType.Decimal);
         parameters.Add(nameof(lookup.Attributes), JsonSerializer.SerializeNamedDictionary(lookup.Attributes));
         base.GetObjectData(lookup, parameters);
     }
@@ -48,8 +48,8 @@ public abstract class LookupRepositoryBase<T>(IRegulationRepository regulationRe
 
         // stored procedure parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterDeleteLookup.TenantId, tenantId);
-        parameters.Add(DbSchema.ParameterDeleteLookup.LookupId, lookupId);
+        parameters.Add(DbSchema.ParameterDeleteLookup.TenantId, tenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterDeleteLookup.LookupId, lookupId, DbType.Int32);
         parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
         try

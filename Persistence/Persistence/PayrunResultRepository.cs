@@ -1,8 +1,9 @@
 ﻿using System;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Serialization;
+using System.Data;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -15,13 +16,13 @@ public class PayrunResultRepository() : ChildDomainRepository<PayrunResult>(DbSc
         parameters.Add(nameof(result.Name), result.Name);
         parameters.Add(nameof(result.NameLocalizations), JsonSerializer.SerializeNamedDictionary(result.NameLocalizations));
         parameters.Add(nameof(result.Slot), result.Slot);
-        parameters.Add(nameof(result.ValueType), result.ValueType);
+        parameters.Add(nameof(result.ValueType), result.ValueType, DbType.Int32);
         parameters.Add(nameof(result.Value), result.Value);
-        parameters.Add(nameof(result.NumericValue), result.NumericValue);
+        parameters.Add(nameof(result.NumericValue), result.NumericValue, DbType.Decimal);
         parameters.Add(nameof(result.Culture), result.Culture);
-        parameters.Add(nameof(result.Start), result.Start);
-        parameters.Add(nameof(result.StartHash), result.StartHash);
-        parameters.Add(nameof(result.End), result.End);
+        parameters.Add(nameof(result.Start), result.Start, DbType.DateTime2);
+        parameters.Add(nameof(result.StartHash), result.StartHash, DbType.Int32);
+        parameters.Add(nameof(result.End), result.End, DbType.DateTime2);
         parameters.Add(nameof(result.Tags), JsonSerializer.SerializeList(result.Tags));
         parameters.Add(nameof(result.Attributes), JsonSerializer.SerializeNamedDictionary(result.Attributes));
         base.GetObjectCreateData(result, parameters);

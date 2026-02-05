@@ -50,10 +50,10 @@ internal sealed class PayrollRepositoryWageTypeCommand : PayrollRepositoryComman
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.TenantId, query.TenantId);
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.PayrollId, query.PayrollId);
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.RegulationDate, query.RegulationDate);
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.CreatedBefore, query.EvaluationDate);
+        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
         if (numbers != null && numbers.Any())
         {
             parameters.Add(DbSchema.ParameterGetDerivedWageTypes.WageTypeNumbers,

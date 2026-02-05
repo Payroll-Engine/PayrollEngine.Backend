@@ -41,7 +41,11 @@ internal sealed class TargetCaseFieldToken : TokenBase
         /// </summary>
         End,
         /// <summary>
-        /// Case field period (read-only)
+        /// Duration between start and end (read-only)
+        /// </summary>
+        Duration,
+        /// <summary>
+        /// Period between start and end (read-only)
         /// </summary>
         Period
     }
@@ -64,15 +68,15 @@ internal sealed class TargetCaseFieldToken : TokenBase
         switch (property)
         {
             case FieldProperty.Value:
-                // set case field value
+                // set target case field value
                 if (!string.IsNullOrWhiteSpace(parseData.PostCode))
                 {
                     return new TokenResultData(parseData, $"{nameof(CaseRelationFunction.SetTargetValue)}(\"{caseFieldName}\", ");
                 }
-                // get case field value
+                // get target case field value
                 return new(parseData, $"new {nameof(ActionValue)}({nameof(CaseRelationFunction.GetTargetValue)}(\"{caseFieldName}\"))");
             case FieldProperty.Start:
-                // set case field start date
+                // set target case field start date
                 if (!string.IsNullOrWhiteSpace(parseData.PostCode))
                 {
                     return new TokenResultData(parseData, $"{nameof(CaseRelationFunction.SetTargetStart)}(\"{caseFieldName}\", ");
@@ -80,19 +84,26 @@ internal sealed class TargetCaseFieldToken : TokenBase
                 // get case field start date
                 return new(parseData, $"new {nameof(ActionValue)}({nameof(CaseRelationFunction.GetTargetStart)}(\"{caseFieldName}\"))");
             case FieldProperty.End:
-                // set case field end date
+                // set target case field end date
                 if (!string.IsNullOrWhiteSpace(parseData.PostCode))
                 {
                     return new TokenResultData(parseData, $"{nameof(CaseRelationFunction.SetTargetEnd)}(\"{caseFieldName}\", ");
                 }
                 // get case field end date
                 return new(parseData, $"new {nameof(ActionValue)}({nameof(CaseRelationFunction.GetTargetEnd)}(\"{caseFieldName}\"))");
+            case FieldProperty.Duration:
+                if (!string.IsNullOrWhiteSpace(parseData.PostCode))
+                {
+                    throw new ScriptException($"The action target case field duration is read-only ({caseFieldName}).");
+                }
+                // target case field period duration
+                return new(parseData, $"{nameof(CaseRelationFunction.GetTargetPeriod)}(\"{caseFieldName}\").{nameof(Client.Scripting.DatePeriod.Duration)}");
             case FieldProperty.Period:
                 if (!string.IsNullOrWhiteSpace(parseData.PostCode))
                 {
                     throw new ScriptException($"The action target case field period is read-only ({caseFieldName}).");
                 }
-                // no action value for period
+                // target case field period
                 return new(parseData, $"{nameof(CaseRelationFunction.GetTargetPeriod)}(\"{caseFieldName}\")");
             default:
                 throw new ArgumentOutOfRangeException();

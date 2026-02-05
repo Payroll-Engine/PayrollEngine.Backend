@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Persistence.DbQuery;
-using PayrollEngine.Serialization;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Serialization;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -22,22 +22,22 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
         // keep in sync with object properties
         parameters.Add(nameof(payrunJob.Name), payrunJob.Name);
         parameters.Add(nameof(payrunJob.Owner), payrunJob.Owner);
-        parameters.Add(nameof(payrunJob.PayrunId), payrunJob.PayrunId);
-        parameters.Add(nameof(payrunJob.PayrollId), payrunJob.PayrollId);
-        parameters.Add(nameof(payrunJob.DivisionId), payrunJob.DivisionId);
-        parameters.Add(nameof(payrunJob.CreatedUserId), payrunJob.CreatedUserId);
-        parameters.Add(nameof(payrunJob.ParentJobId), payrunJob.ParentJobId);
+        parameters.Add(nameof(payrunJob.PayrunId), payrunJob.PayrunId, DbType.Int32);
+        parameters.Add(nameof(payrunJob.PayrollId), payrunJob.PayrollId, DbType.Int32);
+        parameters.Add(nameof(payrunJob.DivisionId), payrunJob.DivisionId, DbType.Int32);
+        parameters.Add(nameof(payrunJob.CreatedUserId), payrunJob.CreatedUserId, DbType.Int32);
+        parameters.Add(nameof(payrunJob.ParentJobId), payrunJob.ParentJobId, DbType.Int32);
         parameters.Add(nameof(payrunJob.Tags), JsonSerializer.SerializeList(payrunJob.Tags));
         parameters.Add(nameof(payrunJob.Forecast), payrunJob.Forecast);
-        parameters.Add(nameof(payrunJob.RetroPayMode), payrunJob.RetroPayMode);
-        parameters.Add(nameof(payrunJob.JobResult), payrunJob.JobResult);
+        parameters.Add(nameof(payrunJob.RetroPayMode), payrunJob.RetroPayMode, DbType.Int32);
+        parameters.Add(nameof(payrunJob.JobResult), payrunJob.JobResult, DbType.Int32);
         parameters.Add(nameof(payrunJob.CycleName), payrunJob.CycleName);
-        parameters.Add(nameof(payrunJob.CycleStart), payrunJob.CycleStart);
-        parameters.Add(nameof(payrunJob.CycleEnd), payrunJob.CycleEnd);
+        parameters.Add(nameof(payrunJob.CycleStart), payrunJob.CycleStart, DbType.DateTime2);
+        parameters.Add(nameof(payrunJob.CycleEnd), payrunJob.CycleEnd, DbType.DateTime2);
         parameters.Add(nameof(payrunJob.PeriodName), payrunJob.PeriodName);
-        parameters.Add(nameof(payrunJob.PeriodStart), payrunJob.PeriodStart);
-        parameters.Add(nameof(payrunJob.PeriodEnd), payrunJob.PeriodEnd);
-        parameters.Add(nameof(payrunJob.EvaluationDate), payrunJob.EvaluationDate);
+        parameters.Add(nameof(payrunJob.PeriodStart), payrunJob.PeriodStart, DbType.DateTime2);
+        parameters.Add(nameof(payrunJob.PeriodEnd), payrunJob.PeriodEnd, DbType.DateTime2);
+        parameters.Add(nameof(payrunJob.EvaluationDate), payrunJob.EvaluationDate, DbType.DateTime2);
         parameters.Add(nameof(payrunJob.CreatedReason), payrunJob.CreatedReason);
 
         // base fields
@@ -46,20 +46,20 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
 
     protected override void GetObjectData(PayrunJob payrunJob, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(payrunJob.ReleasedUserId), payrunJob.ReleasedUserId);
-        parameters.Add(nameof(payrunJob.ProcessedUserId), payrunJob.ProcessedUserId);
-        parameters.Add(nameof(payrunJob.FinishedUserId), payrunJob.FinishedUserId);
-        parameters.Add(nameof(payrunJob.Released), payrunJob.Released);
-        parameters.Add(nameof(payrunJob.Processed), payrunJob.Processed);
-        parameters.Add(nameof(payrunJob.Finished), payrunJob.Finished);
+        parameters.Add(nameof(payrunJob.ReleasedUserId), payrunJob.ReleasedUserId, DbType.Int32);
+        parameters.Add(nameof(payrunJob.ProcessedUserId), payrunJob.ProcessedUserId, DbType.Int32);
+        parameters.Add(nameof(payrunJob.FinishedUserId), payrunJob.FinishedUserId, DbType.Int32);
+        parameters.Add(nameof(payrunJob.Released), payrunJob.Released, DbType.DateTime2);
+        parameters.Add(nameof(payrunJob.Processed), payrunJob.Processed, DbType.DateTime2);
+        parameters.Add(nameof(payrunJob.Finished), payrunJob.Finished, DbType.DateTime2);
         parameters.Add(nameof(payrunJob.ReleasedReason), payrunJob.ReleasedReason);
         parameters.Add(nameof(payrunJob.ProcessedReason), payrunJob.ProcessedReason);
         parameters.Add(nameof(payrunJob.FinishedReason), payrunJob.FinishedReason);
-        parameters.Add(nameof(payrunJob.JobStatus), payrunJob.JobStatus);
-        parameters.Add(nameof(payrunJob.TotalEmployeeCount), payrunJob.TotalEmployeeCount);
-        parameters.Add(nameof(payrunJob.ProcessedEmployeeCount), payrunJob.ProcessedEmployeeCount);
-        parameters.Add(nameof(payrunJob.JobStart), payrunJob.JobStart);
-        parameters.Add(nameof(payrunJob.JobEnd), payrunJob.JobEnd);
+        parameters.Add(nameof(payrunJob.JobStatus), payrunJob.JobStatus, DbType.Int32);
+        parameters.Add(nameof(payrunJob.TotalEmployeeCount), payrunJob.TotalEmployeeCount, DbType.Int32);
+        parameters.Add(nameof(payrunJob.ProcessedEmployeeCount), payrunJob.ProcessedEmployeeCount, DbType.Int32);
+        parameters.Add(nameof(payrunJob.JobStart), payrunJob.JobStart, DbType.DateTime2);
+        parameters.Add(nameof(payrunJob.JobEnd), payrunJob.JobEnd, DbType.DateTime2);
         parameters.Add(nameof(payrunJob.Message), payrunJob.Message);
         parameters.Add(nameof(payrunJob.ErrorMessage), payrunJob.ErrorMessage);
         parameters.Add(nameof(payrunJob.Attributes), JsonSerializer.SerializeNamedDictionary(payrunJob.Attributes));
@@ -209,8 +209,8 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
     {
         // delete all related objects
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterDeletePayrunJob.TenantId, tenantId);
-        parameters.Add(DbSchema.ParameterDeletePayrunJob.PayrunJobId, payrunJobId);
+        parameters.Add(DbSchema.ParameterDeletePayrunJob.TenantId, tenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterDeletePayrunJob.PayrunJobId, payrunJobId, DbType.Int32);
         parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
         // delete the payrun job (stored procedure)

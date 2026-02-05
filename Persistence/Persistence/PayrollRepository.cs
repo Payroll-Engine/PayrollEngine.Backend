@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -21,7 +22,7 @@ public class PayrollRepository(IPayrollLayerRepository payrollLayerRepository,
 
     protected override void GetObjectCreateData(Payroll payroll, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(payroll.DivisionId), payroll.DivisionId);
+        parameters.Add(nameof(payroll.DivisionId), payroll.DivisionId, DbType.Int32);
         base.GetObjectCreateData(payroll, parameters);
     }
 

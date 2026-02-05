@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using PayrollEngine.Domain.Model;
+using System;
+using System.Data;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -26,10 +27,10 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
 
     protected override void GetObjectCreateData(T caseChange, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(caseChange.UserId), caseChange.UserId);
-        parameters.Add(nameof(caseChange.DivisionId), caseChange.DivisionId);
+        parameters.Add(nameof(caseChange.UserId), caseChange.UserId, DbType.Int32);
+        parameters.Add(nameof(caseChange.DivisionId), caseChange.DivisionId, DbType.Int32);
         parameters.Add(nameof(caseChange.Reason), caseChange.Reason);
-        parameters.Add(nameof(caseChange.CancellationType), caseChange.CancellationType);
+        parameters.Add(nameof(caseChange.CancellationType), caseChange.CancellationType, DbType.Int32);
         parameters.Add(nameof(caseChange.ValidationCaseName), caseChange.ValidationCaseName);
         parameters.Add(nameof(caseChange.Forecast), caseChange.Forecast);
         base.GetObjectCreateData(caseChange, parameters);
@@ -37,8 +38,8 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
 
     protected override void GetObjectData(T caseChange, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(caseChange.CancellationId), caseChange.CancellationId);
-        parameters.Add(nameof(caseChange.CancellationDate), caseChange.CancellationDate);
+        parameters.Add(nameof(caseChange.CancellationId), caseChange.CancellationId, DbType.Int32);
+        parameters.Add(nameof(caseChange.CancellationDate), caseChange.CancellationDate, DbType.DateTime2);
         base.GetObjectData(caseChange, parameters);
     }
 

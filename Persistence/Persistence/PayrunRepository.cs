@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Serialization;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -55,7 +55,7 @@ public class PayrunRepository(IScriptRepository scriptRepository) : ScriptChildD
 
     protected override void GetObjectData(Payrun payrun, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(payrun.PayrollId), payrun.PayrollId);
+        parameters.Add(nameof(payrun.PayrollId), payrun.PayrollId, DbType.Int32);
         parameters.Add(nameof(payrun.NameLocalizations), JsonSerializer.SerializeNamedDictionary(payrun.NameLocalizations));
         parameters.Add(nameof(payrun.DefaultReason), payrun.DefaultReason);
         parameters.Add(nameof(payrun.DefaultReasonLocalizations), JsonSerializer.SerializeNamedDictionary(payrun.DefaultReasonLocalizations));
@@ -65,11 +65,11 @@ public class PayrunRepository(IScriptRepository scriptRepository) : ScriptChildD
         parameters.Add(nameof(payrun.EmployeeEndExpression), payrun.EmployeeEndExpression);
         parameters.Add(nameof(payrun.WageTypeAvailableExpression), payrun.WageTypeAvailableExpression);
         parameters.Add(nameof(payrun.EndExpression), payrun.EndExpression);
-        parameters.Add(nameof(payrun.RetroTimeType), payrun.RetroTimeType);
+        parameters.Add(nameof(payrun.RetroTimeType), payrun.RetroTimeType, DbType.Int32);
         parameters.Add(nameof(payrun.Script), payrun.Script);
         parameters.Add(nameof(payrun.ScriptVersion), payrun.ScriptVersion);
         parameters.Add(nameof(payrun.Binary), payrun.Binary, DbType.Binary);
-        parameters.Add(nameof(payrun.ScriptHash), payrun.ScriptHash);
+        parameters.Add(nameof(payrun.ScriptHash), payrun.ScriptHash, DbType.Int32);
         base.GetObjectData(payrun, parameters);
     }
 }

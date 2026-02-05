@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -14,10 +15,10 @@ public class RegulationShareRepository(IRegulationRepository regulationRepositor
 
     protected override void GetObjectData(RegulationShare share, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(share.ProviderTenantId), share.ProviderTenantId);
-        parameters.Add(nameof(share.ProviderRegulationId), share.ProviderRegulationId);
-        parameters.Add(nameof(share.ConsumerTenantId), share.ConsumerTenantId);
-        parameters.Add(nameof(share.ConsumerDivisionId), share.ConsumerDivisionId);
+        parameters.Add(nameof(share.ProviderTenantId), share.ProviderTenantId, DbType.Int32);
+        parameters.Add(nameof(share.ProviderRegulationId), share.ProviderRegulationId, DbType.Int32);
+        parameters.Add(nameof(share.ConsumerTenantId), share.ConsumerTenantId, DbType.Int32);
+        parameters.Add(nameof(share.ConsumerDivisionId), share.ConsumerDivisionId, DbType.Int32);
         parameters.Add(nameof(share.Attributes), JsonSerializer.SerializeNamedDictionary(share.Attributes));
         base.GetObjectData(share, parameters);
     }

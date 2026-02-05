@@ -14,23 +14,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="ScriptDump\**" />
-		<Content Remove="ScriptDump\**" />
-		<EmbeddedResource Remove="ScriptDump\**" />
-		<None Remove="ScriptDump\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Serilog" Version="0.9.0-beta.14" />
+		<PackageReference Include="PayrollEngine.Serilog" Version="0.9.0-beta.15" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
 		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-		<PackageReference Include="Serilog.Sinks.MSSqlServer" Version="9.0.2" />
-		<PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="5.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

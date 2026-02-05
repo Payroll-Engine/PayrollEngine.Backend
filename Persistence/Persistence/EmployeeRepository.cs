@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Serialization;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -99,8 +99,8 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
         }
 
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterDeleteEmployee.TenantId, tenantId);
-        parameters.Add(DbSchema.ParameterDeleteEmployee.EmployeeId, employeeId);
+        parameters.Add(DbSchema.ParameterDeleteEmployee.TenantId, tenantId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterDeleteEmployee.EmployeeId, employeeId, DbType.Int32);
         parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
         try

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
@@ -13,7 +14,7 @@ public class EmployeeCaseChangeRepository(CaseChangeRepositorySettings settings)
 {
     protected override void GetObjectCreateData(CaseChange caseChange, DbParameterCollection parameters)
     {
-        parameters.Add(nameof(caseChange.EmployeeId), caseChange.EmployeeId);
+        parameters.Add(nameof(caseChange.EmployeeId), caseChange.EmployeeId, DbType.Int32);
         base.GetObjectCreateData(caseChange, parameters);
     }
 

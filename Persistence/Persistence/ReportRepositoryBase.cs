@@ -22,10 +22,10 @@ public abstract class ReportRepositoryBase<T>(IRegulationRepository regulationRe
         parameters.Add(nameof(report.NameLocalizations), JsonSerializer.SerializeNamedDictionary(report.NameLocalizations));
         parameters.Add(nameof(report.Description), report.Description);
         parameters.Add(nameof(report.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(report.DescriptionLocalizations));
-        parameters.Add(nameof(report.OverrideType), report.OverrideType);
+        parameters.Add(nameof(report.OverrideType), report.OverrideType, DbType.Int32);
         parameters.Add(nameof(report.Category), report.Category);
-        parameters.Add(nameof(report.AttributeMode), report.AttributeMode);
-        parameters.Add(nameof(report.UserType), report.UserType);
+        parameters.Add(nameof(report.AttributeMode), report.AttributeMode, DbType.Int32);
+        parameters.Add(nameof(report.UserType), report.UserType, DbType.Int32);
         parameters.Add(nameof(report.Queries), JsonSerializer.SerializeNamedDictionary(report.Queries));
         parameters.Add(nameof(report.Relations), DefaultJsonSerializer.Serialize(report.Relations));
         parameters.Add(nameof(report.BuildExpression), report.BuildExpression);
@@ -34,7 +34,7 @@ public abstract class ReportRepositoryBase<T>(IRegulationRepository regulationRe
         parameters.Add(nameof(report.Script), report.Script);
         parameters.Add(nameof(report.ScriptVersion), report.ScriptVersion);
         parameters.Add(nameof(report.Binary), report.Binary, DbType.Binary);
-        parameters.Add(nameof(report.ScriptHash), report.ScriptHash);
+        parameters.Add(nameof(report.ScriptHash), report.ScriptHash, DbType.Int32);
         parameters.Add(nameof(report.Attributes), JsonSerializer.SerializeNamedDictionary(report.Attributes));
         parameters.Add(nameof(report.Clusters), JsonSerializer.SerializeList(report.Clusters));
         base.GetObjectData(report, parameters);

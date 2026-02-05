@@ -3,9 +3,9 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -193,12 +193,12 @@ public class LookupSetRepository(IRegulationRepository regulationRepository,
         }
 
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetLookupRangeValue.LookupId, lookupId);
-        parameters.Add(DbSchema.ParameterGetLookupRangeValue.RangeValue, rangeValue);
+        parameters.Add(DbSchema.ParameterGetLookupRangeValue.LookupId, lookupId, DbType.Int32);
+        parameters.Add(DbSchema.ParameterGetLookupRangeValue.RangeValue, rangeValue, DbType.Decimal);
         if (lookupKey != null)
         {
             // filter by lookup key without the range value
-            parameters.Add(DbSchema.ParameterGetLookupRangeValue.KeyHash, lookupKey.ToPayrollHash());
+            parameters.Add(DbSchema.ParameterGetLookupRangeValue.KeyHash, lookupKey.ToPayrollHash(), DbType.Int32);
         }
 
         // retrieve all derived lookups (stored procedure)
