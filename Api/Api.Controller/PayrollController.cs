@@ -1455,6 +1455,63 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         return new LookupValueDataMap().ToApi(valueData);
     }
 
+    protected async Task<ActionResult<ApiObject.LookupRangeResult[]>> GetPayrollLookupRangesAsync(
+        DomainObject.PayrollQuery query, string[] lookupNames, decimal? rangeValue, string culture)
+    {
+        try
+        {
+            // tenant
+            var authResult = await TenantRequestAsync(query.TenantId);
+            if (authResult != null)
+            {
+                return authResult;
+            }
+
+            // validate lookup names
+            if (lookupNames == null || lookupNames.Length == 0)
+            {
+                return BadRequest("Missing lookup names");
+            }
+
+            // query setup
+            var setupQuery = await SetupQuery(query);
+            if (setupQuery.Item2 != null)
+            {
+                // invalid setup response
+                return setupQuery.Item2;
+            }
+            var querySetup = setupQuery.Item1;
+
+            query.RegulationDate ??= CurrentEvaluationDate;
+            query.EvaluationDate ??= CurrentEvaluationDate;
+
+            // lookup provider
+            var lookupProvider = this.NewRegulationLookupProvider(Runtime.DbContext, querySetup.Tenant,
+                querySetup.Payroll, query.RegulationDate, query.EvaluationDate);
+
+            // build range brackets for each lookup
+            var results = new List<DomainObject.LookupRangeResult>();
+            foreach (var lookupName in lookupNames)
+            {
+                var lookupSet = await lookupProvider.GetLookupAsync(Runtime.DbContext, lookupName);
+                if (lookupSet == null)
+                {
+                    return BadRequest($"Unknown lookup {lookupName}");
+                }
+
+                var result = DomainObject.LookupSetExtensions.BuildRangeBrackets(lookupSet, rangeValue);
+                result.LookupName = lookupName;
+                results.Add(result);
+            }
+
+            return new LookupRangeResultMap().ToApi(results);
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
+    }
+
     protected async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(
         DomainObject.PayrollQuery query, string[] reportNames, 
         OverrideType? overrideType, UserType? userType, string clusterSetName)

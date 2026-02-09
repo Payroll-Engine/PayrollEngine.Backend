@@ -14116,6 +14116,101 @@
         }
       }
     },
+    "/api/tenants/{tenantId}/payrolls/{payrollId}/lookups/ranges": {
+      "get": {
+        "tags": [
+          "Payrolls"
+        ],
+        "operationId": "GetPayrollLookupRanges",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "payrollId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "lookupNames",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "rangeValue",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "regulationDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "evaluationDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "culture",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LookupRangeResult"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/tenants/{tenantId}/payrolls/{payrollId}/reports": {
       "get": {
         "tags": [
@@ -28713,6 +28808,69 @@
           "rangeValue": {
             "type": "number",
             "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LookupRangeBracket": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          },
+          "lowerBound": {
+            "type": "number",
+            "format": "double"
+          },
+          "upperBound": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "rangeValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LookupRangeResult": {
+        "type": "object",
+        "properties": {
+          "lookupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rangeMode": {
+            "$ref": "#/components/schemas/LookupRangeMode"
+          },
+          "rangeSize": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "matchingBracket": {
+            "$ref": "#/components/schemas/LookupRangeBracket"
+          },
+          "matchingBrackets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LookupRangeBracket"
+            },
+            "nullable": true
+          },
+          "allBrackets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LookupRangeBracket"
+            },
             "nullable": true
           }
         },

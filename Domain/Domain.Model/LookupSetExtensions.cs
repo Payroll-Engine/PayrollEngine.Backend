@@ -71,6 +71,82 @@ public static class LookupSetExtensions
 
     #endregion
 
+    #region Range Brackets
+
+    /// <summary>Build range brackets with computed upper bounds</summary>
+    /// <param name="lookup">The lookup set</param>
+    /// <param name="rangeValue">Optional value to find matching bracket(s)</param>
+    /// <returns>Lookup range result with all brackets and optional match</returns>
+    public static LookupRangeResult BuildRangeBrackets(this LookupSet lookup, decimal? rangeValue = null)
+    {
+        var brackets = new List<LookupRangeBracket>();
+
+        if (lookup.Values != null)
+        {
+            for (var i = 0; i < lookup.Values.Count; i++)
+            {
+                var lookupValue = lookup.Values[i];
+
+                // ignore lookup values without range and lookup value
+                if (lookupValue.RangeValue == null || string.IsNullOrWhiteSpace(lookupValue.Value))
+                {
+                    continue;
+                }
+
+                // update previous upper bound
+                if (brackets.Count > 0)
+                {
+                    brackets[^1].UpperBound = lookupValue.RangeValue.Value;
+                }
+
+                // add new bracket
+                brackets.Add(new LookupRangeBracket
+                {
+                    Key = lookupValue.Key,
+                    Value = lookupValue.Value,
+                    LowerBound = lookupValue.RangeValue.Value,
+                    RangeValue = lookupValue.RangeValue
+                });
+            }
+
+            // last bracket: upper bound from range size
+            if (brackets.Count > 0 && lookup.RangeSize.HasValue)
+            {
+                var last = brackets[^1];
+                last.UpperBound = last.LowerBound + lookup.RangeSize.Value;
+            }
+        }
+
+        var result = new LookupRangeResult
+        {
+            RangeMode = lookup.RangeMode,
+            RangeSize = lookup.RangeSize,
+            AllBrackets = brackets
+        };
+
+        // find matching bracket(s)
+        if (rangeValue.HasValue)
+        {
+            switch (lookup.RangeMode)
+            {
+                case LookupRangeMode.Threshold:
+                    result.MatchingBracket = brackets.FirstOrDefault(b =>
+                        rangeValue.Value >= b.LowerBound &&
+                        (!b.UpperBound.HasValue || rangeValue.Value < b.UpperBound.Value));
+                    break;
+                case LookupRangeMode.Progressive:
+                    result.MatchingBrackets = brackets
+                        .Where(b => b.LowerBound < rangeValue.Value)
+                        .ToList();
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    #endregion
+
     #region Lookup Range
 
     private sealed class LookupRange

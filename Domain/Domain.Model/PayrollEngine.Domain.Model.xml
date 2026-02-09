@@ -4448,6 +4448,109 @@
         <member name="M:PayrollEngine.Domain.Model.LookupData.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.LookupRangeBracket">
+            <summary>
+            A lookup range bracket with computed bounds
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeBracket.Key">
+            <summary>
+            The lookup value key
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeBracket.Value">
+            <summary>
+            The lookup value as JSON
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeBracket.LowerBound">
+            <summary>
+            The range start (lower bound)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeBracket.UpperBound">
+            <summary>
+            The range end (upper bound), null for unbounded last bracket
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeBracket.RangeValue">
+            <summary>
+            The original range value from the lookup value
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeBracket.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeBracket.#ctor(PayrollEngine.Domain.Model.LookupRangeBracket)">
+            <summary>
+            Copy constructor
+            </summary>
+            <param name="source">The source to copy</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeBracket.Equals(PayrollEngine.Domain.Model.LookupRangeBracket)">
+            <summary>Compare two objects</summary>
+            <param name="compare">The object to compare with this</param>
+            <returns>True for objects with the same data</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeBracket.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.LookupRangeResult">
+            <summary>
+            Result of a lookup range bracket computation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeResult.LookupName">
+            <summary>
+            The lookup name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeResult.RangeMode">
+            <summary>
+            The lookup range mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeResult.RangeSize">
+            <summary>
+            The lookup range size
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeResult.MatchingBracket">
+            <summary>
+            The matching bracket for threshold mode, null for progressive
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeResult.MatchingBrackets">
+            <summary>
+            All matching brackets for progressive mode, null for threshold
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.LookupRangeResult.AllBrackets">
+            <summary>
+            All range brackets
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeResult.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeResult.#ctor(PayrollEngine.Domain.Model.LookupRangeResult)">
+            <summary>
+            Copy constructor
+            </summary>
+            <param name="source">The source to copy</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeResult.Equals(PayrollEngine.Domain.Model.LookupRangeResult)">
+            <summary>Compare two objects</summary>
+            <param name="compare">The object to compare with this</param>
+            <returns>True for objects with the same data</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupRangeResult.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.LookupSet">
             <summary>
             Lookup including the lookup value
@@ -4498,6 +4601,12 @@
             <param name="valueFieldName">Value field name</param>
             <remarks>The first lookup range value must be zero.</remarks>
             <returns>Summary of all lookup ranges</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.LookupSetExtensions.BuildRangeBrackets(PayrollEngine.Domain.Model.LookupSet,System.Nullable{System.Decimal})">
+            <summary>Build range brackets with computed upper bounds</summary>
+            <param name="lookup">The lookup set</param>
+            <param name="rangeValue">Optional value to find matching bracket(s)</param>
+            <returns>Lookup range result with all brackets and optional match</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.LookupSettings">
             <summary>
