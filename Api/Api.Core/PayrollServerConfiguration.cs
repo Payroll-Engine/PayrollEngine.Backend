@@ -16,8 +16,8 @@ public class PayrollServerConfiguration
     /// <summary>Culture at start (default: os working culture)</summary>
     public string StartupCulture { get; set; }
 
-    /// <summary>Disable the audit trail (default: false)</summary>
-    public bool AuditTrailDisabled { get; set; }
+    /// <summary>Audit trail configuration</summary>
+    public AuditTrailConfiguration AuditTrail { get; set; } = new();
 
     /// <summary>https redirection (default: false)</summary>
     public bool HttpsRedirection { get; set; }

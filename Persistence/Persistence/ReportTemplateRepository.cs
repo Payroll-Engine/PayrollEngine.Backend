@@ -11,10 +11,10 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class ReportTemplateRepository(IRegulationRepository regulationRepository,
-    IReportRepository reportRepository, IReportTemplateAuditRepository auditRepository, bool auditDisabled) :
+    IReportRepository reportRepository, IReportTemplateAuditRepository auditRepository, bool auditEnabled) :
     TrackChildDomainRepository<ReportTemplate, ReportTemplateAudit>(regulationRepository,
         DbSchema.Tables.ReportTemplate, DbSchema.ReportTemplateColumn.ReportId,
-        auditRepository, auditDisabled), IReportTemplateRepository
+        auditRepository, auditEnabled), IReportTemplateRepository
 {
     private IReportRepository ReportRepository { get; } = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
 

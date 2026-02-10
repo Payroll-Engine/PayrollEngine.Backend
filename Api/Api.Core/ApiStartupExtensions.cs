@@ -13,8 +13,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using PayrollEngine.Domain.Scripting;
 using PayrollEngine.Persistence;
+using PayrollEngine.Domain.Scripting;
 using DomainModel = PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Core;
@@ -26,7 +26,8 @@ public static class ApiStartupExtensions
 
     // ReSharper disable once UnusedMethodReturnValue.Global
     public static IServiceCollection AddApiServices(this IServiceCollection services,
-        IConfiguration configuration, ApiSpecification specification, DomainModel.IDbContext dbContext)
+        IConfiguration configuration, IControllerVisibility controllerVisibility, 
+        ApiSpecification specification, DomainModel.IDbContext dbContext)
     {
         if (services == null)
         {
@@ -35,6 +36,10 @@ public static class ApiStartupExtensions
         if (configuration == null)
         {
             throw new ArgumentNullException(nameof(configuration));
+        }
+        if (controllerVisibility == null)
+        {
+            throw new ArgumentNullException(nameof(controllerVisibility));
         }
         if (specification == null)
         {
@@ -95,8 +100,8 @@ public static class ApiStartupExtensions
         services.AddControllers(setupAction =>
         {
             setupAction.Conventions.Add(new ControllerVisibilityConvention(
-                serverConfiguration.VisibleControllers,
-                serverConfiguration.HiddenControllers));
+                controllerVisibility.GetVisibleControllers(serverConfiguration),
+                controllerVisibility.GetHiddenControllers(serverConfiguration)));
         });
 
         // swagger

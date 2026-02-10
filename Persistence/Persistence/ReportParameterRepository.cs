@@ -9,10 +9,10 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class ReportParameterRepository(IRegulationRepository regulationRepository,
-    IReportRepository reportRepository, IReportParameterAuditRepository auditRepository, bool auditDisabled) :
+    IReportRepository reportRepository, IReportParameterAuditRepository auditRepository, bool auditEnabled) :
     TrackChildDomainRepository<ReportParameter, ReportParameterAudit>(regulationRepository,
         DbSchema.Tables.ReportParameter, DbSchema.ReportParameterColumn.ReportId,
-        auditRepository, auditDisabled), IReportParameterRepository
+        auditRepository, auditEnabled), IReportParameterRepository
 {
     private IReportRepository ReportRepository { get; } = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
 

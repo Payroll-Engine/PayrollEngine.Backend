@@ -8,7 +8,7 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public abstract class TrackChildDomainRepository<TDomain, TAudit>(IRegulationRepository regulationRepository,
-    string tableName, string parentFieldName, IAuditChildDomainRepository<TAudit> auditRepository, bool auditDisabled)
+    string tableName, string parentFieldName, IAuditChildDomainRepository<TAudit> auditRepository, bool auditEnabled)
     : ChildDomainRepository<TDomain>(tableName, parentFieldName),
         ITrackChildDomainRepository<TDomain, TAudit>
     where TDomain : TrackDomainObject<TAudit>, INamespaceObject, new()
@@ -16,7 +16,7 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit>(IRegulationRep
 {
     protected IRegulationRepository RegulationRepository { get; } = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
     private IAuditChildDomainRepository<TAudit> AuditRepository { get; } = auditRepository ?? throw new ArgumentNullException(nameof(auditRepository));
-    private bool AuditDisabled { get; } = auditDisabled;
+    private bool AuditEnabled { get; } = auditEnabled;
 
     #region Namespace
 
@@ -92,7 +92,7 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit>(IRegulationRep
 
     protected override async Task OnCreatedAsync(IDbContext context, int parentId, TDomain item)
     {
-        if (AuditDisabled)
+        if (!AuditEnabled)
         {
             return;
         }
@@ -104,7 +104,7 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit>(IRegulationRep
 
     protected override async Task OnUpdatedAsync(IDbContext context, int parentId, TDomain item)
     {
-        if (AuditDisabled)
+        if (!AuditEnabled)
         {
             return;
         }
@@ -122,7 +122,7 @@ public abstract class TrackChildDomainRepository<TDomain, TAudit>(IRegulationRep
             return false;
         }
 
-        if (AuditDisabled)
+        if (!AuditEnabled)
         {
             return true;
         }

@@ -6,9 +6,9 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public abstract class ReportRepositoryBase<T>(IRegulationRepository regulationRepository,
-    IScriptRepository scriptRepository, IReportAuditRepository auditRepository, bool auditDisabled)
+    IScriptRepository scriptRepository, IReportAuditRepository auditRepository, bool auditEnabled)
     : ScriptTrackChildDomainRepository<T, ReportAudit>(DbSchema.Tables.Report, DbSchema.ReportColumn.RegulationId,
-        regulationRepository, scriptRepository, auditRepository, auditDisabled), IReportRepository<T>
+        regulationRepository, scriptRepository, auditRepository, auditEnabled), IReportRepository<T>
     where T : Report, new()
 {
     protected override void GetObjectCreateData(T report, DbParameterCollection parameters)

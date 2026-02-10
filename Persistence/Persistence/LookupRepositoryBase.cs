@@ -9,9 +9,9 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public abstract class LookupRepositoryBase<T>(IRegulationRepository regulationRepository,
-    ILookupAuditRepository auditRepository, bool auditDisabled) :
+    ILookupAuditRepository auditRepository, bool auditEnabled) :
     TrackChildDomainRepository<T, LookupAudit>(regulationRepository, DbSchema.Tables.Lookup,
-        DbSchema.LookupColumn.RegulationId, auditRepository, auditDisabled)
+        DbSchema.LookupColumn.RegulationId, auditRepository, auditEnabled)
     where T : Lookup, INamespaceObject, new()
 {
     protected override void GetObjectCreateData(T lookup, DbParameterCollection parameters)

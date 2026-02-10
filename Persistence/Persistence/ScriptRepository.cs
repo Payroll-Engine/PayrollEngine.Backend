@@ -9,8 +9,8 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class ScriptRepository(IRegulationRepository regulationRepository, IScriptAuditRepository auditRepository, 
-    bool auditDisabled) : TrackChildDomainRepository<Script, ScriptAudit>(regulationRepository,
-    DbSchema.Tables.Script, DbSchema.ScriptColumn.RegulationId, auditRepository, auditDisabled), IScriptRepository
+    bool auditEnabled) : TrackChildDomainRepository<Script, ScriptAudit>(regulationRepository,
+    DbSchema.Tables.Script, DbSchema.ScriptColumn.RegulationId, auditRepository, auditEnabled), IScriptRepository
 {
     protected override void GetObjectCreateData(Script script, DbParameterCollection parameters)
     {

@@ -10,9 +10,9 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class CaseFieldRepository(IRegulationRepository regulationRepository, ICaseRepository caseRepository,
-    ICaseFieldAuditRepository auditRepository, bool auditDisabled) :
+    ICaseFieldAuditRepository auditRepository, bool auditEnabled) :
     TrackChildDomainRepository<CaseField, CaseFieldAudit>(regulationRepository, DbSchema.Tables.CaseField,
-        DbSchema.CaseFieldColumn.CaseId, auditRepository, auditDisabled), ICaseFieldRepository
+        DbSchema.CaseFieldColumn.CaseId, auditRepository, auditEnabled), ICaseFieldRepository
 {
     private ICaseRepository CaseRepository { get; } = caseRepository;
 

@@ -9,9 +9,9 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class CaseRepository(IRegulationRepository regulationRepository,
-    IScriptRepository scriptRepository, ICaseAuditRepository auditRepository, bool auditDisabled)
+    IScriptRepository scriptRepository, ICaseAuditRepository auditRepository, bool auditEnabled)
     : ScriptTrackChildDomainRepository<Case, CaseAudit>(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId,
-        regulationRepository, scriptRepository, auditRepository, auditDisabled), ICaseRepository
+        regulationRepository, scriptRepository, auditRepository, auditEnabled), ICaseRepository
 {
     public async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
     {

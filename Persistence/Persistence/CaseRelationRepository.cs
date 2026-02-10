@@ -6,9 +6,9 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class CaseRelationRepository(IRegulationRepository regulationRepository,
-    IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository, bool auditDisabled)
+    IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository, bool auditEnabled)
     : ScriptTrackChildDomainRepository<CaseRelation, CaseRelationAudit>(DbSchema.Tables.CaseRelation,
-        DbSchema.CaseRelationColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditDisabled), ICaseRelationRepository
+        DbSchema.CaseRelationColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditEnabled), ICaseRelationRepository
 {
     protected override void GetObjectCreateData(CaseRelation relation, DbParameterCollection parameters)
     {

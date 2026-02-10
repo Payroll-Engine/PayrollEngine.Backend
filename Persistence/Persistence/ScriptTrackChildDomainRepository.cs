@@ -11,9 +11,9 @@ namespace PayrollEngine.Persistence;
 
 public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string tableName,
         string regulationFieldName, IRegulationRepository regulationRepository,
-        IScriptRepository scriptRepository, IAuditChildDomainRepository<TAudit> auditRepository, bool auditDisabled)
+        IScriptRepository scriptRepository, IAuditChildDomainRepository<TAudit> auditRepository, bool auditEnabled)
     : TrackChildDomainRepository<TDomain, TAudit>(regulationRepository, tableName, regulationFieldName, 
-            auditRepository, auditDisabled), IScriptTrackDomainObjectRepository<TDomain, TAudit>
+            auditRepository, auditEnabled), IScriptTrackDomainObjectRepository<TDomain, TAudit>
     where TDomain : TrackDomainObject<TAudit>, IScriptObject, INamespaceObject, new()
     where TAudit : AuditDomainObject
 {

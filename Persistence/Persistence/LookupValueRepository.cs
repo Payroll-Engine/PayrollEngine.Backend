@@ -9,9 +9,9 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class LookupValueRepository(IRegulationRepository regulationRepository,
-    ILookupValueAuditRepository auditRepository, bool auditDisabled) :
+    ILookupValueAuditRepository auditRepository, bool auditEnabled) :
     TrackChildDomainRepository<LookupValue, LookupValueAudit>(regulationRepository, DbSchema.Tables.LookupValue,
-        DbSchema.LookupValueColumn.LookupId, auditRepository, auditDisabled), ILookupValueRepository
+        DbSchema.LookupValueColumn.LookupId, auditRepository, auditEnabled), ILookupValueRepository
 {
     public async Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null)
     {

@@ -47,11 +47,20 @@ public class Startup
             throw new PayrollException("Missing database connection string.");
         }
 
-        // database command timeout
+        // configuration
         var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
-        var dbContext = new Persistence.SqlServer.DbContext(connectionString,
-            Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds));
-        services.AddApiServices(Configuration, apiSpecification, dbContext);
+
+        // database command timeout
+        var dbContext = new Persistence.SqlServer.DbContext(
+            connectionString: connectionString,
+            defaultCommendTimeout: Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds));
+
+        // setup services
+        services.AddApiServices(
+            configuration: Configuration,
+            controllerVisibility: new ControllerVisibility(),
+            specification: apiSpecification,
+            dbContext: dbContext);
         services.AddLocalApiServices();
     }
 
@@ -61,5 +70,9 @@ public class Startup
     /// </summary>
     public void Configure(IApplicationBuilder appBuilder, IWebHostEnvironment environment,
         IHostApplicationLifetime appLifetime) =>
-        appBuilder.UsePayrollApiServices(environment, appLifetime, Configuration, apiSpecification);
+        appBuilder.UsePayrollApiServices(
+            environment: environment,
+            appLifetime: appLifetime,
+            configuration: Configuration,
+            specification: apiSpecification);
 }

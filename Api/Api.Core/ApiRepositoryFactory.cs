@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PayrollEngine.Persistence;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Persistence;
 
 namespace PayrollEngine.Api.Core;
 
@@ -14,16 +14,15 @@ internal static class ApiRepositoryFactory
     {
         // audit trail
         var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
-        var auditDisabled = serverConfiguration.AuditTrailDisabled;
 
         // system repositories
         services.AddScoped(_ => NewRegulationShareRepository());
         TenantRepositoryFactory.SetupRepositories(services);
-        RegulationRepositoryFactory.SetupRepositories(services, auditDisabled);
-        PayrollRepositoryFactory.SetupRepositories(services, auditDisabled);
-        CaseValueRepositoryFactory.SetupRepositories(services, auditDisabled);
-        PayrunRepositoryFactory.SetupRepositories(services, auditDisabled);
-        ReportRepositoryFactory.SetupRepositories(services, auditDisabled);
+        RegulationRepositoryFactory.SetupRepositories(services, serverConfiguration.AuditTrail);
+        PayrollRepositoryFactory.SetupRepositories(services, serverConfiguration.AuditTrail);
+        CaseValueRepositoryFactory.SetupRepositories(services, serverConfiguration.AuditTrail);
+        PayrunRepositoryFactory.SetupRepositories(services, serverConfiguration.AuditTrail);
+        ReportRepositoryFactory.SetupRepositories(services, serverConfiguration.AuditTrail);
     }
 
     private static IRegulationShareRepository NewRegulationShareRepository() =>
@@ -90,31 +89,31 @@ internal static class ApiRepositoryFactory
 
     private static class RegulationRepositoryFactory
     {
-        internal static void SetupRepositories(IServiceCollection services, bool auditDisabled)
+        internal static void SetupRepositories(IServiceCollection services, AuditTrailConfiguration auditTrail)
         {
             // regulation repository
             services.AddScoped(_ => NewRegulationRepository());
             // case repositories
-            services.AddScoped(_ => NewCaseRepository(auditDisabled));
+            services.AddScoped(_ => NewCaseRepository(auditTrail.Input));
             services.AddScoped(_ => NewCaseAuditRepository());
-            services.AddScoped(_ => NewCaseFieldRepository(auditDisabled));
+            services.AddScoped(_ => NewCaseFieldRepository(auditTrail.Input));
             services.AddScoped(_ => NewCaseFieldAuditRepository());
-            services.AddScoped(_ => NewCaseRelationRepository(auditDisabled));
+            services.AddScoped(_ => NewCaseRelationRepository(auditTrail.Input));
             services.AddScoped(_ => NewCaseRelationAuditService());
             // wage type repositories
-            services.AddScoped(_ => NewWageTypeRepository(auditDisabled));
+            services.AddScoped(_ => NewWageTypeRepository(auditTrail.Payrun));
             services.AddScoped(_ => NewWageTypeAuditRepository());
             // collector repositories
-            services.AddScoped(_ => NewCollectorRepository(auditDisabled));
+            services.AddScoped(_ => NewCollectorRepository(auditTrail.Payrun));
             services.AddScoped(_ => NewCollectorAuditRepository());
             // lookup repositories
-            services.AddScoped(_ => NewLookupRepository(auditDisabled));
+            services.AddScoped(_ => NewLookupRepository(auditTrail.Lookup));
             services.AddScoped(_ => NewLookupAuditRepository());
-            services.AddScoped(_ => NewLookupValueRepository(auditDisabled));
+            services.AddScoped(_ => NewLookupValueRepository(auditTrail.Lookup));
             services.AddScoped(_ => NewLookupValueAuditRepository());
-            services.AddScoped(_ => NewLookupSetRepository(auditDisabled));
+            services.AddScoped(_ => NewLookupSetRepository(auditTrail.Lookup));
             // script repositories
-            services.AddScoped(_ => NewScriptRepository(auditDisabled));
+            services.AddScoped(_ => NewScriptRepository(auditTrail.Script));
             services.AddScoped(_ => NewScriptAuditRepository());
             services.AddScoped(_ => NewScriptProvider());
         }
@@ -213,19 +212,19 @@ internal static class ApiRepositoryFactory
     private static class PayrollRepositoryFactory
     {
         // repositories setup
-        internal static void SetupRepositories(IServiceCollection services, bool auditDisabled)
+        internal static void SetupRepositories(IServiceCollection services, AuditTrailConfiguration auditTrail)
         {
-            services.AddScoped(_ => NewPayrollRepository(auditDisabled));
+            services.AddScoped(_ => NewPayrollRepository(auditTrail));
             services.AddScoped(_ => NewPayrollLayerRepository());
         }
 
-        internal static IPayrollRepository NewPayrollRepository(bool auditDisabled) =>
+        internal static IPayrollRepository NewPayrollRepository(AuditTrailConfiguration auditTrail) =>
             new PayrollRepository(
                 NewPayrollLayerRepository(),
                 RegulationRepositoryFactory.NewRegulationRepository(),
-                RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
-                ReportRepositoryFactory.NewReportSetRepository(auditDisabled),
-                RegulationRepositoryFactory.NewScriptRepository(auditDisabled));
+                RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
+                ReportRepositoryFactory.NewReportSetRepository(auditTrail.Report),
+                RegulationRepositoryFactory.NewScriptRepository(auditTrail.Script));
 
         private static IPayrollLayerRepository NewPayrollLayerRepository() =>
             new PayrollLayerRepository();
@@ -234,24 +233,24 @@ internal static class ApiRepositoryFactory
     private static class CaseValueRepositoryFactory
     {
         // repositories setup
-        internal static void SetupRepositories(IServiceCollection services, bool auditDisabled)
+        internal static void SetupRepositories(IServiceCollection services, AuditTrailConfiguration auditTrail)
         {
             // global case repositories
-            services.AddScoped(_ => NewGlobalCaseValueRepository(auditDisabled));
+            services.AddScoped(_ => NewGlobalCaseValueRepository(auditTrail.Input));
             services.AddScoped(_ => NewGlobalCaseDocumentRepository());
-            services.AddScoped(_ => NewGlobalCaseChangeRepository(auditDisabled));
+            services.AddScoped(_ => NewGlobalCaseChangeRepository(auditTrail));
             // national case repositories
-            services.AddScoped(_ => NewNationalCaseValueRepository(auditDisabled));
+            services.AddScoped(_ => NewNationalCaseValueRepository(auditTrail.Input));
             services.AddScoped(_ => NewNationalCaseDocumentRepository());
-            services.AddScoped(_ => NewNationalCaseChangeRepository(auditDisabled));
+            services.AddScoped(_ => NewNationalCaseChangeRepository(auditTrail));
             // company case repositories
-            services.AddScoped(_ => NewCompanyCaseValueRepository(auditDisabled));
+            services.AddScoped(_ => NewCompanyCaseValueRepository(auditTrail.Input));
             services.AddScoped(_ => NewCompanyCaseDocumentRepository());
-            services.AddScoped(_ => NewCompanyCaseChangeRepository(auditDisabled));
+            services.AddScoped(_ => NewCompanyCaseChangeRepository(auditTrail));
             // employee case repositories
-            services.AddScoped(_ => NewEmployeeCaseValueRepository(auditDisabled));
+            services.AddScoped(_ => NewEmployeeCaseValueRepository(auditTrail.Input));
             services.AddScoped(_ => NewEmployeeCaseDocumentRepository());
-            services.AddScoped(_ => NewEmployeeCaseChangeRepository(auditDisabled));
+            services.AddScoped(_ => NewEmployeeCaseChangeRepository(auditTrail));
         }
 
         private static IGlobalCaseValueRepository NewGlobalCaseValueRepository(bool auditDisabled) =>
@@ -260,7 +259,7 @@ internal static class ApiRepositoryFactory
         private static IGlobalCaseDocumentRepository NewGlobalCaseDocumentRepository() =>
             new GlobalCaseDocumentRepository();
 
-        private static IGlobalCaseChangeRepository NewGlobalCaseChangeRepository(bool auditDisabled) =>
+        private static IGlobalCaseChangeRepository NewGlobalCaseChangeRepository(AuditTrailConfiguration auditTrail) =>
             new GlobalCaseChangeRepository(
                 new()
                 {
@@ -269,12 +268,12 @@ internal static class ApiRepositoryFactory
                     EmployeeRepository = new EmployeeRepository(
                         new EmployeeDivisionRepository(
                             new DivisionRepository())),
-                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditDisabled),
-                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditDisabled),
-                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
-                    CaseValueRepository = NewGlobalCaseValueRepository(auditDisabled),
+                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditTrail),
+                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditTrail.Input),
+                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
+                    CaseValueRepository = NewGlobalCaseValueRepository(auditTrail.Input),
                     CaseValueSetupRepository = new GlobalCaseValueSetupRepository(
-                        RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
+                        RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
                         new GlobalCaseDocumentRepository()),
                     CaseValueChangeRepository = new GlobalCaseValueChangeRepository()
                 });
@@ -286,7 +285,7 @@ internal static class ApiRepositoryFactory
         private static INationalCaseDocumentRepository NewNationalCaseDocumentRepository() =>
             new NationalCaseDocumentRepository();
 
-        private static INationalCaseChangeRepository NewNationalCaseChangeRepository(bool auditDisabled) =>
+        private static INationalCaseChangeRepository NewNationalCaseChangeRepository(AuditTrailConfiguration auditTrail) =>
             new NationalCaseChangeRepository(
                 new()
                 {
@@ -295,12 +294,12 @@ internal static class ApiRepositoryFactory
                     EmployeeRepository = new EmployeeRepository(
                         new EmployeeDivisionRepository(
                             new DivisionRepository())),
-                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditDisabled),
-                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditDisabled),
-                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
-                    CaseValueRepository = NewNationalCaseValueRepository(auditDisabled),
+                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditTrail),
+                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditTrail.Input),
+                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
+                    CaseValueRepository = NewNationalCaseValueRepository(auditTrail.Input),
                     CaseValueSetupRepository = new NationalCaseValueSetupRepository(
-                        RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
+                        RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
                         new NationalCaseDocumentRepository()),
                     CaseValueChangeRepository = new NationalCaseValueChangeRepository()
                 });
@@ -312,7 +311,7 @@ internal static class ApiRepositoryFactory
         private static ICompanyCaseDocumentRepository NewCompanyCaseDocumentRepository() =>
             new CompanyCaseDocumentRepository();
 
-        private static ICompanyCaseChangeRepository NewCompanyCaseChangeRepository(bool auditDisabled) =>
+        private static ICompanyCaseChangeRepository NewCompanyCaseChangeRepository(AuditTrailConfiguration auditTrail) =>
             new CompanyCaseChangeRepository(
                 new()
                 {
@@ -321,12 +320,12 @@ internal static class ApiRepositoryFactory
                     EmployeeRepository = new EmployeeRepository(
                         new EmployeeDivisionRepository(
                             new DivisionRepository())),
-                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditDisabled),
-                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditDisabled),
-                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
-                    CaseValueRepository = NewCompanyCaseValueRepository(auditDisabled),
+                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditTrail),
+                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditTrail.Input),
+                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
+                    CaseValueRepository = NewCompanyCaseValueRepository(auditTrail.Input),
                     CaseValueSetupRepository = new CompanyCaseValueSetupRepository(
-                        RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
+                        RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
                         new CompanyCaseDocumentRepository()),
                     CaseValueChangeRepository = new CompanyCaseValueChangeRepository()
                 });
@@ -338,7 +337,7 @@ internal static class ApiRepositoryFactory
         private static IEmployeeCaseDocumentRepository NewEmployeeCaseDocumentRepository() =>
             new EmployeeCaseDocumentRepository();
 
-        private static IEmployeeCaseChangeRepository NewEmployeeCaseChangeRepository(bool auditDisabled) =>
+        private static IEmployeeCaseChangeRepository NewEmployeeCaseChangeRepository(AuditTrailConfiguration auditTrail) =>
             new EmployeeCaseChangeRepository(
                 new()
                 {
@@ -347,12 +346,12 @@ internal static class ApiRepositoryFactory
                     EmployeeRepository = new EmployeeRepository(
                         new EmployeeDivisionRepository(
                             new DivisionRepository())),
-                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditDisabled),
-                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditDisabled),
-                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
-                    CaseValueRepository = NewEmployeeCaseValueRepository(auditDisabled),
+                    PayrollRepository = PayrollRepositoryFactory.NewPayrollRepository(auditTrail),
+                    CaseRepository = RegulationRepositoryFactory.NewCaseRepository(auditTrail.Input),
+                    CaseFieldRepository = RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
+                    CaseValueRepository = NewEmployeeCaseValueRepository(auditTrail.Input),
                     CaseValueSetupRepository = new EmployeeCaseValueSetupRepository(
-                        RegulationRepositoryFactory.NewCaseFieldRepository(auditDisabled),
+                        RegulationRepositoryFactory.NewCaseFieldRepository(auditTrail.Input),
                         NewEmployeeCaseDocumentRepository()),
                     CaseValueChangeRepository = new EmployeeCaseValueChangeRepository()
                 });
@@ -361,10 +360,10 @@ internal static class ApiRepositoryFactory
     private static class PayrunRepositoryFactory
     {
         // repositories setup
-        internal static void SetupRepositories(IServiceCollection services, bool auditDisabled)
+        internal static void SetupRepositories(IServiceCollection services, AuditTrailConfiguration auditTrail)
         {
             // payrun repositories
-            services.AddScoped(_ => NewPayrunRepository(auditDisabled));
+            services.AddScoped(_ => NewPayrunRepository(auditTrail));
             services.AddScoped(_ => NewPayrunParameterRepository());
             services.AddScoped(_ => NewPayrunJobRepository());
             // collector results repositories
@@ -382,8 +381,8 @@ internal static class ApiRepositoryFactory
             services.AddScoped(_ => NewPayrollConsolidatedResultRepository());
             services.AddScoped(_ => NewPayrollResultSetRepository());
         }
-        private static IPayrunRepository NewPayrunRepository(bool auditDisabled) =>
-            new PayrunRepository(RegulationRepositoryFactory.NewScriptRepository(auditDisabled));
+        private static IPayrunRepository NewPayrunRepository(AuditTrailConfiguration auditTrail) =>
+            new PayrunRepository(RegulationRepositoryFactory.NewScriptRepository(auditTrail.Script));
 
         private static IPayrunParameterRepository NewPayrunParameterRepository() =>
             new PayrunParameterRepository();
@@ -437,14 +436,14 @@ internal static class ApiRepositoryFactory
     private static class ReportRepositoryFactory
     {
         // repositories setup
-        internal static void SetupRepositories(IServiceCollection services, bool auditDisabled)
+        internal static void SetupRepositories(IServiceCollection services, AuditTrailConfiguration auditTrail)
         {
-            services.AddScoped(_ => NewReportRepository(auditDisabled));
-            services.AddScoped(_ => NewReportSetRepository(auditDisabled));
+            services.AddScoped(_ => NewReportRepository(auditTrail.Report));
+            services.AddScoped(_ => NewReportSetRepository(auditTrail.Report));
             services.AddScoped(_ => NewReportAuditRepository());
-            services.AddScoped(_ => NewReportParameterRepository(auditDisabled));
+            services.AddScoped(_ => NewReportParameterRepository(auditTrail.Report));
             services.AddScoped(_ => NewReportParameterAuditRepository());
-            services.AddScoped(_ => NewReportTemplateRepository(auditDisabled));
+            services.AddScoped(_ => NewReportTemplateRepository(auditTrail.Report));
             services.AddScoped(_ => NewReportTemplateAuditRepository());
         }
 

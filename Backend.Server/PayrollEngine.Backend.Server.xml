@@ -4,6 +4,15 @@
         <name>PayrollEngine.Backend.Server</name>
     </assembly>
     <members>
+        <member name="T:PayrollEngine.Backend.Server.ControllerVisibility">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Backend.Server.ControllerVisibility.GetVisibleControllers(PayrollEngine.Api.Core.PayrollServerConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Backend.Server.ControllerVisibility.GetHiddenControllers(PayrollEngine.Api.Core.PayrollServerConfiguration)">
+            <inheritdoc />
+        </member>
         <member name="T:PayrollEngine.Backend.Server.Program">
             <summary>
             Start program for the provider api

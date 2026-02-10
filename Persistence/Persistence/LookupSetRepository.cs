@@ -10,8 +10,8 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Persistence;
 
 public class LookupSetRepository(IRegulationRepository regulationRepository,
-        ILookupValueRepository valueRepository, ILookupAuditRepository auditRepository, bool auditDisabled)
-    : LookupRepositoryBase<LookupSet>(regulationRepository, auditRepository, auditDisabled), ILookupSetRepository
+        ILookupValueRepository valueRepository, ILookupAuditRepository auditRepository, bool auditEnabled)
+    : LookupRepositoryBase<LookupSet>(regulationRepository, auditRepository, auditEnabled), ILookupSetRepository
 {
     private ILookupValueRepository ValueRepository { get; } = valueRepository ?? throw new ArgumentNullException(nameof(valueRepository));
 
