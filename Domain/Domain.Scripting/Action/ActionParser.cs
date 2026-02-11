@@ -48,7 +48,6 @@ internal sealed class ActionParser
         var decimalFunction = functionType.IsDecimalResult();
         foreach (var action in actions)
         {
-            // line
             // allow single quoting for constant action strings
             var line = action.Replace('\'', '"').Trim();
             // empty line or comment
@@ -56,6 +55,10 @@ internal sealed class ActionParser
             {
                 continue;
             }
+
+            // logical conditions AND/OR
+            line = line.Replace(" and ", " && ", StringComparison.InvariantCultureIgnoreCase).
+                        Replace(" or ", " || ", StringComparison.InvariantCultureIgnoreCase);
 
             // line type
             ActionLineType lineType = ActionLineType.Action;

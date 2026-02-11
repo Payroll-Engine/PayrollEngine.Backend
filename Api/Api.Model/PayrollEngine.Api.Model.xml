@@ -2154,6 +2154,72 @@
         <member name="M:PayrollEngine.Api.Model.LookupData.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Api.Model.LookupRangeBracket">
+            <summary>
+            A lookup range bracket with computed bounds
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeBracket.Key">
+            <summary>
+            The lookup value key
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeBracket.Value">
+            <summary>
+            The lookup value as JSON
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeBracket.RangeStart">
+            <summary>
+            The range start value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeBracket.RangeEnd">
+            <summary>
+            The range end value (unbound bracket: Decimal.MaxValue)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeBracket.RangeValue">
+            <summary>
+            The brackets range value
+            </summary>
+            <remarks>
+            Threshold lookup: value within the matching bracket.
+            Progressive lookup: matching bracket value range, except the last one which the value within his range.
+            Other: null.
+            </remarks>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupRangeBracket.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.LookupRangeResult">
+            <summary>
+            Result of a lookup range bracket computation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeResult.LookupName">
+            <summary>
+            The lookup name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeResult.RangeMode">
+            <summary>
+            The lookup range mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeResult.RangeSize">
+            <summary>
+            The lookup range size
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.LookupRangeResult.Brackets">
+            <summary>
+            Range brackets
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Api.Model.LookupRangeResult.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:PayrollEngine.Api.Model.LookupSet">
             <summary>
             Lookup including the lookup value

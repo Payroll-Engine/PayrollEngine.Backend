@@ -1530,6 +1530,19 @@
             <param name="culture">The content culture</param>
             <returns>The lookup value data</returns>
         </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollLookupRangesAsync(System.Int32,System.Int32,System.String[],System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Get payroll lookup range brackets
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="lookupNames">The lookup names (case-insensitive)</param>
+            <param name="rangeValue">Optional value to find matching brackets (supported by threshold and progressive lookups)</param>
+            <param name="regulationDate">The regulation date (default: UTC now)</param>
+            <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+            <param name="culture">The content culture</param>
+            <returns>The lookup range results</returns>
+        </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollReportsAsync(System.Int32,System.Int32,System.String[],System.Nullable{PayrollEngine.OverrideType},System.Nullable{PayrollEngine.UserType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
             Get payroll report sets

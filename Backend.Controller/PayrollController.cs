@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
-using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
+using PayrollEngine.Domain.Application.Service;
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -737,6 +737,42 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             lookupName, lookupKey, rangeValue, culture);
+    }
+
+    /// <summary>
+    /// Get payroll lookup range brackets
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="payrollId">The payroll id</param>
+    /// <param name="lookupNames">The lookup names (case-insensitive)</param>
+    /// <param name="rangeValue">Optional value to find matching brackets (supported by threshold and progressive lookups)</param>
+    /// <param name="regulationDate">The regulation date (default: UTC now)</param>
+    /// <param name="evaluationDate">The evaluation date (default: UTC now)</param>
+    /// <param name="culture">The content culture</param>
+    /// <returns>The lookup range results</returns>
+    [HttpGet("{payrollId}/lookups/ranges")]
+    [OkResponse]
+    [NotFoundResponse]
+    [ApiOperationId("GetPayrollLookupRanges")]
+    public async Task<ActionResult<ApiObject.LookupRangeResult[]>> GetPayrollLookupRangesAsync(int tenantId, int payrollId,
+        [FromQuery][Required] string[] lookupNames, [FromQuery] decimal? rangeValue,
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
+    {
+        // authorization
+        var authResult = await TenantRequestAsync(tenantId);
+        if (authResult != null)
+        {
+            return authResult;
+        }
+        return await base.GetPayrollLookupRangesAsync(
+            new()
+            {
+                TenantId = tenantId,
+                PayrollId = payrollId,
+                RegulationDate = regulationDate,
+                EvaluationDate = evaluationDate
+            },
+            lookupNames, rangeValue, culture);
     }
 
     /// <summary>

@@ -460,6 +460,31 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     }
 
     /// <inheritdoc />
+    public List<Tuple<string, string, decimal, decimal, decimal?>> GetLookupRanges(string lookupName, decimal? rangeValue = null)
+    {
+        // lookup
+        var lookup = Task.Run(() => RegulationLookupProvider.GetLookupAsync(
+            context: Settings.DbContext,
+            lookupName: lookupName)).Result;
+        if (lookup == null)
+        {
+            return new();
+        }
+
+        // query brackets
+        var lookupResult = lookup.BuildRangeBrackets(rangeValue);
+
+        // brackets result
+        var brackets = new List<Tuple<string, string, decimal, decimal, decimal?>>();
+        foreach (var bracket in lookupResult.Brackets)
+        {
+            brackets.Add(new(bracket.Key, bracket.Value, bracket.RangeStart, bracket.RangeEnd, bracket.RangeValue));
+        }
+        return brackets;
+
+    }
+
+    /// <inheritdoc />
     public virtual string GetRangeLookup(string lookupName, decimal rangeValue, string lookupKey = null, string culture = null)
     {
         if (string.IsNullOrWhiteSpace(lookupName))

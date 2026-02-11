@@ -71,6 +71,116 @@ public static class LookupSetExtensions
 
     #endregion
 
+    #region Range Brackets
+
+    /// <summary>Build range brackets with computed upper bounds</summary>
+    /// <param name="lookup">The lookup set</param>
+    /// <param name="rangeValue">Optional value to find matching bracket(s)</param>
+    /// <returns>Lookup range result with all brackets and optional match</returns>
+    public static LookupRangeResult BuildRangeBrackets(this LookupSet lookup, decimal? rangeValue = null)
+    {
+        if (lookup == null)
+        {
+            throw new ArgumentNullException(nameof(lookup));
+        }
+        if (lookup.Values == null || !lookup.Values.Any())
+        {
+            throw new ArgumentException(nameof(lookup));
+        }
+
+        // range value guard
+        if (rangeValue.HasValue && lookup.Values.Any(x => x.RangeValue == null))
+        {
+            throw new PayrollException($"Lookup range value request on lookup {lookup.Name} with missing range value.");
+        }
+
+        // build brackets
+        var brackets = new List<LookupRangeBracket>();
+        var precision = (decimal)Math.Pow(10, -SystemSpecification.DecimalScale);
+        if (lookup.Values != null)
+        {
+            foreach (var lookupValue in lookup.Values)
+            {
+                // ignore lookup values without range and lookup value
+                if (lookupValue.RangeValue == null || string.IsNullOrWhiteSpace(lookupValue.Value))
+                {
+                    continue;
+                }
+
+                // update previous upper bound
+                if (brackets.Count > 0)
+                {
+                    brackets.Last().RangeEnd = lookupValue.RangeValue.Value - precision;
+                }
+
+                // add new bracket
+                brackets.Add(new LookupRangeBracket
+                {
+                    Key = lookupValue.Key,
+                    Value = lookupValue.Value,
+                    RangeStart = lookupValue.RangeValue.Value
+                });
+            }
+
+            // last bracket
+            var last = brackets.LastOrDefault();
+            if (last != null)
+            {
+                if (lookup.RangeSize.HasValue)
+                {
+                    // limited by the lookup range size
+                    last.RangeEnd = last.RangeStart + lookup.RangeSize.Value - precision;
+                }
+                else
+                {
+                    last.SetUnlimited();
+                }
+            }
+        }
+
+        // range result
+        var result = new LookupRangeResult
+        {
+            RangeMode = lookup.RangeMode,
+            RangeSize = lookup.RangeSize,
+            Brackets = brackets
+        };
+
+        // bracket range values
+        if (rangeValue.HasValue)
+        {
+            foreach (var bracket in brackets)
+            {
+                switch (lookup.RangeMode)
+                {
+                    case LookupRangeMode.Threshold:
+                        if (rangeValue.Value >= bracket.RangeStart &&
+                            (rangeValue.Value <= bracket.RangeEnd || bracket.IsUnlimited))
+                        {
+                            bracket.RangeValue = rangeValue.Value - bracket.RangeStart;
+                        }
+                        break;
+                    case LookupRangeMode.Progressive:
+                        if (rangeValue.Value >= bracket.RangeEnd)
+                        {
+                            // full range value
+                            bracket.RangeValue = bracket.RangeEnd - bracket.RangeStart + precision;
+                        }
+                        else if (rangeValue.Value >= bracket.RangeStart)
+                        {
+                            // partial range value
+                            bracket.RangeValue = rangeValue.Value - bracket.RangeStart;
+                        }
+                        break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    #endregion
+
     #region Lookup Range
 
     private sealed class LookupRange
@@ -125,10 +235,11 @@ public static class LookupSetExtensions
         }
 
         // ranges
+        var lookupValues = lookup.Values.OrderBy(x => x.RangeValue).ToList();
         var ranges = new List<LookupRange>();
-        for (var i = 0; i < lookup.Values.Count; i++)
+        for (var i = 0; i < lookupValues.Count; i++)
         {
-            var lookupValue = lookup.Values[i];
+            var lookupValue = lookupValues[i];
 
             // ignore lookup values without range and lookup value
             if (lookupValue.RangeValue == null || string.IsNullOrWhiteSpace(lookupValue.Value))
