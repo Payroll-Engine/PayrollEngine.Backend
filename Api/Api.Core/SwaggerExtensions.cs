@@ -10,7 +10,7 @@ public static class SwaggerExtensions
     // ReSharper disable once UnusedMethodReturnValue.Global
     public static IApplicationBuilder UseSwagger(this IApplicationBuilder appBuilder,
         string apiDocumentationName, string apiName, string apiVersion, bool darkTheme,
-        bool rootRedirect)
+        bool rootRedirect, OAuthConfiguration oauth = null)
     {
         appBuilder.UseSwagger(options =>
         {
@@ -32,6 +32,13 @@ public static class SwaggerExtensions
             if (darkTheme)
             {
                 setupAction.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+            }
+
+            // OAuth UI
+            if (oauth != null)
+            {
+                setupAction.OAuthClientId(oauth.Audience);
+                setupAction.OAuthClientSecret(oauth.ClientSecret ?? string.Empty);
             }
         });
 

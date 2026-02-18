@@ -11,6 +11,7 @@ public class ApiRequestMiddleware
 {
     private RequestDelegate Next { get; }
     private string ApiKey { get; }
+    private AuthenticationMode AuthMode { get; }
 
     /// <summary>
     /// Api request middleware
@@ -20,7 +21,9 @@ public class ApiRequestMiddleware
     public ApiRequestMiddleware(RequestDelegate next, IConfiguration configuration)
     {
         Next = next;
-        ApiKey = configuration.GetApiKey();
+        var auth = configuration.GetAuthConfiguration();
+        AuthMode = auth.Mode;
+        ApiKey = AuthMode == AuthenticationMode.ApiKey ? configuration.GetApiKey() : null;
     }
 
     /// <summary>
@@ -31,19 +34,22 @@ public class ApiRequestMiddleware
     /// <param name="configuration">Application configuration (injected by DI)</param>
     public async Task InvokeAsync(HttpContext context, IConfiguration configuration)
     {
-        // root redirect
-        if ("/".Equals(context.Request.Path.Value))
+        var path = context.Request.Path;
+
+        // root redirect — skip in OAuth mode, handled by rewriter
+        if ("/".Equals(path.Value) && AuthMode != AuthenticationMode.OAuth)
         {
             context.Response.Redirect("/swagger");
             return;
         }
 
-        // test api key, excluding swagger requests
-        if (!string.IsNullOrWhiteSpace(ApiKey) &&
-            !context.Request.Path.StartsWithSegments("/swagger"))
+        // API key check — skip swagger paths
+        if (AuthMode == AuthenticationMode.ApiKey &&
+            !path.StartsWithSegments("/swagger"))
         {
-            if (!context.Request.Headers.TryGetValue(BackendSpecification.ApiKeyHeader, out var headerApiKey)
-                || !string.Equals(ApiKey, headerApiKey))
+            if (string.IsNullOrWhiteSpace(ApiKey) ||
+                !context.Request.Headers.TryGetValue(BackendSpecification.ApiKeyHeader, out var headerApiKey) ||
+                !string.Equals(ApiKey, headerApiKey))
             {
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Invalid Api Key");
@@ -51,7 +57,6 @@ public class ApiRequestMiddleware
             }
         }
 
-        // next middleware
         await Next(context);
     }
 }

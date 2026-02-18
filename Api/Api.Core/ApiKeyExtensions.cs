@@ -8,22 +8,42 @@ namespace PayrollEngine.Api.Core;
 /// </summary>
 public static class ApiKeyExtensions
 {
-    public static string GetApiKey(this IConfiguration configuration)
+    /// <param name="configuration"></param>
+    extension(IConfiguration configuration)
     {
-        if (configuration == null)
+        /// <summary>
+        /// Get the api key
+        /// </summary>
+        /// <returns></returns>
+        public string GetApiKey()
         {
-            throw new ArgumentNullException(nameof(configuration));
+            var authConfig = configuration.GetAuthConfiguration();
+            if (authConfig.Mode != AuthenticationMode.ApiKey)
+            {
+                return null;
+            }
+
+            // priority 1: environment variable
+            var apiKey = Environment.GetEnvironmentVariable(SystemSpecification.PayrollApiKey);
+            if (!string.IsNullOrWhiteSpace(apiKey))
+            {
+                return apiKey;
+            }
+
+            // priority 2: only when mode is ApiKey
+            if (string.IsNullOrWhiteSpace(authConfig.ApiKey))
+            {
+                throw new PayrollException("Authentication: missing api key.");
+            }
+
+            return authConfig.ApiKey;
         }
 
-        // priority 1: from environment variable
-        var apiKey = Environment.GetEnvironmentVariable(SystemSpecification.PayrollApiKey);
-        if (!string.IsNullOrWhiteSpace(apiKey))
-        {
-            return apiKey;
-        }
-
-        // priority 2: from application configuration
-        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
-        return serverConfiguration?.ApiKey;
+        /// <summary>
+        /// Get authentication configuration
+        /// </summary>
+        /// <returns></returns>
+        public AuthenticationConfiguration GetAuthConfiguration() =>
+            configuration.GetConfiguration<PayrollServerConfiguration>()?.Authentication ?? new();
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PayrollEngine.Persistence;
 using PayrollEngine.Domain.Scripting;
 using DomainModel = PayrollEngine.Domain.Model;
@@ -26,7 +27,7 @@ public static class ApiStartupExtensions
 
     // ReSharper disable once UnusedMethodReturnValue.Global
     public static IServiceCollection AddApiServices(this IServiceCollection services,
-        IConfiguration configuration, IControllerVisibility controllerVisibility, 
+        IConfiguration configuration, IControllerVisibility controllerVisibility,
         ApiSpecification specification, DomainModel.IDbContext dbContext)
     {
         if (services == null)
@@ -104,14 +105,49 @@ public static class ApiStartupExtensions
                 controllerVisibility.GetHiddenControllers(serverConfiguration)));
         });
 
+        // authentication services
+        var authConfig = configuration.GetAuthConfiguration();
+        switch (authConfig.Mode)
+        {
+            case AuthenticationMode.ApiKey:
+                break;
+
+            case AuthenticationMode.OAuth:
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.Authority = authConfig.OAuth.Authority;
+                        options.Audience = authConfig.OAuth.Audience;
+                        options.RequireHttpsMetadata = authConfig.OAuth.RequireHttpsMetadata;
+                    });
+
+                // no FallbackPolicy — authorization is enforced directly on MapControllers()
+                services.AddAuthorization();
+                break;
+
+            case AuthenticationMode.None:
+            default:
+                break;
+        }
+
         // swagger
         services.AddSwaggerGen(setupAction =>
         {
-            // api key
-            var apiKey = configuration.GetApiKey();
-            if (!string.IsNullOrWhiteSpace(apiKey))
+            switch (authConfig.Mode)
             {
-                setupAction.AddSwaggerApiKeySecurity();
+                case AuthenticationMode.ApiKey:
+                    var apiKey = configuration.GetApiKey();
+                    if (!string.IsNullOrWhiteSpace(apiKey))
+                        setupAction.AddSwaggerApiKeySecurity();
+                    break;
+
+                case AuthenticationMode.OAuth:
+                    setupAction.AddSwaggerOAuthSecurity(authConfig.OAuth);
+                    break;
+
+                case AuthenticationMode.None:
+                default:
+                    break;
             }
 
             // ensure property names in camel case
@@ -193,13 +229,25 @@ public static class ApiStartupExtensions
         // api key
         appBuilder.UseApiKey();
 
+        // routing
+        appBuilder.UseRouting();
+
+        // OAuth
+        var authConfig = configuration.GetAuthConfiguration();
+        if (authConfig.Mode == AuthenticationMode.OAuth)
+        {
+            appBuilder.UseAuthentication();
+            appBuilder.UseAuthorization();
+        }
+
         // swagger
         appBuilder.UseSwagger(
             apiDocumentationName: specification.ApiDocumentationName,
             apiName: specification.ApiName,
             apiVersion: specification.ApiVersion,
             darkTheme: serverConfiguration.DarkTheme,
-            rootRedirect: true);
+            rootRedirect: true,
+            oauth: authConfig.Mode == AuthenticationMode.OAuth ? authConfig.OAuth : null);
 
         // database
         if (serverConfiguration.DbTransactionTimeout > TimeSpan.Zero)
@@ -207,11 +255,18 @@ public static class ApiStartupExtensions
             TransactionFactory.Timeout = serverConfiguration.DbTransactionTimeout;
         }
 
-        // routing
-        appBuilder.UseRouting();
+        // endpoints
         appBuilder.UseEndpoints(endpoints =>
         {
-            endpoints.MapControllers();
+            // enforce authentication on all controller endpoints
+            var controllers = endpoints.MapControllers();
+            if (authConfig.Mode == AuthenticationMode.OAuth)
+            {
+                controllers.RequireAuthorization();
+            }
+
+            // swagger metadata endpoint — always anonymous
+            endpoints.MapSwagger().AllowAnonymous();
         });
 
         // dapper
