@@ -328,7 +328,7 @@ public abstract class RuntimeBase : IRuntime
     protected dynamic CreateScript<T>(Type scriptType, T item) where T : IDomainObject, IScriptObject
     {
         // load assembly
-        var assembly = FunctionHost.GetObjectAssembly(typeof(T), item);
+        var assembly = FunctionHost.GetObjectAssembly(TenantId, typeof(T), item);
         var assemblyScriptType = assembly.GetType(scriptType.FullName ?? throw new InvalidOperationException());
         if (assemblyScriptType == null)
         {

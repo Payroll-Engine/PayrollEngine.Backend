@@ -30,8 +30,8 @@ public class FunctionHost : IFunctionHost
     }
 
     /// <inheritdoc/>
-    public Assembly GetObjectAssembly(Type type, IScriptObject scriptObject) =>
-        assemblyCache.GetObjectAssembly(type, scriptObject);
+    public Assembly GetObjectAssembly(int tenantId, Type type, IScriptObject scriptObject) =>
+        assemblyCache.GetObjectAssembly(tenantId, type, scriptObject);
 
     /// <inheritdoc/>
     public void AddTask(int tenantId, Task task)

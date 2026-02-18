@@ -70,8 +70,9 @@ public class ScriptCompiler
     /// <summary>
     /// Compile the assembly
     /// </summary>
+    /// <param name="tenantId">The tenant id</param>
     /// <returns>The compile result</returns>
-    public ScriptCompileResult Compile()
+    public ScriptCompileResult Compile(int tenantId)
     {
         // object codes
         var objectCodes = BuildObjectCodes();
@@ -118,7 +119,7 @@ public class ScriptCompiler
         var compiler = new CSharpCompiler(
             assemblyName: ScriptObjectType.FullName,
             dumpCompilerSource: DumpCompilerSources);
-        return compiler.CompileAssembly(codes);
+        return compiler.CompileAssembly(tenantId, codes);
     }
 
     /// <summary>

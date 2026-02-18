@@ -72,7 +72,7 @@ public abstract class ScriptChildDomainRepository<TDomain>(string tableName, str
             scriptObject: scriptObject,
             functionScripts: functionScripts,
             scripts: scripts,
-            embeddedScriptNames: embeddedScriptNames).Compile();
+            embeddedScriptNames: embeddedScriptNames).Compile(tenantId: parentId);
 
         // result
         if (result == null)

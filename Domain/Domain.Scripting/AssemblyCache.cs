@@ -15,20 +15,40 @@ using PayrollEngine.Domain.Model;
 namespace PayrollEngine.Domain.Scripting;
 
 /// <summary>
-/// Represents a cache of script assemblies by the object type and id.
-/// The cache is necessary because the collectible AssemblyLoadContext
-/// produces memory leaks.
+/// Cache of script assemblies keyed by tenant, object type and script hash.
+/// The cache is necessary because collectible AssemblyLoadContexts produce
+/// memory leaks when created without reuse.
+///
+/// Tenant isolation is enforced at two levels:
+///   1. Cache key  – tenant id is part of every lookup key, so a hash
+///      collision across tenants can never return a foreign assembly.
+///   2. Load context – every tenant owns a dedicated
+///      <see cref="TenantAssemblyLoadContext"/> so the CLR type-resolver
+///      never bridges tenant boundaries.
 /// </summary>
 public class AssemblyCache
 {
+    // -------------------------------------------------------------------------
+    // Cache key
+    // -------------------------------------------------------------------------
+
     /// <summary>
-    /// key fo the assembly cache by the clr type and the script hash code
+    /// Composite cache key: tenant id + CLR type + script hash.
+    /// Including the tenant id prevents cross-tenant cache hits even when
+    /// two tenants happen to produce the same script hash for the same type.
     /// </summary>
-    private sealed class AssemblyKey : Tuple<Type, int>
+    private sealed class AssemblyKey : Tuple<int, Type, int>
     {
-        internal AssemblyKey(Type type, int scriptHash) :
-            base(type, scriptHash)
+        /// <param name="tenantId">Identifier of the owning tenant.</param>
+        /// <param name="type">CLR type of the scripted domain object.</param>
+        /// <param name="scriptHash">Hash of the compiled script binary.</param>
+        internal AssemblyKey(int tenantId, Type type, int scriptHash)
+            : base(tenantId, type, scriptHash)
         {
+            if (tenantId <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(tenantId));
+            }
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
@@ -40,68 +60,119 @@ public class AssemblyCache
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Per-tenant load context
+    // -------------------------------------------------------------------------
+
     /// <summary>
-    /// assembly including his loader to unload the assembly
-    /// Use the binary hash code, to detect changes binary changes.
-    /// An audit object has the same id as the tracking object, but may have a different binary
+    /// Dedicated <see cref="CollectibleAssemblyLoadContext"/> for a single
+    /// tenant.  Keeping one context per tenant ensures that the CLR type
+    /// resolver never resolves types across tenant boundaries and that
+    /// unloading one tenant's scripts does not affect other tenants.
+    /// </summary>
+    private sealed class TenantAssemblyLoadContext : IDisposable
+    {
+        private readonly CollectibleAssemblyLoadContext loadContext = new();
+        private bool disposed;
+
+        /// <summary>Loads an assembly from a raw binary image.</summary>
+        internal Assembly LoadFromBinary(byte[] binary) =>
+            loadContext.LoadFromBinary(binary);
+
+        /// <summary>
+        /// Unloads the underlying collectible context, releasing all
+        /// assemblies that belong to this tenant.
+        /// </summary>
+        public void Dispose()
+        {
+            if (disposed)
+            {
+                return;
+            }
+            disposed = true;
+            loadContext.Unload();
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Cached entry
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Wraps a loaded assembly together with its owning load context and
+    /// last-used timestamp for LRU eviction.
     /// </summary>
     private sealed class AssemblyRuntime
     {
-        // ReSharper disable once UnusedAutoPropertyAccessor.Local
-        // ReSharper disable once MemberCanBePrivate.Local
-        private CollectibleAssemblyLoadContext LoadContext { get; }
         internal Assembly Assembly { get; }
         internal DateTime LastUsed { get; set; } = Date.Now;
 
-        internal AssemblyRuntime(CollectibleAssemblyLoadContext context, Assembly assembly)
+        internal AssemblyRuntime(Assembly assembly)
         {
-            LoadContext = context;
             Assembly = assembly;
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Static shared state  (process-wide, but tenant-isolated via keys/contexts)
+    // -------------------------------------------------------------------------
+
 #if ASSEMBLY_CACHE
-        private readonly CacheRatio cacheRatio = new("Script assembly cache");
+    private readonly CacheRatio cacheRatio = new("Script assembly cache");
 #endif
 
-    // thread-safe assembly cache
-    private static readonly ConcurrentDictionary<AssemblyKey, AssemblyRuntime> Assemblies =
-        new();
+    /// <summary>
+    /// Process-wide assembly cache.  Thread-safe.
+    /// Keys always include the tenant id, so entries are never shared across
+    /// tenant boundaries.
+    /// </summary>
+    private static readonly ConcurrentDictionary<AssemblyKey, AssemblyRuntime> Assemblies = new();
+
+    /// <summary>
+    /// One load context per tenant, kept alive for the lifetime of the cached
+    /// assemblies.  Disposing a tenant context unloads all its assemblies.
+    /// </summary>
+    private static readonly ConcurrentDictionary<int, TenantAssemblyLoadContext> TenantContexts = new();
 
     private static Timer UpdateTimer { get; set; }
 
-    /// <summary>
-    /// The cache timeout
-    /// </summary>
+    /// <summary>Sliding window after which an unused assembly is evicted.</summary>
     private static TimeSpan? CacheTimeout { get; set; }
 
-    /// <summary>
-    /// Enable disable the cache
-    /// </summary>
-    private static bool CacheEnabled => CacheTimeout.HasValue &&
-                                        CacheTimeout.Value != TimeSpan.Zero;
+    /// <summary>Returns <c>true</c> when the cache is active.</summary>
+    private static bool CacheEnabled =>
+        CacheTimeout.HasValue && CacheTimeout.Value != TimeSpan.Zero;
 
-    /// <summary>
-    /// The script provider
-    /// </summary>
+    // -------------------------------------------------------------------------
+    // Instance state
+    // -------------------------------------------------------------------------
+
+    /// <summary>Database context used to fetch script binaries on cache miss.</summary>
     private IDbContext DbContext { get; }
 
-    /// <summary>
-    /// The script provider
-    /// </summary>
+    /// <summary>Optional provider for resolving script binaries from the database.</summary>
     private IScriptProvider ScriptProvider { get; }
 
+    // -------------------------------------------------------------------------
+    // Construction
+    // -------------------------------------------------------------------------
+
     /// <summary>
-    /// Assembly cache ctor
+    /// Initializes a new <see cref="AssemblyCache"/>.
     /// </summary>
-    /// <param name="dbContext">The database context</param>
-    /// <param name="cacheTimeout">The cache timeout, use <see cref="TimeSpan.Zero"/> to disable the cache</param>
-    /// <param name="scriptProvider">The script provider</param>
+    /// <param name="dbContext">Database context (required).</param>
+    /// <param name="cacheTimeout">
+    /// Sliding eviction window.  Pass <see cref="TimeSpan.Zero"/> to disable
+    /// caching entirely (useful in tests or single-tenant dev setups).
+    /// </param>
+    /// <param name="scriptProvider">
+    /// Optional provider that resolves script binaries from the database when
+    /// the <see cref="IScriptObject"/> does not carry an in-memory binary.
+    /// </param>
     public AssemblyCache(IDbContext dbContext, TimeSpan cacheTimeout, IScriptProvider scriptProvider = null)
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        // initialize cleanup timer
         if (cacheTimeout != TimeSpan.Zero && UpdateTimer == null)
         {
             CacheTimeout = cacheTimeout;
@@ -109,89 +180,159 @@ public class AssemblyCache
             UpdateTimer.Elapsed += delegate { CacheUpdate(); };
             UpdateTimer.Start();
         }
+
         ScriptProvider = scriptProvider;
     }
 
+    // -------------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------------
+
     /// <summary>
-    /// Get object script assembly
+    /// Returns the compiled assembly for the given scripted domain object,
+    /// loading and caching it on first access.
     /// </summary>
-    /// <param name="type">The object type</param>
-    /// <param name="scriptObject">The scripting object</param>
-    /// <returns>The assembly</returns>
-    public Assembly GetObjectAssembly(Type type, IScriptObject scriptObject)
+    /// <param name="tenantId">
+    /// Identifier of the tenant that owns <paramref name="scriptObject"/>.
+    /// Used as the first segment of the cache key to enforce isolation.
+    /// </param>
+    /// <param name="type">CLR type of the domain object.</param>
+    /// <param name="scriptObject">The scripted domain object.</param>
+    /// <returns>The loaded <see cref="Assembly"/>.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when no binary can be resolved for <paramref name="scriptObject"/>.
+    /// </exception>
+    public Assembly GetObjectAssembly(int tenantId, Type type, IScriptObject scriptObject)
     {
+        if (tenantId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(tenantId));
+        }
         if (type == null)
         {
             throw new ArgumentNullException(nameof(type));
         }
+        if (scriptObject == null)
+        {
+            throw new ArgumentNullException(nameof(scriptObject));
+        }
 
-        var key = new AssemblyKey(type, scriptObject.ScriptHash);
-        Assembly assembly = null;
+        var key = new AssemblyKey(tenantId, type, scriptObject.ScriptHash);
+
+        // --- cache lookup ---------------------------------------------------
+        if (CacheEnabled && Assemblies.TryGetValue(key, out var cached))
+        {
+#if ASSEMBLY_CACHE
+            cacheRatio.UpdateWithLog(hit: true);
+#endif
+            cached.LastUsed = Date.Now;
+            return cached.Assembly;
+        }
+
+#if ASSEMBLY_CACHE
+        cacheRatio.UpdateWithLog(hit: false);
+#endif
+
+        // --- cache miss: resolve binary -------------------------------------
+        var binary = scriptObject.Binary;
+        if (binary == null && ScriptProvider != null)
+        {
+#if ASSEMBLY_GET
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+#endif
+            binary = ScriptProvider.GetBinaryAsync(DbContext, scriptObject).Result;
+#if ASSEMBLY_GET
+            sw.Stop();
+            Log.Information($"Assembly load {type.Name} [{scriptObject.Id}]: {sw.ElapsedMilliseconds} ms");
+#endif
+        }
+
+        if (binary == null)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(scriptObject),
+                $"Script object without binary: {type.Namespace}, id={scriptObject.Id}.");
+        }
+
+        // --- load into the tenant-scoped context ----------------------------
+        LogStopwatch.Start(nameof(GetObjectAssembly));
+
+        // Retrieve or create the dedicated load context for this tenant.
+        // Using a per-tenant context means the CLR type resolver is scoped to
+        // that tenant; assemblies from different tenants can never see each
+        // other's types even if they share the same AppDomain.
+        var tenantContext = TenantContexts.GetOrAdd(tenantId, _ => new TenantAssemblyLoadContext());
+        var assembly = tenantContext.LoadFromBinary(binary);
+
+        LogStopwatch.Stop(nameof(GetObjectAssembly));
+
         if (CacheEnabled)
         {
-            var cached = Assemblies.TryGetValue(key, out var assemblyRuntime);
-#if ASSEMBLY_CACHE
-                cacheRatio.UpdateWithLog(cached);
-#endif
-            if (cached)
-            {
-                assembly = assemblyRuntime.Assembly;
-                // update lst usage, used to clean up outdated assemblies
-                assemblyRuntime.LastUsed = Date.Now;
-            }
+            // TryAdd is intentionally non-blocking; a concurrent thread may
+            // win the race, and we simply discard our copy on the next call.
+            Assemblies.TryAdd(key, new AssemblyRuntime(assembly));
         }
 
-        if (assembly == null)
-        {
-            var binary = scriptObject.Binary;
-            if (binary == null && ScriptProvider != null)
-            {
-#if ASSEMBLY_GET
-                    var stopwatch = new System.Diagnostics.Stopwatch();
-                    stopwatch.Start();
-#endif
-                binary = ScriptProvider.GetBinaryAsync(DbContext, scriptObject).Result;
-#if ASSEMBLY_GET
-                    stopwatch.Stop();
-                    Log.Information($"Assembly load {type.Name} [{scriptObject.Id}]: {stopwatch.ElapsedMilliseconds} ms");
-#endif
-            }
-            if (binary == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(scriptObject), $"Script object without binary {type.Namespace} with id {scriptObject.Id}.");
-            }
-
-            LogStopwatch.Start(nameof(GetObjectAssembly));
-            // load assembly from binary
-            using var loadContext = new CollectibleAssemblyLoadContext();
-            assembly = loadContext.LoadFromBinary(binary);
-            LogStopwatch.Stop(nameof(GetObjectAssembly));
-
-            // if add fails, we will try the next time to add
-            if (CacheEnabled)
-            {
-                Assemblies.TryAdd(key, new(loadContext, assembly));
-            }
-        }
         return assembly;
     }
 
+    // -------------------------------------------------------------------------
+    // Cache management
+    // -------------------------------------------------------------------------
+
     /// <summary>
-    /// Clears the assembly cache
+    /// Removes all cached assemblies and disposes all tenant load contexts,
+    /// effectively unloading every tenant script from the process.
     /// </summary>
     public static void CacheClear()
     {
         if (!Assemblies.Any())
         {
-            Log.Information("Empty assembly cache");
+            Log.Information("Assembly cache is empty – nothing to clear.");
             return;
         }
 
         var count = Assemblies.Count;
         Assemblies.Clear();
-        Log.Information($"Assembly cache successfully cleared ({count} assemblies)");
+        DisposeTenantContexts();
+        Log.Information($"Assembly cache cleared ({count} assemblies, all tenant contexts unloaded).");
     }
 
+    /// <summary>
+    /// Removes all cached assemblies that belong to a specific tenant and
+    /// disposes the corresponding load context.  Call this when a tenant is
+    /// deprovisioned or when its scripts are redeployed.
+    /// </summary>
+    /// <param name="tenantId">Tenant whose assemblies should be evicted.</param>
+    public static void CacheClearTenant(int tenantId)
+    {
+        if (tenantId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(tenantId));
+        }
+
+        var removed = 0;
+        foreach (var key in Assemblies.Keys.Where(k => k.Item1 == tenantId).ToList())
+        {
+            if (Assemblies.TryRemove(key, out _))
+            {
+                removed++;
+            }
+        }
+        if (TenantContexts.TryRemove(tenantId, out var context))
+        {
+            context.Dispose();
+        }
+
+        Log.Information($"Tenant {tenantId}: evicted {removed} assemblies and unloaded load context.");
+    }
+
+    /// <summary>
+    /// Timer callback – evicts assemblies that have not been used within the
+    /// configured <see cref="CacheTimeout"/> window and disposes orphaned
+    /// tenant load contexts.
+    /// </summary>
     private static void CacheUpdate()
     {
         if (!CacheTimeout.HasValue || !Assemblies.Any())
@@ -199,27 +340,53 @@ public class AssemblyCache
             return;
         }
 
-        var outdatedDate = Date.Now.Subtract(CacheTimeout.Value);
-        var assemblies = Assemblies.Where(x => x.Value.LastUsed < outdatedDate).ToList();
-        if (assemblies.Any())
+        var threshold = Date.Now.Subtract(CacheTimeout.Value);
+        var expired = Assemblies.Where(x => x.Value.LastUsed < threshold).ToList();
+
+        if (!expired.Any())
         {
-            var removed = 0;
-            foreach (var assembly in assemblies)
+            return;
+        }
+
+        var removed = 0;
+        foreach (var entry in expired)
+        {
+            try
             {
-                try
+                if (Assemblies.TryRemove(entry.Key, out _))
                 {
-                    if (Assemblies.TryRemove(assembly.Key, out _))
-                    {
-                        removed++;
-                        Log.Trace($"Removed {assembly.Value.Assembly.GetName().Name} outdated assemblies");
-                    }
-                }
-                catch (Exception exception)
-                {
-                    Log.Error($"Error removing assembly: {exception.GetBaseMessage()}", exception);
+                    removed++;
                 }
             }
-            Log.Information($"Removed {removed} assemblies, outdated since {outdatedDate}");
+            catch (Exception exception)
+            {
+                Log.Error($"Error removing assembly from cache: {exception.GetBaseMessage()}", exception);
+            }
+        }
+
+        // dispose load contexts for tenants that no longer have any cached entry.
+        var activeTenants = Assemblies.Keys.Select(k => k.Item1).ToHashSet();
+        foreach (var tenantId in TenantContexts.Keys.Except(activeTenants).ToList())
+        {
+            if (TenantContexts.TryRemove(tenantId, out var context))
+            {
+                context.Dispose();
+                Log.Trace($"Disposed load context for tenant {tenantId} (no remaining cached assemblies).");
+            }
+        }
+
+        Log.Information($"Cache update: removed {removed} expired assemblies (threshold={threshold:O}).");
+    }
+
+    /// <summary>Disposes and removes all tenant load contexts.</summary>
+    private static void DisposeTenantContexts()
+    {
+        foreach (var tenantId in TenantContexts.Keys.ToList())
+        {
+            if (TenantContexts.TryRemove(tenantId, out var context))
+            {
+                context.Dispose();
+            }
         }
     }
 }

@@ -196,9 +196,10 @@ internal sealed class CSharpCompiler
     /// <summary>
     /// Compiles and runs the source code for a complete assembly.
     /// </summary>
+    /// <param name="tenantId">The tenant id</param>
     /// <param name="codes">The C# source codes</param>
     /// <returns>The compile result</returns>
-    internal ScriptCompileResult CompileAssembly(IList<string> codes)
+    internal ScriptCompileResult CompileAssembly(int tenantId, IList<string> codes)
     {
         if (codes == null)
         {
@@ -228,12 +229,22 @@ internal sealed class CSharpCompiler
             syntaxTrees.Add(SyntaxFactory.ParseSyntaxTree(SourceText.From(code), options));
         }
 
+        // collect script code
+        var script = new StringBuilder();
+        foreach (var code in codes)
+        {
+            script.AppendLine($"// {new('-', 80)}");
+            script.AppendLine(code);
+        }
+        var scriptCode = script.ToString();
+
         // references
         var allReferences = new List<MetadataReference>(DefaultReferences);
 
         // create bits
         using var peStream = new MemoryStream();
-        var compilation = CSharpCompilation.Create(AssemblyName,
+        var assemblyName = $"{tenantId}_{scriptCode.ToPayrollHash()}_{AssemblyName}";
+        var compilation = CSharpCompilation.Create(assemblyName,
                 syntaxTrees,
                 allReferences,
                 new(OutputKind.DynamicallyLinkedLibrary,
@@ -247,16 +258,9 @@ internal sealed class CSharpCompiler
             throw new ScriptCompileException(GetCompilerFailures(compilation));
         }
 
-        // build the assembly
-        var script = new StringBuilder();
-        foreach (var code in codes)
-        {
-            script.AppendLine($"// {new('-', 80)}");
-            script.AppendLine(code);
-        }
-
+        // compile result
         peStream.Seek(0, SeekOrigin.Begin);
-        var result = new ScriptCompileResult(script.ToString(), peStream.ToArray());
+        var result = new ScriptCompileResult(scriptCode, peStream.ToArray());
 
         LogStopwatch.Stop(nameof(CompileAssembly));
 

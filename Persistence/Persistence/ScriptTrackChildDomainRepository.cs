@@ -12,7 +12,7 @@ namespace PayrollEngine.Persistence;
 public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string tableName,
         string regulationFieldName, IRegulationRepository regulationRepository,
         IScriptRepository scriptRepository, IAuditChildDomainRepository<TAudit> auditRepository, bool auditEnabled)
-    : TrackChildDomainRepository<TDomain, TAudit>(regulationRepository, tableName, regulationFieldName, 
+    : TrackChildDomainRepository<TDomain, TAudit>(regulationRepository, tableName, regulationFieldName,
             auditRepository, auditEnabled), IScriptTrackDomainObjectRepository<TDomain, TAudit>
     where TDomain : TrackDomainObject<TAudit>, IScriptObject, INamespaceObject, new()
     where TAudit : AuditDomainObject
@@ -82,6 +82,13 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string t
             return;
         }
 
+        // tenant
+        var tenantId = await RegulationRepository.GetParentIdAsync(context, regulationId);
+        if (!tenantId.HasValue || tenantId == 0)
+        {
+            throw new PayrollException($"Unknown tenant for regulation {regulationId}.");
+        }
+
         // collect function scripts
         var functionScripts = new Dictionary<FunctionType, string>();
         foreach (var functionType in scriptObject.GetFunctionTypes())
@@ -116,7 +123,7 @@ public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string t
             functionScripts: functionScripts,
             scripts: scripts,
             embeddedScriptNames: embeddedScriptNames,
-            @namespace: @namespace).Compile();
+            @namespace: @namespace).Compile(tenantId.Value);
 
         // result
         if (result == null)
