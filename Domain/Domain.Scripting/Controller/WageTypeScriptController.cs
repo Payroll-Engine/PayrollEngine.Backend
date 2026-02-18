@@ -22,7 +22,10 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>
         LogStopwatch.Start(nameof(WageTypeValueRuntime));
 
         // script runtime
-        var runtime = new WageTypeValueRuntime(settings);
+        var runtime = new WageTypeValueRuntime(settings)
+        {
+            TrackRequestedFields = autoPeriodResults
+        };
 
         // wage type value
         var wageTypeValue = runtime.EvaluateValue(settings.WageType);

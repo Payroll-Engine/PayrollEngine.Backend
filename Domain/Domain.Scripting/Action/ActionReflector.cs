@@ -254,7 +254,7 @@ public static class ActionReflector
             var values = new List<string>();
             foreach (var arrayValueNode in arrayValueNodes)
             {
-                var value = arrayValueNode.GetText().ToString().Trim();
+                var value = arrayValueNode.GetText().ToString()?.Trim();
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     values.Add(value);
@@ -276,7 +276,7 @@ public static class ActionReflector
         {
             return null;
         }
-        var text = syntaxNode.GetText().ToString().Trim('"').Trim();
+        var text = syntaxNode.GetText().ToString()?.Trim('"').Trim();
         return text;
     }
 

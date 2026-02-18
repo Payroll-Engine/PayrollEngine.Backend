@@ -9,6 +9,7 @@ public class AuthenticationConfiguration
     public AuthenticationMode Mode { get; set; } = AuthenticationMode.None;
 
     /// <summary>Api key — only used when Mode is ApiKey</summary>
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public string ApiKey { get; set; }
 
     /// <summary>OAuth 2.0 / JWT Bearer settings — only used when Mode is OAuth</summary>

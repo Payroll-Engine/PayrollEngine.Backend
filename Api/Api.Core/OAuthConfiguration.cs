@@ -12,6 +12,7 @@ public class OAuthConfiguration
     public string Audience { get; set; }
 
     /// <summary>Require HTTPS metadata (default: true)</summary>
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
     public bool RequireHttpsMetadata { get; set; } = true;
 
     /// <summary>OAuth client secret for Swagger UI (Option B: confidential client)</summary>

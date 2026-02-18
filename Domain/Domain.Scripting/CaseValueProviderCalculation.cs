@@ -223,6 +223,10 @@ internal sealed class CaseValueProviderCalculation
     private static void AddDatePeriod(List<DatePeriod> list, DateTime start, DateTime end)
     {
         start = start.ToUtc();
+        if (end.IsMidnight())
+        {
+            end = end.PreviousTick();
+        }
         end = end.ToUtc();
 
         // ignore empty periods

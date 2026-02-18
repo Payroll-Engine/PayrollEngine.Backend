@@ -195,7 +195,10 @@ public class PayrunJobWorkerService : BackgroundService
                 job.ErrorMessage = reason;
 
                 var duration = job.JobEnd.Value - job.JobStart;
-                job.Message = $"Job completed in {duration.ToReadableString()}: {reason}";
+                var durationText = duration < TimeSpan.FromSeconds(1)
+                    ? $"{duration.TotalMicroseconds:2} ms"
+                    : duration.ToReadableString();
+                job.Message = $"Job completed in {durationText}: {reason}";
 
                 await payrunJobRepository.UpdateAsync(dbContext, queueItem.TenantId, job);
 

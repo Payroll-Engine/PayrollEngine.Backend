@@ -34,11 +34,6 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     private IRegulationLookupProvider RegulationLookupProvider => Settings.RegulationLookupProvider;
 
     /// <summary>
-    /// Maximum period count
-    /// </summary>
-    public static readonly int MaxPeriodCount = 200;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="PayrollRuntimeBase"/> class
     /// </summary>
     /// <param name="settings">The runtime settings</param>
@@ -103,6 +98,11 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
 
     /// <inheritdoc />
     public DateTime EvaluationDate => CaseValueProvider.EvaluationDate;
+
+    /// <summary>
+    /// Track case fields requests
+    /// </summary>
+    public bool TrackRequestedFields { get; init; }
 
     /// <summary>Requested case fields</summary>
     internal HashSet<string> RequestedFields { get; } = [];
@@ -367,9 +367,6 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         return values;
     }
 
-    /// <summary>Gets a value indicating whether to track the case field requests</summary>
-    private static bool TrackCaseFieldRequests => false;
-
     /// <inheritdoc />
     public virtual Dictionary<string, List<Tuple<DateTime, DateTime?, DateTime?, object>>> GetCasePeriodValues(DateTime startDate,
         DateTime endDate, params string[] caseFieldNames)
@@ -404,7 +401,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         {
             values[periodValue.CaseFieldName].Add(new(periodValue.Created,
                 periodValue.Start, periodValue.End, ValueConvert.ToValue(periodValue.Value, periodValue.ValueType, TenantCulture)));
-            if (TrackCaseFieldRequests)
+            if (TrackRequestedFields)
             {
                 RequestedFields.Add(periodValue.CaseFieldName);
             }
@@ -468,7 +465,7 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             lookupName: lookupName)).Result;
         if (lookup == null)
         {
-            return new();
+            return [];
         }
 
         // query brackets

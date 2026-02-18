@@ -8,6 +8,7 @@ namespace PayrollEngine.Api.Map;
 /// Map a domain object with an api object
 /// </summary>
 [Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName, EnumMappingIgnoreCase = true)]
+// ReSharper disable once UnusedType.Global
 public partial class LookupRangeBracketMap : ApiMapBase<DomainObject.LookupRangeBracket, ApiObject.LookupRangeBracket>
 {
     public override partial ApiObject.LookupRangeBracket ToApi(DomainObject.LookupRangeBracket domainObject);

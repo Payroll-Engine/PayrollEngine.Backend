@@ -651,17 +651,18 @@ public sealed class CaseValueProvider : ICaseValueProvider
             // moment: build summary
             case CaseFieldTimeType.Moment:
                 GetMomentCasePeriodValuesAsync(caseFieldName, caseField, valuePeriods, values);
-                return values;
+                break;
             case CaseFieldTimeType.Period:
                 // period: use the aggregation type
                 GetAggregationCasePeriodValuesAsync(caseFieldName, caseField, caseValues, valuePeriods, values);
-                return values;
+                break;
             case CaseFieldTimeType.CalendarPeriod:
                 GetCalendarPeriodCasePeriodValuesAsync(caseFieldName, caseField, calculator, valuePeriods, values);
-                return values;
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        return values.OrderBy(x => x.Start).ToList();
     }
 
     /// <summary>
