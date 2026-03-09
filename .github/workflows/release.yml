@@ -195,9 +195,9 @@ jobs:
 
       # ── Generate swagger.json (Backend only) ────────
       # Swashbuckle CLI bootstraps the ASP.NET Core host to extract API metadata.
-      # Startup.ConfigureServices throws if no DB connection string is present —
-      # a dummy connection string is passed via environment variable to satisfy
-      # the startup validation without connecting to a real database.
+      # ConfigureServices requires a DB connection string (env var) and a
+      # PayrollServerConfiguration section (env var) — both provided as dummies
+      # so the host can start without a real database or appsettings.json.
       - name: Setup .NET (for swagger generation)
         if: contains(github.repository, 'Backend')
         uses: actions/setup-dotnet@v4
@@ -208,6 +208,7 @@ jobs:
         if: contains(github.repository, 'Backend')
         env:
           ConnectionStrings__PayrollDatabaseConnection: "Server=localhost;Database=PayrollEngine;Integrated Security=false;"
+          PayrollServerConfiguration__DbCommandTimeout: "00:02:00"
         run: |
           dotnet nuget add source \
             "https://nuget.pkg.github.com/Payroll-Engine/index.json" \
