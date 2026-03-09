@@ -194,9 +194,10 @@ jobs:
           cache-to: type=gha,mode=max
 
       # ── Generate swagger.json (Backend only) ────────
-      # Swashbuckle follows .NET major versioning: library 10.x → CLI 10.x.
-      # Installed as a global tool (on PATH); invoked as 'swagger tofile'
-      # (without 'dotnet' prefix).
+      # Swashbuckle CLI bootstraps the ASP.NET Core host to extract API metadata.
+      # Startup.ConfigureServices throws if no DB connection string is present —
+      # a dummy connection string is passed via environment variable to satisfy
+      # the startup validation without connecting to a real database.
       - name: Setup .NET (for swagger generation)
         if: contains(github.repository, 'Backend')
         uses: actions/setup-dotnet@v4
@@ -205,6 +206,8 @@ jobs:
 
       - name: Generate swagger.json
         if: contains(github.repository, 'Backend')
+        env:
+          ConnectionStrings__PayrollDatabaseConnection: "Server=localhost;Database=PayrollEngine;Integrated Security=false;"
         run: |
           dotnet nuget add source \
             "https://nuget.pkg.github.com/Payroll-Engine/index.json" \
