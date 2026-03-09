@@ -215,11 +215,9 @@ jobs:
           ConnectionStrings__PayrollDatabaseConnection: "Server=localhost;Database=PayrollEngine;Integrated Security=false;"
           PayrollServerConfiguration__DbCommandTimeout: "00:02:00"
           PayrollServerConfiguration__EnableSwagger: "true"
-          PayrollServerConfiguration__XmlCommentFileNames__0: "PayrollEngine.Core.xml"
-          PayrollServerConfiguration__XmlCommentFileNames__1: "PayrollEngine.Domain.Model.xml"
-          PayrollServerConfiguration__XmlCommentFileNames__2: "PayrollEngine.Api.Model.xml"
-          PayrollServerConfiguration__XmlCommentFileNames__3: "PayrollEngine.Backend.Controller.xml"
-          PayrollServerConfiguration__XmlCommentFileNames__4: "PayrollEngine.Backend.Server.xml"
+          PAYROLL_SWAGGER_GENERATION: "true"
+          # XmlCommentFileNames not required: Backend skips XML comment loading
+          # when PAYROLL_SWAGGER_GENERATION=true (guard in ApiStartupExtensions)
         run: |
           dotnet nuget add source \
             "https://nuget.pkg.github.com/Payroll-Engine/index.json" \
