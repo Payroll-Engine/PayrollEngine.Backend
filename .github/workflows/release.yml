@@ -195,9 +195,12 @@ jobs:
 
       # ── Generate swagger.json (Backend only) ────────
       # Swashbuckle CLI bootstraps the ASP.NET Core host to extract API metadata.
-      # ConfigureServices requires a DB connection string (env var) and a
-      # PayrollServerConfiguration section (env var) — both provided as dummies
-      # so the host can start without a real database or appsettings.json.
+      # Three env vars are required to satisfy startup validation:
+      #   - ConnectionStrings__PayrollDatabaseConnection: passes the DB connection guard
+      #   - PayrollServerConfiguration__DbCommandTimeout: prevents NullReferenceException
+      #     on serverConfiguration (GetConfiguration returns non-null object)
+      #   - PayrollServerConfiguration__EnableSwagger: registers AddSwaggerGen() so
+      #     ISwaggerProvider is available in the DI container
       - name: Setup .NET (for swagger generation)
         if: contains(github.repository, 'Backend')
         uses: actions/setup-dotnet@v4
@@ -209,6 +212,7 @@ jobs:
         env:
           ConnectionStrings__PayrollDatabaseConnection: "Server=localhost;Database=PayrollEngine;Integrated Security=false;"
           PayrollServerConfiguration__DbCommandTimeout: "00:02:00"
+          PayrollServerConfiguration__EnableSwagger: "true"
         run: |
           dotnet nuget add source \
             "https://nuget.pkg.github.com/Payroll-Engine/index.json" \
