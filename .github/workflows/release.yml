@@ -249,15 +249,4 @@ jobs:
           files: |
             swagger.json
 
-      - name: Notify orchestrator
-        if: github.event_name == 'repository_dispatch'
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.PAT_DISPATCH }}
-          repository: Payroll-Engine/PayrollEngine
-          event-type: app-published
-          client-payload: >-
-            {
-              "repo": "${{ github.repository }}",
-              "version": "${{ steps.params.outputs.version }}"
-            }
+
