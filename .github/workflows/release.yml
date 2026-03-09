@@ -194,8 +194,9 @@ jobs:
           cache-to: type=gha,mode=max
 
       # ── Generate swagger.json (Backend only) ────────
-      # dotnet-tools.json is in Backend.Server/.config/ — tool restore
-      # must reference that manifest explicitly from the repo root.
+      # Swashbuckle CLI installed as a global tool so 'swagger' is on PATH.
+      # Version must match Swashbuckle.AspNetCore PackageReference in Api.Core.
+      # Global tools are invoked without the 'dotnet' prefix: 'swagger tofile'.
       - name: Setup .NET (for swagger generation)
         if: contains(github.repository, 'Backend')
         uses: actions/setup-dotnet@v4
@@ -212,11 +213,12 @@ jobs:
             --password ${{ secrets.PAT_DISPATCH }} \
             --store-password-in-clear-text
 
-          dotnet tool restore --tool-manifest Backend.Server/.config/dotnet-tools.json
+          dotnet tool install --global Swashbuckle.AspNetCore.Cli --version 6.5.0
+
           dotnet restore
           dotnet build --configuration Release --no-restore
 
-          dotnet swagger tofile \
+          swagger tofile \
             --output swagger.json \
             Backend.Server/bin/Release/net10.0/PayrollEngine.Backend.Server.dll \
             PayrollEngineBackendAPI
