@@ -188,7 +188,7 @@ jobs:
           context: .
           push: true
           build-args: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN=${{ secrets.PAT_DISPATCH }}
           tags: ${{ steps.tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -212,7 +212,7 @@ jobs:
             "https://nuget.pkg.github.com/Payroll-Engine/index.json" \
             --name github \
             --username github-actions \
-            --password ${{ secrets.GITHUB_TOKEN }} \
+            --password ${{ secrets.PAT_DISPATCH }} \
             --store-password-in-clear-text
 
           dotnet tool restore
