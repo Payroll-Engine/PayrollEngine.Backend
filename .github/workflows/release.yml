@@ -195,12 +195,14 @@ jobs:
 
       # ── Generate swagger.json (Backend only) ────────
       # Swashbuckle CLI bootstraps the ASP.NET Core host to extract API metadata.
-      # Three env vars are required to satisfy startup validation:
+      # Env vars required to satisfy startup validation (no appsettings.json on runner):
       #   - ConnectionStrings__PayrollDatabaseConnection: passes the DB connection guard
       #   - PayrollServerConfiguration__DbCommandTimeout: prevents NullReferenceException
-      #     on serverConfiguration (GetConfiguration returns non-null object)
+      #     on serverConfiguration (GetConfiguration returns a non-null object)
       #   - PayrollServerConfiguration__EnableSwagger: registers AddSwaggerGen() so
       #     ISwaggerProvider is available in the DI container
+      #   - PayrollServerConfiguration__XmlCommentFileNames__N: XML doc files required by
+      #     Swashbuckle; must match the filenames produced by <DocumentationFile> in each csproj
       - name: Setup .NET (for swagger generation)
         if: contains(github.repository, 'Backend')
         uses: actions/setup-dotnet@v4
@@ -213,6 +215,11 @@ jobs:
           ConnectionStrings__PayrollDatabaseConnection: "Server=localhost;Database=PayrollEngine;Integrated Security=false;"
           PayrollServerConfiguration__DbCommandTimeout: "00:02:00"
           PayrollServerConfiguration__EnableSwagger: "true"
+          PayrollServerConfiguration__XmlCommentFileNames__0: "PayrollEngine.Core.xml"
+          PayrollServerConfiguration__XmlCommentFileNames__1: "PayrollEngine.Domain.Model.xml"
+          PayrollServerConfiguration__XmlCommentFileNames__2: "PayrollEngine.Api.Model.xml"
+          PayrollServerConfiguration__XmlCommentFileNames__3: "PayrollEngine.Backend.Controller.xml"
+          PayrollServerConfiguration__XmlCommentFileNames__4: "PayrollEngine.Backend.Server.xml"
         run: |
           dotnet nuget add source \
             "https://nuget.pkg.github.com/Payroll-Engine/index.json" \
