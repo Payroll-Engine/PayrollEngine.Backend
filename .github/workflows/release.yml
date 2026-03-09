@@ -194,11 +194,8 @@ jobs:
           cache-to: type=gha,mode=max
 
       # ── Generate swagger.json (Backend only) ────────
-      # Uses Swashbuckle CLI from the local tool manifest
-      # (.config/dotnet-tools.json). The CLI version must match
-      # the Swashbuckle.AspNetCore PackageReference in Api.Core.
-      # Requires EnableSwagger=true in appsettings.json (default
-      # in development config) so AddSwaggerGen is registered.
+      # dotnet-tools.json is in Backend.Server/.config/ — tool restore
+      # must reference that manifest explicitly from the repo root.
       - name: Setup .NET (for swagger generation)
         if: contains(github.repository, 'Backend')
         uses: actions/setup-dotnet@v4
@@ -215,7 +212,7 @@ jobs:
             --password ${{ secrets.PAT_DISPATCH }} \
             --store-password-in-clear-text
 
-          dotnet tool restore
+          dotnet tool restore --tool-manifest Backend.Server/.config/dotnet-tools.json
           dotnet restore
           dotnet build --configuration Release --no-restore
 
