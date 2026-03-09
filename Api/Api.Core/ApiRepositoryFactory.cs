@@ -19,8 +19,8 @@ internal static class ApiRepositoryFactory
     /// <param name="configuration">Application configuration for audit trail settings</param>
     internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
     {
-        // audit trail
-        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
+        // audit trail — fall back to defaults when no section is present (e.g. Swashbuckle CLI)
+        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>() ?? new();
 
         // system repositories
         services.AddScoped(_ => NewRegulationShareRepository());

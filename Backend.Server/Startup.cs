@@ -47,8 +47,8 @@ public class Startup
             throw new PayrollException("Missing database connection string.");
         }
 
-        // configuration
-        var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
+        // configuration — fall back to defaults when no section is present (e.g. Swashbuckle CLI)
+        var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>() ?? new();
 
         // database context
         var dbContext = new Persistence.SqlServer.DbContext(

@@ -96,12 +96,8 @@ public static class ApiStartupExtensions
             }
         });
 
-        // server configuration
-        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
-        if (serverConfiguration == null)
-        {
-            throw new ArgumentException("Missing payroll server configuration", nameof(configuration));
-        }
+        // server configuration — fall back to defaults when no section is present (e.g. Swashbuckle CLI)
+        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>() ?? new();
 
         // script compiler
         if (serverConfiguration.InitializeScriptCompiler)
@@ -208,14 +204,20 @@ public static class ApiStartupExtensions
             // shared setup
             setupAction.SetupSwagger();
 
-            // XML comments
-            if (serverConfiguration.XmlCommentFileNames == null || !serverConfiguration.XmlCommentFileNames.Any())
+            // XML comments -- skipped during Swashbuckle CLI swagger generation
+            // (no XML files available without a full build output directory)
+            var swaggerGen = !string.IsNullOrEmpty(
+                System.Environment.GetEnvironmentVariable("PAYROLL_SWAGGER_GENERATION"));
+            if (!swaggerGen)
             {
-                throw new PayrollException($"Missing XML comment files in configuration {nameof(PayrollServerConfiguration)}.{nameof(PayrollServerConfiguration.XmlCommentFileNames)}.");
+                if (serverConfiguration.XmlCommentFileNames == null || !serverConfiguration.XmlCommentFileNames.Any())
+                {
+                    throw new PayrollException($"Missing XML comment files in configuration {nameof(PayrollServerConfiguration)}.{nameof(PayrollServerConfiguration.XmlCommentFileNames)}.");
+                }
+                var combinedXmlCommentFileName = SwaggerTool.CreateXmlCommentsFile(
+                    specification.ApiDocumentationFileName, serverConfiguration.XmlCommentFileNames);
+                setupAction.IncludeXmlComments(combinedXmlCommentFileName);
             }
-            var combinedXmlCommentFileName = SwaggerTool.CreateXmlCommentsFile(
-                specification.ApiDocumentationFileName, serverConfiguration.XmlCommentFileNames);
-            setupAction.IncludeXmlComments(combinedXmlCommentFileName);
             });
         }
 

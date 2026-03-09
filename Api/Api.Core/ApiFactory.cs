@@ -45,12 +45,17 @@ internal static class ApiFactory
             return;
         }
 
-        // test database
-        var exception = dbContext.TestVersionAsync().GetAwaiter().GetResult();
-        if (exception != null)
+        // test database — skipped during Swashbuckle CLI swagger generation (no real DB available)
+        var swaggerGeneration = !string.IsNullOrEmpty(
+            System.Environment.GetEnvironmentVariable("PAYROLL_SWAGGER_GENERATION"));
+        if (!swaggerGeneration)
         {
-            Log.Critical(exception, exception.GetBaseException().Message);
-            return;
+            var exception = dbContext.TestVersionAsync().GetAwaiter().GetResult();
+            if (exception != null)
+            {
+                Log.Critical(exception, exception.GetBaseException().Message);
+                return;
+            }
         }
         services.AddTransient(_ => dbContext);
 
@@ -62,7 +67,8 @@ internal static class ApiFactory
         services.AddHostedService<PayrunJobWorkerService>();
 
         // Named HttpClient for webhook dispatch (managed pooling, DNS rotation)
-        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
+        // fall back to defaults when no section is present (e.g. Swashbuckle CLI)
+        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>() ?? new();
         services.AddHttpClient(WebhookDispatchService.HttpClientName, client =>
         {
             client.Timeout = serverConfiguration.WebhookTimeout;
