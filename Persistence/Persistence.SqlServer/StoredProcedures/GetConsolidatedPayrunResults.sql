@@ -1,4 +1,4 @@
-﻿SET ANSI_NULLS ON
+SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
@@ -17,87 +17,78 @@ GO
 
 -- =============================================
 -- Get consolidated payrun results from a time period
+-- fully denormalized: zero JOINs, all filters on PayrunResult columns
 -- =============================================
 CREATE PROCEDURE dbo.[GetConsolidatedPayrunResults]
-  -- the tenant id
-  @tenantId AS INT,
-  -- the employee id
-  @employeeId AS INT,
-  -- the division id
-  @divisionId AS INT = NULL,
-  -- the result names: JSON array of VARCHAR(128)
-  @names AS VARCHAR(MAX) = NULL,
-  -- the period start hashes: JSON array of INT
-  @periodStartHashes AS VARCHAR(MAX) = NULL,
-  -- payrun job status (bit mask)
-  @jobStatus AS INT = NULL,
-  -- the forecast name
-  @forecast AS VARCHAR(128) = NULL,
-  -- evaluation date
-  @evaluationDate AS DATETIME2(7) = NULL
+    @tenantId AS INT,
+    @employeeId AS INT,
+    @divisionId AS INT = NULL,
+    @names AS VARCHAR(MAX) = NULL,
+    @periodStartHashes AS VARCHAR(MAX) = NULL,
+    @jobStatus AS INT = NULL,
+    @forecast AS VARCHAR(128) = NULL,
+    @evaluationDate AS DATETIME2(7) = NULL,
+    @noRetro AS BIT = 0,
+    @excludeParentJobId AS INT = NULL
 AS
 BEGIN
-  -- SET NOCOUNT ON added to prevent extra result sets from
-  -- interfering with SELECT statements
-  SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
-  SELECT * FROM (
-    SELECT dbo.[PayrollResult].[EmployeeId],
-      dbo.[PayrollResult].[DivisionId],
-      dbo.[PayrollResult].[PayrunId],
-      dbo.[PayrollResult].[PayrunJobId],
-      dbo.[PayrunJob].[JobStatus],
-      dbo.[PayrunJob].[Forecast],
-      dbo.[PayrunResult].*,
-      ROW_NUMBER() OVER (
-        PARTITION BY 
-            dbo.[PayrollResult].[PayrunId],
-            dbo.[PayrunResult].[Name],
-            dbo.[PayrunResult].[Start]
-        ORDER BY
-            dbo.[PayrunResult].[Created] DESC,
-            dbo.[PayrunResult].[Id] DESC
-        ) AS RowNumber
-    FROM dbo.[PayrunResult]
-    INNER JOIN dbo.[PayrollResult]
-      ON dbo.[PayrollResult].[Id] = dbo.[PayrunResult].[PayrollResultId]
-    INNER JOIN dbo.[PayrunJob]
-      ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-    WHERE (dbo.[PayrunJob].[TenantId] = @tenantId)
-      AND (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-      AND (
-        @divisionId IS NULL
-        OR dbo.[PayrollResult].[DivisionId] = @divisionId
-        )
-      AND (
-        @periodStartHashes IS NULL
-        OR dbo.[PayrunResult].[StartHash] IN (
-          SELECT CAST(value AS INT)
-          FROM OPENJSON(@periodStartHashes)
+    DECLARE @name VARCHAR(128);
+    DECLARE @nameCount INT;
+    SELECT @nameCount = COUNT(*) FROM OPENJSON(@names);
+
+    IF (@nameCount = 1)
+    BEGIN
+        SELECT @name = CAST(value AS VARCHAR(128))
+        FROM OPENJSON(@names);
+    END;
+
+    DECLARE @startHash INT;
+    DECLARE @startHashCount INT;
+    SELECT @startHashCount = COUNT(*) FROM OPENJSON(@periodStartHashes);
+
+    IF (@startHashCount = 1)
+    BEGIN
+        SELECT @startHash = CAST(value AS INT)
+        FROM OPENJSON(@periodStartHashes);
+    END;
+
+    ;WITH Winners AS (
+        SELECT
+            r.[Id],
+            ROW_NUMBER() OVER (
+                PARTITION BY r.[Name], r.[Start]
+                ORDER BY r.[Created] DESC, r.[Id] DESC
+            ) AS RowNumber
+        FROM dbo.[PayrunResult] r
+        WHERE r.[TenantId] = @tenantId
+          AND r.[EmployeeId] = @employeeId
+          AND (
+              (@startHashCount = 1 AND r.[StartHash] = @startHash)
+              OR (@startHashCount > 1 AND r.[StartHash] IN (
+                  SELECT CAST(value AS INT) FROM OPENJSON(@periodStartHashes)))
           )
-        )
-      AND (
-        @names IS NULL
-        OR LOWER(dbo.[PayrunResult].[Name]) IN (
-          SELECT LOWER(value)
-          FROM OPENJSON(@names)
-          )
-        )
-      AND (
-        @jobStatus IS NULL
-        OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-        )
-      AND (
-        [PayrunJob].[Forecast] IS NULL
-        OR [PayrunJob].[Forecast] = @forecast
-        )
-      AND (
-        @evaluationDate IS NULL
-        OR dbo.[PayrunResult].[Created] <= @evaluationDate
-        )
-    ) AS GroupPayrunResult
-  WHERE RowNumber = 1;
+          AND (@divisionId IS NULL OR r.[DivisionId] = @divisionId)
+          AND (@names IS NULL OR @nameCount = 0
+               OR (@nameCount = 1 AND r.[Name] = @name)
+               OR (@nameCount > 1 AND r.[Name] IN (
+                   SELECT CAST(value AS VARCHAR(128)) FROM OPENJSON(@names))))
+          AND (@evaluationDate IS NULL OR r.[Created] <= @evaluationDate)
+          AND (@jobStatus IS NULL
+               OR r.[PayrunJobId] IN (
+                   SELECT pj.[Id] FROM dbo.[PayrunJob] pj
+                   WHERE pj.[JobStatus] & @jobStatus = pj.[JobStatus]))
+          AND (r.[Forecast] IS NULL OR r.[Forecast] = @forecast)
+          AND (@noRetro = 0 OR r.[ParentJobId] IS NULL)
+          AND (@excludeParentJobId IS NULL OR r.[ParentJobId] IS NULL
+               OR r.[ParentJobId] <> @excludeParentJobId)
+    )
+    SELECT r.*
+    FROM dbo.[PayrunResult] r
+    INNER JOIN Winners w ON w.[Id] = r.[Id]
+    WHERE w.RowNumber = 1
+    OPTION (RECOMPILE);
 END
 GO
-
 

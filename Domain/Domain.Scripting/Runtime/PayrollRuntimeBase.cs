@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Client.Scripting.Runtime;
 
@@ -166,7 +165,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
 
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         return caseField != null ? (int)caseField.ValueType : null;
     }
 
@@ -181,7 +181,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
 
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         return caseField?.Attributes?.GetValue<object>(attributeName);
     }
 
@@ -196,7 +197,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
 
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         return caseField?.ValueAttributes?.GetValue<object>(attributeName);
     }
 
@@ -211,7 +213,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
 
-        var caseValueSlots = Task.Run(() => CaseValueProvider.GetCaseValueSlotsAsync(caseFieldName)).Result;
+        var caseValueSlots = CaseValueProvider.GetCaseValueSlotsAsync(caseFieldName)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         return caseValueSlots.ToList();
     }
 
@@ -226,7 +229,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
 
-        var caseValue = GetTimeCaseValue(caseFieldName, valueDate).Result;
+        var caseValue = GetTimeCaseValue(caseFieldName, valueDate)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         return caseValue == null ? [] : caseValue.Tags;
     }
 
@@ -242,7 +246,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         caseFieldName = caseFieldName.EnsureNamespace(Settings.Namespace);
 
-        var caseValue = GetTimeCaseValue(caseFieldName, valueDate).Result;
+        var caseValue = GetTimeCaseValue(caseFieldName, valueDate)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         if (caseValue == null)
         {
             return null;
@@ -276,7 +281,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
             caseFieldNames = fieldNames;
         }
 
-        var caseValues = GetTimeCaseValues(caseFieldNames, valueDate).Result;
+        var caseValues = GetTimeCaseValues(caseFieldNames, valueDate)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         var values =
             new List<Tuple<string, DateTime, Tuple<DateTime?, DateTime?>, object, DateTime?, List<string>,
                 Dictionary<string, object>>>();
@@ -346,8 +352,9 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
 
         // case value periods
         var caseRef = new CaseValueReference(caseFieldName);
-        var valuePeriods = Task.Run(() => CaseValueProvider.GetCaseValuesAsync(caseRef.CaseFieldName,
-            period, caseRef.CaseSlot)).Result;
+        var valuePeriods = CaseValueProvider.GetCaseValuesAsync(caseRef.CaseFieldName,
+            period, caseRef.CaseSlot)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
 
         // tuple build
         var values = new List<Tuple<string, DateTime, Tuple<DateTime?, DateTime?>, object, DateTime?, List<string>, Dictionary<string, object>>>();
@@ -391,7 +398,9 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         var period = new DatePeriod(startDate, endDate);
 
         // multiple case period values
-        var periodValues = Task.Run(() => CaseValueProvider.GetCasePeriodValuesAsync(period, caseFieldNames)).Result;
+        var periodValues = CaseValueProvider.GetCasePeriodValuesAsync(period, caseFieldNames)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
+        //Log.Information($"GetCasePeriodValues: period={period}, fields={string.Join(",", caseFieldNames)}, count={periodValues.Count}");
 
         // ensure for any requested a case field value
         var values = caseFieldNames.ToDictionary(
@@ -424,8 +433,8 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         lookupName = lookupName.EnsureNamespace(Settings.Namespace);
 
-        var result = Task.Run(() =>
-            RegulationLookupProvider.HasLookupAsync(Settings.DbContext, lookupName)).Result;
+        var result = RegulationLookupProvider.HasLookupAsync(Settings.DbContext, lookupName)
+            .Result;
         return result;
     }
 
@@ -447,38 +456,46 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // culture
         culture ??= CultureInfo.CurrentCulture.Name;
 
-        var result = Task.Run(() =>
-                RegulationLookupProvider.GetLookupValueDataAsync(
+        var result = RegulationLookupProvider.GetLookupValueDataAsync(
                     context: Settings.DbContext,
                     lookupName: lookupName,
                     lookupKey: lookupKey,
-                    culture: culture)).Result?.Value;
+                    culture: culture)
+            .Result?.Value;
         return result;
     }
 
     /// <inheritdoc />
     public List<Tuple<string, string, decimal, decimal, decimal?>> GetLookupRanges(string lookupName, decimal? rangeValue = null)
     {
-        // lookup
-        var lookup = Task.Run(() => RegulationLookupProvider.GetLookupAsync(
-            context: Settings.DbContext,
-            lookupName: lookupName)).Result;
-        if (lookup == null)
+        try
         {
-            return [];
+            // lookup
+            var lookup = RegulationLookupProvider.GetLookupAsync(
+                context: Settings.DbContext,
+                lookupName: lookupName)
+                .Result;
+            if (lookup?.Values == null)
+            {
+                return [];
+            }
+
+            // query brackets
+            var lookupResult = lookup.BuildRangeBrackets(rangeValue);
+
+            // brackets result
+            var brackets = new List<Tuple<string, string, decimal, decimal, decimal?>>();
+            foreach (var bracket in lookupResult.Brackets)
+            {
+                brackets.Add(new(bracket.Key, bracket.Value, bracket.RangeStart, bracket.RangeEnd, bracket.RangeValue));
+            }
+            return brackets;
         }
-
-        // query brackets
-        var lookupResult = lookup.BuildRangeBrackets(rangeValue);
-
-        // brackets result
-        var brackets = new List<Tuple<string, string, decimal, decimal, decimal?>>();
-        foreach (var bracket in lookupResult.Brackets)
+        catch (Exception e)
         {
-            brackets.Add(new(bracket.Key, bracket.Value, bracket.RangeStart, bracket.RangeEnd, bracket.RangeValue));
+            Console.WriteLine(e);
+            throw;
         }
-        return brackets;
-
     }
 
     /// <inheritdoc />
@@ -495,13 +512,13 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // culture
         culture ??= CultureInfo.CurrentCulture.Name;
 
-        return Task.Run(() => RegulationLookupProvider.GetRangeLookupValueDataAsync(
+        return RegulationLookupProvider.GetRangeLookupValueDataAsync(
                 context: Settings.DbContext,
                 lookupName: lookupName,
                 rangeValue: rangeValue,
                 lookupKey: lookupKey,
-                culture: culture)).
-            Result?.Value;
+                culture: culture)
+            .Result?.Value;
     }
 
     /// <inheritdoc />
@@ -521,9 +538,10 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         // namespace
         lookupName = lookupName.EnsureNamespace(Settings.Namespace);
 
-        var lookup = Task.Run(() => RegulationLookupProvider.GetLookupAsync(
+        var lookup = RegulationLookupProvider.GetLookupAsync(
                 context: Settings.DbContext,
-                lookupName: lookupName)).Result;
+                lookupName: lookupName)
+            .Result;
         return lookup?.ApplyRangeValue(rangeValue, valueFieldName) ?? 0;
     }
 

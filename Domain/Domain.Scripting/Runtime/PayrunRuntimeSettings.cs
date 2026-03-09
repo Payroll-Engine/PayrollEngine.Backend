@@ -28,6 +28,9 @@ public class PayrunRuntimeSettings : PayrollRuntimeSettings
     /// <summary>The parent payrun job, usually the payrun retro source payrun job</summary>
     public PayrunJob ParentPayrunJob { get; init; }
 
+    /// <summary>Test for preview payrun job</summary>
+    public bool PreviewJob { get; init; }
+
     /// <summary>The parent payrun job, usually the payrun retro source payrun job</summary>
     public PayrunExecutionPhase ExecutionPhase { get; init; }
 }

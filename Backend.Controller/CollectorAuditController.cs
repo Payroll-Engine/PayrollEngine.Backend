@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Collector audits")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/collectors/{collectorId}/audits")]
+[TenantAuthorize]
 public class CollectorAuditController : Api.Controller.CollectorAuditController
 {
     /// <inheritdoc/>
@@ -32,16 +33,8 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryCollectorAudits")]
-    public async Task<ActionResult> QueryCollectorAuditsAsync(int tenantId, int regulationId, int collectorId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(collectorId, query);
-    }
+    public async Task<ActionResult> QueryCollectorAuditsAsync(int tenantId, int regulationId, int collectorId, [FromQuery] Query query) =>
+        await QueryItemsAsync(collectorId, query);
 
     /// <summary>
     /// Get a regulation collector audit
@@ -55,14 +48,6 @@ public class CollectorAuditController : Api.Controller.CollectorAuditController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCollectorAudit")]
-    public async Task<ActionResult<ApiObject.CollectorAudit>> GetCollectorAuditAsync(int tenantId, int regulationId, int collectorId, int auditId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(collectorId, auditId);
-    }
+    public async Task<ActionResult<ApiObject.CollectorAudit>> GetCollectorAuditAsync(int tenantId, int regulationId, int collectorId, int auditId) =>
+        await GetAsync(collectorId, auditId);
 }

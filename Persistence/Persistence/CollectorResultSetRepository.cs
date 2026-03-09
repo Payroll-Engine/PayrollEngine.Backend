@@ -19,6 +19,12 @@ public class CollectorResultSetRepository(ICollectorCustomResultRepository wageT
 
     protected override void GetObjectCreateData(CollectorResultSet result, DbParameterCollection parameters)
     {
+        parameters.Add(nameof(result.TenantId), result.TenantId, DbType.Int32);
+        parameters.Add(nameof(result.EmployeeId), result.EmployeeId, DbType.Int32);
+        parameters.Add(nameof(result.DivisionId), result.DivisionId, DbType.Int32);
+        parameters.Add(nameof(result.PayrunJobId), result.PayrunJobId, DbType.Int32);
+        parameters.Add(nameof(result.Forecast), result.Forecast);
+        parameters.Add(nameof(result.ParentJobId), result.ParentJobId, DbType.Int32);
         parameters.Add(nameof(result.CollectorId), result.CollectorId, DbType.Int32);
         parameters.Add(nameof(result.CollectorName), result.CollectorName);
         parameters.Add(nameof(result.CollectorNameHash), result.CollectorNameHash, DbType.Int32);

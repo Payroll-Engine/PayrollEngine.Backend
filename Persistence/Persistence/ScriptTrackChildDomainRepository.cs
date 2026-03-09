@@ -9,6 +9,12 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Abstract base repository for regulation child objects that have both audit tracking
+/// and embedded scripts. Combines script compilation with audit trail creation on mutations.
+/// </summary>
+/// <typeparam name="TDomain">Domain object type with script and audit support</typeparam>
+/// <typeparam name="TAudit">Corresponding audit domain object type</typeparam>
 public abstract class ScriptTrackChildDomainRepository<TDomain, TAudit>(string tableName,
         string regulationFieldName, IRegulationRepository regulationRepository,
         IScriptRepository scriptRepository, IAuditChildDomainRepository<TAudit> auditRepository, bool auditEnabled)

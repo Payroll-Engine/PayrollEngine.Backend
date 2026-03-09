@@ -36,7 +36,7 @@ public static class CalendarExtensions
             {
                 DayOfWeek.Sunday => calendar.WorkSunday,
                 DayOfWeek.Monday => calendar.WorkMonday,
-                DayOfWeek.Tuesday => calendar.WorkThursday,
+                DayOfWeek.Tuesday => calendar.WorkTuesday,
                 DayOfWeek.Wednesday => calendar.WorkWednesday,
                 DayOfWeek.Thursday => calendar.WorkThursday,
                 DayOfWeek.Friday => calendar.WorkFriday,

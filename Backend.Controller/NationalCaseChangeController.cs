@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("National case changes")]
 [Route("api/tenants/{tenantId}/nationalcases/changes")]
+[TenantAuthorize]
 public class NationalCaseChangeController : Api.Controller.NationalCaseChangeController
 {
     /// <inheritdoc/>
@@ -32,16 +33,8 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryNationalCaseChanges")]
     public async Task<ActionResult> QueryNationalCaseChangesAsync(int tenantId,
-        [FromQuery] DomainObject.CaseChangeQuery query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryAsync(tenantId, tenantId, query);
-    }
+        [FromQuery] DomainObject.CaseChangeQuery query) =>
+        await QueryAsync(tenantId, tenantId, query);
 
     /// <summary>
     /// Get a national case change
@@ -54,16 +47,8 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     [NotFoundResponse]
     [ApiOperationId("GetNationalCaseChange")]
     public async Task<ActionResult<ApiObject.CaseChange>> GetNationalCaseChangeAsync(
-        int tenantId, int caseChangeId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, caseChangeId);
-    }
+        int tenantId, int caseChangeId) =>
+        await GetAsync(tenantId, caseChangeId);
 
     /// <summary>
     /// Query national case changes values
@@ -87,14 +72,6 @@ public class NationalCaseChangeController : Api.Controller.NationalCaseChangeCon
     /// <param name="caseValueId">The case value id</param>
     [HttpDelete("{caseValueId}")]
     [ApiOperationId("DeleteNationalCaseChange")]
-    public async Task<IActionResult> DeleteNationalCaseChangeAsync(int tenantId, int caseValueId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, caseValueId);
-    }
+    public async Task<IActionResult> DeleteNationalCaseChangeAsync(int tenantId, int caseValueId) =>
+        await DeleteAsync(tenantId, caseValueId);
 }

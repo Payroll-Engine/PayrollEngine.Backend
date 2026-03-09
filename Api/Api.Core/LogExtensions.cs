@@ -14,19 +14,22 @@ namespace PayrollEngine.Api.Core;
 
 public static class LogExtensions
 {
-    private const LogLevel SystemInfoLogEventLevel = LogLevel.Information;
-
     public static void UseLog(this IHostApplicationLifetime appLifetime, IConfiguration configuration,
-        IApplicationBuilder appBuilder, IHostEnvironment environment, bool logRequests)
+        IApplicationBuilder appBuilder, IHostEnvironment environment,
+        PayrollServerConfiguration serverConfiguration, bool logRequests)
     {
         // start
         appLifetime.ApplicationStarted.Register(() =>
         {
             var dbInfo = GetConnectionInfo(configuration);
             Log.Information($"{environment.ApplicationName} > {GetApplicationAddress(appBuilder)} [database: {dbInfo.Server} > {dbInfo.Database}].");
-            if (Log.IsEnabled(SystemInfoLogEventLevel))
+            Log.Debug($"Culture: {CultureInfo.CurrentCulture}");
+
+            // parallel employee processing
+            var maxParallel = serverConfiguration.GetMaxParallelEmployees();
+            if (maxParallel != 0)
             {
-                Log.Write(SystemInfoLogEventLevel, $"Culture: {CultureInfo.CurrentCulture}");
+                Log.Information($"MaxParallelEmployees: {serverConfiguration.MaxParallelEmployees} (resolved: {maxParallel})");
             }
         });
         // stopping

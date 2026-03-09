@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PayrollEngine.Api.Core;
-using PayrollEngine.Api.Map;
 using PayrollEngine.Domain.Application.Service;
 using ApiObject = PayrollEngine.Api.Model;
 // ReSharper disable UnusedParameter.Global
@@ -11,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payroll results")]
 [Route("api/tenants/{tenantId}/payrollresults")]
+[TenantAuthorize]
 public class PayrollResultController : Api.Controller.PayrollResultController
 {
 
@@ -34,16 +34,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryPayrollResults")]
-    public async Task<ActionResult> QueryPayrollResultsAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryPayrollResultsAsync(int tenantId, [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a payroll result
@@ -56,16 +48,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [NotFoundResponse]
     [ApiOperationId("GetPayrollResult")]
     public async Task<ActionResult<ApiObject.PayrollResult>> GetPayrollResultAsync(
-        int tenantId, int payrollResultId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, payrollResultId);
-    }
+        int tenantId, int payrollResultId) =>
+        await GetAsync(tenantId, payrollResultId);
 
     #endregion
 
@@ -82,18 +66,9 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCollectorResults")]
-    public async Task<ActionResult<ApiObject.CollectorResult[]>> QueryCollectorResultsAsync(
-        int tenantId, int payrollResultId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        var results = await Service.QueryCollectorResultsAsync(Runtime.DbContext, payrollResultId, query);
-        return new CollectorResultMap().ToApi(results);
-    }
+    public override async Task<ActionResult<ApiObject.CollectorResult[]>> QueryCollectorResultsAsync(
+        int tenantId, int payrollResultId, [FromQuery] Query query) =>
+        await base.QueryCollectorResultsAsync(tenantId, payrollResultId, query);
 
     /// <summary>
     /// Query payroll collector custom results
@@ -107,18 +82,9 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCollectorCustomResults")]
-    public async Task<ActionResult<ApiObject.CollectorCustomResult[]>> QueryCollectorCustomResultsAsync(
-        int tenantId, int payrollResultId, int collectorResultId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        var results = await Service.QueryCollectorCustomResultsAsync(Runtime.DbContext, collectorResultId, query);
-        return new CollectorCustomResultMap().ToApi(results);
-    }
+    public override async Task<ActionResult<ApiObject.CollectorCustomResult[]>> QueryCollectorCustomResultsAsync(
+        int tenantId, int payrollResultId, int collectorResultId, [FromQuery] Query query) =>
+        await base.QueryCollectorCustomResultsAsync(tenantId, payrollResultId, collectorResultId, query);
 
     #endregion
 
@@ -135,18 +101,9 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryWageTypeResults")]
-    public async Task<ActionResult<ApiObject.WageTypeResult[]>> QueryWageTypeResultsAsync(
-        int tenantId, int payrollResultId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        var results = await Service.QueryWageTypeResultsAsync(Runtime.DbContext, payrollResultId, query);
-        return new WageTypeResultMap().ToApi(results);
-    }
+    public override async Task<ActionResult<ApiObject.WageTypeResult[]>> QueryWageTypeResultsAsync(
+        int tenantId, int payrollResultId, [FromQuery] Query query) =>
+        await base.QueryWageTypeResultsAsync(tenantId, payrollResultId, query);
 
     /// <summary>
     /// Query payroll wage type custom results
@@ -160,18 +117,9 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryWageTypeCustomResults")]
-    public async Task<ActionResult<ApiObject.WageTypeCustomResult[]>> QueryWageTypeCustomResultsAsync(
-        int tenantId, int payrollResultId, int wageTypeResultId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        var results = await Service.QueryWageTypeCustomResultsAsync(Runtime.DbContext, wageTypeResultId, query);
-        return new WageTypeCustomResultMap().ToApi(results);
-    }
+    public override async Task<ActionResult<ApiObject.WageTypeCustomResult[]>> QueryWageTypeCustomResultsAsync(
+        int tenantId, int payrollResultId, int wageTypeResultId, [FromQuery] Query query) =>
+        await base.QueryWageTypeCustomResultsAsync(tenantId, payrollResultId, wageTypeResultId, query);
 
     #endregion
 
@@ -188,18 +136,9 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryPayrunResults")]
-    public async Task<ActionResult<ApiObject.PayrunResult[]>> QueryPayrunResultsAsync(
-        int tenantId, int payrollResultId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        var results = await Service.QueryPayrunResultsAsync(Runtime.DbContext, payrollResultId, query);
-        return new PayrunResultMap().ToApi(results);
-    }
+    public override async Task<ActionResult<ApiObject.PayrunResult[]>> QueryPayrunResultsAsync(
+        int tenantId, int payrollResultId, [FromQuery] Query query) =>
+        await base.QueryPayrunResultsAsync(tenantId, payrollResultId, query);
 
     #endregion
 
@@ -217,16 +156,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [NotFoundResponse]
     [ApiOperationId("QueryPayrollResultValues")]
     public override async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId,
-        [FromQuery] int? employeeId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.QueryPayrollResultValuesAsync(tenantId, employeeId, query);
-    }
+        [FromQuery] int? employeeId, [FromQuery] Query query) =>
+        await base.QueryPayrollResultValuesAsync(tenantId, employeeId, query);
 
     #endregion
 
@@ -242,19 +173,9 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryPayrollResultSets")]
-    public async Task<ActionResult<ApiObject.PayrollResultSet[]>> QueryPayrollResultSetsAsync(
-        int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
-        var resultSets = await Service.QueryResultSetsAsync(Runtime.DbContext, tenantId, query);
-        return new PayrollResultSetMap().ToApi(resultSets);
-    }
+    public override async Task<ActionResult<ApiObject.PayrollResultSet[]>> QueryPayrollResultSetsAsync(
+        int tenantId, [FromQuery] Query query) =>
+        await base.QueryPayrollResultSetsAsync(tenantId, query);
 
     /// <summary>
     /// Get a payroll result set
@@ -266,22 +187,9 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollResultSet")]
-    public async Task<ActionResult<ApiObject.PayrollResultSet>> GetPayrollResultSetAsync(
-        int tenantId, int payrollResultId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        var resultSet = await Service.GetResultSetAsync(Runtime.DbContext, tenantId, payrollResultId);
-        if (resultSet == null)
-        {
-            return NotFound($"Payroll result with id {payrollResultId} was not found");
-        }
-        return new PayrollResultSetMap().ToApi(resultSet);
-    }
+    public override async Task<ActionResult<ApiObject.PayrollResultSet>> GetPayrollResultSetAsync(
+        int tenantId, int payrollResultId) =>
+        await base.GetPayrollResultSetAsync(tenantId, payrollResultId);
 
     #endregion
 }

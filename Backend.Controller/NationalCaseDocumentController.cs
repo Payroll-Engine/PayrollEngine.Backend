@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("National case documents")]
 [Route("api/tenants/{tenantId}/nationalcases/{caseValueId}/documents")]
+[TenantAuthorize]
 public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumentController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryNationalCaseDocuments")]
     public async Task<ActionResult> QueryNationalCaseDocumentsAsync(int tenantId,
-        int caseValueId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(caseValueId, query);
-    }
+        int caseValueId, [FromQuery] Query query) =>
+        await QueryItemsAsync(caseValueId, query);
 
     /// <summary>
     /// Get a national case document
@@ -54,14 +47,6 @@ public class NationalCaseDocumentController : Api.Controller.NationalCaseDocumen
     [NotFoundResponse]
     [ApiOperationId("GetNationalCaseDocument")]
     public async Task<ActionResult<ApiObject.CaseDocument>> GetNationalCaseDocumentAsync(
-        int tenantId, int caseValueId, int documentId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(caseValueId, documentId);
-    }
+        int tenantId, int caseValueId, int documentId) =>
+        await GetAsync(caseValueId, documentId);
 }

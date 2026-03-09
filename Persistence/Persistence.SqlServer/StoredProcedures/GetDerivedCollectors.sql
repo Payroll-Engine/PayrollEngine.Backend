@@ -77,7 +77,7 @@ BEGIN
     ON dbo.[Collector].[RegulationId] = [Regulations].[Id]
   -- active collectors only
   WHERE dbo.[Collector].[Status] = 0
-    AND dbo.[Collector].[Created] < @createdBefore
+    AND dbo.[Collector].[Created] <= @createdBefore
     AND ((@includeClusters IS NULL AND @excludeClusters IS NULL)
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[Collector].[Clusters]) = 1)
     AND (

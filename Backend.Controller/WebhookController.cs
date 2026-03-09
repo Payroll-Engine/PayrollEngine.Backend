@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Webhooks")]
 [Route("api/tenants/{tenantId}/webhooks")]
+[TenantAuthorize]
 public class WebhookController : Api.Controller.WebhookController
 {
     /// <inheritdoc/>
@@ -30,16 +31,8 @@ public class WebhookController : Api.Controller.WebhookController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryWebhooks")]
     public async Task<ActionResult> QueryWebhooksAsync(int tenantId,
-        [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+        [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a webhook
@@ -51,16 +44,8 @@ public class WebhookController : Api.Controller.WebhookController
     [NotFoundResponse]
     [ApiOperationId("GetWebhook")]
     public async Task<ActionResult<ApiObject.Webhook>> GetWebhookAsync(
-        int tenantId, int webhookId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, webhookId);
-    }
+        int tenantId, int webhookId) =>
+        await GetAsync(tenantId, webhookId);
 
     /// <summary>
     /// Add a new webhook
@@ -74,16 +59,8 @@ public class WebhookController : Api.Controller.WebhookController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateWebhook")]
     public async Task<ActionResult<ApiObject.Webhook>> CreateWebhookAsync(
-        int tenantId, ApiObject.Webhook webhook)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(tenantId, webhook);
-    }
+        int tenantId, ApiObject.Webhook webhook) =>
+        await CreateAsync(tenantId, webhook);
 
     /// <summary>
     /// Update a webhook
@@ -97,16 +74,8 @@ public class WebhookController : Api.Controller.WebhookController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateWebhook")]
     public async Task<ActionResult<ApiObject.Webhook>> UpdateWebhookAsync(
-        int tenantId, ApiObject.Webhook webhook)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, webhook);
-    }
+        int tenantId, ApiObject.Webhook webhook) =>
+        await UpdateAsync(tenantId, webhook);
 
     /// <summary>
     /// Delete a webhook
@@ -115,16 +84,8 @@ public class WebhookController : Api.Controller.WebhookController
     /// <param name="webhookId">The id of the webhook</param>
     [HttpDelete("{webhookId}")]
     [ApiOperationId("DeleteWebhook")]
-    public async Task<IActionResult> DeleteWebhookAsync(int tenantId, int webhookId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, webhookId);
-    }
+    public async Task<IActionResult> DeleteWebhookAsync(int tenantId, int webhookId) =>
+        await DeleteAsync(tenantId, webhookId);
 
     #region Attributes
 
@@ -140,16 +101,8 @@ public class WebhookController : Api.Controller.WebhookController
     [NotFoundResponse]
     [ApiOperationId("GetWebhookAttribute")]
     public virtual async Task<ActionResult<string>> GetWebhookAttributeAsync(
-        int tenantId, int webhookId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(webhookId, attributeName);
-    }
+        int tenantId, int webhookId, string attributeName) =>
+        await GetAttributeAsync(webhookId, attributeName);
 
     /// <summary>
     /// Set a webhook attribute
@@ -165,16 +118,8 @@ public class WebhookController : Api.Controller.WebhookController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetWebhookAttribute")]
     public virtual async Task<ActionResult<string>> SetWebhookAttributeAsync(
-        int tenantId, int webhookId, string attributeName, [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(webhookId, attributeName, value);
-    }
+        int tenantId, int webhookId, string attributeName, [FromBody] string value) =>
+        await SetAttributeAsync(webhookId, attributeName, value);
 
     /// <summary>
     /// Delete a webhook attribute
@@ -186,16 +131,8 @@ public class WebhookController : Api.Controller.WebhookController
     [HttpDelete("{webhookId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteWebhookAttribute")]
     public virtual async Task<ActionResult<bool>> DeleteWebhookAttributeAsync(
-        int tenantId, int webhookId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(webhookId, attributeName);
-    }
+        int tenantId, int webhookId, string attributeName) =>
+        await DeleteAttributeAsync(webhookId, attributeName);
 
     #endregion
 

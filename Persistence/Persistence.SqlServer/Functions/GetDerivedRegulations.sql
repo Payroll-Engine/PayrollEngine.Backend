@@ -52,7 +52,7 @@ RETURN (
             [Regulation].[TenantId] = @tenantId
             OR [Regulation].[SharedRegulation] = 1
             )
-          AND [Regulation].[Created] < @createdBefore
+          AND [Regulation].[Created] <= @createdBefore
           AND (
             [Regulation].[ValidFrom] IS NULL
             OR [Regulation].[ValidFrom] < @regulationDate

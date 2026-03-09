@@ -2,6 +2,11 @@
 
 namespace PayrollEngine.Api.Core;
 
+/// <summary>
+/// Authentication configuration for the Payroll Engine API.
+/// Supports <see cref="AuthenticationMode.None"/>, <see cref="AuthenticationMode.ApiKey"/>,
+/// and <see cref="AuthenticationMode.OAuth"/> modes.
+/// </summary>
 [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
 public class AuthenticationConfiguration
 {

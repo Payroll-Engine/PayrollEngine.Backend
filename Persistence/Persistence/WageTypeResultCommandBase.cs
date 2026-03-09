@@ -205,6 +205,18 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
             parameters.Add(DbSchema.ParameterGetWageTypeResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
         }
 
+        // no retro: exclude incremental retro jobs, return only original main-job payslip values per period
+        if (query.NoRetro)
+        {
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.NoRetro, true, DbType.Boolean);
+        }
+
+        // exclude retro jobs of the current payrun only: retro jobs from earlier payruns remain visible
+        if (query.ExcludeParentJobId.HasValue)
+        {
+            parameters.Add(DbSchema.ParameterGetWageTypeResults.ExcludeParentJobId, query.ExcludeParentJobId.Value, DbType.Int32);
+        }
+
         return parameters;
     }
 }

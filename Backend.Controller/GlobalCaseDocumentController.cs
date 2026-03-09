@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Global case documents")]
 [Route("api/tenants/{tenantId}/globalcases/{caseValueId}/documents")]
+[TenantAuthorize]
 public class GlobalCaseDocumentController : Api.Controller.GlobalCaseDocumentController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class GlobalCaseDocumentController : Api.Controller.GlobalCaseDocumentCon
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryGlobalCaseDocuments")]
     public async Task<ActionResult> QueryGlobalCaseDocumentsAsync(int tenantId, 
-        int caseValueId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(caseValueId, query);
-    }
+        int caseValueId, [FromQuery] Query query) =>
+        await QueryItemsAsync(caseValueId, query);
 
     /// <summary>
     /// Get a global case document
@@ -54,14 +47,6 @@ public class GlobalCaseDocumentController : Api.Controller.GlobalCaseDocumentCon
     [NotFoundResponse]
     [ApiOperationId("GetGlobalCaseDocument")]
     public async Task<ActionResult<ApiObject.CaseDocument>> GetGlobalCaseDocumentAsync(
-        int tenantId, int caseValueId, int documentId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(caseValueId, documentId);
-    }
+        int tenantId, int caseValueId, int documentId) =>
+        await GetAsync(caseValueId, documentId);
 }

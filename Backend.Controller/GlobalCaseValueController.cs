@@ -9,9 +9,14 @@ using ApiObject = PayrollEngine.Api.Model;
 
 namespace PayrollEngine.Backend.Controller;
 
-/// <inheritdoc/>
+/// <summary>
+/// Read-only controller for global case values.
+/// Case values are created and managed through case changes (see PayrollController).
+/// Direct create, update or delete operations are not supported.
+/// </summary>
 [ApiControllerName("Global case values")]
 [Route("api/tenants/{tenantId}/globalcases")]
+[TenantAuthorize]
 public class GlobalCaseValueController : Api.Controller.GlobalCaseValueController
 {
     /// <inheritdoc/>
@@ -36,12 +41,6 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     public async Task<ActionResult> QueryGlobalCaseValuesAsync(int tenantId, 
         [FromQuery] CaseValueQuery query)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
         if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
         {
             return BadRequest($"Unknown tenant with id {tenantId}");
@@ -59,16 +58,8 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     [OkResponse]
     [ApiOperationId("GetGlobalCaseValueSlots")]
     public async Task<ActionResult<IEnumerable<string>>> GetGlobalCaseValueSlotsAsync(
-        int tenantId, [Required] string caseFieldName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return Ok(await GetCaseValueSlotsAsync(tenantId, caseFieldName));
-    }
+        int tenantId, [Required] string caseFieldName) =>
+        Ok(await GetCaseValueSlotsAsync(tenantId, caseFieldName));
 
     /// <summary>
     /// Get a global case value
@@ -81,14 +72,6 @@ public class GlobalCaseValueController : Api.Controller.GlobalCaseValueControlle
     [NotFoundResponse]
     [ApiOperationId("GetGlobalCaseValue")]
     public async Task<ActionResult<ApiObject.CaseValue>> GetGlobalCaseValueAsync(
-        int tenantId, int caseValueId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, caseValueId);
-    }
+        int tenantId, int caseValueId) =>
+        await GetAsync(tenantId, caseValueId);
 }

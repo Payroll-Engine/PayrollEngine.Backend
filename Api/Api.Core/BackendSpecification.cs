@@ -35,4 +35,7 @@ public static class BackendSpecification
     /// <summary>Tenant authorization header</summary>
     /// <remarks>see client payroll api specification</remarks>
     public static string TenantAuthorizationHeader => "Auth-Tenant";
+
+    /// <summary>API version response header — carries the current backend API version on every response</summary>
+    public static string ApiVersionHeader => "X-Version";
 }

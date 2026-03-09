@@ -59,4 +59,16 @@ public interface ICaseChangeService<out TRepo, TDomain> : IChildApplicationServi
     /// <param name="change">The case values to add</param>
     /// <returns>The case value at a given time, null if no value is available</returns>
     Task<TDomain> AddCaseChangeAsync(IDbContext context, int tenantId, int userId, int payrollId, int parentId, TDomain change);
+
+    /// <summary>
+    /// Add multiple case changes in a single transaction (bulk)
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="userId">The user id</param>
+    /// <param name="payrollId">The payroll id</param>
+    /// <param name="changes">The case changes with their parent ids</param>
+    /// <returns>The created case changes</returns>
+    Task<List<TDomain>> AddCaseChangesAsync(IDbContext context, int tenantId, int userId, int payrollId,
+        IEnumerable<(int ParentId, TDomain Change)> changes);
 }

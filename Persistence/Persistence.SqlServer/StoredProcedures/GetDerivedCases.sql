@@ -65,7 +65,6 @@ BEGIN
     dbo.[Case].[BaseCaseFields],
     dbo.[Case].[OverrideType],
     dbo.[Case].[CancellationType],
-    dbo.[Case].[RetroDisabled],
     dbo.[Case].[AvailableExpression],
     dbo.[Case].[BuildExpression],
     dbo.[Case].[ValidateExpression],
@@ -86,7 +85,7 @@ BEGIN
     ON dbo.[Case].[RegulationId] = [Regulations].[Id]
   -- active cases only
   WHERE dbo.[Case].[Status] = 0
-    AND dbo.[Case].[Created] < @createdBefore
+    AND dbo.[Case].[Created] <= @createdBefore
     -- hidden filter
     AND (
       @hidden IS NULL

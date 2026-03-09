@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Divisions")]
 [Route("api/tenants/{tenantId}/divisions")]
+[TenantAuthorize]
 public class DivisionController : Api.Controller.DivisionController
 {
     /// <inheritdoc/>
@@ -28,16 +29,8 @@ public class DivisionController : Api.Controller.DivisionController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryDivisions")]
-    public async Task<ActionResult> QueryDivisionsAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryDivisionsAsync(int tenantId, [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a division
@@ -48,16 +41,8 @@ public class DivisionController : Api.Controller.DivisionController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetDivision")]
-    public async Task<ActionResult<ApiObject.Division>> GetDivisionAsync(int tenantId, int divisionId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, divisionId);
-    }
+    public async Task<ActionResult<ApiObject.Division>> GetDivisionAsync(int tenantId, int divisionId) =>
+        await GetAsync(tenantId, divisionId);
 
     /// <summary>
     /// Add a new division
@@ -70,16 +55,8 @@ public class DivisionController : Api.Controller.DivisionController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateDivision")]
-    public async Task<ActionResult<ApiObject.Division>> CreateDivisionAsync(int tenantId, ApiObject.Division division)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(tenantId, division);
-    }
+    public async Task<ActionResult<ApiObject.Division>> CreateDivisionAsync(int tenantId, ApiObject.Division division) =>
+        await CreateAsync(tenantId, division);
 
     /// <summary>
     /// Update a division
@@ -92,16 +69,8 @@ public class DivisionController : Api.Controller.DivisionController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateDivision")]
-    public async Task<ActionResult<ApiObject.Division>> UpdateDivisionAsync(int tenantId, ApiObject.Division division)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, division);
-    }
+    public async Task<ActionResult<ApiObject.Division>> UpdateDivisionAsync(int tenantId, ApiObject.Division division) =>
+        await UpdateAsync(tenantId, division);
 
     /// <summary>
     /// Delete a division
@@ -110,16 +79,8 @@ public class DivisionController : Api.Controller.DivisionController
     /// <param name="divisionId">The id of the division</param>
     [HttpDelete("{divisionId}")]
     [ApiOperationId("DeleteDivision")]
-    public async Task<IActionResult> DeleteDivisionAsync(int tenantId, int divisionId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, divisionId);
-    }
+    public async Task<IActionResult> DeleteDivisionAsync(int tenantId, int divisionId) =>
+        await DeleteAsync(tenantId, divisionId);
 
     #region Attributes
 
@@ -134,16 +95,8 @@ public class DivisionController : Api.Controller.DivisionController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetDivisionAttribute")]
-    public virtual async Task<ActionResult<string>> GetDivisionAttributeAsync(int tenantId, int divisionId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(divisionId, attributeName);
-    }
+    public virtual async Task<ActionResult<string>> GetDivisionAttributeAsync(int tenantId, int divisionId, string attributeName) =>
+        await GetAttributeAsync(divisionId, attributeName);
 
     /// <summary>
     /// Set a division attribute
@@ -159,16 +112,8 @@ public class DivisionController : Api.Controller.DivisionController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetDivisionAttribute")]
     public virtual async Task<ActionResult<string>> SetDivisionAttributeAsync(int tenantId, int divisionId, string attributeName,
-        [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(divisionId, attributeName, value);
-    }
+        [FromBody] string value) =>
+        await SetAttributeAsync(divisionId, attributeName, value);
 
     /// <summary>
     /// Delete a division attribute
@@ -179,16 +124,8 @@ public class DivisionController : Api.Controller.DivisionController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{divisionId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteDivisionAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteDivisionAttributeAsync(int tenantId, int divisionId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(divisionId, attributeName);
-    }
+    public virtual async Task<ActionResult<bool>> DeleteDivisionAttributeAsync(int tenantId, int divisionId, string attributeName) =>
+        await DeleteAttributeAsync(divisionId, attributeName);
 
     #endregion
 

@@ -28,13 +28,6 @@ BEGIN
   -- SET NOCOUNT ON added to prevent extra result sets from
   -- interfering with SELECT statements
   SET NOCOUNT ON;
-  SET XACT_ABORT ON;
-
-  -- transaction start
-  BEGIN TRANSACTION;
-  SAVE TRANSACTION DeleteLookupTransaction;
-
-  BEGIN TRY
 
     -- lookup
     DELETE [dbo].[LookupValueAudit]
@@ -71,24 +64,7 @@ BEGIN
     INNER JOIN [dbo].[Regulation]
       ON [dbo].[Lookup].[RegulationId] = [dbo].[Regulation].[Id]
     WHERE [dbo].[Regulation].[TenantId] = @tenantId AND
-          [dbo].[Lookup].Id = @lookupId 
-
-    -- transaction end
-    COMMIT TRANSACTION;
-    
-    -- success
-    RETURN 1
-  END TRY
-
-  BEGIN CATCH
-    IF @@TRANCOUNT > 0
-    BEGIN
-      ROLLBACK TRANSACTION DeleteLookupTransaction;
-    END
-    
-    -- failure
-    RETURN 0
-  END CATCH
+          [dbo].[Lookup].Id = @lookupId
 END
 GO
 

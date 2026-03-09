@@ -60,4 +60,15 @@ public interface ICaseChangeRepository<T> : IChildDomainRepository<T>
     /// <param name="caseChange">The case values to add</param>
     /// <returns>The case value at a given time, null if no value is available</returns>
     Task<T> AddCaseChangeAsync(IDbContext context, int tenantId, int payrollId, int parentId, T caseChange);
+
+    /// <summary>
+    /// Add multiple case changes in a single transaction (bulk)
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="payrollId">The payroll id</param>
+    /// <param name="caseChanges">The case changes with their parent ids</param>
+    /// <returns>The created case changes</returns>
+    Task<List<T>> AddCaseChangesAsync(IDbContext context, int tenantId, int payrollId,
+        IEnumerable<(int ParentId, T CaseChange)> caseChanges);
 }

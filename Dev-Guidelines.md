@@ -6,7 +6,7 @@ Backend:
 - Add table and columns to [Persistence.Sql.DbShema.cs]
 - Export database schema (create & delete)
 - Create domain object including the repo interface in [Domain.Model]
-- Create SQL repository class in [Persitence.SqlServer]
+- Create SQL repository class in [Persistence.SqlServer]
 - Create an application service in [Apllication]
 - Create MVC API object including the repo interface in [Api.Model]
 - Create domain/API map type in [Api.Map]

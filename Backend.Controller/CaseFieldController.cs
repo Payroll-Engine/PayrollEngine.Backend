@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Case fields")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/cases/{caseId}/fields")]
+[TenantAuthorize]
 public class CaseFieldController : Api.Controller.CaseFieldController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCaseFields")]
-    public async Task<ActionResult> QueryCaseFieldsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(caseId, query);
-    }
+    public async Task<ActionResult> QueryCaseFieldsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query) =>
+        await QueryItemsAsync(caseId, query);
 
     /// <summary>
     /// Get a regulation case field
@@ -55,16 +48,8 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetCaseField")]
-    public async Task<ActionResult<ApiObject.CaseField>> GetCaseFieldAsync(int tenantId, int regulationId, int caseId, int caseFieldId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(caseId, caseFieldId);
-    }
+    public async Task<ActionResult<ApiObject.CaseField>> GetCaseFieldAsync(int tenantId, int regulationId, int caseId, int caseFieldId) =>
+        await GetAsync(caseId, caseFieldId);
 
     /// <summary>
     /// Add a new regulation case field
@@ -78,16 +63,8 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateCaseField")]
-    public async Task<ActionResult<ApiObject.CaseField>> CreateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(caseId, caseField);
-    }
+    public async Task<ActionResult<ApiObject.CaseField>> CreateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField) =>
+        await CreateAsync(caseId, caseField);
 
     /// <summary>
     /// Update a regulation case field
@@ -101,16 +78,8 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateCaseField")]
-    public async Task<ActionResult<ApiObject.CaseField>> UpdateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(caseId, caseField);
-    }
+    public async Task<ActionResult<ApiObject.CaseField>> UpdateCaseFieldAsync(int tenantId, int caseId, ApiObject.CaseField caseField) =>
+        await UpdateAsync(caseId, caseField);
 
     /// <summary>
     /// Delete a regulation case field
@@ -120,14 +89,6 @@ public class CaseFieldController : Api.Controller.CaseFieldController
     /// <param name="fieldId">The case field id</param>
     [HttpDelete("{fieldId}")]
     [ApiOperationId("DeleteCaseField")]
-    public async Task<IActionResult> DeleteCaseFieldAsync(int tenantId, int caseId, int fieldId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(caseId, fieldId);
-    }
+    public async Task<IActionResult> DeleteCaseFieldAsync(int tenantId, int caseId, int fieldId) =>
+        await DeleteAsync(caseId, fieldId);
 }

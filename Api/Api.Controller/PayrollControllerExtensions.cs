@@ -36,7 +36,8 @@ internal static class PayrollControllerExtensions
                 RegulationDate = setup.RegulationDate.ToUtc(),
                 EvaluationDate = setup.EvaluationDate.ToUtc(),
                 ScriptProvider = controller.ScriptProvider,
-                AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout
+                AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout,
+                DerivedCache = setup.DerivedCache
             };
 
             switch (setup.CaseType)
@@ -99,7 +100,8 @@ internal static class PayrollControllerExtensions
                 EvaluationDate = setup.EvaluationDate.ToUtc(),
                 ClusterSetName = setup.ClusterSetName,
                 ScriptProvider = controller.ScriptProvider,
-                AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout
+                AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout,
+                DerivedCache = setup.DerivedCache
             };
 
             switch (setup.CaseType)
@@ -162,7 +164,8 @@ internal static class PayrollControllerExtensions
                 EvaluationDate = setup.EvaluationDate.ToUtc(),
                 ClusterSetName = setup.ClusterSetName,
                 ScriptProvider = controller.ScriptProvider,
-                AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout
+                AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout,
+                DerivedCache = setup.DerivedCache
             };
 
             switch (setup.CaseType)

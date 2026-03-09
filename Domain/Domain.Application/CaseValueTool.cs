@@ -47,16 +47,8 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id,
             culture: new(Culture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(
-            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate));
     }
 
     /// <summary>
@@ -71,17 +63,9 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id,
             culture: new(Culture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(
-            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            nationalCaseValueRepository: new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate));
     }
 
     /// <summary>
@@ -97,18 +81,10 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id,
             culture: new(Culture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(
-            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            nationalCaseValueRepository: new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            companyCaseValueRepository: new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate));
     }
 
     /// <summary>
@@ -127,19 +103,12 @@ public class CaseValueTool : FunctionToolBase
         // value provider
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id,
             culture: new(Culture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(Employee,
-            new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, employeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, globalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            nationalCaseValueRepository: new CaseValueCache(settings.DbContext, nationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            companyCaseValueRepository: new CaseValueCache(settings.DbContext, companyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            employeeCaseValueRepository: new CaseValueCache(settings.DbContext, employeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
+            employee: Employee);
     }
 
     /// <summary>
@@ -160,6 +129,30 @@ public class CaseValueTool : FunctionToolBase
             new CaseFieldProxyRepository(PayrollRepository, Tenant.Id, Payroll.Id, ValueDate, EvaluationDate));
         CaseRepository = settings.CaseRepository ?? throw new ArgumentNullException(nameof(CaseRepository));
     }
+
+    /// <summary>
+    /// Creates a <see cref="CaseValueProvider"/> with the given calculator and optional scope repositories.
+    /// </summary>
+    private CaseValueProvider CreateCaseValueProvider(
+        IPayrollCalculator calculator, CaseValueToolSettings settings,
+        ICaseValueCache globalCaseValueRepository = null,
+        ICaseValueCache nationalCaseValueRepository = null,
+        ICaseValueCache companyCaseValueRepository = null,
+        ICaseValueCache employeeCaseValueRepository = null,
+        Employee employee = null) => new(
+        settings: new()
+        {
+            DbContext = Settings.DbContext,
+            Calculator = calculator,
+            CaseFieldProvider = CaseFieldProvider,
+            EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
+            EvaluationDate = settings.EvaluationDate
+        },
+        globalCaseValueRepository: globalCaseValueRepository,
+        nationalCaseValueRepository: nationalCaseValueRepository,
+        companyCaseValueRepository: companyCaseValueRepository,
+        employeeCaseValueRepository: employeeCaseValueRepository,
+        employee: employee);
 
     /// <summary>
     /// Test if the case field is valid

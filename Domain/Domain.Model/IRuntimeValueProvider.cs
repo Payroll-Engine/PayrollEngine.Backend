@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -10,11 +10,11 @@ public interface IRuntimeValueProvider
     /// <summary>
     /// Payrun runtime values
     /// </summary>
-    public Dictionary<string, string> PayrunValues { get; }
+    public ConcurrentDictionary<string, string> PayrunValues { get; }
 
     /// <summary>
     /// Employees runtime values, key is the employee identifier
     /// </summary>
-    public Dictionary<string, Dictionary<string, string>> EmployeeValues { get; }
+    public ConcurrentDictionary<string, ConcurrentDictionary<string, string>> EmployeeValues { get; }
 }
 

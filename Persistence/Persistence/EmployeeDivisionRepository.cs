@@ -5,6 +5,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="EmployeeDivision"/> persistence (table: EmployeeDivision).</summary>
 public class EmployeeDivisionRepository(IDivisionRepository divisionRepository) :
     ChildDomainRepository<EmployeeDivision>(DbSchema.Tables.EmployeeDivision,
         DbSchema.EmployeeDivisionColumn.EmployeeId), IEmployeeDivisionRepository

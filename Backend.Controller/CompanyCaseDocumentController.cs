@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Company case documents")]
 [Route("api/tenants/{tenantId}/companycases/{caseValueId}/documents")]
+[TenantAuthorize]
 public class CompanyCaseDocumentController : Api.Controller.CompanyCaseDocumentController
 {
     /// <inheritdoc/>
@@ -30,16 +31,8 @@ public class CompanyCaseDocumentController : Api.Controller.CompanyCaseDocumentC
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryCompanyCaseDocuments")]
-    public async Task<ActionResult> QueryCompanyCaseDocumentsAsync(int tenantId, int caseValueId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(caseValueId, query);
-    }
+    public async Task<ActionResult> QueryCompanyCaseDocumentsAsync(int tenantId, int caseValueId, [FromQuery] Query query) =>
+        await QueryItemsAsync(caseValueId, query);
 
     /// <summary>
     /// Get a company case document
@@ -52,14 +45,6 @@ public class CompanyCaseDocumentController : Api.Controller.CompanyCaseDocumentC
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCompanyCaseDocument")]
-    public async Task<ActionResult<ApiObject.CaseDocument>> GetCompanyCaseDocument(int tenantId, int caseValueId, int documentId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(caseValueId, documentId);
-    }
+    public async Task<ActionResult<ApiObject.CaseDocument>> GetCompanyCaseDocument(int tenantId, int caseValueId, int documentId) =>
+        await GetAsync(caseValueId, documentId);
 }

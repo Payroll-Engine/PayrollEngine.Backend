@@ -8,9 +8,19 @@ using PayrollEngine.Domain.Scripting;
 
 namespace PayrollEngine.Api.Core;
 
+/// <summary>
+/// Core API factory that registers the database context, controller runtime,
+/// background services, and delegates to repository/service sub-factories.
+/// </summary>
 internal static class ApiFactory
 {
-    // services setup
+    /// <summary>
+    /// Register all core API services: database context, controller runtime,
+    /// payrun job queue, webhook HttpClient, query service, and all repository/service factories.
+    /// </summary>
+    /// <param name="services">Service collection to configure</param>
+    /// <param name="configuration">Application configuration for connection strings and server settings</param>
+    /// <param name="dbContext">Database context instance for persistence operations</param>
     internal static void SetupApiServices(IServiceCollection services,
         IConfiguration configuration, IDbContext dbContext)
     {
@@ -36,7 +46,7 @@ internal static class ApiFactory
         }
 
         // test database
-        var exception = dbContext.TestVersionAsync().Result;
+        var exception = dbContext.TestVersionAsync().GetAwaiter().GetResult();
         if (exception != null)
         {
             Log.Critical(exception, exception.GetBaseException().Message);
@@ -51,6 +61,13 @@ internal static class ApiFactory
         services.AddSingleton<IPayrunJobQueue, PayrunJobQueue>();
         services.AddHostedService<PayrunJobWorkerService>();
 
+        // Named HttpClient for webhook dispatch (managed pooling, DNS rotation)
+        var serverConfiguration = configuration.GetConfiguration<PayrollServerConfiguration>();
+        services.AddHttpClient(WebhookDispatchService.HttpClientName, client =>
+        {
+            client.Timeout = serverConfiguration.WebhookTimeout;
+        });
+
         // api query service: singleton to reduce assembly reflection on each query
         services.AddSingleton<IQueryService, QueryService>();
         // hot spot for custom payroll calculators
@@ -58,6 +75,6 @@ internal static class ApiFactory
 
         // repositories
         ApiRepositoryFactory.SetupApiServices(services, configuration);
-        ApiServiceFactory.SetupApiServices(services, configuration);
+        ApiServiceFactory.SetupApiServices(services);
     }
 }

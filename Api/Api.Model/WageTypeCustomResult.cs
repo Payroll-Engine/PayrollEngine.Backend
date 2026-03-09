@@ -16,6 +16,21 @@ public class WageTypeCustomResult : ApiObjectBase
     public int WageTypeResultId { get; set; }
 
     /// <summary>
+    /// The tenant id (denormalized, immutable)
+    /// </summary>
+    public int TenantId { get; set; }
+
+    /// <summary>
+    /// The employee id (denormalized, immutable)
+    /// </summary>
+    public int EmployeeId { get; set; }
+
+    /// <summary>
+    /// The division id (denormalized, immutable)
+    /// </summary>
+    public int DivisionId { get; set; }
+
+    /// <summary>
     /// The wage type number (immutable)
     /// </summary>
     [Required]

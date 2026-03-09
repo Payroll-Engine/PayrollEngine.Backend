@@ -64,4 +64,8 @@ public static class Procedures
     public static readonly string GetConsolidatedCollectorCustomResults = "GetConsolidatedCollectorCustomResults";
     // payroll result values
     public static readonly string GetPayrollResultValues = "GetPayrollResultValues";
+
+    // maintenance
+    public static readonly string UpdateStatistics = "UpdateStatistics";
+    public static readonly string UpdateStatisticsTargeted = "UpdateStatisticsTargeted";
 }

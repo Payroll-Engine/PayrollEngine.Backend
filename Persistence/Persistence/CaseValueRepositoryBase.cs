@@ -126,6 +126,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
 
     #endregion
 
+    /// <inheritdoc />
     public async Task<IEnumerable<string>> GetCaseValueSlotsAsync(IDbContext context, int parentId, string caseFieldName)
     {
         if (parentId <= 0)
@@ -154,6 +155,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         return caseValues.Select(x => x.CaseSlot);
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<CaseValue>> GetCaseValuesAsync(IDbContext context, DomainCaseValueQuery query,
         string caseFieldName = null, DateTime? evaluationDate = null)
     {
@@ -202,6 +204,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         return await QueryAsync<CaseValue>(context, compileQuery);
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<CaseValue>> GetPeriodCaseValuesAsync(IDbContext context, DomainCaseValueQuery query,
         DatePeriod period, string caseFieldName = null, DateTime? evaluationDate = null)
     {
@@ -268,56 +271,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         return await QueryAsync<CaseValue>(context, compileQuery);
     }
 
-    public async Task<CaseValue> GetRetroCaseValueAsync(IDbContext context, DomainCaseValueQuery query,
-        DatePeriod period, string caseFieldName)
-    {
-        if (query.ParentId <= 0)
-        {
-            throw new ArgumentException(nameof(query.ParentId));
-        }
-        if (!period.IsUtc)
-        {
-            throw new ArgumentException("Case value query period must be UTC.", nameof(period));
-        }
-        if (string.IsNullOrWhiteSpace(caseFieldName))
-        {
-            throw new ArgumentException(nameof(caseFieldName));
-        }
-
-        // query
-        var dbQuery = DbQueryFactory.NewQuery(TableName, ParentFieldName, query.ParentId);
-
-        // filter by division
-        dbQuery.AddDivisionFilter(query.DivisionScope, query.DivisionId);
-
-        // filter by case field name
-        dbQuery.Where(DbSchema.CaseValueColumn.CaseFieldName, caseFieldName);
-
-        // forecast filter
-        if (string.IsNullOrWhiteSpace(query.Forecast))
-        {
-            // only results without forecast
-            dbQuery.WhereNull(DbSchema.CaseValueColumn.Forecast);
-        }
-        else
-        {
-            // specific forecast results plus results without forecast
-            dbQuery.WhereNullOrValue(DbSchema.CaseValueColumn.Forecast, query.Forecast);
-        }
-
-        // filter case values created or cancelled within the requested time period
-        dbQuery.Where(q => q.WhereBetween(DbSchema.ObjectColumn.Created, period.Start, period.End)
-            .OrWhereBetween(DbSchema.CaseChangeColumn.CancellationDate, period.Start, period.End));
-
-        // order from newest to oldest
-        dbQuery.OrderByDesc(DbSchema.ObjectColumn.Created);
-        // retrieve case values
-        var compileQuery = CompileQuery(dbQuery);
-        var caseValues = await QueryAsync<CaseValue>(context, compileQuery);
-        // return the oldest created case value
-        return caseValues.MinBy(x => x.Start);
-    }
-
+    /// <inheritdoc />
     public override async Task<TDomain> CreateAsync(IDbContext context, int parentId, TDomain item)
     {
         // check for valid case field name

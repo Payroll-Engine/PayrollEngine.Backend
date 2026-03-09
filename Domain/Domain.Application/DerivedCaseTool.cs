@@ -102,16 +102,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
             culture: new(UserCulture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(
-            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate));
     }
 
     /// <summary>
@@ -131,17 +123,9 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
             culture: new(UserCulture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(
-            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            nationalCaseValueRepository: new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate));
     }
 
     /// <summary>
@@ -165,18 +149,10 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
             culture: new(UserCulture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(
-            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            nationalCaseValueRepository: new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            companyCaseValueRepository: new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate));
     }
 
     /// <summary>
@@ -205,19 +181,12 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // local
         var calculator = settings.PayrollCalculatorProvider.CreateCalculator(Tenant.Id, User.Id,
             culture: new(UserCulture), calendar: settings.Calendar);
-        CaseValueProvider = new CaseValueProvider(Employee,
-            new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
-            new CaseValueCache(settings.DbContext, EmployeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
-            new()
-            {
-                DbContext = Settings.DbContext,
-                Calculator = calculator,
-                CaseFieldProvider = CaseFieldProvider,
-                EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
-                EvaluationDate = settings.EvaluationDate
-            });
+        CaseValueProvider = CreateCaseValueProvider(calculator, settings,
+            globalCaseValueRepository: new CaseValueCache(settings.DbContext, GlobalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            nationalCaseValueRepository: new CaseValueCache(settings.DbContext, NationalCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            companyCaseValueRepository: new CaseValueCache(settings.DbContext, CompanyCaseValueRepository, Tenant.Id, Payroll.DivisionId, EvaluationDate),
+            employeeCaseValueRepository: new CaseValueCache(settings.DbContext, EmployeeCaseValueRepository, Employee.Id, Payroll.DivisionId, EvaluationDate),
+            employee: Employee);
     }
 
     /// <summary>
@@ -259,6 +228,30 @@ public abstract class DerivedCaseTool : FunctionToolBase
         PayrollCalculatorProvider = settings.PayrollCalculatorProvider ?? throw new ArgumentNullException(nameof(settings.PayrollCalculatorProvider));
         WebhookDispatchService = settings.WebhookDispatchService ?? throw new ArgumentNullException(nameof(settings.WebhookDispatchService));
     }
+
+    /// <summary>
+    /// Creates a <see cref="CaseValueProvider"/> with the given calculator and optional scope repositories.
+    /// </summary>
+    private CaseValueProvider CreateCaseValueProvider(
+        IPayrollCalculator calculator, DerivedCaseToolSettings settings,
+        ICaseValueCache globalCaseValueRepository = null,
+        ICaseValueCache nationalCaseValueRepository = null,
+        ICaseValueCache companyCaseValueRepository = null,
+        ICaseValueCache employeeCaseValueRepository = null,
+        Employee employee = null) => new(
+        settings: new()
+        {
+            DbContext = Settings.DbContext,
+            Calculator = calculator,
+            CaseFieldProvider = CaseFieldProvider,
+            EvaluationPeriod = calculator.GetPayrunPeriod(settings.EvaluationDate).GetDatePeriod(),
+            EvaluationDate = settings.EvaluationDate
+        },
+        globalCaseValueRepository: globalCaseValueRepository,
+        nationalCaseValueRepository: nationalCaseValueRepository,
+        companyCaseValueRepository: companyCaseValueRepository,
+        employeeCaseValueRepository: employeeCaseValueRepository,
+        employee: employee);
 
     private static CultureInfo GetTenantCulture(Tenant tenant)
     {
@@ -392,17 +385,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
         // collect fields of base case
         if (!string.IsNullOrWhiteSpace(@case.BaseCase))
         {
-            var baseCase = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
-                new()
-                {
-                    TenantId = Tenant.Id,
-                    PayrollId = Payroll.Id,
-                    RegulationDate = RegulationDate,
-                    EvaluationDate = EvaluationDate
-                },
-                caseNames: [@case.BaseCase],
-                clusterSet: ClusterSet,
-                overrideType: OverrideType.Active)).FirstOrDefault();
+            var baseCase = (await GetCachedDerivedCasesAsync(
+                caseNames: [@case.BaseCase])).FirstOrDefault();
             if (baseCase == null)
             {
                 throw new PayrollException($"Unknown base case {@case.BaseCase} in case {@case.Name}.");
@@ -419,17 +403,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
             if (caseFieldNames.Any())
             {
                 var baseCaseFields =
-                    (await PayrollRepository.GetDerivedCaseFieldsAsync(Settings.DbContext,
-                        new()
-                        {
-                            TenantId = Tenant.Id,
-                            PayrollId = Payroll.Id,
-                            RegulationDate = RegulationDate,
-                            EvaluationDate = EvaluationDate
-                        },
-                        caseFieldNames: caseFieldNames,
-                        clusterSet: ClusterSet,
-                        overrideType: OverrideType.Active)).ToList();
+                    (await GetCachedDerivedCaseFieldsAsync(
+                        caseFieldNames: caseFieldNames)).ToList();
 
                 // add base case fields, ensure unique case field names
                 if (baseCaseFields.Any())
@@ -453,17 +428,8 @@ public abstract class DerivedCaseTool : FunctionToolBase
 
         // collect current case fields
         var caseFields =
-            (await PayrollRepository.GetDerivedCaseFieldsOfCaseAsync(Settings.DbContext,
-                new()
-                {
-                    TenantId = Tenant.Id,
-                    PayrollId = Payroll.Id,
-                    RegulationDate = RegulationDate,
-                    EvaluationDate = EvaluationDate
-                },
-                caseNames: [@case.Name],
-                clusterSet: ClusterSet,
-                overrideType: OverrideType.Active)).ToList();
+            (await GetCachedDerivedCaseFieldsOfCaseAsync(
+                caseNames: [@case.Name])).ToList();
 
         // add case fields, ensure unique case field names
         if (caseFields.Any())
@@ -488,4 +454,106 @@ public abstract class DerivedCaseTool : FunctionToolBase
             targetCaseFields.Add(caseField);
         }
     }
+
+    #region Cached Repository Access
+
+    /// <summary>
+    /// Get derived cases — from cache or database
+    /// </summary>
+    protected async Task<IEnumerable<DerivedCase>> GetCachedDerivedCasesAsync(
+        CaseType? caseType = null,
+        IEnumerable<string> caseNames = null)
+    {
+        if (Settings.DerivedCache != null)
+        {
+            return Settings.DerivedCache.GetDerivedCases(caseType, caseNames);
+        }
+
+        return await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
+            new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = Payroll.Id,
+                RegulationDate = RegulationDate,
+                EvaluationDate = EvaluationDate
+            },
+            caseType: caseType,
+            caseNames: caseNames,
+            overrideType: OverrideType.Active,
+            clusterSet: ClusterSet);
+    }
+
+    /// <summary>
+    /// Get derived case fields — from cache or database
+    /// </summary>
+    private async Task<IEnumerable<ChildCaseField>> GetCachedDerivedCaseFieldsAsync(
+        IEnumerable<string> caseFieldNames = null)
+    {
+        if (Settings.DerivedCache != null)
+        {
+            return Settings.DerivedCache.GetDerivedCaseFields(caseFieldNames);
+        }
+
+        return await PayrollRepository.GetDerivedCaseFieldsAsync(Settings.DbContext,
+            new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = Payroll.Id,
+                RegulationDate = RegulationDate,
+                EvaluationDate = EvaluationDate
+            },
+            caseFieldNames: caseFieldNames,
+            overrideType: OverrideType.Active,
+            clusterSet: ClusterSet);
+    }
+
+    /// <summary>
+    /// Get derived case fields of case — from cache or database
+    /// </summary>
+    private async Task<IEnumerable<ChildCaseField>> GetCachedDerivedCaseFieldsOfCaseAsync(
+        IEnumerable<string> caseNames)
+    {
+        if (Settings.DerivedCache != null)
+        {
+            return Settings.DerivedCache.GetDerivedCaseFieldsOfCase(caseNames);
+        }
+
+        return await PayrollRepository.GetDerivedCaseFieldsOfCaseAsync(Settings.DbContext,
+            new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = Payroll.Id,
+                RegulationDate = RegulationDate,
+                EvaluationDate = EvaluationDate
+            },
+            caseNames: caseNames,
+            overrideType: OverrideType.Active,
+            clusterSet: ClusterSet);
+    }
+
+    /// <summary>
+    /// Get derived case relations — from cache or database
+    /// </summary>
+    protected async Task<IEnumerable<DerivedCaseRelation>> GetCachedDerivedCaseRelationsAsync(
+        string sourceCaseName = null)
+    {
+        if (Settings.DerivedCache != null)
+        {
+            return Settings.DerivedCache.GetDerivedCaseRelations(sourceCaseName);
+        }
+
+        return await PayrollRepository.GetDerivedCaseRelationsAsync(Settings.DbContext,
+            new()
+            {
+                TenantId = Tenant.Id,
+                PayrollId = Payroll.Id,
+                RegulationDate = RegulationDate,
+                EvaluationDate = EvaluationDate
+            },
+            sourceCaseName: sourceCaseName,
+            overrideType: OverrideType.Active,
+            clusterSet: ClusterSet);
+    }
+
+    #endregion
 }

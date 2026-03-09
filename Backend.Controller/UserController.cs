@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Users")]
 [Route("api/tenants/{tenantId}/users")]
+[TenantAuthorize]
 public class UserController : Api.Controller.UserController
 {
     /// <inheritdoc/>
@@ -30,16 +31,8 @@ public class UserController : Api.Controller.UserController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryUsers")]
-    public async Task<ActionResult> QueryUsersAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryUsersAsync(int tenantId, [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a user
@@ -50,16 +43,8 @@ public class UserController : Api.Controller.UserController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetUser")]
-    public async Task<ActionResult<ApiObject.User>> GetUserAsync(int tenantId, int userId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, userId);
-    }
+    public async Task<ActionResult<ApiObject.User>> GetUserAsync(int tenantId, int userId) =>
+        await GetAsync(tenantId, userId);
 
     /// <summary>
     /// Add a new user
@@ -74,12 +59,6 @@ public class UserController : Api.Controller.UserController
     [ApiOperationId("CreateUser")]
     public async Task<ActionResult<ApiObject.User>> CreateUserAsync(int tenantId, ApiObject.User user)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
         // unique user by identifier
         if (await Service.ExistsAnyAsync(Runtime.DbContext, tenantId, user.Identifier))
         {
@@ -99,16 +78,8 @@ public class UserController : Api.Controller.UserController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateUser")]
-    public async Task<ActionResult<ApiObject.User>> UpdateUserAsync(int tenantId, ApiObject.User user)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, user);
-    }
+    public async Task<ActionResult<ApiObject.User>> UpdateUserAsync(int tenantId, ApiObject.User user) =>
+        await UpdateAsync(tenantId, user);
 
     /// <summary>
     /// Delete a user
@@ -117,16 +88,8 @@ public class UserController : Api.Controller.UserController
     /// <param name="userId">The id of the user</param>
     [HttpDelete("{userId}")]
     [ApiOperationId("DeleteUser")]
-    public async Task<IActionResult> DeleteUserAsync(int tenantId, int userId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, userId);
-    }
+    public async Task<IActionResult> DeleteUserAsync(int tenantId, int userId) =>
+        await DeleteAsync(tenantId, userId);
 
     #region Password
 
@@ -148,13 +111,6 @@ public class UserController : Api.Controller.UserController
     [QueryIgnore]
     public async Task<ActionResult> TestUserPasswordAsync(int tenantId, int userId, [FromBody] string password)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // password
         if (string.IsNullOrWhiteSpace(password))
         {
@@ -199,13 +155,6 @@ public class UserController : Api.Controller.UserController
     public async Task<ActionResult<ApiObject.User>> UpdateUserPasswordAsync(
         int tenantId, int userId, [FromBody] PasswordChangeRequest changeRequest)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // password
         if (string.IsNullOrWhiteSpace(changeRequest.NewPassword))
         {
@@ -242,16 +191,8 @@ public class UserController : Api.Controller.UserController
     [NotFoundResponse]
     [ApiOperationId("GetUserAttribute")]
     public virtual async Task<ActionResult<string>> GetUserAttributeAsync(
-        int tenantId, int userId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(userId, attributeName);
-    }
+        int tenantId, int userId, string attributeName) =>
+        await GetAttributeAsync(userId, attributeName);
 
     /// <summary>
     /// Set a user attribute
@@ -267,16 +208,8 @@ public class UserController : Api.Controller.UserController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetUserAttribute")]
     public virtual async Task<ActionResult<string>> SetUserAttributeAsync(
-        int tenantId, int userId, string attributeName, [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(userId, attributeName, value);
-    }
+        int tenantId, int userId, string attributeName, [FromBody] string value) =>
+        await SetAttributeAsync(userId, attributeName, value);
 
     /// <summary>
     /// Delete a user attribute
@@ -288,16 +221,8 @@ public class UserController : Api.Controller.UserController
     [HttpDelete("{userId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteUserAttribute")]
     public virtual async Task<ActionResult<bool>> DeleteUserAttributeAsync(
-        int tenantId, int userId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(userId, attributeName);
-    }
+        int tenantId, int userId, string attributeName) =>
+        await DeleteAttributeAsync(userId, attributeName);
 
     #endregion
 

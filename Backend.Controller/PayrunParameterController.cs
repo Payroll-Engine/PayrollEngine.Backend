@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payrun parameters")]
 [Route("api/tenants/{tenantId}/payruns/{payrunId}/parameters")]
+[TenantAuthorize]
 public class PayrunParameterController : Api.Controller.PayrunParameterController
 {
     /// <inheritdoc/>
@@ -30,17 +31,9 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryPayrunParameters")]
-    public async Task<ActionResult> QueryPayrunParametersAsync(int tenantId, int payrunId, 
-        [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(payrunId, query);
-    }
+    public async Task<ActionResult> QueryPayrunParametersAsync(int tenantId, int payrunId,
+        [FromQuery] Query query) =>
+        await QueryItemsAsync(payrunId, query);
 
     /// <summary>
     /// Get a payrun parameter
@@ -54,16 +47,8 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     [NotFoundResponse]
     [ApiOperationId("GetPayrunParameter")]
     public async Task<ActionResult<ApiObject.PayrunParameter>> GetPayrunParameterAsync(
-        int tenantId, int payrunId, int parameterId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(payrunId, parameterId);
-    }
+        int tenantId, int payrunId, int parameterId) =>
+        await GetAsync(payrunId, parameterId);
 
     /// <summary>
     /// Add a new payrun parameter
@@ -78,16 +63,8 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     [UnprocessableEntityResponse]
     [ApiOperationId("CreatePayrunParameter")]
     public async Task<ActionResult<ApiObject.PayrunParameter>> CreatePayrunParameterAsync(
-        int tenantId, int payrunId, ApiObject.PayrunParameter parameter)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(payrunId, parameter);
-    }
+        int tenantId, int payrunId, ApiObject.PayrunParameter parameter) =>
+        await CreateAsync(payrunId, parameter);
 
     /// <summary>
     /// Update a payrun parameter
@@ -102,16 +79,8 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdatePayrun")]
     public async Task<ActionResult<ApiObject.PayrunParameter>> UpdatePayrunAsync(
-        int tenantId, int payrunId, ApiObject.PayrunParameter parameter)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(payrunId, parameter);
-    }
+        int tenantId, int payrunId, ApiObject.PayrunParameter parameter) =>
+        await UpdateAsync(payrunId, parameter);
 
     /// <summary>
     /// Delete a payrun
@@ -121,14 +90,6 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     /// <param name="parameterId">The id of the payrun parameter</param>
     [HttpDelete("{parameterId}")]
     [ApiOperationId("DeletePayrun")]
-    public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId, int parameterId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(payrunId, parameterId);
-    }
+    public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId, int parameterId) =>
+        await DeleteAsync(payrunId, parameterId);
 }

@@ -9,6 +9,11 @@ using PayrollEngine.Domain.Scripting.Runtime;
 
 namespace PayrollEngine.Domain.Application;
 
+/// <summary>
+/// Builds derived case structures by resolving case inheritance across payroll layers
+/// and executing case-available and case-build scripts.
+/// Used during case change creation to construct the complete case field tree.
+/// </summary>
 public class DerivedCaseBuilder : DerivedCaseTool
 {
     /// <summary>

@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Tasks")]
 [Route("api/tenants/{tenantId}/tasks")]
+[TenantAuthorize]
 public class TaskController : Api.Controller.TaskController
 {
     /// <inheritdoc/>
@@ -30,16 +31,8 @@ public class TaskController : Api.Controller.TaskController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryTasks")]
-    public async Task<ActionResult> QueryTasksAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryTasksAsync(int tenantId, [FromQuery] Query query) => 
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a task
@@ -51,16 +44,8 @@ public class TaskController : Api.Controller.TaskController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetTask")]
-    public async Task<ActionResult<ApiObject.Task>> GetTaskAsync(int tenantId, int taskId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, taskId);
-    }
+    public async Task<ActionResult<ApiObject.Task>> GetTaskAsync(int tenantId, int taskId) =>
+        await GetAsync(tenantId, taskId);
 
     /// <summary>
     /// Add a new task
@@ -73,16 +58,8 @@ public class TaskController : Api.Controller.TaskController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateTask")]
-    public async Task<ActionResult<ApiObject.Task>> CreateTaskAsync(int tenantId, ApiObject.Task task)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(tenantId, task);
-    }
+    public async Task<ActionResult<ApiObject.Task>> CreateTaskAsync(int tenantId, ApiObject.Task task) =>
+        await CreateAsync(tenantId, task);
 
     /// <summary>
     /// Update a task
@@ -95,16 +72,8 @@ public class TaskController : Api.Controller.TaskController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateTask")]
-    public async Task<ActionResult<ApiObject.Task>> UpdateTaskAsync(int tenantId, ApiObject.Task task)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, task);
-    }
+    public async Task<ActionResult<ApiObject.Task>> UpdateTaskAsync(int tenantId, ApiObject.Task task) => 
+        await UpdateAsync(tenantId, task);
 
     /// <summary>
     /// Delete a task
@@ -113,16 +82,8 @@ public class TaskController : Api.Controller.TaskController
     /// <param name="taskId">The id of the task</param>
     [HttpDelete("{taskId}")]
     [ApiOperationId("DeleteTask")]
-    public async Task<IActionResult> DeleteTaskAsync(int tenantId, int taskId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, taskId);
-    }
+    public async Task<IActionResult> DeleteTaskAsync(int tenantId, int taskId) =>
+        await DeleteAsync(tenantId, taskId);
 
     #region Attributes
 
@@ -138,16 +99,8 @@ public class TaskController : Api.Controller.TaskController
     [NotFoundResponse]
     [ApiOperationId("GetTaskAttribute")]
     public virtual async Task<ActionResult<string>> GetTaskAttributeAsync(
-        int tenantId, int taskId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(taskId, attributeName);
-    }
+        int tenantId, int taskId, string attributeName) =>
+        await GetAttributeAsync(taskId, attributeName);
 
     /// <summary>
     /// Set a task attribute
@@ -164,16 +117,8 @@ public class TaskController : Api.Controller.TaskController
     [ApiOperationId("SetTaskAttribute")]
     public virtual async Task<ActionResult<string>> SetTaskAttributeAsync(
         int tenantId, int taskId, string attributeName,
-        [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(taskId, attributeName, value);
-    }
+        [FromBody] string value) =>
+        await SetAttributeAsync(taskId, attributeName, value);
 
     /// <summary>
     /// Delete a task attribute
@@ -185,16 +130,8 @@ public class TaskController : Api.Controller.TaskController
     [HttpDelete("{taskId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteTaskAttribute")]
     public virtual async Task<ActionResult<bool>> DeleteTaskAttributeAsync(
-        int tenantId, int taskId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(taskId, attributeName);
-    }
+        int tenantId, int taskId, string attributeName) =>
+        await DeleteAttributeAsync(taskId, attributeName);
 
     #endregion
 

@@ -2,6 +2,10 @@
 
 namespace PayrollEngine.Api.Core;
 
+/// <summary>
+/// OAuth 2.0 / JWT Bearer authentication settings for the Payroll Engine API.
+/// Used when <see cref="AuthenticationConfiguration.Mode"/> is <see cref="AuthenticationMode.OAuth"/>.
+/// </summary>
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class OAuthConfiguration
 {

@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Collectors")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/collectors")]
+[TenantAuthorize]
 public class CollectorController : Api.Controller.CollectorController
 {
     /// <inheritdoc/>
@@ -29,16 +30,8 @@ public class CollectorController : Api.Controller.CollectorController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCollectors")]
-    public async Task<ActionResult> QueryCollectorsAsync(int tenantId, int regulationId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(regulationId, query);
-    }
+    public async Task<ActionResult> QueryCollectorsAsync(int tenantId, int regulationId, [FromQuery] Query query) =>
+        await QueryItemsAsync(regulationId, query);
 
     /// <summary>
     /// Get a regulation collector
@@ -52,16 +45,8 @@ public class CollectorController : Api.Controller.CollectorController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetCollector")]
-    public async Task<ActionResult<ApiObject.Collector>> GetCollectorAsync(int tenantId, int regulationId, int collectorId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(regulationId, collectorId);
-    }
+    public async Task<ActionResult<ApiObject.Collector>> GetCollectorAsync(int tenantId, int regulationId, int collectorId) =>
+        await GetAsync(regulationId, collectorId);
 
     /// <summary>
     /// Add a new regulation collector
@@ -76,16 +61,8 @@ public class CollectorController : Api.Controller.CollectorController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateCollector")]
     public async Task<ActionResult<ApiObject.Collector>> CreateCollectorAsync(int tenantId,
-        int regulationId, ApiObject.Collector collector)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(regulationId, collector);
-    }
+        int regulationId, ApiObject.Collector collector) =>
+        await CreateAsync(regulationId, collector);
 
     /// <summary>
     /// Update a regulation collector
@@ -100,16 +77,8 @@ public class CollectorController : Api.Controller.CollectorController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateCollector")]
     public async Task<ActionResult<ApiObject.Collector>> UpdateCollectorAsync(int tenantId,
-        int regulationId, ApiObject.Collector collector)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(regulationId, collector);
-    }
+        int regulationId, ApiObject.Collector collector) =>
+        await UpdateAsync(regulationId, collector);
 
     /// <summary>
     /// Rebuild regulation collector
@@ -120,16 +89,8 @@ public class CollectorController : Api.Controller.CollectorController
     [HttpPut("{collectorId}/rebuild")]
     [NotFoundResponse]
     [ApiOperationId("RebuildCollector")]
-    public async Task<ActionResult> RebuildCollectorAsync(int tenantId, int regulationId, int collectorId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await RebuildAsync(regulationId, collectorId);
-    }
+    public async Task<ActionResult> RebuildCollectorAsync(int tenantId, int regulationId, int collectorId) =>
+        await RebuildAsync(regulationId, collectorId);
 
     /// <summary>
     /// Delete a regulation collector
@@ -139,14 +100,6 @@ public class CollectorController : Api.Controller.CollectorController
     /// <param name="collectorId">The id of the collector</param>
     [HttpDelete("{collectorId}")]
     [ApiOperationId("DeleteCollector")]
-    public async Task<IActionResult> DeleteCollectorAsync(int tenantId, int regulationId, int collectorId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(regulationId, collectorId);
-    }
+    public async Task<IActionResult> DeleteCollectorAsync(int tenantId, int regulationId, int collectorId) =>
+        await DeleteAsync(regulationId, collectorId);
 }

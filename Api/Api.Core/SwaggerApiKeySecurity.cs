@@ -4,6 +4,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace PayrollEngine.Api.Core;
 
+
+// ReSharper disable once UnusedType.Global
 public static class SwaggerApiKeySecurity
 {
     public static void AddSwaggerApiKeySecurity(this SwaggerGenOptions options)

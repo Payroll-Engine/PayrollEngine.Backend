@@ -19,6 +19,12 @@ public class WageTypeResultSetRepository(IWageTypeCustomResultRepository wageTyp
 
     protected override void GetObjectCreateData(WageTypeResultSet result, DbParameterCollection parameters)
     {
+        parameters.Add(nameof(result.TenantId), result.TenantId, DbType.Int32);
+        parameters.Add(nameof(result.EmployeeId), result.EmployeeId, DbType.Int32);
+        parameters.Add(nameof(result.DivisionId), result.DivisionId, DbType.Int32);
+        parameters.Add(nameof(result.PayrunJobId), result.PayrunJobId, DbType.Int32);
+        parameters.Add(nameof(result.Forecast), result.Forecast);
+        parameters.Add(nameof(result.ParentJobId), result.ParentJobId, DbType.Int32);
         parameters.Add(nameof(result.WageTypeId), result.WageTypeId, DbType.Int32);
         parameters.Add(nameof(result.WageTypeNumber), result.WageTypeNumber, DbType.Decimal);
         parameters.Add(nameof(result.WageTypeName), result.WageTypeName);

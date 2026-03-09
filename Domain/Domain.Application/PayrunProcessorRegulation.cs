@@ -68,7 +68,7 @@ internal sealed class PayrunProcessorRegulation
 
     #region Wage Type
 
-    internal bool IsWageTypeAvailable(PayrunContext context, IGrouping<decimal, DerivedWageType> derivedWageType,
+    internal bool IsWageTypeAvailable(PayrunEmployeeScope scope, IGrouping<decimal, DerivedWageType> derivedWageType,
         ICaseValueProvider caseValueProvider)
     {
         Log.Trace($"checking availability of wage type {derivedWageType.Key}");
@@ -83,28 +83,29 @@ internal sealed class PayrunProcessorRegulation
         var wageTypeAttributes = derivedWageType.ToList().CollectDerivedAttributes(wt => wt.Attributes);
 
         // namespace
-        var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
+        var @namespace = scope.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
 
         // execute wage type available script
         var isAvailable = new PayrunScriptController().IsWageTypeAvailable(wageType, wageTypeAttributes,
             new()
             {
                 DbContext = Settings.DbContext,
-                PayrollCulture = context.PayrollCulture,
+                PayrollCulture = scope.PayrollCulture,
                 Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
-                User = context.User,
-                Payroll = context.Payroll,
+                User = scope.User,
+                Payroll = scope.Payroll,
                 Payrun = Payrun,
-                PayrunJob = context.PayrunJob,
-                ParentPayrunJob = context.ParentPayrunJob,
-                ExecutionPhase = context.ExecutionPhase,
-                RegulationProvider = context,
+                PayrunJob = scope.PayrunJob,
+                ParentPayrunJob = scope.ParentPayrunJob,
+                ExecutionPhase = scope.ExecutionPhase,
+                PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
+                RegulationProvider = scope,
                 ResultProvider = ResultProvider,
                 CaseValueProvider = caseValueProvider,
-                RegulationLookupProvider = context.RegulationLookupProvider,
-                RuntimeValueProvider = context.RuntimeValueProvider,
+                RegulationLookupProvider = scope.RegulationLookupProvider,
+                RuntimeValueProvider = scope.RuntimeValueProvider,
                 DivisionRepository = Settings.DivisionRepository,
                 EmployeeRepository = Settings.EmployeeRepository,
                 CalendarRepository = Settings.CalendarRepository,
@@ -114,7 +115,7 @@ internal sealed class PayrunProcessorRegulation
         return isAvailable ?? true;
     }
 
-    internal Tuple<WageTypeResultSet, List<RetroPayrunJob>, List<string>, bool> CalculateWageTypeValue(PayrunContext context, 
+    internal Tuple<WageTypeResultSet, List<RetroPayrunJob>, List<string>, bool> CalculateWageTypeValue(PayrunEmployeeScope scope, 
         IGrouping<decimal, DerivedWageType> derivedWageType, PayrollResultSet currentPayrollResult, 
         ICaseValueProvider caseValueProvider, int executionCount)
     {
@@ -137,15 +138,15 @@ internal sealed class PayrunProcessorRegulation
             WageTypeName = wageType.Name,
             WageTypeNameLocalizations = wageType.NameLocalizations,
             ValueType = wageType.ValueType,
-            Culture = wageType.Culture ?? context.PayrollCulture,
-            Start = context.PayrunJob.PeriodStart,
-            End = context.PayrunJob.PeriodEnd,
+            Culture = wageType.Culture ?? scope.PayrollCulture,
+            Start = scope.PayrunJob.PeriodStart,
+            End = scope.PayrunJob.PeriodEnd,
             Attributes = new(),
             CustomResults = []
         };
 
         // custom period results by cluster
-        var clusterSetPeriodResult = context.Payroll.ClusterSets?.FirstOrDefault(x => string.Equals(context.Payroll.ClusterSetWageTypePeriod, x.Name));
+        var clusterSetPeriodResult = scope.Payroll.ClusterSets?.FirstOrDefault(x => string.Equals(scope.Payroll.ClusterSetWageTypePeriod, x.Name));
         var autoPeriodResults = clusterSetPeriodResult != null && derivedWageType.AvailableCluster(clusterSetPeriodResult);
 
         // disabled collectors
@@ -161,33 +162,34 @@ internal sealed class PayrunProcessorRegulation
             var wageTypeAttributes = valueExpressions.CollectDerivedAttributes(wt => wt.Attributes);
 
             // namespace
-            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
+            var @namespace = scope.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
 
             // execute wage type value script
             var result = new WageTypeScriptController().GetValue(new()
             {
                 DbContext = Settings.DbContext,
-                PayrollCulture = context.PayrollCulture,
+                PayrollCulture = scope.PayrollCulture,
                 Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
-                User = context.User,
-                Payroll = context.Payroll,
+                User = scope.User,
+                Payroll = scope.Payroll,
                 ExecutionCount = executionCount,
                 WageType = evalWageType,
                 WageTypeAttributes = wageTypeAttributes,
                 DisabledCollectors = disabledCollectors,
                 Payrun = Payrun,
-                PayrunJob = context.PayrunJob,
-                ParentPayrunJob = context.ParentPayrunJob,
-                ExecutionPhase = context.ExecutionPhase,
-                RegulationProvider = context,
+                PayrunJob = scope.PayrunJob,
+                ParentPayrunJob = scope.ParentPayrunJob,
+                ExecutionPhase = scope.ExecutionPhase,
+                PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
+                RegulationProvider = scope,
                 ResultProvider = ResultProvider,
-                RegulationLookupProvider = context.RegulationLookupProvider,
+                RegulationLookupProvider = scope.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentWageTypeResult = resultSet,
-                RuntimeValueProvider = context.RuntimeValueProvider,
+                RuntimeValueProvider = scope.RuntimeValueProvider,
                 DivisionRepository = Settings.DivisionRepository,
                 EmployeeRepository = Settings.EmployeeRepository,
                 CalendarRepository = Settings.CalendarRepository,
@@ -207,7 +209,7 @@ internal sealed class PayrunProcessorRegulation
             // retro payrun jobs
             if (result != null)
             {
-                AddRetroPayrunJobs(retroPayrunJobs, result.Item2, context.EvaluationPeriod.Start);
+                AddRetroPayrunJobs(retroPayrunJobs, result.Item2, scope.EvaluationPeriod.Start);
             }
 
             if (wageTypeValue != null)
@@ -237,33 +239,34 @@ internal sealed class PayrunProcessorRegulation
             var wageTypeAttributes = evalWageType.Attributes ?? new Dictionary<string, object>();
 
             // namespace
-            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
+            var @namespace = scope.DerivedRegulations.FirstOrDefault(x => x.Id == wageType.RegulationId)?.Namespace;
 
             // execute wage type result script
             var retroJobs = new WageTypeScriptController().Result(resultSet.Value, new()
             {
                 DbContext = Settings.DbContext,
-                PayrollCulture = context.PayrollCulture,
+                PayrollCulture = scope.PayrollCulture,
                 Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
-                User = context.User,
-                Payroll = context.Payroll,
+                User = scope.User,
+                Payroll = scope.Payroll,
                 ExecutionCount = executionCount,
                 WageType = evalWageType,
                 WageTypeAttributes = wageTypeAttributes,
                 DisabledCollectors = disabledCollectors,
                 Payrun = Payrun,
-                PayrunJob = context.PayrunJob,
-                ExecutionPhase = context.ExecutionPhase,
-                ParentPayrunJob = context.ParentPayrunJob,
-                RegulationProvider = context,
+                PayrunJob = scope.PayrunJob,
+                ExecutionPhase = scope.ExecutionPhase,
+                PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
+                ParentPayrunJob = scope.ParentPayrunJob,
+                RegulationProvider = scope,
                 ResultProvider = ResultProvider,
-                RegulationLookupProvider = context.RegulationLookupProvider,
+                RegulationLookupProvider = scope.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentWageTypeResult = resultSet,
-                RuntimeValueProvider = context.RuntimeValueProvider,
+                RuntimeValueProvider = scope.RuntimeValueProvider,
                 DivisionRepository = Settings.DivisionRepository,
                 EmployeeRepository = Settings.EmployeeRepository,
                 CalendarRepository = Settings.CalendarRepository,
@@ -272,7 +275,7 @@ internal sealed class PayrunProcessorRegulation
             });
 
             // retro payrun jobs
-            AddRetroPayrunJobs(retroPayrunJobs, retroJobs, context.EvaluationPeriod.Start);
+            AddRetroPayrunJobs(retroPayrunJobs, retroJobs, scope.EvaluationPeriod.Start);
 
             // process next derived
             resultExpressions.RemoveAt(0);
@@ -298,7 +301,7 @@ internal sealed class PayrunProcessorRegulation
         return wageType.CollectorAvailable(collector.Name, collector.CollectorGroups);
     }
 
-    internal List<RetroPayrunJob> CollectorStart(PayrunContext context, IGrouping<string, DerivedCollector> derivedCollector,
+    internal List<RetroPayrunJob> CollectorStart(PayrunEmployeeScope context, IGrouping<string, DerivedCollector> derivedCollector,
         ICaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult, CollectorResultSet collectorResult)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
@@ -329,6 +332,7 @@ internal sealed class PayrunProcessorRegulation
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
                 RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,
@@ -353,7 +357,7 @@ internal sealed class PayrunProcessorRegulation
         return retroPayrunJobs;
     }
 
-    internal Tuple<decimal, List<RetroPayrunJob>> CollectorApply(PayrunContext context, IGrouping<string, DerivedCollector> derivedCollector,
+    internal Tuple<decimal, List<RetroPayrunJob>> CollectorApply(PayrunEmployeeScope scope, IGrouping<string, DerivedCollector> derivedCollector,
         ICaseValueProvider caseValueProvider, WageTypeResult wageTypeResult,
         PayrollResultSet currentPayrollResult, CollectorResultSet collectorResult)
     {
@@ -371,30 +375,31 @@ internal sealed class PayrunProcessorRegulation
             applyCollector.Attributes = applyExpressions.CollectDerivedAttributes(col => col.Attributes);
 
             // namespace
-            var @namespace = context.DerivedRegulations.FirstOrDefault(x => x.Id == applyCollector.RegulationId)?.Namespace;
+            var @namespace = scope.DerivedRegulations.FirstOrDefault(x => x.Id == applyCollector.RegulationId)?.Namespace;
 
             // execute collector apply script
             var result = new CollectorScriptController().ApplyValue(wageTypeResult, new()
             {
                 DbContext = Settings.DbContext,
-                PayrollCulture = context.PayrollCulture,
+                PayrollCulture = scope.PayrollCulture,
                 Namespace = @namespace,
                 FunctionHost = FunctionHost,
                 Tenant = Tenant,
-                User = context.User,
-                Payroll = context.Payroll,
+                User = scope.User,
+                Payroll = scope.Payroll,
                 Collector = applyCollector,
                 Payrun = Payrun,
-                PayrunJob = context.PayrunJob,
-                ParentPayrunJob = context.ParentPayrunJob,
-                ExecutionPhase = context.ExecutionPhase,
-                RegulationProvider = context,
+                PayrunJob = scope.PayrunJob,
+                ParentPayrunJob = scope.ParentPayrunJob,
+                ExecutionPhase = scope.ExecutionPhase,
+                PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
+                RegulationProvider = scope,
                 ResultProvider = ResultProvider,
-                RegulationLookupProvider = context.RegulationLookupProvider,
+                RegulationLookupProvider = scope.RegulationLookupProvider,
                 CaseValueProvider = caseValueProvider,
                 CurrentPayrollResult = currentPayrollResult,
                 CurrentCollectorResult = collectorResult,
-                RuntimeValueProvider = context.RuntimeValueProvider,
+                RuntimeValueProvider = scope.RuntimeValueProvider,
                 DivisionRepository = Settings.DivisionRepository,
                 EmployeeRepository = Settings.EmployeeRepository,
                 CalendarRepository = Settings.CalendarRepository,
@@ -405,7 +410,7 @@ internal sealed class PayrunProcessorRegulation
             if (value != null)
             {
                 // retro payrun jobs
-                AddRetroPayrunJobs(retroPayrunJobs, result.Item2, context.EvaluationPeriod.Start);
+                AddRetroPayrunJobs(retroPayrunJobs, result.Item2, scope.EvaluationPeriod.Start);
 
                 // value provided by the function
                 break;
@@ -424,7 +429,7 @@ internal sealed class PayrunProcessorRegulation
         return new(collector.Result, retroPayrunJobs);
     }
 
-    internal List<RetroPayrunJob> CollectorEnd(PayrunContext context, IGrouping<string, DerivedCollector> derivedCollector,
+    internal List<RetroPayrunJob> CollectorEnd(PayrunEmployeeScope context, IGrouping<string, DerivedCollector> derivedCollector,
         ICaseValueProvider caseValueProvider, PayrollResultSet currentPayrollResult,
         CollectorResultSet collectorResult)
     {
@@ -456,6 +461,7 @@ internal sealed class PayrunProcessorRegulation
                 PayrunJob = context.PayrunJob,
                 ParentPayrunJob = context.ParentPayrunJob,
                 ExecutionPhase = context.ExecutionPhase,
+                PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
                 RegulationProvider = context,
                 ResultProvider = ResultProvider,
                 RegulationLookupProvider = context.RegulationLookupProvider,

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using PayrollEngine.Client.Scripting.Function;
 
@@ -13,7 +14,7 @@ internal static class CodeFactory
 {
     private static Assembly Assembly { get; }
     private static List<string> ResourceNames { get; }
-    private static Dictionary<string, string> CodeFiles { get; } = new();
+    private static ConcurrentDictionary<string, string> CodeFiles { get; } = new();
 
     static CodeFactory()
     {
@@ -30,19 +31,8 @@ internal static class CodeFactory
     {
         resourceName = EnsureResourceName(resourceName);
 
-        // cache success
-        if (CodeFiles.TryGetValue(resourceName, out var file))
-        {
-            return file;
-        }
-
-        // load embedded resource
-        var codeFile = Assembly.GetEmbeddedFile(resourceName);
-
-        // cache update
-        CodeFiles.Add(resourceName, codeFile);
-
-        return codeFile;
+        // thread-safe cache lookup with atomic insert on miss
+        return CodeFiles.GetOrAdd(resourceName, static (key, asm) => asm.GetEmbeddedFile(key), Assembly);
     }
 
     /// <summary>

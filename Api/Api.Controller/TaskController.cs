@@ -40,19 +40,22 @@ public abstract class TaskController(ITenantService tenantService, ITaskService 
         // create task
         var create = await base.CreateAsync(tenantId, task);
 
-        // webhook
-        if (create.Value != null)
+        // no webhook
+        if (create.Value == null ||
+            !await WebhookDispatcher.HasWebhooksAsync(Runtime.DbContext, tenantId))
         {
-            var json = DefaultJsonSerializer.Serialize(create.Value);
-            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
-                new()
-                {
-                    Action = WebhookAction.TaskChange,
-                    RequestMessage = json
-                },
-                userId: create.Value.ScheduledUserId);
-
+            return create;
         }
+
+        // webhook
+        var json = DefaultJsonSerializer.Serialize(create.Value);
+        await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
+            new()
+            {
+                Action = WebhookAction.TaskChange,
+                RequestMessage = json
+            },
+            userId: create.Value.ScheduledUserId);
         return create;
     }
 
@@ -72,20 +75,24 @@ public abstract class TaskController(ITenantService tenantService, ITaskService 
         var existing = await GetAsync(tenantId, task.Id);
         var update = await base.UpdateAsync(tenantId, task);
 
-        // webhook in case of any date changes
-        if (existing.Value != null && update.Value != null &&
-            (existing.Value.Scheduled != update.Value.Scheduled ||
-             existing.Value.Completed != update.Value.Completed))
+        // no webhook or date changes
+        if (!await WebhookDispatcher.HasWebhooksAsync(Runtime.DbContext, tenantId) ||
+            existing.Value == null || update.Value == null ||
+            (existing.Value.Scheduled == update.Value.Scheduled &&
+             existing.Value.Completed == update.Value.Completed))
         {
-            var json = DefaultJsonSerializer.Serialize(update.Value);
-            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
-                new()
-                {
-                    Action = WebhookAction.TaskChange,
-                    RequestMessage = json
-                },
-                userId: update.Value.CompletedUserId ?? update.Value.ScheduledUserId);
+            return update;
         }
+
+        // webhook
+        var json = DefaultJsonSerializer.Serialize(update.Value);
+        await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
+            new()
+            {
+                Action = WebhookAction.TaskChange,
+                RequestMessage = json
+            },
+            userId: update.Value.CompletedUserId ?? update.Value.ScheduledUserId);
         return update;
     }
 }

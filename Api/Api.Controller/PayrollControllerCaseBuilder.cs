@@ -11,6 +11,7 @@ using PayrollEngine.Api.Map;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Client.Scripting;
+using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Application.Service;
 
 namespace PayrollEngine.Api.Controller;
@@ -384,6 +385,346 @@ internal sealed class PayrollControllerCaseBuilder
         }
     }
 
+    #region Bulk Add Case Changes
+
+    internal async Task<ActionResult<int>> AddPayrollCasesBulkAsync(IDbContext context,
+        int tenantId, int payrollId, Model.CaseChangeSetup[] caseChangeSetups)
+    {
+        if (caseChangeSetups == null || caseChangeSetups.Length == 0)
+        {
+            return ActionResultFactory.BadRequest("Empty bulk case change request");
+        }
+
+        try
+        {
+            // === shared context (loaded once) ===
+            var tenant = await Context.TenantService.GetAsync(context, tenantId);
+            if (tenant == null)
+            {
+                return ActionResultFactory.BadRequest($"Unknown tenant with id {tenantId}");
+            }
+            var culture = CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+
+            var payroll = await Context.PayrollService.GetAsync(context, tenantId, payrollId);
+            if (payroll == null)
+            {
+                return ActionResultFactory.BadRequest($"Unknown payroll with id {payrollId}");
+            }
+
+            var division = await Context.DivisionService.GetAsync(context, tenantId, payroll.DivisionId);
+            if (division == null)
+            {
+                return ActionResultFactory.BadRequest($"Unknown payroll division with id {payroll.DivisionId}");
+            }
+
+            // shared regulations for namespace resolution
+            var regulations = (await Context.PayrollService.GetDerivedRegulationsAsync(context,
+                new()
+                {
+                    TenantId = tenantId,
+                    PayrollId = payrollId
+                })).ToList();
+
+            // preload derived regulation cache for bulk validation
+            var collectMoment = Date.Now;
+            DerivedPayrollCache derivedCache = null;
+            if (caseChangeSetups.Length > 1)
+            {
+                derivedCache = await DerivedPayrollCache.CreateAsync(
+                    context,
+                    Context.PayrollService.Repository,
+                    new PayrollQuery
+                    {
+                        TenantId = tenantId,
+                        PayrollId = payrollId,
+                        RegulationDate = collectMoment,
+                        EvaluationDate = collectMoment
+                    });
+            }
+
+            // caches
+            var userCache = new Dictionary<int, User>();
+            var employeeCache = new Dictionary<int, Employee>();
+            var derivedCaseCache = new Dictionary<string, List<Case>>();
+            var derivedCaseFieldCache = new Dictionary<string, List<ChildCaseField>>();
+            var caseNamespaceCache = new Dictionary<string, string>();
+            var caseFieldNamespaceCache = new Dictionary<string, string>();
+
+            // === validate and prepare each setup ===
+            var preparedChanges = new List<(CaseChange Change, int ParentId, CaseType CaseType, Employee Employee)>();
+            for (var index = 0; index < caseChangeSetups.Length; index++)
+            {
+                var caseChangeSetup = caseChangeSetups[index];
+
+                // cancellation not supported in bulk
+                if (caseChangeSetup.CancellationId.HasValue)
+                {
+                    return ActionResultFactory.BadRequest(
+                        $"Bulk case change [{index}]: cancellation is not supported in bulk operations");
+                }
+
+                // user (cached)
+                if (caseChangeSetup.UserId <= 0)
+                {
+                    return ActionResultFactory.BadRequest($"Bulk case change [{index}]: invalid user id {caseChangeSetup.UserId}");
+                }
+                if (!userCache.TryGetValue(caseChangeSetup.UserId, out var user))
+                {
+                    user = await Context.UserService.GetAsync(context, tenantId, caseChangeSetup.UserId);
+                    if (user == null)
+                    {
+                        return ActionResultFactory.BadRequest($"Bulk case change [{index}]: unknown user with id {caseChangeSetup.UserId}");
+                    }
+                    userCache[caseChangeSetup.UserId] = user;
+                }
+
+                // change reason
+                if (string.IsNullOrWhiteSpace(caseChangeSetup.Reason))
+                {
+                    caseChangeSetup.Reason = $"Bulk case change from {user.Identifier} at {Date.Now}";
+                }
+
+                // root case setup
+                if (caseChangeSetup.Case == null)
+                {
+                    return ActionResultFactory.BadRequest($"Bulk case change [{index}]: case change setup without values");
+                }
+
+                // convert (namespace resolution with cached regulations and namespace cache)
+                var domainCaseChangeSetup = await ConvertCaseChangeWithRegulationsAsync(
+                    context, tenantId, caseChangeSetup, regulations,
+                    caseNamespaceCache, caseFieldNamespaceCache);
+
+                // validate case setups
+                CaseType? caseType = null;
+                CaseCancellationType? cancellationType = null;
+                Employee employee = null;
+                var caseSetups = domainCaseChangeSetup.CollectCaseSetups();
+                foreach (var caseSetup in caseSetups)
+                {
+                    var caseName = caseSetup.CaseName;
+                    if (string.IsNullOrWhiteSpace(caseName))
+                    {
+                        return ActionResultFactory.BadRequest($"Bulk case change [{index}]: missing case name in case setup {caseSetup}");
+                    }
+
+                    // derived cases (cached)
+                    if (!derivedCaseCache.TryGetValue(caseName, out var derivedCases))
+                    {
+                        derivedCases = (await Context.PayrollService.GetDerivedCasesAsync(context,
+                            new() { TenantId = tenantId, PayrollId = payrollId },
+                            caseNames: [caseName])).ToList();
+                        derivedCaseCache[caseName] = derivedCases;
+                    }
+                    if (!derivedCases.Any())
+                    {
+                        return ActionResultFactory.BadRequest($"Bulk case change [{index}]: unknown case {caseName}");
+                    }
+
+                    var @case = derivedCases.First();
+                    caseType ??= @case.CaseType;
+                    cancellationType ??= @case.CancellationType;
+                    if (caseType != @case.CaseType)
+                    {
+                        return ActionResultFactory.BadRequest(
+                            $"Bulk case change [{index}]: only one case type allowed within the case change ({caseType}/{@case.CaseType})");
+                    }
+
+                    // employee (cached)
+                    if (@case.CaseType == CaseType.Employee)
+                    {
+                        if (!domainCaseChangeSetup.EmployeeId.HasValue)
+                        {
+                            return ActionResultFactory.BadRequest($"Bulk case change [{index}]: missing employee id on employee cases");
+                        }
+                        if (!employeeCache.TryGetValue(domainCaseChangeSetup.EmployeeId.Value, out employee))
+                        {
+                            employee = await Context.EmployeeService.GetAsync(context, tenantId, domainCaseChangeSetup.EmployeeId.Value);
+                            if (employee == null)
+                            {
+                                return ActionResultFactory.BadRequest(
+                                    $"Bulk case change [{index}]: missing employee with id {domainCaseChangeSetup.EmployeeId}");
+                            }
+                            employeeCache[domainCaseChangeSetup.EmployeeId.Value] = employee;
+                        }
+                    }
+
+                    // validate case values
+                    if (caseSetup.Values != null)
+                    {
+                        foreach (var caseValue in caseSetup.Values)
+                        {
+                            if (!caseValue.Start.HasValue && caseValue.End.HasValue)
+                            {
+                                return ActionResultFactory.BadRequest($"Bulk case change [{index}]: case field {caseValue.CaseFieldName} without start date");
+                            }
+                            if (caseValue.Start.HasValue && caseValue.End.HasValue && caseValue.End < caseValue.Start)
+                            {
+                                return ActionResultFactory.BadRequest($"Bulk case change [{index}]: case field {caseValue.CaseFieldName} period end date before start date");
+                            }
+
+                            // case field (cached)
+                            if (!derivedCaseFieldCache.TryGetValue(caseValue.CaseFieldName, out var caseFieldList))
+                            {
+                                caseFieldList = (await Context.PayrollService.GetDerivedCaseFieldsAsync(context,
+                                    new() { TenantId = tenantId, PayrollId = payrollId },
+                                    [caseValue.CaseFieldName])).ToList();
+                                derivedCaseFieldCache[caseValue.CaseFieldName] = caseFieldList;
+                            }
+                            var caseField = caseFieldList.FirstOrDefault();
+                            if (caseField == null)
+                            {
+                                return ActionResultFactory.BadRequest($"Bulk case change [{index}]: unknown case field {caseValue.CaseFieldName}");
+                            }
+
+                            if (!ValueConvert.TryToValue(caseValue.Value, caseField.ValueType, culture, out _))
+                            {
+                                return ActionResultFactory.BadRequest(
+                                    $"Bulk case change [{index}]: invalid value for case field {caseValue.CaseFieldName} ({caseField.ValueType}): {caseValue.Value}");
+                            }
+                        }
+                    }
+                }
+
+                if (!caseType.HasValue)
+                {
+                    return ActionResultFactory.BadRequest($"Bulk case change [{index}]: unknown case type");
+                }
+
+                // validation case
+                var validationCase = derivedCaseCache.TryGetValue(domainCaseChangeSetup.Case.CaseName, out var vc)
+                    ? vc.FirstOrDefault()
+                    : (await Context.PayrollService.GetDerivedCasesAsync(context,
+                        new() { TenantId = tenantId, PayrollId = payrollId },
+                        caseNames: [domainCaseChangeSetup.Case.CaseName])).FirstOrDefault();
+                if (validationCase == null)
+                {
+                    return ActionResultFactory.BadRequest(
+                        $"Bulk case change [{index}]: unknown validation case {domainCaseChangeSetup.Case.CaseName}");
+                }
+
+                // script validation: skip expensive validation for cases without any expressions or actions
+                // basic structural validation (types, dates, field existence) is already handled above
+                if (validationCase.HasAnyExpression || validationCase.HasAnyAction)
+                {
+                    var issues = await Services.ValidateCaseAsync(
+                        new()
+                        {
+                            Tenant = tenant,
+                            Payroll = payroll,
+                            Division = division,
+                            User = user,
+                            Employee = employee,
+                            ValidationCase = validationCase,
+                            CaseType = caseType.Value,
+                            DomainCaseChangeSetup = domainCaseChangeSetup,
+                            DerivedCache = derivedCache
+                        });
+                    if (issues != null && issues.Any())
+                    {
+                        return ActionResultFactory.BadRequest(
+                            $"Bulk case change [{index}]: {GetIssuesMessage(issues)}");
+                    }
+                }
+                // build domain case change
+                var domainCaseChange = new CaseChange
+                {
+                    UserId = domainCaseChangeSetup.UserId,
+                    EmployeeId = domainCaseChangeSetup.EmployeeId,
+                    DivisionId = domainCaseChangeSetup.DivisionId,
+                    Reason = domainCaseChangeSetup.Reason,
+                    ValidationCaseName = domainCaseChangeSetup.Case.CaseName,
+                    Forecast = domainCaseChangeSetup.Forecast,
+                    Values = domainCaseChangeSetup.CollectCaseValues(),
+                    CancellationType = (CaseCancellationType)cancellationType
+                };
+                if (domainCaseChangeSetup.Created.HasValue)
+                {
+                    domainCaseChange.Created = domainCaseChangeSetup.Created.Value;
+                    domainCaseChange.Updated = domainCaseChangeSetup.Created.Value;
+                }
+
+                // determine parent id
+                var parentId = caseType.Value == CaseType.Employee && employee != null
+                    ? employee.Id
+                    : tenantId;
+
+                preparedChanges.Add((domainCaseChange, parentId, caseType.Value, employee));
+            }
+
+            // === batch insert grouped by case type ===
+            if (!preparedChanges.Any())
+            {
+                return ActionResultFactory.BadRequest("No valid case changes to process");
+            }
+
+            var userId = caseChangeSetups.First().UserId;
+            var totalCreated = 0;
+
+            // group by case type and process each group
+            var groupedChanges = preparedChanges.GroupBy(p => p.CaseType);
+            foreach (var group in groupedChanges)
+            {
+                var changeTuples = group.Select(p => (p.ParentId, p.Change)).ToList();
+                List<CaseChange> createdChanges;
+                switch (group.Key)
+                {
+                    case CaseType.Global:
+                        createdChanges = await Context.GlobalChangeService.AddCaseChangesAsync(
+                            context, tenantId, userId, payrollId, changeTuples);
+                        break;
+                    case CaseType.National:
+                        createdChanges = await Context.NationalChangeService.AddCaseChangesAsync(
+                            context, tenantId, userId, payrollId, changeTuples);
+                        break;
+                    case CaseType.Company:
+                        createdChanges = await Context.CompanyChangeService.AddCaseChangesAsync(
+                            context, tenantId, userId, payrollId, changeTuples);
+                        break;
+                    case CaseType.Employee:
+                        createdChanges = await Context.EmployeeChangeService.AddCaseChangesAsync(
+                            context, tenantId, userId, payrollId, changeTuples);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                totalCreated += createdChanges.Count;
+            }
+
+            return totalCreated;
+        }
+        catch (ScriptException exception)
+        {
+            return new UnprocessableEntityObjectResult(exception.GetBaseException().ToString());
+        }
+        catch (PersistenceException exception)
+        {
+            return exception.ErrorType == PersistenceErrorType.UniqueConstraint ?
+                new UnprocessableEntityObjectResult(exception.Message) :
+                new UnprocessableEntityObjectResult(exception.GetBaseMessage());
+        }
+        catch (Exception exception)
+        {
+            return ActionResultFactory.InternalServerError(exception);
+        }
+    }
+
+    /// <summary>
+    /// Convert case change setup using preloaded regulations (avoids redundant GetDerivedRegulationsAsync calls)
+    /// </summary>
+    private async Task<CaseChangeSetup> ConvertCaseChangeWithRegulationsAsync(IDbContext context, int tenantId,
+        Model.CaseChangeSetup caseChangeSetup, List<Regulation> regulations,
+        Dictionary<string, string> caseNamespaceCache = null,
+        Dictionary<string, string> caseFieldNamespaceCache = null)
+    {
+        var caseChange = new CaseChangeSetupMap().ToDomain(caseChangeSetup);
+        await ApplyCaseNamespaceAsync(context, tenantId, caseChange.Case, regulations,
+            caseNamespaceCache, caseFieldNamespaceCache);
+        return caseChange;
+    }
+
+    #endregion
+
     private async Task<CaseChangeSetup> ConvertCaseChangeAsync(IDbContext context, int tenantId,
         int payrollId, Model.CaseChangeSetup caseChangeSetup)
     {
@@ -400,34 +741,44 @@ internal sealed class PayrollControllerCaseBuilder
     }
 
     private async Task ApplyCaseNamespaceAsync(IDbContext context, int tenantId,
-        CaseSetup caseSetup, List<Regulation> regulations)
+        CaseSetup caseSetup, List<Regulation> regulations,
+        Dictionary<string, string> caseNamespaceCache = null,
+        Dictionary<string, string> caseFieldNamespaceCache = null)
     {
         // case name
-        caseSetup.CaseName = await ApplyCaseNamespaceAsync(context, tenantId, caseSetup.CaseName, regulations);
+        caseSetup.CaseName = await ApplyCaseNamespaceAsync(context, tenantId, caseSetup.CaseName, regulations, caseNamespaceCache);
 
         // case values
         foreach (var caseValue in caseSetup.Values)
         {
             caseValue.CaseName = caseSetup.CaseName;
-            caseValue.CaseFieldName = await ApplyCaseFieldNamespaceAsync(context, tenantId, caseValue.CaseFieldName, regulations);
+            caseValue.CaseFieldName = await ApplyCaseFieldNamespaceAsync(context, tenantId, caseValue.CaseFieldName, regulations, caseFieldNamespaceCache);
         }
 
         // related cases
         foreach (var relatedCase in caseSetup.RelatedCases)
         {
-            await ApplyCaseNamespaceAsync(context, tenantId, relatedCase, regulations);
+            await ApplyCaseNamespaceAsync(context, tenantId, relatedCase, regulations, caseNamespaceCache, caseFieldNamespaceCache);
         }
     }
 
     private async Task<string> ApplyCaseNamespaceAsync(IDbContext context, int tenantId,
-        string caseName, IEnumerable<Regulation> regulations)
+        string caseName, IEnumerable<Regulation> regulations,
+        Dictionary<string, string> caseNamespaceCache = null)
     {
+        // check cache first
+        if (caseNamespaceCache != null && caseNamespaceCache.TryGetValue(caseName, out var cachedName))
+        {
+            return cachedName;
+        }
+
         foreach (var regulation in regulations)
         {
             var regulationCaseName = caseName.EnsureNamespace(regulation.Namespace);
             var @case = await Context.CaseService.GetAsync(context, tenantId, regulation.Id, regulationCaseName);
             if (@case != null)
             {
+                caseNamespaceCache?.TryAdd(caseName, regulationCaseName);
                 return regulationCaseName;
             }
         }
@@ -435,14 +786,22 @@ internal sealed class PayrollControllerCaseBuilder
     }
 
     private async Task<string> ApplyCaseFieldNamespaceAsync(IDbContext context, int tenantId,
-        string caseFieldName, List<Regulation> regulations)
+        string caseFieldName, List<Regulation> regulations,
+        Dictionary<string, string> caseFieldNamespaceCache = null)
     {
+        // check cache first
+        if (caseFieldNamespaceCache != null && caseFieldNamespaceCache.TryGetValue(caseFieldName, out var cachedName))
+        {
+            return cachedName;
+        }
+
         foreach (var regulation in regulations)
         {
             var regulationCaseName = caseFieldName.EnsureNamespace(regulation.Namespace);
             var regulationCases = await Context.CaseFieldService.GetRegulationCaseFieldsAsync(context, tenantId, [regulationCaseName]);
             if (regulationCases != null)
             {
+                caseFieldNamespaceCache?.TryAdd(caseFieldName, regulationCaseName);
                 return regulationCaseName;
             }
         }

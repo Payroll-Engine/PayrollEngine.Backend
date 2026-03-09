@@ -8,6 +8,7 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="Calendar"/> persistence (table: Calendar).</summary>
 public class CalendarRepository() : ChildDomainRepository<Calendar>(DbSchema.Tables.Calendar,
     DbSchema.CalendarColumn.TenantId), ICalendarRepository
 {

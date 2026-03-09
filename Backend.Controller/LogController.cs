@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Logs")]
 [Route("api/tenants/{tenantId}/logs")]
+[TenantAuthorize]
 public class LogController : Api.Controller.LogController
 {
     /// <inheritdoc/>
@@ -28,16 +29,8 @@ public class LogController : Api.Controller.LogController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLogs")]
-    public async Task<ActionResult> QueryLogsAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryLogsAsync(int tenantId, [FromQuery] Query query) => 
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a log
@@ -49,16 +42,8 @@ public class LogController : Api.Controller.LogController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetLog")]
-    public async Task<ActionResult<ApiObject.Log>> GetLogAsync(int tenantId, int logId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, logId);
-    }
+    public async Task<ActionResult<ApiObject.Log>> GetLogAsync(int tenantId, int logId) => 
+        await GetAsync(tenantId, logId);
 
     /// <summary>
     /// Add a new log
@@ -71,16 +56,8 @@ public class LogController : Api.Controller.LogController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateLog")]
-    public async Task<ActionResult<ApiObject.Log>> CreateLogAsync(int tenantId, ApiObject.Log log)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(tenantId, log);
-    }
+    public async Task<ActionResult<ApiObject.Log>> CreateLogAsync(int tenantId, ApiObject.Log log) => 
+        await CreateAsync(tenantId, log);
 
     /// <summary>
     /// Delete a log
@@ -89,14 +66,6 @@ public class LogController : Api.Controller.LogController
     /// <param name="logId">The id of the log</param>
     [HttpDelete("{logId}")]
     [ApiOperationId("DeleteLog")]
-    public async Task<IActionResult> DeleteLogAsync(int tenantId, int logId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, logId);
-    }
+    public async Task<IActionResult> DeleteLogAsync(int tenantId, int logId) => 
+        await DeleteAsync(tenantId, logId);
 }

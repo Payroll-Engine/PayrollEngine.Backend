@@ -9,6 +9,7 @@ namespace PayrollEngine.Api.Core;
 /// <summary>
 /// Swagger OAuth security
 /// </summary>
+// ReSharper disable once UnusedType.Global
 public static class SwaggerOAuthSecurity
 {
     /// <summary>

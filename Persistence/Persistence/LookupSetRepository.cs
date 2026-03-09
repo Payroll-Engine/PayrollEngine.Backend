@@ -67,31 +67,46 @@ public class LookupSetRepository(IRegulationRepository regulationRepository,
             }
             else
             {
+                if (item.Values != null)
+                {
+                    foreach (var value in item.Values)
+                    {
+                        value.InitCreatedDate(item.Created);
+                    }
+                }
+                // clear lookup value id for new lookup to avoid confusion
                 newLookups.Add(item);
             }
         }
 
         // transaction
-        using var txScope = TransactionFactory.NewTransactionScope();
-
-        // create lookups
-        if (newLookups.Any())
+        using (var txScope = TransactionFactory.NewTransactionScope())
         {
-            var created = (await base.CreateAsync(context, regulationId, newLookups)).ToList();
-            if (created.Any())
+            // create lookups
+            if (newLookups.Any())
             {
-                lookups.AddRange(created);
+                var created = (await base.CreateAsync(context, regulationId, newLookups)).ToList();
+                if (created.Any())
+                {
+                    lookups.AddRange(created);
+                }
             }
+
+            // create lookup values for each created lookup
+            foreach (var lookup in lookups)
+            {
+                // performance optimization: insert case values with bulk mode
+                await ValueRepository.CreateBulkAsync(context, lookup.Id, lookup.Values);
+            }
+
+            txScope.Complete();
         }
 
-        // create lookup values for each created lookup
-        foreach (var lookup in lookups)
-        {
-            // performance optimization: insert case values with bulk mode
-            await ValueRepository.CreateBulkAsync(context, lookup.Id, lookup.Values);
-        }
+        // refresh query optimizer statistics after bulk import to prevent
+        // plan degradation (tipping point) on large lookup value sets
+        // must run outside the TransactionScope (scope must be disposed first)
+        await context.UpdateStatisticsTargetedAsync();
 
-        txScope.Complete();
         return lookups;
     }
 

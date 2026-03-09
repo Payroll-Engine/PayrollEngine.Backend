@@ -11,7 +11,9 @@ using PayrollEngine.Domain.Scripting.Runtime;
 namespace PayrollEngine.Domain.Application;
 
 /// <summary>
-/// Process a report
+/// Executes a report by resolving parameters, running report-start and report-end scripts,
+/// executing data queries via <see cref="IQueryService"/>, and assembling the final
+/// <see cref="ReportResponse"/> with merged data sets and parameters.
 /// </summary>
 public class ReportProcessor(Tenant tenant, IQueryService queryService, ReportToolSettings settings)
     : ReportTool(tenant, settings)
@@ -178,14 +180,14 @@ public class ReportProcessor(Tenant tenant, IQueryService queryService, ReportTo
     private ReportRuntimeSettings GetRuntimeSettings(User user, ReportSet report, ReportRequest request,
         IApiControllerContext controllerContext)
     {
-        // [culture by priority]: report-request > user> system</remarks>
+        // [culture by priority]: report-request > user > deterministic fallback
         var culture =
             // priority 1: report request culture
             request.Culture ??
             // priority 2: user culture
             user.Culture ??
-            // priority 3: system culture
-            CultureInfo.CurrentCulture.Name;
+            // priority 3: deterministic fallback (not server OS locale)
+            "en-US";
 
         return new()
         {

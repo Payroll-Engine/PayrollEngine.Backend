@@ -1,5 +1,5 @@
-﻿using PayrollEngine.Domain.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Domain.Scripting;
 
@@ -9,8 +9,8 @@ namespace PayrollEngine.Domain.Scripting;
 public sealed class RuntimeValueProvider : IRuntimeValueProvider
 {
     /// <inheritdoc />
-    public Dictionary<string, string> PayrunValues { get; } = new();
+    public ConcurrentDictionary<string, string> PayrunValues { get; } = new();
 
     /// <inheritdoc />
-    public Dictionary<string, Dictionary<string, string>> EmployeeValues { get; } = new();
+    public ConcurrentDictionary<string, ConcurrentDictionary<string, string>> EmployeeValues { get; } = new();
 }

@@ -17,6 +17,7 @@ GO
 
 -- =============================================
 -- Get employee wage type results from a time period
+-- fully denormalized: zero JOINs, all filters on WageTypeResult columns
 -- =============================================
 CREATE PROCEDURE dbo.[GetWageTypeResults]
   -- the tenant id
@@ -52,103 +53,101 @@ BEGIN
   SELECT @wageTypeCount = COUNT(*) FROM OPENJSON(@wageTypeNumbers);
 
   -- special query for single wage type
-  -- better perfomance to indexed column of the wage type number
-  if (@wageTypeCount= 1)
+  -- better performance to indexed column of the wage type number
+  IF (@wageTypeCount = 1)
   BEGIN
-      SELECT @wageTypeNumber = CAST(value AS DECIMAL(28, 6))
-        FROM OPENJSON(@wageTypeNumbers);
+    SELECT @wageTypeNumber = CAST(value AS DECIMAL(28, 6))
+      FROM OPENJSON(@wageTypeNumbers);
 
-      SELECT TOP (100) PERCENT dbo.[WageTypeResult].*
-      FROM dbo.[PayrollResult]
-      INNER JOIN dbo.[PayrunJob]
-        ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-      INNER JOIN dbo.[WageTypeResult]
-        ON dbo.[PayrollResult].[Id] = dbo.[WageTypeResult].[PayrollResultId]
-      WHERE (dbo.[PayrollResult].[TenantId] = @tenantId)
-        AND (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-        AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
+    -- zero-JOIN query: single wage type optimization
+    SELECT TOP (100) PERCENT wtr.*
+    FROM dbo.[WageTypeResult] wtr
+    WHERE (wtr.[TenantId] = @tenantId)
+      AND (wtr.[EmployeeId] = @employeeId)
+      AND (
+        @divisionId IS NULL
+        OR wtr.[DivisionId] = @divisionId
+      )
+      AND (
+        @payrunJobId IS NULL
+        OR wtr.[PayrunJobId] = @payrunJobId
+      )
+      AND (
+        @parentPayrunJobId IS NULL
+        OR wtr.[ParentJobId] = @parentPayrunJobId
+      )
+      AND (
+        wtr.[WageTypeNumber] = @wageTypeNumber
+      )
+      AND (
+        (@periodStart IS NULL AND @periodEnd IS NULL)
+        OR wtr.[Start] BETWEEN @periodStart AND @periodEnd
+      )
+      AND (
+        @jobStatus IS NULL
+        OR wtr.[PayrunJobId] IN (
+          SELECT pj.[Id] FROM dbo.[PayrunJob] pj
+          WHERE pj.[Id] = wtr.[PayrunJobId]
+            AND pj.[JobStatus] & @jobStatus = pj.[JobStatus]
         )
-        AND (
-            @payrunJobId IS NULL
-            OR dbo.[PayrunJob].[Id] = @payrunJobId
+      )
+      AND (
+        wtr.[Forecast] IS NULL
+        OR wtr.[Forecast] = @forecast
+      )
+      AND (
+        @evaluationDate IS NULL
+        OR wtr.[Created] <= @evaluationDate
+      )
+    ORDER BY wtr.[Created]
+  END
+  ELSE
+  BEGIN
+    -- zero-JOIN query: multiple wage types
+    SELECT TOP (100) PERCENT wtr.*
+    FROM dbo.[WageTypeResult] wtr
+    WHERE (wtr.[TenantId] = @tenantId)
+      AND (wtr.[EmployeeId] = @employeeId)
+      AND (
+        @divisionId IS NULL
+        OR wtr.[DivisionId] = @divisionId
+      )
+      AND (
+        @payrunJobId IS NULL
+        OR wtr.[PayrunJobId] = @payrunJobId
+      )
+      AND (
+        @parentPayrunJobId IS NULL
+        OR wtr.[ParentJobId] = @parentPayrunJobId
+      )
+      AND (
+        @wageTypeNumbers IS NULL
+        OR wtr.[WageTypeNumber] IN (
+          SELECT CAST(value AS DECIMAL(28, 6))
+          FROM OPENJSON(@wageTypeNumbers)
         )
-        AND (
-            @parentPayrunJobId IS NULL
-            OR dbo.[PayrunJob].[ParentJobId] = @parentPayrunJobId
+      )
+      AND (
+        (@periodStart IS NULL AND @periodEnd IS NULL)
+        OR wtr.[Start] BETWEEN @periodStart AND @periodEnd
+      )
+      AND (
+        @jobStatus IS NULL
+        OR wtr.[PayrunJobId] IN (
+          SELECT pj.[Id] FROM dbo.[PayrunJob] pj
+          WHERE pj.[Id] = wtr.[PayrunJobId]
+            AND pj.[JobStatus] & @jobStatus = pj.[JobStatus]
         )
-        AND (
-            dbo.[WageTypeResult].[WageTypeNumber] = @wageTypeNumber
-        )
-        AND (
-            (@periodStart IS NULL AND @periodEnd IS NULL)
-            OR
-            dbo.[PayrunJob].[PeriodStart] BETWEEN @periodStart AND @periodEnd
-        )
-        AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-        )
-        AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-        )
-        AND (
-            @evaluationDate IS NULL
-            OR dbo.[WageTypeResult].[Created] <= @evaluationDate
-        )
-      ORDER BY dbo.[WageTypeResult].[Created]
-END
-ELSE
-BEGIN
-      SELECT TOP (100) PERCENT dbo.[WageTypeResult].*
-      FROM dbo.[PayrollResult]
-      INNER JOIN dbo.[PayrunJob]
-        ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-      INNER JOIN dbo.[WageTypeResult]
-        ON dbo.[PayrollResult].[Id] = dbo.[WageTypeResult].[PayrollResultId]
-      WHERE (dbo.[PayrollResult].[TenantId] = @tenantId)
-        AND (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-        AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
-        )
-        AND (
-            @payrunJobId IS NULL
-            OR dbo.[PayrunJob].[Id] = @payrunJobId
-        )
-        AND (
-            @parentPayrunJobId IS NULL
-            OR dbo.[PayrunJob].[ParentJobId] = @parentPayrunJobId
-        )
-        AND (
-            @wageTypeNumbers IS NULL
-            OR dbo.[WageTypeResult].[WageTypeNumber] IN (
-                SELECT CAST(value AS DECIMAL(28, 6))
-                FROM OPENJSON(@wageTypeNumbers)
-                )
-        )
-        AND (
-            (@periodStart IS NULL AND @periodEnd IS NULL)
-            OR
-            dbo.[PayrunJob].[PeriodStart] BETWEEN @periodStart AND @periodEnd
-        )
-        AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-        )
-        AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-        )
-        AND (
-            @evaluationDate IS NULL
-            OR dbo.[WageTypeResult].[Created] <= @evaluationDate
-        )
-      ORDER BY dbo.[WageTypeResult].[Created]
-END
+      )
+      AND (
+        wtr.[Forecast] IS NULL
+        OR wtr.[Forecast] = @forecast
+      )
+      AND (
+        @evaluationDate IS NULL
+        OR wtr.[Created] <= @evaluationDate
+      )
+    ORDER BY wtr.[Created]
+  END
 END
 GO
-
-

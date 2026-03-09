@@ -6,10 +6,17 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Api.Core;
 
+/// <summary>
+/// Factory that registers all persistence repository implementations into the DI container.
+/// Organizes registrations by domain area (tenant, regulation, payroll, case values, payrun, reports).
+/// </summary>
 internal static class ApiRepositoryFactory
 {
-
-    // repositories setup
+    /// <summary>
+    /// Register all repository implementations as scoped services.
+    /// </summary>
+    /// <param name="services">Service collection to configure</param>
+    /// <param name="configuration">Application configuration for audit trail settings</param>
     internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
     {
         // audit trail

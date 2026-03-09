@@ -832,6 +832,32 @@ public abstract class PayrollController(IPayrollContextService context, IControl
         }
     }
 
+    public virtual async Task<ActionResult<int>> AddPayrollCasesBulkAsync(int tenantId, int payrollId,
+        ApiObject.CaseChangeSetup[] caseChangeSetups)
+    {
+        try
+        {
+            // tenant
+            var authResult = await TenantRequestAsync(tenantId);
+            if (authResult != null)
+            {
+                return authResult;
+            }
+
+            var builder = new PayrollControllerCaseBuilder(this);
+            return await builder.AddPayrollCasesBulkAsync(Runtime.DbContext, tenantId, payrollId,
+                caseChangeSetups);
+        }
+        catch (ScriptException exception)
+        {
+            return UnprocessableEntity(exception.GetBaseException().ToString());
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
+    }
+
     Task<List<DomainObject.CaseValidationIssue>> IPayrollControllerServices.ValidateCaseAsync(ValidateCaseSettings settings) =>
         ValidateCaseAsync(settings);
 
@@ -855,7 +881,8 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             User = settings.User,
             RegulationDate = settings.RegulationDate.Value,
             EvaluationDate = settings.EvaluationDate.Value,
-            Employee = settings.Employee
+            Employee = settings.Employee,
+            DerivedCache = settings.DerivedCache
         });
 
         // [culture by priority]: employee > division > tenant > system

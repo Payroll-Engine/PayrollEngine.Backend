@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Global case changes")]
 [Route("api/tenants/{tenantId}/globalcases/changes")]
+[TenantAuthorize]
 public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryGlobalCaseChanges")]
     public async Task<ActionResult> QueryGlobalCaseChangesAsync(int tenantId, 
-        [FromQuery] DomainObject.CaseChangeQuery query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryAsync(tenantId, tenantId, query);
-    }
+        [FromQuery] DomainObject.CaseChangeQuery query) =>
+        await QueryAsync(tenantId, tenantId, query);
 
     /// <summary>
     /// Get a global case change
@@ -53,16 +46,8 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     [NotFoundResponse]
     [ApiOperationId("GetGlobalCaseChange")]
     public async Task<ActionResult<ApiObject.CaseChange>> GetGlobalCaseChangeAsync(
-        int tenantId, int caseChangeId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, caseChangeId);
-    }
+        int tenantId, int caseChangeId) =>
+        await GetAsync(tenantId, caseChangeId);
 
     /// <summary>
     /// Query global case changes values
@@ -86,14 +71,6 @@ public class GlobalCaseChangeController : Api.Controller.GlobalCaseChangeControl
     /// <param name="caseValueId">The case value id</param>
     [HttpDelete("{caseValueId}")]
     [ApiOperationId("DeleteGlobalCaseChange")]
-    public async Task<IActionResult> DeleteGlobalCaseChangeAsync(int tenantId, int caseValueId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, caseValueId);
-    }
+    public async Task<IActionResult> DeleteGlobalCaseChangeAsync(int tenantId, int caseValueId) =>
+        await DeleteAsync(tenantId, caseValueId);
 }

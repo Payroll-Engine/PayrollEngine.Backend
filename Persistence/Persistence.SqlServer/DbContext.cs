@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Task = System.Threading.Tasks.Task;
 using Microsoft.Data.SqlClient;
 using Dapper;
@@ -14,7 +17,7 @@ namespace PayrollEngine.Persistence.SqlServer;
 public class DbContext : IDbContext
 {
     /// <summary>The current database version</summary>
-    private static System.Version MinVersion => new(0, 9, 5);
+    private static Version MinVersion => new(0, 9, 6);
 
     // minimum command timeout is 30 seconds
     private const int MinCommandTimeout = 30;
@@ -27,12 +30,25 @@ public class DbContext : IDbContext
     /// <summary>The default command timeout in seconds</summary>
     private int DefaultCommendTimeout { get; }
 
+    /// <summary>The required database collation</summary>
+    private string RequiredCollation { get; }
+
+    /// <summary>The default database collation</summary>
+    private const string DefaultCollation = "SQL_Latin1_General_CP1_CS_AS";
+
+    /// <summary>Shared connections per ambient TransactionScope.
+    /// Prevents DTC promotion and deadlocks by reusing a single connection
+    /// for the lifetime of each TransactionScope.</summary>
+    private readonly ConcurrentDictionary<string, SqlConnection> scopedConnections = new();
+
     /// <summary>
     /// New database connection
     /// </summary>
     /// <param name="connectionString">The database connection string</param>
     /// <param name="defaultCommendTimeout">The default command timeout in seconds</param>
-    public DbContext(string connectionString, int defaultCommendTimeout = 120)
+    /// <param name="collation">The required database collation (default: SQL_Latin1_General_CP1_CS_AS)</param>
+    public DbContext(string connectionString, int defaultCommendTimeout = 120,
+        string collation = DefaultCollation)
     {
         // connection string
         if (string.IsNullOrWhiteSpace(connectionString))
@@ -51,51 +67,69 @@ public class DbContext : IDbContext
             defaultCommendTimeout = MaxCommandTimeout;
         }
         DefaultCommendTimeout = defaultCommendTimeout;
+
+        // collation
+        RequiredCollation = collation ?? DefaultCollation;
     }
 
     #region Control
 
     /// <inheritdoc />
     public string DateTimeType =>
-        $"DATETIME2({SystemSpecification.DateTimeFractionalSecondsPrecision}";
+        $"DATETIME2({SystemSpecification.DateTimeFractionalSecondsPrecision})";
 
     /// <inheritdoc />
     public string DecimalType =>
         $"DECIMAL({SystemSpecification.DecimalPrecision}, {SystemSpecification.DecimalScale})";
+
 
     /// <inheritdoc />
     public async Task<Exception> TestVersionAsync()
     {
         try
         {
-            // version sql query
-            // order the existing version from new to old
-            const string query = $"SELECT TOP 1 {nameof(Version.MajorVersion)}, " +
-                                 $"{nameof(Version.MinorVersion)}, " +
-                                 $"{nameof(Version.SubVersion)} " +
-                                 $"FROM {nameof(Version)} " +
-                                 $"ORDER BY {nameof(Version.MajorVersion)} DESC, " +
-                                 $"{nameof(Version.MinorVersion)} DESC, " +
-                                 $"{nameof(Version.SubVersion)} DESC";
-
-            // test if the newest matches the minimum version criteria
             await using var connection = new SqlConnection(ConnectionString);
-
-            await using var command = new SqlCommand(query, connection);
             await connection.OpenAsync();
 
+            // collation check
+            await using var collationCommand = new SqlCommand(
+                "SELECT CAST(DATABASEPROPERTYEX(DB_NAME(), 'Collation') AS NVARCHAR(128))", connection);
+            var collation = (string)await collationCommand.ExecuteScalarAsync();
+            if (!string.Equals(collation, RequiredCollation, StringComparison.Ordinal))
+            {
+                throw new PayrollException(
+                    $"Invalid database collation {collation}. Expected {RequiredCollation}.");
+            }
+
+            // version check
+            // order the existing version from new to old
+            await using var command = new SqlCommand(
+                "SELECT TOP 1 MajorVersion, MinorVersion, SubVersion " +
+                "FROM Version " +
+                "ORDER BY MajorVersion DESC, MinorVersion DESC, SubVersion DESC", connection);
+
             await using var reader = await command.ExecuteReaderAsync();
+            Version maxVersion = null;
             while (await reader.ReadAsync())
             {
                 var major = reader.GetInt32(0);
                 var minor = reader.GetInt32(1);
                 var sub = reader.GetInt32(2);
-                var newestVersion = new System.Version(major, minor, sub);
-                if (newestVersion < MinVersion)
+                var version = new Version(major, minor, sub);
+                if (version < MinVersion)
                 {
-                    throw new PayrollException($"Invalid database version {newestVersion}. Should be {MinVersion} or newer.");
+                    var message = $"Invalid database version {version}. Should be {MinVersion} or newer.";
+                    Log.Critical(message);
+                    throw new PayrollException(message);
+                }
+
+                if (maxVersion == null || maxVersion < version)
+                {
+                    maxVersion = version;
                 }
             }
+
+            Log.Debug($"Database version: {maxVersion}");
 
             return null;
         }
@@ -124,7 +158,7 @@ public class DbContext : IDbContext
             }
 
             // get test tenant identifier
-            var connection = new SqlConnection(ConnectionString);
+            await using var connection = new SqlConnection(ConnectionString);
             var tenant = (await connection.QueryAsync<Tenant>(sql, new
             {
                 id = tenantId,
@@ -141,25 +175,66 @@ public class DbContext : IDbContext
     /// <inheritdoc />
     public Exception TransformException(Exception exception)
     {
-        if (exception is SqlException sqlException)
+        if (exception is not SqlException sqlException)
         {
-            var message = exception.GetBaseMessage();
-
-            // sql 2601: Cannot insert duplicate key row
-            // see http://www.sql-server-helper.com/error-messages/msg-2601.aspx
-            if (sqlException.Number == 2601)
-            {
-                var startIndex = message.IndexOf("(", StringComparison.InvariantCultureIgnoreCase);
-                var endIndex = message.IndexOf(")", StringComparison.InvariantCultureIgnoreCase);
-                if (startIndex > 0 && endIndex > startIndex)
-                {
-                    message = $"Unique index key already exists [{message.Substring(startIndex + 1, endIndex - startIndex - 1)}]";
-                }
-            }
-            return new PersistenceException(message, PersistenceErrorType.UniqueConstraint, exception);
+            return exception;
         }
 
-        return exception;
+        var message = exception.GetBaseMessage();
+
+        return sqlException.Number switch
+        {
+            // unique index violation
+            // see http://www.sql-server-helper.com/error-messages/msg-2601.aspx
+            2601 => new PersistenceException(
+                FormatUniqueConstraintMessage(message),
+                PersistenceErrorType.UniqueConstraint, exception),
+
+            // primary key violation
+            2627 => new PersistenceException(
+                FormatUniqueConstraintMessage(message),
+                PersistenceErrorType.UniqueConstraint, exception),
+
+            // foreign key / check constraint violation
+            547 => new PersistenceException(
+                FormatConstraintMessage(message),
+                PersistenceErrorType.ConstraintViolation, exception),
+
+            // NOT NULL violation
+            515 => new PersistenceException(
+                FormatNotNullMessage(message),
+                PersistenceErrorType.NotNullViolation, exception),
+
+            _ => exception
+        };
+    }
+
+    /// <summary>Format user-friendly message for unique constraint violations (SQL 2601/2627)</summary>
+    private static string FormatUniqueConstraintMessage(string message)
+    {
+        // extract duplicate key values from: "...The duplicate key value is (value1, value2)."
+        var match = Regex.Match(message, @"\((?<values>[^)]+)\)[^(]*$");
+        return match.Success
+            ? $"Duplicate entry: the value ({match.Groups["values"].Value}) already exists"
+            : "Duplicate entry: a record with the same unique key already exists";
+    }
+
+    /// <summary>Format user-friendly message for foreign key/check constraint violations (SQL 547)</summary>
+    private static string FormatConstraintMessage(string message)
+    {
+        var match = Regex.Match(message, @"table ""(?<table>[^""]+)""");
+        return match.Success
+            ? $"Constraint violation: referenced record in {match.Groups["table"].Value} not found or in use"
+            : "Constraint violation: a database constraint was violated";
+    }
+
+    /// <summary>Format user-friendly message for NOT NULL violations (SQL 515)</summary>
+    private static string FormatNotNullMessage(string message)
+    {
+        var match = Regex.Match(message, "column '(?<col>[^']+)'");
+        return match.Success
+            ? $"Required field '{match.Groups["col"].Value}' must not be empty"
+            : "A required field is missing";
     }
 
     #endregion
@@ -168,43 +243,57 @@ public class DbContext : IDbContext
 
     /// <inheritdoc />
     public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        int? commandTimeout = null, CommandType? commandType = null)
     {
-        using var connection = NewConnection();
-        return await connection.QueryAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
+        using var lease = LeaseConnection();
+        return await lease.Connection.QueryAsync<T>(sql, param, commandTimeout: commandTimeout ?? DefaultCommendTimeout, commandType: commandType);
     }
 
     /// <inheritdoc />
     public async Task<T> QueryFirstAsync<T>(string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        int? commandTimeout = null, CommandType? commandType = null)
     {
-        using var connection = NewConnection();
-        return await connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
+        using var lease = LeaseConnection();
+        return await lease.Connection.QueryFirstAsync<T>(sql, param, commandTimeout: commandTimeout ?? DefaultCommendTimeout, commandType: commandType);
     }
 
     /// <inheritdoc />
     public async Task<T> QuerySingleAsync<T>(string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        int? commandTimeout = null, CommandType? commandType = null)
     {
-        using var connection = NewConnection();
-        return await connection.QuerySingleAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
+        using var lease = LeaseConnection();
+        return await lease.Connection.QuerySingleAsync<T>(sql, param, commandTimeout: commandTimeout ?? DefaultCommendTimeout, commandType: commandType);
     }
 
     /// <inheritdoc />
     public async Task<int> ExecuteAsync(string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        int? commandTimeout = null, CommandType? commandType = null)
     {
-        using var connection = NewConnection();
-        return await connection.ExecuteAsync(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
+        using var lease = LeaseConnection();
+        return await lease.Connection.ExecuteAsync(sql, param, commandTimeout: commandTimeout ?? DefaultCommendTimeout, commandType: commandType);
     }
 
     /// <inheritdoc />
     public async Task<T> ExecuteScalarAsync<T>(string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        int? commandTimeout = null, CommandType? commandType = null)
     {
-        using var connection = NewConnection();
-        return await connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout ?? DefaultCommendTimeout, commandType);
+        using var lease = LeaseConnection();
+        return await lease.Connection.ExecuteScalarAsync<T>(sql, param, commandTimeout: commandTimeout ?? DefaultCommendTimeout, commandType: commandType);
     }
+
+    #endregion
+
+    #region Maintenance
+
+    /// <inheritdoc />
+    public async Task UpdateStatisticsAsync() =>
+        await ExecuteAsync(DbSchema.Procedures.UpdateStatistics,
+            commandTimeout: 600, commandType: CommandType.StoredProcedure);
+
+    /// <inheritdoc />
+    public async Task UpdateStatisticsTargetedAsync() =>
+        await ExecuteAsync(DbSchema.Procedures.UpdateStatisticsTargeted,
+            commandTimeout: 120, commandType: CommandType.StoredProcedure);
 
     #endregion
 
@@ -213,14 +302,32 @@ public class DbContext : IDbContext
     /// <inheritdoc />
     public async Task BulkInsertAsync(DataTable dataTable)
     {
-        await using var connection = NewSqlConnection();
-        await connection.OpenAsync();
-
-        await using var dbTransaction = connection.BeginTransaction();
-
-        try
+        var transaction = Transaction.Current;
+        if (transaction != null)
         {
-            // bulk insert
+            // ambient transaction active → reuse scoped connection to prevent
+            // DTC promotion and deadlocks
+            var connection = GetOrCreateScopedConnection(transaction);
+
+            using var bulkCopy = new SqlBulkCopy(connection,
+                copyOptions: SqlBulkCopyOptions.Default,
+                externalTransaction: null);
+            bulkCopy.DestinationTableName = dataTable.TableName;
+
+            foreach (DataColumn dataTableColumn in dataTable.Columns)
+            {
+                bulkCopy.ColumnMappings.Add(dataTableColumn.ColumnName, dataTableColumn.ColumnName);
+            }
+
+            await bulkCopy.WriteToServerAsync(dataTable);
+        }
+        else
+        {
+            // no ambient transaction → own connection with explicit transaction
+            await using var connection = NewSqlConnection();
+            await connection.OpenAsync();
+            await using var dbTransaction = connection.BeginTransaction();
+
             using var bulkCopy = new SqlBulkCopy(connection,
                 copyOptions: SqlBulkCopyOptions.Default,
                 externalTransaction: dbTransaction);
@@ -235,20 +342,67 @@ public class DbContext : IDbContext
 
             dbTransaction.Commit();
         }
-        catch
-        {
-            dbTransaction.Rollback();
-        }
     }
 
     #endregion
 
-    /// <summary>New database connection for SQL Server</summary>
-    /// <returns>The connection</returns>
-    private IDbConnection NewConnection() => NewSqlConnection();
+    #region Connection Management
+
+    /// <summary>Lease a database connection.
+    /// When an ambient TransactionScope exists, returns a shared connection that stays
+    /// alive for the scope's lifetime (prevents DTC promotion and deadlocks).
+    /// When no ambient scope exists, returns a new caller-owned connection.</summary>
+    private ConnectionLease LeaseConnection()
+    {
+        var transaction = Transaction.Current;
+        if (transaction == null)
+        {
+            // no ambient scope → caller-owned, short-lived connection
+            return new(NewSqlConnection(), owned: true);
+        }
+
+        // ambient scope → shared connection (one per scope)
+        var connection = GetOrCreateScopedConnection(transaction);
+        return new(connection, owned: false);
+    }
+
+    /// <summary>Get or create the shared SqlConnection for the current ambient transaction.
+    /// The connection is opened immediately so Dapper won't close it after each operation,
+    /// and is disposed automatically when the TransactionScope completes.</summary>
+    private SqlConnection GetOrCreateScopedConnection(Transaction transaction)
+    {
+        var txId = transaction.TransactionInformation.LocalIdentifier;
+        return scopedConnections.GetOrAdd(txId, _ =>
+        {
+            var connection = NewSqlConnection();
+            connection.Open();
+            transaction.TransactionCompleted += (_, _) =>
+            {
+                if (scopedConnections.TryRemove(txId, out var removed))
+                {
+                    removed.Dispose();
+                }
+            };
+            return connection;
+        });
+    }
 
     /// <summary>New database connection for SQL Server</summary>
-    /// <returns>The connection</returns>
-    private SqlConnection NewSqlConnection() =>
-        new(ConnectionString);
+    private SqlConnection NewSqlConnection() => new(ConnectionString);
+
+    /// <summary>Lightweight connection wrapper. When <c>owned</c> is true, Dispose() closes
+    /// the connection. When false (shared within TransactionScope), Dispose() is a no-op.</summary>
+    private readonly record struct ConnectionLease(IDbConnection connection, bool owned) : IDisposable
+    {
+        internal IDbConnection Connection => connection;
+        public void Dispose()
+        {
+            if (owned)
+            {
+                connection?.Dispose();
+            }
+        }
+    }
+
+    #endregion
 }

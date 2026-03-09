@@ -336,7 +336,9 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+logs/
 /NDependOut*
+NDependOut/
 
 /**/DROP/
 /**/TEMP/
@@ -346,3 +348,4 @@ ASALocalRun/
 _site
 ScriptDump/
 logs/
+/Database.Snapshots

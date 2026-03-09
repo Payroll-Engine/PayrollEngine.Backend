@@ -1,88 +1,322 @@
 # Payroll Engine Backend
-👉 This application is part of the [Payroll Engine](https://github.com/Payroll-Engine/PayrollEngine/wiki).
+
+> Part of the [Payroll Engine](https://github.com/Payroll-Engine/PayrollEngine) open-source payroll automation framework.
+> Full documentation at [payrollengine.org](https://payrollengine.org).
+
+The Backend is the ASP.NET Core REST API server at the core of the Payroll Engine. It exposes the full payroll object model over HTTP, compiles and executes C# payroll scripts via Roslyn, processes payrun jobs asynchronously, and persists all results in a SQL Server database.
+
+---
+
+## Prerequisites
+
+| Requirement | Minimum |
+|:--|:--|
+| [.NET](https://dotnet.microsoft.com/download) | 10.0 |
+| [SQL Server](https://www.microsoft.com/sql-server) | 2019 (or Azure SQL) |
+| Database collation | `SQL_Latin1_General_CP1_CS_AS` |
+| Database isolation | `READ_COMMITTED_SNAPSHOT ON` |
+
+---
+
+## Setup
+
+### 1. Create the database
+
+Run the provided script to create the database schema:
+
+```cmd
+Commands\Db.ModelCreate.cmd
+```
+
+Or use Docker Compose (recommended for first-time setup):
+see [Container Setup](https://payrollengine.org/setup/container-setup).
+
+Verify database settings after creation:
+
+```sql
+SELECT name, collation_name, is_read_committed_snapshot_on AS rcsi
+FROM sys.databases WHERE name = 'PayrollEngine';
+```
+
+### 2. Configure the connection string
+
+Set the connection string via environment variable (recommended):
+
+```bash
+# Windows
+set PayrollDatabaseConnection=Server=localhost;Database=PayrollEngine;Integrated Security=SSPI;
+
+# Docker / Linux
+export PayrollDatabaseConnection="Server=localhost;Database=PayrollEngine;User Id=sa;Password=...;TrustServerCertificate=True;"
+```
+
+Or add it to `appsettings.json` (for local development only):
+
+```json
+{
+  "ConnectionStrings": {
+    "PayrollDatabaseConnection": "Server=localhost;Database=PayrollEngine;Integrated Security=SSPI;"
+  }
+}
+```
+
+> Store sensitive configuration in [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) for local development.
+
+### 3. Start the server
+
+```shell
+# Run from the binary output folder
+dotnet PayrollEngine.Backend.Server.dll --urls=https://localhost:44354/
+
+# Run from the project folder (Backend.Server/)
+dotnet run --urls=https://localhost:44354/
+
+# Visual Studio
+Open PayrollEngine.Backend.sln and start with the debugger
+```
+
+The API is accessible at the configured URL. When `EnableSwagger` is set to `true`, the Swagger UI is available at `/swagger`.
+
+---
 
 ## Open API
+
 The Payroll Engine API supports the [Open API](https://www.openapis.org/) specification and describes the interface to the [Swagger](https://swagger.io/) tool. The document [REST Service Endpoints](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrollRestServicesEndpoints.pdf) document describes the available endpoints.
 
 > Payroll Engine [swagger.json](docs/swagger.json)
 
+### Key Endpoints
+
+| Endpoint | Method | Description |
+|:--|:--|:--|
+| `.../payruns/jobs` | POST | Start a payrun job (asynchronous, returns HTTP 202 with location header) |
+| `.../payruns/jobs/preview` | POST | Synchronous single-employee payrun preview without persisting results |
+| `.../employees/bulk` | POST | Bulk employee creation via `SqlBulkCopy` for high-throughput import |
+
 ## API Versioning
-In the first 1.0 release of the REST API, no version header is required in the HTTP request. For future version changes, the HTTP header **X-Version** with the version number must be present.
+Starting with the 1.0 release, no version header is required in the HTTP request. Future major versions will require the HTTP header **X-Version** with the version number.
 
 ## API Content Type
 The Payroll REST API supports HTTP requests in `JSON` format.
 
-## Backend Server
-In order to run the backend server, the web host must support the execution of .NET Core applications. Follow these steps to start the [IIS Express](https://learn.microsoft.com/en-us/iis/extensions/introduction-to-iis-express/iis-express-overview) service for local development:
-- [Dotnet](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the binary file:
-```shell
-dotnet <PathToBin>/PayrollEngine.Backend.Server.dll --urls=https://localhost:44354/
-```
-- [Dotnet](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet) using the project file, using the working path `Backend.Server/`:
-```shell
-dotnet run --urls=https://localhost:44354/
-```
-- Visual Studio solution `PayrollEngine.Backend.sln` using the debugger.
+---
+
+## Migration to 1.0
+
+### Breaking Change: PayrunJobInvocation
+`PayrunJobInvocation` has been refactored from id-based to name/identifier-based references:
+- **Removed**: `PayrunId` and `UserId` properties from API and domain models
+- **Required**: `PayrunName` and `UserIdentifier` are now the required fields
+
+Clients must update payrun job invocations to use name-based references instead of numeric ids.
+
+### Async Payrun Job Processing
+Payrun jobs are now processed asynchronously by default via a background queue:
+- Job is pre-created and persisted before enqueue
+- Returns HTTP 202 with a location header for status polling
+- Webhook notification on job completion or abort
+- Bounded channel with backpressure (capacity: 100)
+
+---
 
 ## Application Settings
-The server configuration file `appsetings.json` contains the following settings:
+
+The server configuration file `appsettings.json` contains the following settings:
+
+### General
 
 | Setting                    | Description                                                 | Type       | Default        |
 |:--|:--|:--|:--|
-| `StartupCulture`           | The culture of the backend process                          | string     | System culture |
-| `AuditTrailDisabled`       | Disable the audit trail for regulation objects              | bool       | false          |
-| `LogHttpRequests`          | Log http requested to log file                              | bool       | false          |
-| `HttpsRedirection`         | Https redirection                                           | bool       | false          |
-| `InitializeScriptCompiler` | Initialize the script compiler to reduce startup time       | bool       | false          |
-| `DumpCompilerSources`      | Store compiler source files <sup>1)</sup>                   | bool       | false          |
-| `DbTransactionTimeout`     | Database transaction timeout                                | timespan   | 10 minutes     |
-| `DbCommandTimeout`         | Database command timeout                                    | seconds    | 2 minutes      |
-| `WebhookTimeout`           | Webhook timeout                                             | timespan   | 1 minute       |
-| `FunctionLogTimeout`       | Timeout for tracking long function executions               | timespan   | off            |
-| `AssemblyCacheTimeout`     | Timeout for cached assemblies                               | timespan   | 30 minutes     |
-| `VisibleControllers`       | Name of visible API controllers <sup>2) 3)</sup>            | string[]   | all            |
-| `HiddenControllers`        | Name of hidden API controllers <sup>2) 3)</sup>             | string[]   | none           |
-| `DarkTheme`                | Use swagger dark theme                                      | bool       | false          |
-| `ApiKey`                   | Enable api key protection, dev-secret only!                 | string     | none           |
+| `StartupCulture`           | Culture of the backend process (RFC 4646)                   | string     | System culture |
+| `HttpsRedirection`         | Enable HTTPS redirection                                    | bool       | false          |
+| `LogHttpRequests`          | Log HTTP requests to log file                               | bool       | false          |
 | `Serilog`                  | Logger settings                                             | [Serilog](https://serilog.net/) | file and console log |
 
-<sup>1)</sup> Store compilation scripts the disk. Analyses only feature.<br />
+### Swagger / OpenAPI
+
+| Setting                    | Description                                                 | Type       | Default        |
+|:--|:--|:--|:--|
+| `EnableSwagger`            | Enable Swagger UI and JSON endpoint <sup>1)</sup>           | bool       | false          |
+| `DarkTheme`                | Use Swagger dark theme                                      | bool       | false          |
+| `VisibleControllers`       | Visible API controllers <sup>2) 3)</sup>                    | string[]   | all            |
+| `HiddenControllers`        | Hidden API controllers <sup>2) 3)</sup>                     | string[]   | none           |
+| `XmlCommentFileNames`      | XML documentation files for Swagger                         | string[]   | none           |
+
+### Authentication
+
+| Setting                              | Description                                       | Type       | Default  |
+|:--|:--|:--|:--|
+| `Authentication:Mode`                | Authentication mode: `None`, `ApiKey`, `OAuth`    | enum       | None     |
+| `Authentication:ApiKey`              | Static API key (only for mode `ApiKey`)           | string     | none     |
+| `Authentication:OAuth:Authority`     | Token authority / issuer URL                      | string     | none     |
+| `Authentication:OAuth:Audience`      | Expected audience claim                           | string     | none     |
+| `Authentication:OAuth:RequireHttpsMetadata` | Require HTTPS metadata discovery            | bool       | true     |
+| `Authentication:OAuth:ClientSecret`  | OAuth client secret for Swagger UI token flow <sup>9)</sup> | string     | none     |
+
+### Audit Trail
+
+| Setting                    | Description                                                 | Type       | Default  |
+|:--|:--|:--|:--|
+| `AuditTrail:Script`        | Audit trail for scripts                                     | bool       | false    |
+| `AuditTrail:Lookup`        | Audit trail for lookups and lookup values <sup>4)</sup>     | bool       | false    |
+| `AuditTrail:Input`         | Audit trail for cases, case fields and case relations        | bool       | false    |
+| `AuditTrail:Payrun`        | Audit trail for collectors and wage types                   | bool       | false    |
+| `AuditTrail:Report`        | Audit trail for reports, templates and parameters           | bool       | false    |
+
+### Scripting & Compilation
+
+| Setting                    | Description                                                 | Type       | Default        |
+|:--|:--|:--|:--|
+| `InitializeScriptCompiler` | Initialize Roslyn at startup to reduce first execution time | bool       | false          |
+| `DumpCompilerSources`      | Store compiler source files to disk <sup>5)</sup>           | bool       | false          |
+| `ScriptSafetyAnalysis`     | Static safety analysis of scripts during compilation <sup>8)</sup> | bool | false          |
+| `AssemblyCacheTimeout`     | Timeout for cached script assemblies                        | timespan   | 30 minutes     |
+
+### Database & Timeouts
+
+| Setting                    | Description                                                 | Type       | Default        |
+|:--|:--|:--|:--|
+| `DbCollation`              | Expected database collation, verified on startup <sup>10)</sup> | string  | SQL_Latin1_General_CP1_CS_AS |
+| `DbCommandTimeout`         | Database command timeout                                    | timespan   | 2 minutes      |
+| `DbTransactionTimeout`     | Database transaction timeout                                | timespan   | 10 minutes     |
+| `WebhookTimeout`           | Webhook HTTP request timeout                                | timespan   | 1 minute       |
+| `FunctionLogTimeout`       | Timeout threshold for logging long function executions <sup>11)</sup> | timespan   | off            |
+
+### Payrun Processing
+
+| Setting                    | Description                                                 | Type       | Default        |
+|:--|:--|:--|:--|
+| `MaxParallelEmployees`     | Parallelism for employee processing <sup>6)</sup>           | string     | `0` (sequential) |
+| `MaxRetroPayrunPeriods`    | Maximum retro payrun periods per employee <sup>7)</sup>     | int        | 0 (unlimited)  |
+| `LogEmployeeTiming`        | Log employee processing timing                              | bool       | false          |
+
+### CORS
+
+| Setting                              | Description                                       | Type       | Default                         |
+|:--|:--|:--|:--|
+| `Cors:AllowedOrigins`                | Allowed origins (empty = CORS inactive)           | string[]   | [] (inactive)                   |
+| `Cors:AllowedMethods`                | Allowed HTTP methods                              | string[]   | GET, POST, PUT, DELETE, PATCH, OPTIONS |
+| `Cors:AllowedHeaders`                | Allowed request headers                           | string[]   | Content-Type, Authorization, Api-Key, Auth-Tenant |
+| `Cors:AllowCredentials`              | Include credentials in cross-origin requests      | bool       | false                           |
+| `Cors:PreflightMaxAgeSeconds`        | Preflight response cache duration                 | int        | 600                             |
+
+### Rate Limiting
+
+| Setting                              | Description                                       | Type       | Default        |
+|:--|:--|:--|:--|
+| `RateLimiting:Global:PermitLimit`    | Max requests per window (0 = inactive)            | int        | 0 (inactive)   |
+| `RateLimiting:Global:WindowSeconds`  | Time window in seconds                            | int        | 60             |
+| `RateLimiting:PayrunJobStart:PermitLimit` | Max payrun job starts per window             | int        | 0 (inactive)   |
+| `RateLimiting:PayrunJobStart:WindowSeconds` | Time window in seconds                     | int        | 60             |
+
+<sup>1)</sup> Should be disabled in production to prevent exposing the full API surface and OAuth client credentials.<br />
 <sup>2)</sup> Wildcard support for `*` and `?`.<br />
-<sup>3)</sup> `HiddenControllers` setting cannot be combined with `VisibleControllers` setting.
+<sup>3)</sup> `HiddenControllers` cannot be combined with `VisibleControllers`.<br />
+<sup>4)</sup> Audit trail is not supported on bulk lookup values import.<br />
+<sup>5)</sup> Stores compilation scripts to the `ScriptDump` folder. Analysis feature only.<br />
+<sup>6)</sup> Values: `0` or `off` = sequential, `half` = ProcessorCount/2, `max` = ProcessorCount, `-1` = automatic, `1`–`N` = explicit thread count.<br />
+<sup>7)</sup> Safety guard against runaway retro calculations. 0 = no limit.<br />
+<sup>8)</sup> When enabled, scripts are checked for banned API usage (`System.IO`, `System.Net`, `System.Diagnostics`, `System.Reflection`, etc.) before the assembly is emitted. Adds ~300 ms per compilation. Enable to harden script execution against unauthorized BCL access.<br />
+<sup>9)</sup> Used exclusively by Swagger UI to obtain tokens for the interactive API explorer. Not required for production API authentication.<br />
+<sup>10)</sup> Verified on startup before the schema version check. Prevents silent data integrity issues from mismatched collation.<br />
+<sup>11)</sup> When set, functions exceeding this duration are logged at Warning level. Useful for identifying slow scripts or database operations.
 
 > It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 
+### Configuration Examples
+
+Minimal development configuration:
+```json
+{
+  "StartupCulture": "de-CH",
+  "EnableSwagger": true,
+  "Authentication": {
+    "Mode": "None"
+  }
+}
+```
+
+Production configuration with OAuth, CORS and rate limiting:
+```json
+{
+  "EnableSwagger": false,
+  "HttpsRedirection": true,
+  "Authentication": {
+    "Mode": "OAuth",
+    "OAuth": {
+      "Authority": "https://login.example.com/realms/payroll",
+      "Audience": "payroll-api",
+      "RequireHttpsMetadata": true
+    }
+  },
+  "AuditTrail": {
+    "Script": true,
+    "Input": true,
+    "Payrun": true
+  },
+  "DbCommandTimeout": "00:03:00",
+  "DbTransactionTimeout": "00:15:00",
+  "MaxParallelEmployees": "half",
+  "MaxRetroPayrunPeriods": 24,
+  "Cors": {
+    "AllowedOrigins": [ "https://app.example.com" ],
+    "AllowCredentials": true
+  },
+  "RateLimiting": {
+    "Global": {
+      "PermitLimit": 200,
+      "WindowSeconds": 60
+    },
+    "PayrunJobStart": {
+      "PermitLimit": 5,
+      "WindowSeconds": 60
+    }
+  }
+}
+```
+
 ### Database connection string
-The backed database connection string is determined by the following priority:
+The backend database connection string is determined by the following priority:
 
 1. Environment variable `PayrollDatabaseConnection`.
 2. Program configuration file `appsettings.json`.
 
+> In Docker, the connection string uses the ASP.NET Core hierarchical key format: `ConnectionStrings__PayrollDatabaseConnection`. This is the standard mechanism for overriding nested configuration values via environment variables.
+
+---
+
 ## Application Logs
 The backend server stores its logs in the application folder `logs`.
 
-## Api Key
-Once set, the API key is the only way to access the API endpoints. The API client must send it in the `Api-Key` request header.
+---
 
-The API key is defined in the following places (in order of priority):
+## Authentication
+The API supports three authentication modes, configured via `Authentication:Mode` in `appsettings.json`:
 
-1. System environment variable `PayrollApiKey`
-2. Value `ApiKey` in the application settings file `appsettings.json`
+**None** — No authentication. All requests are accepted. Development/internal use only.
 
-When an endpoint request is made, the API key must be included in the `Api-Key` HTTP header.
+**ApiKey** — Static API key. The client must send the key in the `Api-Key` HTTP header. The key is resolved in the following order:
+1. Environment variable `PayrollApiKey`
+2. Configuration value `Authentication:ApiKey` in `appsettings.json`
 
-> When the API key is active, Swagger requires authorization from it.
+**OAuth** — OAuth 2.0 / JWT Bearer token. Requires `Authority` and `Audience` configuration. The client must send a valid Bearer token in the `Authorization` header. Authority and audience are validated at startup to prevent token confusion.
+
+> When authentication is active and Swagger is enabled, Swagger UI requires the corresponding credentials.
+
+---
 
 ## C# Script Compiler
 The business logic defined by the business in C# is compiled into binary files (assemblies) by the backend using [Roslyn](https://github.com/dotnet/roslyn). This procedure has a positive effect on the runtime performance, so that even extensive calculations can be performed sufficiently quickly. At runtime, the backend keeps the assemblies in a cache. To optimize memory usage, unused assemblies are periodically deleted (application setting `AssemblyCacheTimeout`).
 
-You can use the 'InitializeScriptCompiler' application setting to start the Roslyn engine when the application starts, thereby eliminating the runtime delay.
+You can use the `InitializeScriptCompiler` application setting to start the Roslyn engine when the application starts, thereby eliminating the runtime delay.
 
 To perform a more in-depth analysis, set the `DumpCompilerSources` application setting to force the C# script compiler to save the source scripts of the compilation as disk files. These files are stored in the `ScriptDump` folder within the application folder, ordered by function type and dump date.
 
+When `ScriptSafetyAnalysis` is enabled, user scripts are statically checked for banned API usage before the assembly is emitted. See footnote 8 in the application settings for details.
 
-## Solution projects
-The.NET Core application consists of the following projects:
+---
+
+## Solution Projects
 
 | Name                                  | Type       | Description                                       |
 |:--|:--|:--|
@@ -91,38 +325,78 @@ The.NET Core application consists of the following projects:
 | `PayrollEngine.Domain.Application`    | Library    | Application service                               |
 | `PayrollEngine.Persistence`           | Library    | Repository implementations                        |
 | `PayrollEngine.Persistence.SqlServer` | Library    | SQL Server implementation                         |
-| `PayrollEngine.Api.Model`             | Library    | Rest objects                                      |
-| `PayrollEngine.Api.Core`              | Library    | Rest core services                                |
-| `PayrollEngine.Api.Map`               | Library    | Mapping between rest and domain objects           |
-| `PayrollEngine.Api.Controller`        | Library    | Rest controllers                                  |
-| `PayrollEngine.Backend.Controller`    | Library    | Routing controllers                               |
-| `PayrollEngine.Backend.Server`        | Exe        | Web application server with rest api              |
+| `PayrollEngine.Api.Model`             | Library    | REST API data transfer objects                    |
+| `PayrollEngine.Api.Core`              | Library    | REST core services (query, filter, serialization) |
+| `PayrollEngine.Api.Map`               | Library    | Mapping between REST and domain objects           |
+| `PayrollEngine.Api.Controller`        | Library    | REST controllers (business logic per resource)    |
+| `PayrollEngine.Backend.Controller`    | Library    | ASP.NET routing controllers (HTTP routing and model binding) |
+| `PayrollEngine.Backend.Server`        | Exe        | Web application server with REST API              |
+
+---
 
 ## Docker Support
-Build the Docker image:
-   ```bash
-   docker build -t payroll-backend .
-   ```
 
-Run with database connection:
-   ```bash
-   docker run -p 5000:5000 \
-     -e ConnectionStrings__DefaultConnection="Server=localhost;Database=PayrollEngine;User Id=sa;Password=PayrollStrongPass789;TrustServerCertificate=True;" \
-     payroll-backend
-   ```
+The recommended way to run the Backend is as part of the full Docker Compose stack.
+See the [Container Setup](https://payrollengine.org/setup/container-setup) documentation.
 
-Verify API is accessible at http://localhost:5000
+> ⚠️ The examples below use sample credentials for local development only. Never use these values in production.
 
+### Pre-built image (ghcr.io)
+Pull and run the pre-built image:
+```bash
+docker run -p 5001:8080 \
+  -e ASPNETCORE_URLS="http://+:8080" \
+  -e ConnectionStrings__PayrollDatabaseConnection="Server=host.docker.internal;Database=PayrollEngine;User Id=sa;Password=PayrollStrongPass789;TrustServerCertificate=True;" \
+  ghcr.io/payroll-engine/payrollengine.backend:latest
+```
 
-## Further documents
-- [OData](OData.md) queries
-- [Database](Database.md) Management
-- [Developer Guidelines](Dev-Guidelines.md)
+Verify API is accessible at http://localhost:5001
 
-## Third party components
-- Object mapping with [Mapperly](https://github.com/riok/mapperly/) - license `Apache 2.0`
-- OpenAPI with [Swashbuggle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/) - license `MIT`
-- Database query builder with [SqlKata](https://github.com/sqlkata/querybuilder/) - license `MIT`
-- Database object mapping with [Dapper](https://github.com/DapperLib/Dapper/) - license `Apache 2.0`
-- Logging with [Serilog](https://github.com/serilog/serilog/) - license `Apache 2.0`
-- Tests with [xunit](https://github.com/xunit) - license `Apache 2.0`
+### Build from source (development)
+```bash
+docker build -t payroll-backend .
+docker run -p 5001:8080 \
+  -e ASPNETCORE_URLS="http://+:8080" \
+  -e ConnectionStrings__PayrollDatabaseConnection="Server=host.docker.internal;Database=PayrollEngine;User Id=sa;Password=PayrollStrongPass789;TrustServerCertificate=True;" \
+  payroll-backend
+```
+
+---
+
+## Commands
+
+Helper scripts in the `Commands` folder:
+
+| Command | Description |
+|:--|:--|
+| `Db.ExportModelCreate.cmd` | Export the live database schema to `Database\Create-Model.sql` <sup>1)</sup> |
+| `Db.ExportModelDrop.cmd` | Export the live database drop script to `Database\Drop-Model.sql` <sup>1)</sup> |
+| `Db.ModelCreate.cmd` | Execute `Create-Model.sql` against the database |
+| `Db.ModelDrop.cmd` | Execute `Drop-Model.sql` against the database |
+| `Db.ModelUpdate.cmd` | Execute drop then create (full schema reset) |
+| `Db.Publish.cmd` | Create the combined setup script `SetupModel.sql` |
+| `Db.VersionCreate.cmd` | Insert the version record via `VersionCreate.sql` |
+| `DotNet.Swagger.Install.cmd` | Install the Swashbuckle CLI tool (`dotnet-swagger`) |
+| `Swagger.Build.cmd` | Generate `docs/swagger.json` from the running backend |
+| `SqlScripter.cmd` | Script the live database to a SQL file via `mssql-scripter` |
+| `SqlFormatter.cmd` | Format a raw SQL export via `PoorMansTSqlFormatter` |
+| `Domian.Model.Unit.Tests.cmd` | Run the domain model unit tests |
+
+<sup>1)</sup> After export, manually remove the `CREATE DATABASE` / `ALTER DATABASE` block at the top and the `SET READ_WRITE` statement at the bottom before committing the file.
+
+---
+
+## Further Documents
+- [OData](OData.md) — query syntax reference
+- [Database](Database.md) — schema, scripts, and maintenance
+- [Developer Guidelines](Dev-Guidelines.md) — adding new objects and fields
+
+---
+
+## Third Party Components
+- Object mapping with [Mapperly](https://github.com/riok/mapperly/) — license `Apache 2.0`
+- OpenAPI with [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/) — license `MIT`
+- Database query builder with [SqlKata](https://github.com/sqlkata/querybuilder/) — license `MIT`
+- Database object mapping with [Dapper](https://github.com/DapperLib/Dapper/) — license `Apache 2.0`
+- Logging with [Serilog](https://github.com/serilog/serilog/) — license `Apache 2.0`
+- Tests with [xunit](https://github.com/xunit) — license `Apache 2.0`

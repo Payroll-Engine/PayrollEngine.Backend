@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Lookup value audits")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/lookups/{lookupId}/values/{lookupValueId}/audits")]
+[TenantAuthorize]
 public class LookupValueAuditController : Api.Controller.LookupValueAuditController
 {
     /// <inheritdoc/>
@@ -34,16 +35,8 @@ public class LookupValueAuditController : Api.Controller.LookupValueAuditControl
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLookupValueAudits")]
     public async Task<ActionResult> QueryLookupValueAuditsAsync(int tenantId,
-        int regulationId, int lookupId, int lookupValueId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(lookupValueId, query);
-    }
+        int regulationId, int lookupId, int lookupValueId, [FromQuery] Query query) =>
+        await QueryItemsAsync(lookupValueId, query);
 
     /// <summary>
     /// Get a regulation lookup audit
@@ -59,14 +52,6 @@ public class LookupValueAuditController : Api.Controller.LookupValueAuditControl
     [NotFoundResponse]
     [ApiOperationId("GetLookupValueAudit")]
     public async Task<ActionResult<ApiObject.LookupValueAudit>> GetLookupValueAuditAsync(int tenantId,
-        int regulationId, int lookupId, int lookupValueId, int auditId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(lookupValueId, auditId);
-    }
+        int regulationId, int lookupId, int lookupValueId, int auditId) =>
+        await GetAsync(lookupValueId, auditId);
 }

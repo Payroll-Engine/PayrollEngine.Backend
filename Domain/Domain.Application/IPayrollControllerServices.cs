@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Application.Service;
 
-namespace PayrollEngine.Domain.Application.Service;
+namespace PayrollEngine.Domain.Application;
 
 public interface IPayrollControllerServices
 {

@@ -9,6 +9,11 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Abstract base repository for child domain objects that contain embedded scripts.
+/// Handles script compilation and binary storage on create/update operations.
+/// </summary>
+/// <typeparam name="TDomain">Domain object type with script properties</typeparam>
 public abstract class ScriptChildDomainRepository<TDomain>(string tableName, string parentFieldName,
         IScriptRepository scriptRepository)
     : ChildDomainRepository<TDomain>(tableName, parentFieldName)

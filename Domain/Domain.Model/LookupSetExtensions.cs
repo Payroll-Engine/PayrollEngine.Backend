@@ -99,7 +99,9 @@ public static class LookupSetExtensions
         var precision = (decimal)Math.Pow(10, -SystemSpecification.DecimalScale);
         if (lookup.Values != null)
         {
-            foreach (var lookupValue in lookup.Values)
+            // sort by range value to ensure correct bracket boundaries
+            var sortedValues = lookup.Values.OrderBy(x => x.RangeValue).ToList();
+            foreach (var lookupValue in sortedValues)
             {
                 // ignore lookup values without range and lookup value
                 if (lookupValue.RangeValue == null || string.IsNullOrWhiteSpace(lookupValue.Value))
@@ -229,18 +231,16 @@ public static class LookupSetExtensions
 
     private static List<LookupRange> GetLookupRanges(LookupSet lookup, string valueFieldName = null)
     {
-        if (!lookup.Values.Any())
+        if (lookup.Values == null || !lookup.Values.Any())
         {
             return [];
         }
 
         // ranges
-        var lookupValues = lookup.Values.OrderBy(x => x.RangeValue).ToList();
+        var sortedValues = lookup.Values.OrderBy(x => x.RangeValue).ToList();
         var ranges = new List<LookupRange>();
-        for (var i = 0; i < lookupValues.Count; i++)
+        foreach (var lookupValue in sortedValues)
         {
-            var lookupValue = lookupValues[i];
-
             // ignore lookup values without range and lookup value
             if (lookupValue.RangeValue == null || string.IsNullOrWhiteSpace(lookupValue.Value))
             {
@@ -248,7 +248,7 @@ public static class LookupSetExtensions
             }
 
             // first value need to be zero
-            if (i == 0 && lookupValue.RangeValue.Value != 0)
+            if (ranges.Count == 0 && lookupValue.RangeValue.Value != 0)
             {
                 throw new PayrollException(
                     $"Get range factor requires a start range value of zero ({lookupValue.RangeValue.Value}).");
@@ -277,9 +277,9 @@ public static class LookupSetExtensions
             }
 
             // update previous end
-            if (i > 0)
+            if (ranges.Count > 0)
             {
-                ranges[i - 1].SetEnd(lookupValue.RangeValue.Value);
+                ranges.Last().SetEnd(lookupValue.RangeValue.Value);
             }
 
             // add new range

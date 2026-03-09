@@ -6,6 +6,11 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Abstract base repository for audit trail entries that track changes to domain objects.
+/// Provides retrieval of the most recent audit record for a tracked object.
+/// </summary>
+/// <typeparam name="T">Audit domain object type inheriting from <see cref="AuditDomainObject"/></typeparam>
 public abstract class AuditChildDomainRepository<T>
     (string tableName, string parentFieldName) : ChildDomainRepository<T>(tableName, parentFieldName),
         IAuditChildDomainRepository<T>

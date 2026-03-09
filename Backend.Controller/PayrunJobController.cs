@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
@@ -12,12 +13,14 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payrun jobs")]
 [Route("api/tenants/{tenantId}/payruns/jobs")]
+[TenantAuthorize]
 public class PayrunJobController : Api.Controller.PayrunJobController
 {
     /// <inheritdoc/>
     public PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
-        IWebhookDispatchService webhookDispatcher, IPayrunJobQueue payrunJobQueue, IControllerRuntime runtime) :
-        base(tenantService, payrunJobService, webhookDispatcher, payrunJobQueue, runtime)
+        IWebhookDispatchService webhookDispatcher, IPayrunJobQueue payrunJobQueue,
+        IPayrunPreviewService payrunPreviewService, IControllerRuntime runtime) :
+        base(tenantService, payrunJobService, webhookDispatcher, payrunJobQueue, payrunPreviewService, runtime)
     {
     }
 
@@ -32,16 +35,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryPayrunJobs")]
-    public async Task<ActionResult> QueryPayrunJobsAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryPayrunJobsAsync(int tenantId, [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get employee payrun jobs
@@ -56,16 +51,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryEmployeePayrunJobs")]
     public override async Task<ActionResult> QueryEmployeePayrunJobsAsync(
-        int tenantId, int employeeId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.QueryEmployeePayrunJobsAsync(tenantId, employeeId, query);
-    }
+        int tenantId, int employeeId, [FromQuery] Query query) =>
+        await base.QueryEmployeePayrunJobsAsync(tenantId, employeeId, query);
 
     /// <summary>
     /// Get a payrun job
@@ -78,16 +65,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [ApiOperationId("GetPayrunJob")]
     public async Task<ActionResult<ApiObject.PayrunJob>> GetPayrunJobAsync(
-        int tenantId, int payrunJobId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, payrunJobId);
-    }
+        int tenantId, int payrunJobId) =>
+        await GetAsync(tenantId, payrunJobId);
 
     /// <summary>
     /// Start a new payrun job (asynchronously).
@@ -99,20 +78,38 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     /// <returns>HTTP 202 Accepted with the payrun job and Location header for status polling</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("StartPayrunJob")]
+    [EnableRateLimiting("PayrunJobStart")]
     public override async Task<ActionResult<ApiObject.PayrunJob>> StartPayrunJobAsync(
-        int tenantId, ApiObject.PayrunJobInvocation jobInvocation)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.StartPayrunJobAsync(tenantId, jobInvocation);
-    }
+        int tenantId, ApiObject.PayrunJobInvocation jobInvocation) =>
+        await base.StartPayrunJobAsync(tenantId, jobInvocation);
+
+    /// <summary>
+    /// Preview a payrun job for a single employee (synchronous).
+    /// Returns calculation results as a PayrollResultSet without persisting to the database.
+    /// <para>Restriction: preview results are not persisted, so wage type expressions
+    /// that query historical results (e.g. GetPeriodWageTypeResults) will not find
+    /// results from previous preview invocations. Only already persisted payrun job
+    /// results are available during preview calculation.</para>
+    /// <para>The preview accepts any <c>RetroPayMode</c> to match production behavior.
+    /// If retroactive calculation is actually triggered (mutations detected in prior periods),
+    /// the endpoint returns HTTP 422 Unprocessable Entity.</para>
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="jobInvocation">The payrun job invocation with exactly one employee identifier</param>
+    /// <returns>The payroll result set containing wage type results, collector results, and payrun results</returns>
+    [HttpPost("preview")]
+    [OkResponse]
+    [NotFoundResponse]
+    [UnprocessableEntityResponse]
+    [ApiOperationId("PreviewPayrunJob")]
+    public override async Task<ActionResult<ApiObject.PayrollResultSet>> PreviewPayrunJobAsync(
+        int tenantId, ApiObject.PayrunJobInvocation jobInvocation) =>
+        await base.PreviewPayrunJobAsync(tenantId, jobInvocation);
 
     /// <summary>
     /// Get status of a payrun job
@@ -155,16 +152,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     /// <param name="payrunJobId">The id of the payrun jobs</param>
     [HttpDelete("{payrunJobId}")]
     [ApiOperationId("DeletePayrunJob")]
-    public async Task<IActionResult> DeletePayrunJobAsync(int tenantId, int payrunJobId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, payrunJobId);
-    }
+    public async Task<IActionResult> DeletePayrunJobAsync(int tenantId, int payrunJobId) =>
+        await DeleteAsync(tenantId, payrunJobId);
 
     #region Attributes
 
@@ -180,16 +169,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [NotFoundResponse]
     [ApiOperationId("GetPayrunJobAttribute")]
     public virtual async Task<ActionResult<string>> GetPayrunJobAttributeAsync(
-        int tenantId, int payrunJobId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(payrunJobId, attributeName);
-    }
+        int tenantId, int payrunJobId, string attributeName) =>
+        await GetAttributeAsync(payrunJobId, attributeName);
 
     /// <summary>
     /// Set a payrun job attribute
@@ -205,16 +186,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetPayrunJobAttribute")]
     public virtual async Task<ActionResult<string>> SetPayrunJobAttributeAsync(
-        int tenantId, int payrunJobId, string attributeName, [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(payrunJobId, attributeName, value);
-    }
+        int tenantId, int payrunJobId, string attributeName, [FromBody] string value) =>
+        await SetAttributeAsync(payrunJobId, attributeName, value);
 
     /// <summary>
     /// Delete a payrun job attribute
@@ -226,16 +199,8 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     [HttpDelete("{payrunJobId}/attributes/{attributeName}")]
     [ApiOperationId("DeletePayrunJobAttribute")]
     public virtual async Task<ActionResult<bool>> DeletePayrunJobAttributeAsync(
-        int tenantId, int payrunJobId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(payrunJobId, attributeName);
-    }
+        int tenantId, int payrunJobId, string attributeName) =>
+        await DeleteAttributeAsync(payrunJobId, attributeName);
 
     #endregion
 

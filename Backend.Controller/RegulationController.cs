@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Regulations")]
 [Route("api/tenants/{tenantId}/regulations")]
+[TenantAuthorize]
 public class RegulationController : Api.Controller.RegulationController
 {
     /// <inheritdoc/>
@@ -30,16 +31,8 @@ public class RegulationController : Api.Controller.RegulationController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryRegulations")]
-    public async Task<ActionResult> QueryRegulationsAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryRegulationsAsync(int tenantId, [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a regulation
@@ -51,16 +44,8 @@ public class RegulationController : Api.Controller.RegulationController
     [NotFoundResponse]
     [ApiOperationId("GetRegulation")]
     public async Task<ActionResult<ApiObject.Regulation>> GetRegulationAsync(
-        int tenantId, int regulationId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, regulationId);
-    }
+        int tenantId, int regulationId) =>
+        await GetAsync(tenantId, regulationId);
 
     /// <summary>
     /// Get case name by case field
@@ -73,16 +58,8 @@ public class RegulationController : Api.Controller.RegulationController
     [NotFoundResponse]
     [ApiOperationId("GetCaseOfCaseField")]
     public override async Task<ActionResult<string>> GetCaseOfCaseFieldAsync(
-        int tenantId, [Required] string caseFieldName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetCaseOfCaseFieldAsync(tenantId, caseFieldName);
-    }
+        int tenantId, [Required] string caseFieldName) =>
+        await base.GetCaseOfCaseFieldAsync(tenantId, caseFieldName);
 
     /// <summary>
     /// Add a new regulation
@@ -96,16 +73,8 @@ public class RegulationController : Api.Controller.RegulationController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateRegulation")]
     public async Task<ActionResult<ApiObject.Regulation>> CreateRegulationAsync(
-        int tenantId, ApiObject.Regulation regulation)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(tenantId, regulation);
-    }
+        int tenantId, ApiObject.Regulation regulation) =>
+        await CreateAsync(tenantId, regulation);
 
     /// <summary>
     /// Update a regulation
@@ -119,16 +88,8 @@ public class RegulationController : Api.Controller.RegulationController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateRegulation")]
     public async Task<ActionResult<ApiObject.Regulation>> UpdateRegulationAsync(
-        int tenantId, ApiObject.Regulation regulation)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, regulation);
-    }
+        int tenantId, ApiObject.Regulation regulation) =>
+        await UpdateAsync(tenantId, regulation);
 
     /// <summary>
     /// Delete a regulation
@@ -137,16 +98,8 @@ public class RegulationController : Api.Controller.RegulationController
     /// <param name="regulationId">The regulation id</param>
     [HttpDelete("{regulationId}")]
     [ApiOperationId("DeleteRegulation")]
-    public async Task<IActionResult> DeleteRegulationAsync(int tenantId, int regulationId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, regulationId);
-    }
+    public async Task<IActionResult> DeleteRegulationAsync(int tenantId, int regulationId) =>
+        await DeleteAsync(tenantId, regulationId);
 
     #region Attributes
 
@@ -162,16 +115,8 @@ public class RegulationController : Api.Controller.RegulationController
     [NotFoundResponse]
     [ApiOperationId("GetRegulationAttribute")]
     public virtual async Task<ActionResult<string>> GetRegulationAttributeAsync(
-        int tenantId, int regulationId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(regulationId, attributeName);
-    }
+        int tenantId, int regulationId, string attributeName) =>
+        await GetAttributeAsync(regulationId, attributeName);
 
     /// <summary>
     /// Set a regulation attribute
@@ -188,16 +133,8 @@ public class RegulationController : Api.Controller.RegulationController
     [ApiOperationId("SetRegulationAttribute")]
     public virtual async Task<ActionResult<string>> SetRegulationAttributeAsync(
         int tenantId, int regulationId, string attributeName,
-        [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(regulationId, attributeName, value);
-    }
+        [FromBody] string value) =>
+        await SetAttributeAsync(regulationId, attributeName, value);
 
     /// <summary>
     /// Delete a regulation attribute
@@ -209,16 +146,8 @@ public class RegulationController : Api.Controller.RegulationController
     [HttpDelete("{regulationId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteRegulationAttribute")]
     public virtual async Task<ActionResult<bool>> DeleteRegulationAttributeAsync(
-        int tenantId, int regulationId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(regulationId, attributeName);
-    }
+        int tenantId, int regulationId, string attributeName) =>
+        await DeleteAttributeAsync(regulationId, attributeName);
 
     #endregion
 

@@ -8,6 +8,7 @@ using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="Division"/> persistence (table: Division).</summary>
 public class DivisionRepository() : ChildDomainRepository<Division>(DbSchema.Tables.Division,
     DbSchema.DivisionColumn.TenantId), IDivisionRepository
 {

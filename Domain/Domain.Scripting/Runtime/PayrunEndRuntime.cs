@@ -27,7 +27,7 @@ public class PayrunEndRuntime : PayrunRuntimeBase, IPayrunEndRuntime
 
     /// <inheritdoc />
     public Dictionary<string, string> GetPayrunRuntimeValues() =>
-        RuntimeValueProvider.PayrunValues;
+        new(RuntimeValueProvider.PayrunValues);
 
     /// <inheritdoc />
     public List<string> GetRuntimeValuesEmployees() =>
@@ -41,7 +41,7 @@ public class PayrunEndRuntime : PayrunRuntimeBase, IPayrunEndRuntime
             throw new ArgumentException(nameof(employeeIdentifier));
         }
         return RuntimeValueProvider.EmployeeValues.TryGetValue(employeeIdentifier, out var value)
-            ? value
+            ? new(value)
             : new();
     }
 

@@ -9,6 +9,10 @@ using PayrollEngine.Domain.Scripting.Runtime;
 
 namespace PayrollEngine.Domain.Application;
 
+/// <summary>
+/// Collects available derived cases by resolving case inheritance across payroll layers
+/// and evaluating case-available scripts. Returns the set of cases a user can interact with.
+/// </summary>
 public class DerivedCaseCollector : DerivedCaseTool
 {
     /// <summary>

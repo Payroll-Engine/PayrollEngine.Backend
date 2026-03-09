@@ -16,6 +16,21 @@ public class CollectorResult : ApiObjectBase
     public int PayrollResultId { get; set; }
 
     /// <summary>
+    /// The tenant id (denormalized, immutable)
+    /// </summary>
+    public int TenantId { get; set; }
+
+    /// <summary>
+    /// The employee id (denormalized, immutable)
+    /// </summary>
+    public int EmployeeId { get; set; }
+
+    /// <summary>
+    /// The division id (denormalized, immutable)
+    /// </summary>
+    public int DivisionId { get; set; }
+
+    /// <summary>
     /// The collector id (immutable)
     /// </summary>
     [Required]

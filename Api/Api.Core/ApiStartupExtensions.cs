@@ -8,23 +8,47 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using PayrollEngine.Persistence;
+using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Scripting;
 using DomainModel = PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Core;
 
+/// <summary>
+/// Extension methods for configuring and registering all Payroll Engine API services,
+/// middleware, authentication, rate limiting, CORS, and Swagger in the ASP.NET Core pipeline.
+/// </summary>
 public static class ApiStartupExtensions
 {
     // see also web.config
     private const int MaxRequestBodySize = 2147483647;
 
+    /// <summary>
+    /// Rate limiting policy name for the payrun job start endpoint.
+    /// Used by <see cref="Microsoft.AspNetCore.RateLimiting.EnableRateLimitingAttribute"/>.
+    /// </summary>
+    private const string RateLimitPolicyPayrunJobStart = "PayrunJobStart";
+
+    /// <summary>
+    /// Register all API services into the DI container, including authentication,
+    /// Swagger, rate limiting, CORS, and controller visibility.
+    /// </summary>
+    /// <param name="services">Service collection to configure</param>
+    /// <param name="configuration">Application configuration (appsettings.json)</param>
+    /// <param name="controllerVisibility">Controller visibility rules for Swagger filtering</param>
+    /// <param name="specification">API metadata (name, version, documentation)</param>
+    /// <param name="dbContext">Database context for persistence operations</param>
+    /// <returns>The configured service collection for chaining</returns>
     // ReSharper disable once UnusedMethodReturnValue.Global
     public static IServiceCollection AddApiServices(this IServiceCollection services,
         IConfiguration configuration, IControllerVisibility controllerVisibility,
@@ -85,6 +109,7 @@ public static class ApiStartupExtensions
             InitializeScriptCompiler();
         }
         ScriptCompiler.DumpCompilerSources = serverConfiguration.DumpCompilerSources;
+        ScriptCompiler.ScriptSafetyAnalysis = serverConfiguration.ScriptSafetyAnalysis;
 
         // culture
         var cultureName = serverConfiguration.StartupCulture;
@@ -93,6 +118,12 @@ public static class ApiStartupExtensions
             Thread.CurrentThread.CurrentCulture = new(cultureName);
             Log.Trace($"Changing application culture from {CultureInfo.CurrentCulture.Name} to {cultureName}");
         }
+
+        // webhook HTTP client (replaces static HttpClient for DNS rotation and connection pooling)
+        services.AddHttpClient(WebhookDispatchService.HttpClientName, client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(5);
+        });
 
         // API services
         ApiFactory.SetupApiServices(services, configuration, dbContext);
@@ -113,6 +144,17 @@ public static class ApiStartupExtensions
                 break;
 
             case AuthenticationMode.OAuth:
+                // guard: Authority and Audience are mandatory for secure token validation
+                if (string.IsNullOrWhiteSpace(authConfig.OAuth.Authority))
+                {
+                    throw new PayrollException("OAuth authentication requires a configured Authority.");
+                }
+                if (string.IsNullOrWhiteSpace(authConfig.OAuth.Audience))
+                {
+                    throw new PayrollException("OAuth authentication requires a configured Audience. " +
+                        "Without an audience, tokens issued for other APIs would be accepted.");
+                }
+
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -130,8 +172,10 @@ public static class ApiStartupExtensions
                 break;
         }
 
-        // swagger
-        services.AddSwaggerGen(setupAction =>
+        // swagger (only when explicitly enabled)
+        if (serverConfiguration.EnableSwagger)
+        {
+            services.AddSwaggerGen(setupAction =>
         {
             switch (authConfig.Mode)
             {
@@ -172,7 +216,8 @@ public static class ApiStartupExtensions
             var combinedXmlCommentFileName = SwaggerTool.CreateXmlCommentsFile(
                 specification.ApiDocumentationFileName, serverConfiguration.XmlCommentFileNames);
             setupAction.IncludeXmlComments(combinedXmlCommentFileName);
-        });
+            });
+        }
 
         // API Version
         services.AddApiVersioning(setupAction =>
@@ -183,9 +228,108 @@ public static class ApiStartupExtensions
                 setupAction.ReportApiVersions = true;
             });
 
+        // CORS (only when at least one origin is configured)
+        var cors = serverConfiguration.Cors;
+        if (cors.IsActive)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(CorsConfiguration.PolicyName, policy =>
+                {
+                    // origins
+                    if (cors.AllowedOrigins is ["*"])
+                    {
+                        policy.AllowAnyOrigin();
+                    }
+                    else
+                    {
+                        policy.WithOrigins(cors.AllowedOrigins);
+                    }
+
+                    // methods
+                    if (cors.AllowedMethods is ["*"])
+                    {
+                        policy.AllowAnyMethod();
+                    }
+                    else
+                    {
+                        policy.WithMethods(cors.AllowedMethods);
+                    }
+
+                    // headers
+                    if (cors.AllowedHeaders is ["*"])
+                    {
+                        policy.AllowAnyHeader();
+                    }
+                    else
+                    {
+                        policy.WithHeaders(cors.AllowedHeaders);
+                    }
+
+                    // credentials (incompatible with wildcard origin)
+                    if (cors.AllowCredentials && cors.AllowedOrigins is not ["*"])
+                    {
+                        policy.AllowCredentials();
+                    }
+
+                    // preflight cache
+                    if (cors.PreflightMaxAgeSeconds > 0)
+                    {
+                        policy.SetPreflightMaxAge(TimeSpan.FromSeconds(cors.PreflightMaxAgeSeconds));
+                    }
+                });
+            });
+            Log.Information($"CORS: policy active for origins [{string.Join(", ", cors.AllowedOrigins)}]");
+        }
+
+        // rate limiting (only when at least one policy is active)
+        var rateLimiting = serverConfiguration.RateLimiting;
+        if (rateLimiting.IsActive)
+        {
+            services.AddRateLimiter(options =>
+            {
+                // HTTP 429 response
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                // global fixed-window limiter
+                if (rateLimiting.Global.IsActive)
+                {
+                    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+                        RateLimitPartition.GetFixedWindowLimiter(
+                            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                            factory: _ => new FixedWindowRateLimiterOptions
+                            {
+                                PermitLimit = rateLimiting.Global.PermitLimit,
+                                Window = TimeSpan.FromSeconds(rateLimiting.Global.WindowSeconds)
+                            }));
+                    Log.Information($"Rate limiting: global policy active ({rateLimiting.Global.PermitLimit} req/{rateLimiting.Global.WindowSeconds}s)");
+                }
+
+                // endpoint-specific: payrun job start
+                if (rateLimiting.PayrunJobStart.IsActive)
+                {
+                    options.AddFixedWindowLimiter(RateLimitPolicyPayrunJobStart, limiterOptions =>
+                    {
+                        limiterOptions.PermitLimit = rateLimiting.PayrunJobStart.PermitLimit;
+                        limiterOptions.Window = TimeSpan.FromSeconds(rateLimiting.PayrunJobStart.WindowSeconds);
+                    });
+                    Log.Information($"Rate limiting: {RateLimitPolicyPayrunJobStart} policy active ({rateLimiting.PayrunJobStart.PermitLimit} req/{rateLimiting.PayrunJobStart.WindowSeconds}s)");
+                }
+            });
+        }
+
         return services;
     }
 
+    /// <summary>
+    /// Configure the HTTP request pipeline with all Payroll Engine middleware
+    /// (routing, CORS, authentication, rate limiting, Swagger, endpoints).
+    /// </summary>
+    /// <param name="appBuilder">Application builder for middleware registration</param>
+    /// <param name="environment">Hosting environment (Development/Production)</param>
+    /// <param name="appLifetime">Application lifetime for startup/shutdown hooks</param>
+    /// <param name="configuration">Application configuration (appsettings.json)</param>
+    /// <param name="specification">API metadata for Swagger generation</param>
     public static void UsePayrollApiServices(this IApplicationBuilder appBuilder, IWebHostEnvironment environment,
         IHostApplicationLifetime appLifetime, IConfiguration configuration, ApiSpecification specification)
     {
@@ -216,21 +360,41 @@ public static class ApiStartupExtensions
         // dark theme and favicon css
         appBuilder.UseStaticFiles();
 
-        // dev support
+        // error handling
         if (environment.IsDevelopment())
         {
-            // dev error handling
             appBuilder.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            appBuilder.UseExceptionHandler(error =>
+            {
+                error.Run(async context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        error = "An internal server error occurred."
+                    });
+                });
+            });
         }
 
         // logs
-        appLifetime.UseLog(configuration, appBuilder, environment, serverConfiguration.LogHttpRequests);
+        appLifetime.UseLog(configuration, appBuilder, environment, serverConfiguration, serverConfiguration.LogHttpRequests);
 
         // api key
         appBuilder.UseApiKey();
 
         // routing
         appBuilder.UseRouting();
+
+        // CORS (after routing, before auth)
+        if (serverConfiguration.Cors.IsActive)
+        {
+            appBuilder.UseCors(CorsConfiguration.PolicyName);
+        }
 
         // OAuth
         var authConfig = configuration.GetAuthConfiguration();
@@ -240,19 +404,35 @@ public static class ApiStartupExtensions
             appBuilder.UseAuthorization();
         }
 
-        // swagger
-        appBuilder.UseSwagger(
-            apiDocumentationName: specification.ApiDocumentationName,
-            apiName: specification.ApiName,
-            apiVersion: specification.ApiVersion,
-            darkTheme: serverConfiguration.DarkTheme,
-            rootRedirect: true,
-            oauth: authConfig.Mode == AuthenticationMode.OAuth ? authConfig.OAuth : null);
+        // rate limiting (after routing, before endpoints)
+        if (serverConfiguration.RateLimiting.IsActive)
+        {
+            appBuilder.UseRateLimiter();
+        }
 
-        // database
+        // swagger (only when explicitly enabled)
+        if (serverConfiguration.EnableSwagger)
+        {
+            if (!environment.IsDevelopment())
+            {
+                Log.Warning("Swagger is enabled in a non-development environment. " +
+                    "This exposes the full API surface and interactive 'Try it out' functionality. " +
+                    "Consider setting EnableSwagger to false in production.");
+            }
+
+            appBuilder.UseSwagger(
+                apiDocumentationName: specification.ApiDocumentationName,
+                apiName: specification.ApiName,
+                apiVersion: specification.ApiVersion,
+                darkTheme: serverConfiguration.DarkTheme,
+                rootRedirect: true,
+                oauth: authConfig.Mode == AuthenticationMode.OAuth ? authConfig.OAuth : null);
+        }
+
+        // database transaction timeout (one-time initialization)
         if (serverConfiguration.DbTransactionTimeout > TimeSpan.Zero)
         {
-            TransactionFactory.Timeout = serverConfiguration.DbTransactionTimeout;
+            TransactionFactory.Initialize(serverConfiguration.DbTransactionTimeout);
         }
 
         // endpoints
@@ -265,8 +445,11 @@ public static class ApiStartupExtensions
                 controllers.RequireAuthorization();
             }
 
-            // swagger metadata endpoint — always anonymous
-            endpoints.MapSwagger().AllowAnonymous();
+            // swagger metadata endpoint — always anonymous (only when enabled)
+            if (serverConfiguration.EnableSwagger)
+            {
+                endpoints.MapSwagger().AllowAnonymous();
+            }
         });
 
         // dapper

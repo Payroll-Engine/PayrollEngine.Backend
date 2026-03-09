@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Cases")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/cases")]
+[TenantAuthorize]
 public class CaseController : Api.Controller.CaseController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class CaseController : Api.Controller.CaseController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryCases")]
     public async Task<ActionResult> QueryCasesAsync(int tenantId, int regulationId,
-        [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(regulationId, query);
-    }
+        [FromQuery] Query query) =>
+        await QueryItemsAsync(regulationId, query);
 
     /// <summary>
     /// Get a regulation case
@@ -53,16 +46,8 @@ public class CaseController : Api.Controller.CaseController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCase")]
-    public async Task<ActionResult<ApiObject.Case>> GetCaseAsync(int tenantId, int regulationId, int caseId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(regulationId, caseId);
-    }
+    public async Task<ActionResult<ApiObject.Case>> GetCaseAsync(int tenantId, int regulationId, int caseId) =>
+        await GetAsync(regulationId, caseId);
 
     /// <summary>
     /// Add a new regulation case
@@ -76,16 +61,8 @@ public class CaseController : Api.Controller.CaseController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateCase")]
-    public async Task<ActionResult<ApiObject.Case>> CreateCaseAsync(int tenantId, int regulationId, ApiObject.Case @case)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(regulationId, @case);
-    }
+    public async Task<ActionResult<ApiObject.Case>> CreateCaseAsync(int tenantId, int regulationId, ApiObject.Case @case) =>
+        await CreateAsync(regulationId, @case);
 
     /// <summary>
     /// Update a regulation case
@@ -99,16 +76,8 @@ public class CaseController : Api.Controller.CaseController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateCase")]
-    public async Task<ActionResult<ApiObject.Case>> UpdateCaseAsync(int tenantId, int regulationId, ApiObject.Case @case)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(regulationId, @case);
-    }
+    public async Task<ActionResult<ApiObject.Case>> UpdateCaseAsync(int tenantId, int regulationId, ApiObject.Case @case) =>
+        await UpdateAsync(regulationId, @case);
 
     /// <summary>
     /// Rebuild regulation case
@@ -119,16 +88,8 @@ public class CaseController : Api.Controller.CaseController
     [HttpPut("{caseId}/rebuild")]
     [NotFoundResponse]
     [ApiOperationId("RebuildCase")]
-    public async Task<ActionResult> RebuildCaseAsync(int tenantId, int regulationId, int caseId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await RebuildAsync(regulationId, caseId);
-    }
+    public async Task<ActionResult> RebuildCaseAsync(int tenantId, int regulationId, int caseId) =>
+        await RebuildAsync(regulationId, caseId);
 
     /// <summary>
     /// Delete a regulation case
@@ -138,14 +99,6 @@ public class CaseController : Api.Controller.CaseController
     /// <param name="caseId">The case id</param>
     [HttpDelete("{caseId}")]
     [ApiOperationId("DeleteCase")]
-    public async Task<IActionResult> DeleteCaseAsync(int tenantId, int regulationId, int caseId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(regulationId, caseId);
-    }
+    public async Task<IActionResult> DeleteCaseAsync(int tenantId, int regulationId, int caseId) =>
+        await DeleteAsync(regulationId, caseId);
 }

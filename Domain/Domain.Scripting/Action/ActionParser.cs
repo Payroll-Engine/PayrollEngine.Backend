@@ -352,7 +352,9 @@ internal sealed class ActionParser
                 // post code (write property)
                 if (!string.IsNullOrWhiteSpace(tokenResult.PostCode))
                 {
-                    var postCode = tokenResult.PostCode.Trim('\r', '\n', ' ');
+                    // unwrap ActionValue to primitive before passing to object parameter
+                    codeBuffer.Append($"{nameof(ActionValue)}.{nameof(ActionValue.ToPrimitive)}(");
+                    var postCode = tokenResult.PostCode.Trim('\r', '\n', ' ') + ")";
                     postCodeBuffer.Insert(0, postCode);
                 }
             }

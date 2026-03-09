@@ -5,6 +5,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="Webhook"/> persistence (table: Webhook).</summary>
 public class WebhookRepository() : ChildDomainRepository<Webhook>(DbSchema.Tables.Webhook,
     DbSchema.WebhookColumn.TenantId), IWebhookRepository
 {

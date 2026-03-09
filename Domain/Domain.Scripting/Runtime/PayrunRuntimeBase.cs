@@ -3,9 +3,11 @@ using System;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
+using System.Threading;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Client.Scripting.Runtime;
+
+// ReSharper disable InconsistentlySynchronizedField
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -94,13 +96,22 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     public string PeriodName => PayrunJob.PeriodName;
 
     /// <inheritdoc />
+    public bool PreviewJob => Settings.PreviewJob;
+
+    // lock for thread-safe access to PayrunJob.Attributes (shared across parallel employee threads)
+    private static readonly Lock PayrunJobAttributeLock = new();
+
+    /// <inheritdoc />
     public object GetPayrunJobAttribute(string attributeName)
     {
         if (string.IsNullOrWhiteSpace(attributeName))
         {
             throw new ArgumentException(nameof(attributeName));
         }
-        return PayrunJob.Attributes?.GetValue<object>(attributeName);
+        lock (PayrunJobAttributeLock)
+        {
+            return PayrunJob.Attributes?.GetValue<object>(attributeName);
+        }
     }
 
     /// <inheritdoc />
@@ -110,8 +121,11 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             throw new ArgumentException(nameof(attributeName));
         }
-        PayrunJob.Attributes ??= new();
-        PayrunJob.Attributes[attributeName] = value;
+        lock (PayrunJobAttributeLock)
+        {
+            PayrunJob.Attributes ??= new();
+            PayrunJob.Attributes[attributeName] = value;
+        }
     }
 
     /// <inheritdoc />
@@ -121,7 +135,10 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             throw new ArgumentException(nameof(attributeName));
         }
-        return PayrunJob.Attributes != null && PayrunJob.Attributes.Remove(attributeName);
+        lock (PayrunJobAttributeLock)
+        {
+            return PayrunJob.Attributes != null && PayrunJob.Attributes.Remove(attributeName);
+        }
     }
 
     #endregion
@@ -158,7 +175,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         if (value == null)
         {
             // remove value
-            RuntimeValueProvider.PayrunValues.Remove(key);
+            RuntimeValueProvider.PayrunValues.TryRemove(key, out _);
         }
         else
         {
@@ -177,8 +194,8 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             throw new ArgumentException(nameof(key));
         }
         var employee = Employee.Identifier;
-        return RuntimeValueProvider.EmployeeValues.ContainsKey(employee) &&
-               RuntimeValueProvider.EmployeeValues[employee].ContainsKey(key);
+        return RuntimeValueProvider.EmployeeValues.TryGetValue(employee, out var values) &&
+               values.ContainsKey(key);
     }
 
     /// <inheritdoc />
@@ -189,11 +206,11 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             throw new ArgumentException(nameof(key));
         }
         var employee = Employee.Identifier;
-        if (!RuntimeValueProvider.EmployeeValues.ContainsKey(employee))
+        if (!RuntimeValueProvider.EmployeeValues.TryGetValue(employee, out var employeeValues))
         {
             return null;
         }
-        return RuntimeValueProvider.EmployeeValues[employee].GetValueOrDefault(key);
+        return employeeValues.GetValueOrDefault(key);
     }
 
     /// <inheritdoc />
@@ -205,15 +222,11 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         }
 
         var employee = Employee.Identifier;
-        if (!RuntimeValueProvider.EmployeeValues.TryGetValue(employee, out var employeeValues))
-        {
-            employeeValues = new();
-            RuntimeValueProvider.EmployeeValues[employee] = employeeValues;
-        }
+        var employeeValues = RuntimeValueProvider.EmployeeValues.GetOrAdd(employee, _ => new());
         if (value == null)
         {
             // remove value
-            employeeValues.Remove(key);
+            employeeValues.TryRemove(key, out _);
         }
         else
         {
@@ -359,7 +372,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 
     /// <inheritdoc />
     public IList<Tuple<decimal, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetConsolidatedWageTypeResults(
-        IList<decimal> wageTypeNumbers, DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null)
+        IList<decimal> wageTypeNumbers, DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null, bool noRetro = false)
     {
         if (wageTypeNumbers == null)
         {
@@ -372,7 +385,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
             if (periodStarts.Any() && EmployeeId != null)
             {
-                var results = Task.Run(() => ResultProvider.GetConsolidatedWageTypeResultsAsync(Settings.DbContext,
+                var results = ResultProvider.GetConsolidatedWageTypeResultsAsync(Settings.DbContext,
                     new()
                     {
                         TenantId = TenantId,
@@ -383,8 +396,15 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                         Forecast = forecast,
                         Tags = tags,
                         JobStatus = (PayrunJobStatus?)jobStatus,
-                        EvaluationDate = EvaluationDate
-                    })).Result.Select(x => new Tuple<decimal, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
+                        EvaluationDate = EvaluationDate,
+                        NoRetro = noRetro,
+                        // For retro-jobs: exclude sibling retro-jobs of the current payrun so that
+                        // consolidated results reflect the previously completed payslip state.
+                        // ParentPayrunJob is the current payrun's full-job; its id is the ParentJobId
+                        // of all retro-jobs in this payrun. Retro-jobs from earlier payruns are unaffected.
+                        ExcludeParentJobId = ParentPayrunJob?.Id,
+                    }).GetAwaiter().GetResult()
+                    .Select(x => new Tuple<decimal, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
                     x.WageTypeNumber, x.WageTypeName, new(x.Start, x.End), x.Value, x.Tags, x.Attributes)).ToList();
 
                 // collect results
@@ -418,7 +438,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 
     /// <inheritdoc />
     public IList<Tuple<decimal, string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetConsolidatedWageTypeCustomResults(IList<decimal> wageTypeNumbers,
-        DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null)
+        DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null, bool noRetro = false)
     {
         if (wageTypeNumbers == null)
         {
@@ -441,7 +461,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         var periodStarts = GetConsolidatedPeriodStarts(periodMoment);
         if (periodStarts.Any() && EmployeeId != null)
         {
-            var results = Task.Run(() => ResultProvider.GetConsolidatedWageTypeCustomResultsAsync(Settings.DbContext,
+            var results = ResultProvider.GetConsolidatedWageTypeCustomResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -452,8 +472,10 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                     Forecast = forecast,
                     Tags = tags,
                     JobStatus = (PayrunJobStatus?)jobStatus,
-                    EvaluationDate = EvaluationDate
-                })).Result.Select(x =>
+                    EvaluationDate = EvaluationDate,
+                    NoRetro = noRetro,
+                    ExcludeParentJobId = ParentPayrunJob?.Id,
+                }).GetAwaiter().GetResult().Select(x =>
                 new Tuple<decimal, string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
                     x.WageTypeNumber, x.WageTypeName, x.Source, new(x.Start, x.End), x.Value, x.Tags, x.Attributes)).ToList();
 
@@ -484,7 +506,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         if (PayrunJob.RetroPayMode != RetroPayMode.None)
         {
             //  get retro results by the current job (current=parent)
-            var retroResults = Task.Run(() => ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
+            var retroResults = ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -495,7 +517,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                     Tags = tags,
                     JobStatus = (PayrunJobStatus?)jobStatus,
                 },
-                parentPayrunJobId: PayrunJob.Id)).Result.ToList();
+                parentPayrunJobId: PayrunJob.Id).GetAwaiter().GetResult().ToList();
             if (retroResults.Any())
             {
                 // sort from oldest to newest
@@ -508,7 +530,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                 //  results period
                 var periodStart = retroResults.First().Start.ToUtc();
                 var periodEnd = retroResults.Last().End.ToUtc();
-                var periodResults = Task.Run(() => ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
+                var periodResults = ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
                     new()
                     {
                         TenantId = TenantId,
@@ -518,7 +540,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                         Period = new(periodStart, periodEnd),
                         Forecast = forecast,
                         Tags = tags
-                    })).Result.ToList();
+                    }).GetAwaiter().GetResult().ToList();
                 if (periodResults.Any())
                 {
                     // group values by period
@@ -574,7 +596,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             return new List<WageTypeResult>();
         }
-        return Task.Run(() => ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
+        return ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -586,7 +608,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                 Tags = tags,
                 JobStatus = (PayrunJobStatus?)jobStatus,
                 EvaluationDate = EvaluationDate
-            })).Result.ToList();
+            }).GetAwaiter().GetResult().ToList();
     }
 
     /// <summary>
@@ -615,7 +637,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             return new List<WageTypeCustomResult>();
         }
-        return Task.Run(() => ResultProvider.GetWageTypeCustomResultsAsync(Settings.DbContext,
+        return ResultProvider.GetWageTypeCustomResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -627,7 +649,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                 Tags = tags,
                 JobStatus = (PayrunJobStatus?)jobStatus,
                 EvaluationDate = EvaluationDate
-            })).Result.ToList();
+            }).GetAwaiter().GetResult().ToList();
     }
 
     #endregion
@@ -649,7 +671,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 
     /// <inheritdoc />
     public IList<Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetConsolidatedCollectorResults(
-        IList<string> collectorNames, DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null)
+        IList<string> collectorNames, DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null, bool noRetro = false)
     {
         if (EmployeeId == null)
         {
@@ -667,7 +689,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         var consolidatedResults = new List<Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (periodStarts.Any() && EmployeeId != null)
         {
-            var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorResultsAsync(Settings.DbContext,
+            var results = ResultProvider.GetConsolidatedCollectorResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -678,8 +700,10 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                     Forecast = forecast,
                     Tags = tags,
                     JobStatus = (PayrunJobStatus?)jobStatus,
-                    EvaluationDate = EvaluationDate
-                })).Result.Select(x => new Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
+                    EvaluationDate = EvaluationDate,
+                    NoRetro = noRetro,
+                    ExcludeParentJobId = ParentPayrunJob?.Id,
+                }).GetAwaiter().GetResult().Select(x => new Tuple<string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
                 x.CollectorName, new(x.Start, x.End), x.Value, x.Tags, x.Attributes)).ToList();
 
             // collect results
@@ -714,7 +738,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
 
     /// <inheritdoc />
     public IList<Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>> GetConsolidatedCollectorCustomResults(IList<string> collectorNames,
-        DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null)
+        DateTime periodMoment, string forecast = null, int? jobStatus = null, IList<string> tags = null, bool noRetro = false)
     {
         if (EmployeeId == null)
         {
@@ -732,7 +756,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         var consolidatedResults = new List<Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (periodStarts.Any() && EmployeeId != null)
         {
-            var results = Task.Run(() => ResultProvider.GetConsolidatedCollectorCustomResultsAsync(Settings.DbContext,
+            var results = ResultProvider.GetConsolidatedCollectorCustomResultsAsync(Settings.DbContext,
                 new()
                 {
                     TenantId = TenantId,
@@ -743,8 +767,10 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                     Forecast = forecast,
                     Tags = tags,
                     JobStatus = (PayrunJobStatus?)jobStatus,
-                    EvaluationDate = EvaluationDate
-                })).Result.Select(x =>
+                    EvaluationDate = EvaluationDate,
+                    NoRetro = noRetro,
+                    ExcludeParentJobId = ParentPayrunJob?.Id,
+                }).GetAwaiter().GetResult().Select(x =>
                 new Tuple<string, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
                     x.CollectorName, x.Source, new(x.Start, x.End), x.Value, x.Tags, x.Attributes)).ToList();
 
@@ -780,7 +806,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             collectorNames = collectorNames.EnsureNamespace(Namespace);
         }
 
-        var results = Task.Run(() => ResultProvider.GetCollectorResultsAsync(Settings.DbContext,
+        var results = ResultProvider.GetCollectorResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -792,7 +818,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                 Tags = tags,
                 JobStatus = (PayrunJobStatus?)jobStatus,
                 EvaluationDate = EvaluationDate
-            })).Result.ToList();
+            }).GetAwaiter().GetResult().ToList();
         return results;
     }
 
@@ -818,7 +844,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             collectorNames = collectorNames.EnsureNamespace(Namespace);
         }
 
-        return Task.Run(() => ResultProvider.GetCollectorCustomResultsAsync(Settings.DbContext,
+        return ResultProvider.GetCollectorCustomResultsAsync(Settings.DbContext,
             new()
             {
                 TenantId = TenantId,
@@ -830,7 +856,7 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
                 Tags = tags,
                 JobStatus = (PayrunJobStatus?)jobStatus,
                 EvaluationDate = EvaluationDate
-            })).Result.ToList();
+            }).GetAwaiter().GetResult().ToList();
     }
 
     /// <summary>Get consolidated period starts from a moment until the current period</summary>

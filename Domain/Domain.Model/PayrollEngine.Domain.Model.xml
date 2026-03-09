@@ -2803,6 +2803,36 @@
             The wage type result id (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.CollectorName">
             <summary>
             The collector name (immutable)
@@ -2885,6 +2915,36 @@
         <member name="P:PayrollEngine.Domain.Model.CollectorResult.PayrollResultId">
             <summary>
             The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorResult.CollectorId">
@@ -3032,6 +3092,16 @@
         <member name="P:PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery.PeriodStarts">
             <summary>The period starts</summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery.NoRetro">
+            <summary>Exclude retro jobs (ParentJobId IS NOT NULL): returns only original main-job values per period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery.ExcludeParentJobId">
+            <summary>
+            Exclude retro jobs belonging to a specific parent job (current payrun).
+            Retro jobs from earlier payruns (different ParentJobId) remain included.
+            Set by the backend runtime to the current payrun's full-job id; never exposed to the client.
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.ConsolidatedCollectorResultQuery.#ctor">
             <summary>
             Default constructor
@@ -3088,6 +3158,16 @@
         <member name="P:PayrollEngine.Domain.Model.ConsolidatedPayrunResultQuery.PeriodStarts">
             <summary>The period starts</summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.ConsolidatedPayrunResultQuery.NoRetro">
+            <summary>Exclude retro jobs (ParentJobId IS NOT NULL): returns only original main-job values per period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ConsolidatedPayrunResultQuery.ExcludeParentJobId">
+            <summary>
+            Exclude retro jobs belonging to a specific parent job (current payrun).
+            Retro jobs from earlier payruns (different ParentJobId) remain included.
+            Set by the backend runtime to the current payrun's full-job id; never exposed to the client.
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.ConsolidatedPayrunResultQuery.#ctor">
             <summary>
             Default constructor
@@ -3115,6 +3195,16 @@
         </member>
         <member name="P:PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery.PeriodStarts">
             <summary>The period starts</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery.NoRetro">
+            <summary>Exclude retro jobs (ParentJobId IS NOT NULL): returns only original main-job values per period</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery.ExcludeParentJobId">
+            <summary>
+            Exclude retro jobs belonging to a specific parent job (current payrun).
+            Retro jobs from earlier payruns (different ParentJobId) remain included.
+            Set by the backend runtime to the current payrun's full-job id; never exposed to the client.
+            </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.ConsolidatedWageTypeResultQuery.#ctor">
             <summary>
@@ -3186,6 +3276,9 @@
         </member>
         <member name="T:PayrollEngine.Domain.Model.DerivedCollector">
             <summary>Derived collector</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.DerivedCollector.Clone">
+            <summary>Clone this derived collector with empty values</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.DerivedCollector.RegulationId">
             <summary>The regulation id</summary>
@@ -3786,14 +3879,13 @@
         <member name="M:PayrollEngine.Domain.Model.IDbContext.TransformException(System.Exception)">
             <summary>Transform a database exception</summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryAsync``1(System.String,System.Object,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
             Execute a query asynchronously using Task.
             </summary>
             <typeparam name="T">The type of results to return.</typeparam>
             <param name="sql">The SQL to execute for the query.</param>
             <param name="param">The parameters to pass, if any.</param>
-            <param name="transaction">The transaction to use, if any.</param>
             <param name="commandTimeout">The command timeout (in seconds).</param>
             <param name="commandType">The type of command to execute.</param>
             <returns>
@@ -3801,47 +3893,43 @@
             created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
             </returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryFirstAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryFirstAsync``1(System.String,System.Object,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
             Execute a single-row query asynchronously using Task.
             </summary>
             <typeparam name="T">The type of result to return.</typeparam>
             <param name="sql">The SQL to execute for the query.</param>
             <param name="param">The parameters to pass, if any.</param>
-            <param name="transaction">The transaction to use, if any.</param>
             <param name="commandTimeout">The command timeout (in seconds).</param>
             <param name="commandType">The type of command to execute.</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IDbContext.QuerySingleAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.QuerySingleAsync``1(System.String,System.Object,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
             Execute a single-row query asynchronously using Task.
             </summary>
             <typeparam name="T">The type of result to return.</typeparam>
             <param name="sql">The SQL to execute for the query.</param>
             <param name="param">The parameters to pass, if any.</param>
-            <param name="transaction">The transaction to use, if any.</param>
             <param name="commandTimeout">The command timeout (in seconds).</param>
             <param name="commandType">The type of command to execute.</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IDbContext.ExecuteAsync(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.ExecuteAsync(System.String,System.Object,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
             Execute a command asynchronously using Task.
             </summary>
             <param name="sql">The SQL to execute for this query.</param>
             <param name="param">The parameters to use for this query.</param>
-            <param name="transaction">The transaction to use for this query.</param>
             <param name="commandTimeout">Number of seconds before command execution timeout.</param>
             <param name="commandType">Is it a stored proc or a batch?</param>
             <returns>The number of rows affected.</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IDbContext.ExecuteScalarAsync``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.ExecuteScalarAsync``1(System.String,System.Object,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
             Execute parameterized SQL that selects a single value.
             </summary>
             <typeparam name="T">The type to return.</typeparam>
             <param name="sql">The SQL to execute.</param>
             <param name="param">The parameters to use for this command.</param>
-            <param name="transaction">The transaction to use for this command.</param>
             <param name="commandTimeout">Number of seconds before command execution timeout.</param>
             <param name="commandType">Is it a stored proc or a batch?</param>
             <returns>The first cell returned, as <typeparamref name="T"/>.</returns>
@@ -3852,6 +3940,20 @@
             </summary>
             <param name="dataTable">The data to insert.</param>
             <remarks>Executed as transaction</remarks>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.UpdateStatisticsAsync">
+            <summary>
+            Update statistics for all tables using FULLSCAN.
+            Prevents query plan degradation after large bulk imports (e.g. lookup values)
+            or after accumulation of many payrun results.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.UpdateStatisticsTargetedAsync">
+            <summary>
+            Update statistics for high-volume tables only using FULLSCAN.
+            Covers: LookupValue, payrun result tables, case value tables.
+            Faster than <see cref="M:PayrollEngine.Domain.Model.IDbContext.UpdateStatisticsAsync"/> — use for automatic triggers after bulk imports.
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.IDerivableObject">
             <summary>
@@ -4209,6 +4311,13 @@
             <summary>
             Webhook dispatcher service
             </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.HasWebhooksAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32)">
+            <summary>
+            Test for available webhooks
+            </summary>
+            <param name="context">The database context</param>
+            <param name="tenantId">The tenant id</param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.InvokeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage,System.Nullable{System.Int32})">
             <summary>
@@ -5370,8 +5479,14 @@
             Payroll result extensions
             </summary>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.ToDataSet(PayrollEngine.Domain.Model.PayrollResultSet)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.ToDataSet"/>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.IsEmpty(PayrollEngine.Domain.Model.PayrollResultSet)">
             <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.IsEmpty"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetDenormalizedContext(PayrollEngine.Domain.Model.PayrollResultSet,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32})">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetDenormalizedContext(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32})"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetResultDate(PayrollEngine.Domain.Model.PayrollResultSet,System.DateTime)">
             <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetResultDate(System.DateTime)"/>
@@ -5382,10 +5497,31 @@
         <member name="T:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.&lt;M&gt;$92131209D7FB553EB434C00D3778BF23">
             <param name="payrollResultSet">The payroll result set</param>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.ToDataSet">
+            <summary>
+            Converts the payroll result set to a <see cref="T:PayrollEngine.Data.DataSet"/> with tables
+            for wage type results, collector results, payrun results, and their custom results.
+            </summary>
+            <returns>A <see cref="T:PayrollEngine.Data.DataSet"/> containing the payroll calculation results.</returns>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.IsEmpty">
             <summary>
             Test for empty result set
             </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetDenormalizedContext(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Set denormalized context columns on all results.
+            These columns are redundant copies from PayrollResult/PayrunJob for direct index seeks.
+            Phase 1: TenantId, EmployeeId, DivisionId
+            Phase 2: PayrunJobId, Forecast, ParentJobId
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employeeId">The employee id</param>
+            <param name="divisionId">The division id</param>
+            <param name="payrunJobId">The payrun job id</param>
+            <param name="forecast">The forecast name</param>
+            <param name="parentJobId">The parent payrun job id</param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetResultDate(System.DateTime)">
             <summary>
@@ -5940,11 +6076,13 @@
             Factory for payrun jobs
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.CreatePayrunJob(PayrollEngine.Domain.Model.PayrunJobInvocation,System.Int32,System.Int32,PayrollEngine.Domain.Model.IPayrollCalculator)">
+        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.CreatePayrunJob(PayrollEngine.Domain.Model.PayrunJobInvocation,System.Int32,System.Int32,System.Int32,System.Int32,PayrollEngine.Domain.Model.IPayrollCalculator)">
             <summary>
-            Create a new news payrun job
+            Create a new payrun job
             </summary>
             <param name="jobInvocation">The job invocation</param>
+            <param name="payrunId">The resolved payrun id</param>
+            <param name="userId">The resolved user id</param>
             <param name="divisionId">The division id</param>
             <param name="payrollId">The payroll id</param>
             <param name="payrollCalculator">The payroll calculator</param>
@@ -5975,14 +6113,14 @@
             The job owner (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.PayrunId">
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.PayrunName">
             <summary>
-            The payrun id (immutable)
+            The payrun name (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.UserId">
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.UserIdentifier">
             <summary>
-            The user id (immutable)
+            The user identifier (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.PayrunJobId">
@@ -6144,6 +6282,36 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunResult.PayrollResultId">
             <summary>
             The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunResult.Source">
@@ -7348,6 +7516,16 @@
             <param name="caseChange">The case values to add</param>
             <returns>The case value at a given time, null if no value is available</returns>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseChangeRepository`1.AddCaseChangesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.ValueTuple{System.Int32,`0}})">
+            <summary>
+            Add multiple case changes in a single transaction (bulk)
+            </summary>
+            <param name="context">The database context</param>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseChanges">The case changes with their parent ids</param>
+            <returns>The created case changes</returns>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseDocumentRepository">
             <summary>
             Repository for case documents
@@ -7492,16 +7670,6 @@
             <param name="caseFieldName">The case field name</param>
             <param name="evaluationDate">The evaluation date (default: UTC now)</param>
             <returns>The case values</returns>
-        </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.ICaseValueRepository`1.GetRetroCaseValueAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.DomainCaseValueQuery,PayrollEngine.DatePeriod,System.String)">
-            <summary>
-            Get retro case values from a certain time period
-            </summary>
-            <param name="context">The database context</param>
-            <param name="query">The case value query</param>
-            <param name="period">The date period</param>
-            <param name="caseFieldName">The case field name</param>
-            <returns>The retro case value</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ICaseValueSetupRepository">
             <summary>
@@ -8493,6 +8661,14 @@
             <param name="context">The database context</param>
             <param name="identifier">The tenant identifier</param>
             <returns>True any collector exists</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.ITenantRepository.UpdateStatisticsAsync(PayrollEngine.Domain.Model.IDbContext)">
+            <summary>
+            Update statistics for all database tables using FULLSCAN.
+            Call after large bulk imports (lookup values) or after accumulating
+            many payrun results to prevent query plan degradation.
+            </summary>
+            <param name="context">The database context</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.ITrackChildDomainRepository`2">
             <summary>
@@ -9607,6 +9783,36 @@
             The wage type result id (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.WageTypeNumber">
             <summary>
             The wage type number (immutable)
@@ -9703,6 +9909,36 @@
         <member name="P:PayrollEngine.Domain.Model.WageTypeResult.PayrollResultId">
             <summary>
             The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeResult.WageTypeId">

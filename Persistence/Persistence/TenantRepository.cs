@@ -7,6 +7,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="Tenant"/> persistence (table: Tenant).</summary>
 public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.Tenant), ITenantRepository
 {
     public async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
@@ -25,6 +26,10 @@ public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.T
         parameters.Add(nameof(tenant.Attributes), JsonSerializer.SerializeNamedDictionary(tenant.Attributes));
         base.GetObjectData(tenant, parameters);
     }
+
+    /// <inheritdoc />
+    public System.Threading.Tasks.Task UpdateStatisticsAsync(IDbContext context) =>
+        context.UpdateStatisticsAsync();
 
     /// <inheritdoc />
     /// <remarks>Do not call the base class method</remarks>

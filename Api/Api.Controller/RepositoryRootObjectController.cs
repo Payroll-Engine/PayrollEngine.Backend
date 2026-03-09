@@ -116,36 +116,49 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
     /// <returns>New created object</returns>
     protected async Task<ActionResult<TApi>> CreateAsync(TApi apiObject)
     {
-        // argument check
-        if (apiObject == null)
-        {
-            return UndefinedObjectRequest();
-        }
-        if (apiObject.Id > 0)
-        {
-            return CreateObjectWithIdRequest();
-        }
-
-        // map object
-        TDomain domainObject;
         try
         {
-            domainObject = MapApiToDomain(apiObject);
-        }
-        catch (PayrollMapException exception)
-        {
-            throw new QueryException(exception.GetBaseMessage(), exception);
-        }
+            // argument check
+            if (apiObject == null)
+            {
+                return UndefinedObjectRequest();
+            }
+            if (apiObject.Id > 0)
+            {
+                return CreateObjectWithIdRequest();
+            }
 
-        // create object
-        domainObject = await Service.CreateAsync(Runtime.DbContext, domainObject);
-        if (domainObject.Id <= 0)
-        {
-            return CreateObjectFailedRequest();
-        }
+            // map object
+            TDomain domainObject;
+            try
+            {
+                domainObject = MapApiToDomain(apiObject);
+            }
+            catch (PayrollMapException exception)
+            {
+                throw new QueryException(exception.GetBaseMessage(), exception);
+            }
 
-        // created resource
-        return new CreatedObjectResult(Request.Path, MapDomainToApi(domainObject));
+            // create object
+            domainObject = await Service.CreateAsync(Runtime.DbContext, domainObject);
+            if (domainObject.Id <= 0)
+            {
+                return CreateObjectFailedRequest();
+            }
+
+            // created resource
+            return new CreatedObjectResult(Request.Path, MapDomainToApi(domainObject));
+        }
+        catch (PersistenceException exception)
+        {
+            return exception.ErrorType == PersistenceErrorType.UniqueConstraint
+                ? Conflict(exception.Message)
+                : UnprocessableEntity(exception.Message);
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
     }
 
     protected async Task<ActionResult<TApi>> UpdateAsync(TApi apiObject)
@@ -184,6 +197,12 @@ public abstract class RepositoryRootObjectController<TService, TRepo, TDomain, T
             // update object
             domainObject = await Service.UpdateAsync(Runtime.DbContext, domainObject);
             return MapDomainToApi(domainObject);
+        }
+        catch (PersistenceException exception)
+        {
+            return exception.ErrorType == PersistenceErrorType.UniqueConstraint
+                ? Conflict(exception.Message)
+                : UnprocessableEntity(exception.Message);
         }
         catch (Exception exception)
         {

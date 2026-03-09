@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Employee case changes")]
 [Route("api/tenants/{tenantId}/employees/{employeeId}/cases/changes")]
+[TenantAuthorize]
 public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeController
 {
     /// <inheritdoc/>
@@ -31,17 +32,8 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryEmployeeCaseChanges")]
-    public async Task<ActionResult> QueryEmployeeCaseChangesAsync(int tenantId, int employeeId, [FromQuery] DomainObject.CaseChangeQuery query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
-        return await QueryAsync(tenantId, employeeId, query);
-    }
+    public async Task<ActionResult> QueryEmployeeCaseChangesAsync(int tenantId, int employeeId, [FromQuery] DomainObject.CaseChangeQuery query) =>
+        await QueryAsync(tenantId, employeeId, query);
 
     /// <summary>
     /// Get an employee case change
@@ -56,23 +48,15 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     [ApiOperationId("GetEmployeeCaseChange")]
     public async Task<ActionResult<ApiObject.CaseChange>> GetEmployeeCaseChangeAsync(int tenantId, int employeeId, int caseChangeId)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
         if (await ParentService.GetParentIdAsync(Runtime.DbContext, employeeId) != tenantId)
         {
             return BadRequest($"Unknown tenant employee with id {employeeId}");
         }
-
         // employee check
         if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
-
         return await GetAsync(employeeId, caseChangeId);
     }
 
@@ -100,14 +84,6 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
     /// <param name="caseValueId">The case value id</param>
     [HttpDelete("{caseValueId}")]
     [ApiOperationId("DeleteEmployeeCaseChange")]
-    public async Task<IActionResult> DeleteEmployeeCaseChangeAsync(int tenantId, int employeeId, int caseValueId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(employeeId, caseValueId);
-    }
+    public async Task<IActionResult> DeleteEmployeeCaseChangeAsync(int tenantId, int employeeId, int caseValueId) =>
+        await DeleteAsync(employeeId, caseValueId);
 }

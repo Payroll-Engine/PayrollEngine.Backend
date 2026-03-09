@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Employees")]
 [Route("api/tenants/{tenantId}/employees")]
+[TenantAuthorize]
 public class EmployeeController : Api.Controller.EmployeeController
 {
     /// <inheritdoc/>
@@ -30,16 +31,8 @@ public class EmployeeController : Api.Controller.EmployeeController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryEmployees")]
-    public async Task<ActionResult> QueryEmployeesAsync(int tenantId, [FromQuery] DivisionQuery query = null)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryEmployeesAsync(int tenantId, [FromQuery] DivisionQuery query = null) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get employee
@@ -50,16 +43,8 @@ public class EmployeeController : Api.Controller.EmployeeController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetEmployee")]
-    public async Task<ActionResult<ApiObject.Employee>> GetEmployeeAsync(int tenantId, int employeeId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, employeeId);
-    }
+    public async Task<ActionResult<ApiObject.Employee>> GetEmployeeAsync(int tenantId, int employeeId) =>
+        await GetAsync(tenantId, employeeId);
 
     /// <summary>
     /// Add a new employee
@@ -74,12 +59,6 @@ public class EmployeeController : Api.Controller.EmployeeController
     [ApiOperationId("CreateEmployee")]
     public async Task<ActionResult<ApiObject.Employee>> CreateEmployeeAsync(int tenantId, ApiObject.Employee employee)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
         // unique employee by identifier
         if (await Service.ExistsAnyAsync(Runtime.DbContext, tenantId, employee.Identifier))
         {
@@ -87,6 +66,22 @@ public class EmployeeController : Api.Controller.EmployeeController
         }
         return await CreateAsync(tenantId, employee);
     }
+
+    /// <summary>
+    /// Bulk create employees
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="employees">The employees to create</param>
+    /// <returns>The number of created employees</returns>
+    [HttpPost("bulk")]
+    [OkResponse]
+    [NotFoundResponse]
+    [UnprocessableEntityResponse]
+    [ApiOperationId("CreateEmployeesBulk")]
+    public async Task<ActionResult<int>> CreateEmployeesBulkAsync(
+        int tenantId,
+        [FromBody] ApiObject.Employee[] employees) =>
+        await CreateBulkAsync(tenantId, employees);
 
     /// <summary>
     /// Update a employee
@@ -99,16 +94,8 @@ public class EmployeeController : Api.Controller.EmployeeController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateEmployee")]
-    public async Task<ActionResult<ApiObject.Employee>> UpdateEmployeeAsync(int tenantId, ApiObject.Employee employee)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, employee);
-    }
+    public async Task<ActionResult<ApiObject.Employee>> UpdateEmployeeAsync(int tenantId, ApiObject.Employee employee) =>
+        await UpdateAsync(tenantId, employee);
 
     /// <summary>
     /// Delete a employee
@@ -117,16 +104,8 @@ public class EmployeeController : Api.Controller.EmployeeController
     /// <param name="employeeId">The id of the employee</param>
     [HttpDelete("{employeeId}")]
     [ApiOperationId("DeleteEmployee")]
-    public async Task<IActionResult> DeleteEmployeeAsync(int tenantId, int employeeId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, employeeId);
-    }
+    public async Task<IActionResult> DeleteEmployeeAsync(int tenantId, int employeeId) =>
+        await DeleteAsync(tenantId, employeeId);
 
     #region Attributes
 
@@ -141,16 +120,8 @@ public class EmployeeController : Api.Controller.EmployeeController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetEmployeeAttribute")]
-    public virtual async Task<ActionResult<string>> GetEmployeeAttributeAsync(int tenantId, int employeeId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(employeeId, attributeName);
-    }
+    public virtual async Task<ActionResult<string>> GetEmployeeAttributeAsync(int tenantId, int employeeId, string attributeName) =>
+        await GetAttributeAsync(employeeId, attributeName);
 
     /// <summary>
     /// Set an employee attribute
@@ -166,16 +137,8 @@ public class EmployeeController : Api.Controller.EmployeeController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetEmployeeAttribute")]
     public virtual async Task<ActionResult<string>> SetEmployeeAttributeAsync(int tenantId, int employeeId, string attributeName,
-        [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(employeeId, attributeName, value);
-    }
+        [FromBody] string value) =>
+        await SetAttributeAsync(employeeId, attributeName, value);
 
     /// <summary>
     /// Delete an employee attribute
@@ -186,16 +149,8 @@ public class EmployeeController : Api.Controller.EmployeeController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{employeeId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteEmployeeAttribute")]
-    public virtual async Task<ActionResult<bool>> DeleteEmployeeAttributeAsync(int tenantId, int employeeId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(employeeId, attributeName);
-    }
+    public virtual async Task<ActionResult<bool>> DeleteEmployeeAttributeAsync(int tenantId, int employeeId, string attributeName) =>
+        await DeleteAttributeAsync(employeeId, attributeName);
 
     #endregion
 

@@ -18,13 +18,15 @@ namespace PayrollEngine.Api.Controller;
 /// API controller for the payrun jobs
 /// </summary>
 public abstract class PayrunJobController(ITenantService tenantService, IPayrunJobService payrunJobService,
-        IWebhookDispatchService webhookDispatcher, IPayrunJobQueue payrunJobQueue, IControllerRuntime runtime)
+        IWebhookDispatchService webhookDispatcher, IPayrunJobQueue payrunJobQueue,
+        IPayrunPreviewService payrunPreviewService, IControllerRuntime runtime)
     : RepositoryChildObjectController<ITenantService, IPayrunJobService,
     ITenantRepository, IPayrunJobRepository,
     Tenant, PayrunJob, ApiObject.PayrunJob>(tenantService, payrunJobService, runtime, new PayrunJobMap())
 {
     private IWebhookDispatchService WebhookDispatcher { get; } = webhookDispatcher ?? throw new ArgumentNullException(nameof(webhookDispatcher));
     private IPayrunJobQueue PayrunJobQueue { get; } = payrunJobQueue ?? throw new ArgumentNullException(nameof(payrunJobQueue));
+    private IPayrunPreviewService PayrunPreviewService { get; } = payrunPreviewService ?? throw new ArgumentNullException(nameof(payrunPreviewService));
     private PayrunJobServiceSettings ServiceSettings => Service.Settings;
 
     public virtual async Task<ActionResult> QueryEmployeePayrunJobsAsync(int tenantId, int employeeId, Query query)
@@ -54,7 +56,7 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
     {
         // authorization
         var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
+        if (authResult != null)
         {
             return authResult;
         }
@@ -66,7 +68,7 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
     {
         // authorization
         var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
+        if (authResult != null)
         {
             return authResult;
         }
@@ -91,23 +93,34 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
             return BadRequest($"Unknown tenant with id {tenantId}");
         }
 
-        // user
-        if (jobInvocation.UserId <= 0 || !await ServiceSettings.UserRepository.ExistsAsync(
-                Runtime.DbContext, tenantId, jobInvocation.UserId))
+        // resolve user by identifier
+        if (string.IsNullOrWhiteSpace(jobInvocation.UserIdentifier))
         {
-            return BadRequest($"Unknown user with id {jobInvocation.UserId}");
+            return BadRequest("UserIdentifier is required.");
         }
+        var users = (await ServiceSettings.UserRepository.QueryAsync(
+            Runtime.DbContext, tenantId, QueryFactory.NewIdentifierQuery(jobInvocation.UserIdentifier))).ToList();
+        if (users.Count != 1)
+        {
+            return BadRequest($"Unknown user with identifier {jobInvocation.UserIdentifier}");
+        }
+        var user = users.First();
 
-        // payrun
-        if (jobInvocation.PayrunId <= 0 || !await ServiceSettings.PayrunRepository.ExistsAsync(
-                Runtime.DbContext, tenantId, jobInvocation.PayrunId))
+        // resolve payrun by name
+        if (string.IsNullOrWhiteSpace(jobInvocation.PayrunName))
         {
-            return BadRequest($"Unknown payrun with id {jobInvocation.PayrunId}");
+            return BadRequest("PayrunName is required.");
         }
-        var payrun = await ServiceSettings.PayrunRepository.GetAsync(Runtime.DbContext, tenantId, jobInvocation.PayrunId);
-        if (payrun == null || payrun.Status != ObjectStatus.Active)
+        var payruns = (await ServiceSettings.PayrunRepository.QueryAsync(
+            Runtime.DbContext, tenantId, QueryFactory.NewNameQuery(jobInvocation.PayrunName))).ToList();
+        if (payruns.Count != 1)
         {
-            return BadRequest($"Inactive payrun with id {jobInvocation.PayrunId}");
+            return BadRequest($"Unknown payrun with name {jobInvocation.PayrunName}");
+        }
+        var payrun = payruns.First();
+        if (payrun.Status != ObjectStatus.Active)
+        {
+            return BadRequest($"Inactive payrun {jobInvocation.PayrunName}");
         }
 
         // payroll
@@ -130,7 +143,7 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
             var openJobs = await ServiceSettings.PayrunJobRepository.QueryAsync(Runtime.DbContext, tenantId, query);
             if (openJobs.Any())
             {
-                return BadRequest($"Payrun with id {jobInvocation.PayrunId} has already a payrun job with status {PayrunJobStatus.Draft}");
+                return BadRequest($"Payrun {jobInvocation.PayrunName} has already a payrun job with status {PayrunJobStatus.Draft}");
             }
         }
 
@@ -154,13 +167,15 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
 
             // Get calculator for period info
             var calculator = ServiceSettings.PayrollCalculatorProvider.CreateCalculator(
-                tenantId, domainJobInvocation.UserId,
+                tenantId, user.Id,
                 CultureInfo.CurrentCulture,
                 calendar);
 
             // Create the payrun job
             var payrunJob = PayrunJobFactory.CreatePayrunJob(
                 jobInvocation: domainJobInvocation,
+                payrunId: payrun.Id,
+                userId: user.Id,
                 divisionId: division.Id,
                 payrollId: payrollId,
                 payrollCalculator: calculator);
@@ -177,14 +192,27 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
             domainJobInvocation.PayrunJobId = payrunJob.Id;
 
             // Enqueue for background processing
-            await PayrunJobQueue.EnqueueAsync(new PayrunJobQueueItem
+            try
             {
-                TenantId = tenantId,
-                PayrunJobId = payrunJob.Id,
-                Tenant = tenant,
-                Payrun = payrun,
-                JobInvocation = domainJobInvocation
-            });
+                await PayrunJobQueue.EnqueueAsync(new PayrunJobQueueItem
+                {
+                    TenantId = tenantId,
+                    PayrunJobId = payrunJob.Id,
+                    Tenant = tenant,
+                    Payrun = payrun,
+                    JobInvocation = domainJobInvocation
+                });
+            }
+            catch (InvalidOperationException queueEx)
+            {
+                // queue is full - abort the persisted job and return 503
+                payrunJob.JobStatus = PayrunJobStatus.Abort;
+                payrunJob.JobEnd = Date.Now;
+                payrunJob.Message = "Job queue capacity exceeded";
+                await ServiceSettings.PayrunJobRepository.UpdateAsync(Runtime.DbContext, tenantId, payrunJob);
+                Log.Warning($"Payrun job {payrunJob.Id} rejected: {queueEx.Message}");
+                return StatusCode(503, "The server is currently processing too many payrun jobs. Please retry later.");
+            }
 
             Log.Debug($"Queued payrun job {payrunJob.Id} for background processing");
 
@@ -195,7 +223,76 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
         catch (PayrunException exception)
         {
             Log.Error(exception, exception.GetBaseMessage());
-            return BadRequest($"Error in payrun {jobInvocation.PayrunId}: {exception.GetBaseMessage()}");
+            return BadRequest($"Error in payrun {jobInvocation.PayrunName}: {exception.GetBaseMessage()}");
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, exception.GetBaseMessage());
+            return InternalServerError(exception);
+        }
+    }
+
+    /// <summary>
+    /// Preview a payrun job for a single employee (synchronous).
+    /// Returns calculation results as a <see cref="ApiObject.PayrollResultSet"/> without persisting to the database.
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="jobInvocation">The payrun job invocation with exactly one employee identifier</param>
+    /// <returns>The payroll result set containing wage type results, collector results, and payrun results</returns>
+    public virtual async Task<ActionResult<ApiObject.PayrollResultSet>> PreviewPayrunJobAsync(
+        int tenantId, ApiObject.PayrunJobInvocation jobInvocation)
+    {
+        // validate: exactly one employee
+        if (jobInvocation.EmployeeIdentifiers == null || jobInvocation.EmployeeIdentifiers.Count != 1)
+        {
+            return BadRequest("Preview requires exactly one employee identifier.");
+        }
+
+        // tenant
+        var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
+        if (tenant == null)
+        {
+            return BadRequest($"Unknown tenant with id {tenantId}");
+        }
+
+        // user identifier required
+        if (string.IsNullOrWhiteSpace(jobInvocation.UserIdentifier))
+        {
+            return BadRequest("UserIdentifier is required.");
+        }
+
+        // payrun name required
+        if (string.IsNullOrWhiteSpace(jobInvocation.PayrunName))
+        {
+            return BadRequest("PayrunName is required.");
+        }
+
+        try
+        {
+            var domainJobInvocation = new PayrunJobInvocationMap().ToDomain(jobInvocation);
+
+            // resolve payrun by name
+            var payruns = (await ServiceSettings.PayrunRepository.QueryAsync(
+                Runtime.DbContext, tenantId, QueryFactory.NewNameQuery(jobInvocation.PayrunName)));
+            var payrun = payruns.FirstOrDefault();
+            if (payrun == null || payrun.Status != ObjectStatus.Active)
+            {
+                return BadRequest($"Unknown or inactive payrun {jobInvocation.PayrunName}");
+            }
+
+            var domainResultSet = await PayrunPreviewService.PreviewAsync(tenant, payrun, domainJobInvocation);
+            var apiResultSet = new PayrollResultSetMap().ToApi(domainResultSet);
+            return Ok(apiResultSet);
+        }
+        catch (PayrunPreviewRetroException exception)
+        {
+            Log.Warning(exception.GetBaseMessage());
+            return UnprocessableEntity($"Preview error in payrun {jobInvocation.PayrunName}: {exception.GetBaseMessage()}");
+        }
+        catch (PayrunException exception)
+        {
+            Log.Error(exception, exception.GetBaseMessage());
+            return BadRequest($"Preview error in payrun {jobInvocation.PayrunName}: {exception.GetBaseMessage()}");
         }
         catch (Exception exception)
         {
@@ -254,6 +351,7 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
         {
             return BadRequest($"Unknown payrun job with id {payrunJobId}");
         }
+
         if (payrunJob.Status != ObjectStatus.Active)
         {
             return BadRequest($"Inactive payrun job with id {payrunJobId}");
@@ -268,10 +366,13 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
             {
                 return BadRequest($"Unknown patch payrun job with id {payrunJobId}");
             }
+
             if (payrunJob.JobStatus != jobStatus)
             {
-                return BadRequest($"Status patch from {payrunJob.JobStatus} to {jobStatus} failed in payrun job with id {payrunJobId}");
+                return BadRequest(
+                    $"Status patch from {payrunJob.JobStatus} to {jobStatus} failed in payrun job with id {payrunJobId}");
             }
+
             return Ok();
         }
 
@@ -285,11 +386,14 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
         // change status
         if (payrunJob.JobStatus.IsFinal())
         {
-            return BadRequest($"Finalized payrun job with status {payrunJob.JobStatus} can not be changed in payrun job with id {payrunJobId}");
+            return BadRequest(
+                $"Finalized payrun job with status {payrunJob.JobStatus} can not be changed in payrun job with id {payrunJobId}");
         }
+
         if (!payrunJob.JobStatus.IsValidStateChange(jobStatus))
         {
-            return BadRequest($"Invalid payrun job status change from {payrunJob.JobStatus} to {jobStatus} in payrun job with id {payrunJobId}");
+            return BadRequest(
+                $"Invalid payrun job status change from {payrunJob.JobStatus} to {jobStatus} in payrun job with id {payrunJobId}");
         }
 
         // update payrun job
@@ -298,6 +402,12 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
         if (updatedPayrunJob.Value == null)
         {
             return updatedPayrunJob.Result;
+        }
+
+        // no webhooks
+        if (!await WebhookDispatcher.HasWebhooksAsync(Runtime.DbContext, tenantId))
+        {
+            return Ok();
         }
 
         // webhook payrun job process

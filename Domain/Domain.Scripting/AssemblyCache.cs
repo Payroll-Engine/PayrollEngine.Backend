@@ -1,17 +1,20 @@
 ﻿//#define ASSEMBLY_GET
 //#define ASSEMBLY_CACHE
 //#define ASSEMBLY_LOAD
+
 #if ASSEMBLY_LOAD
 #define LOG_STOPWATCH
 #endif
+
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
-using System.Timers;
+using System.Threading;
 using PayrollEngine.Domain.Model;
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+using Timer = System.Timers.Timer;
+using System.Collections.Concurrent;
 
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 namespace PayrollEngine.Domain.Scripting;
 
 /// <summary>
@@ -134,7 +137,33 @@ public class AssemblyCache
     /// </summary>
     private static readonly ConcurrentDictionary<int, TenantAssemblyLoadContext> TenantContexts = new();
 
-    private static Timer UpdateTimer { get; set; }
+    /// <summary>
+    /// Holder for the shared eviction timer. The outer field is
+    /// <c>static readonly</c> (satisfies NDepend ND1901); the inner
+    /// timer is set exactly once via <see cref="TryInitialize"/>.
+    /// </summary>
+    private sealed class TimerHolder
+    {
+        private Timer instance;
+
+        /// <summary>Returns <c>true</c> when the timer has been initialized.</summary>
+        internal bool IsInitialized => instance != null;
+
+        /// <summary>
+        /// Attempts to set the timer exactly once. Returns <c>true</c> if this
+        /// call won the race; <c>false</c> if another thread already initialized.
+        /// The losing timer is disposed by the caller.
+        /// </summary>
+        internal bool TryInitialize(Timer timer)
+        {
+            return Interlocked.CompareExchange(ref instance, timer, null) == null;
+        }
+
+        /// <summary>Returns the initialized timer instance.</summary>
+        internal Timer Instance => instance;
+    }
+
+    private static readonly TimerHolder TimerState = new();
 
     /// <summary>Sliding window after which an unused assembly is evicted.</summary>
     private static TimeSpan? CacheTimeout { get; set; }
@@ -173,12 +202,23 @@ public class AssemblyCache
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        if (cacheTimeout != TimeSpan.Zero && UpdateTimer == null)
+        // Thread-safe one-time timer initialization.
+        // Interlocked.CompareExchange ensures only one thread wins the race;
+        // the loser disposes its timer instance immediately.
+        if (cacheTimeout != TimeSpan.Zero && !TimerState.IsInitialized)
         {
             CacheTimeout = cacheTimeout;
-            UpdateTimer = new(CacheTimeout.Value.TotalMilliseconds);
-            UpdateTimer.Elapsed += delegate { CacheUpdate(); };
-            UpdateTimer.Start();
+            var timer = new Timer(cacheTimeout.TotalMilliseconds / 4);
+            if (TimerState.TryInitialize(timer))
+            {
+                TimerState.Instance.Elapsed += delegate { CacheUpdate(); };
+                TimerState.Instance.Start();
+            }
+            else
+            {
+                // Another thread already initialized the timer – discard ours.
+                timer.Dispose();
+            }
         }
 
         ScriptProvider = scriptProvider;
@@ -241,7 +281,7 @@ public class AssemblyCache
 #if ASSEMBLY_GET
             var sw = System.Diagnostics.Stopwatch.StartNew();
 #endif
-            binary = ScriptProvider.GetBinaryAsync(DbContext, scriptObject).Result;
+            binary = ScriptProvider.GetBinaryAsync(DbContext, scriptObject).GetAwaiter().GetResult();
 #if ASSEMBLY_GET
             sw.Stop();
             Log.Information($"Assembly load {type.Name} [{scriptObject.Id}]: {sw.ElapsedMilliseconds} ms");
@@ -353,6 +393,10 @@ public class AssemblyCache
         {
             try
             {
+                // re-check: the assembly may have been used since the snapshot
+                if (entry.Value.LastUsed >= threshold)
+                    continue;
+
                 if (Assemblies.TryRemove(entry.Key, out _))
                 {
                     removed++;
@@ -361,17 +405,6 @@ public class AssemblyCache
             catch (Exception exception)
             {
                 Log.Error($"Error removing assembly from cache: {exception.GetBaseMessage()}", exception);
-            }
-        }
-
-        // dispose load contexts for tenants that no longer have any cached entry.
-        var activeTenants = Assemblies.Keys.Select(k => k.Item1).ToHashSet();
-        foreach (var tenantId in TenantContexts.Keys.Except(activeTenants).ToList())
-        {
-            if (TenantContexts.TryRemove(tenantId, out var context))
-            {
-                context.Dispose();
-                Log.Trace($"Disposed load context for tenant {tenantId} (no remaining cached assemblies).");
             }
         }
 

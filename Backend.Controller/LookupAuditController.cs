@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Lookup audits")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/lookups/{lookupId}/audits")]
+[TenantAuthorize]
 public class LookupAuditController : Api.Controller.LookupAuditController
 {
     /// <inheritdoc/>
@@ -33,16 +34,8 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLookupAudits")]
     public async Task<ActionResult> QueryLookupAuditsAsync(int tenantId, int regulationId,
-        int lookupId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(lookupId, query);
-    }
+        int lookupId, [FromQuery] Query query) =>
+        await QueryItemsAsync(lookupId, query);
 
     /// <summary>
     /// Get a regulation lookup audit
@@ -57,14 +50,6 @@ public class LookupAuditController : Api.Controller.LookupAuditController
     [NotFoundResponse]
     [ApiOperationId("GetLookupAudit")]
     public async Task<ActionResult<ApiObject.LookupAudit>> GetLookupAuditAsync(int tenantId,
-        int regulationId, int lookupId, int auditId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(lookupId, auditId);
-    }
+        int regulationId, int lookupId, int auditId) =>
+        await GetAsync(lookupId, auditId);
 }

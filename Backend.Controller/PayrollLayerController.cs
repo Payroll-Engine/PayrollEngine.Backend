@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payroll layers")]
 [Route("api/tenants/{tenantId}/payrolls/{payrollId}/layers")]
+[TenantAuthorize]
 public class PayrollLayerController : Api.Controller.PayrollLayerController
 {
     /// <inheritdoc/>
@@ -32,16 +33,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryPayrollLayers")]
     public async Task<ActionResult> QueryPayrollLayersAsync(int tenantId, int payrollId,
-        [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(payrollId, query);
-    }
+        [FromQuery] Query query) =>
+        await QueryItemsAsync(payrollId, query);
 
     /// <summary>
     /// Get a payroll layer
@@ -55,16 +48,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [NotFoundResponse]
     [ApiOperationId("GetPayrollLayer")]
     public async Task<ActionResult<ApiObject.PayrollLayer>> GetPayrollLayerAsync(
-        int tenantId, int payrollId, int layerId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(payrollId, layerId);
-    }
+        int tenantId, int payrollId, int layerId) =>
+        await GetAsync(payrollId, layerId);
 
     /// <summary>
     /// Add a new payroll layer
@@ -79,16 +64,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreatePayrollLayer")]
     public async Task<ActionResult<ApiObject.PayrollLayer>> CreatePayrollLayerAsync(
-        int tenantId, int payrollId, ApiObject.PayrollLayer layer)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(payrollId, layer);
-    }
+        int tenantId, int payrollId, ApiObject.PayrollLayer layer) =>
+        await CreateAsync(payrollId, layer);
 
     /// <summary>
     /// Update a payroll layer
@@ -103,16 +80,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdatePayrollLayer")]
     public async Task<ActionResult<ApiObject.PayrollLayer>> UpdatePayrollLayerAsync(
-        int tenantId, int payrollId, ApiObject.PayrollLayer layer)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(payrollId, layer);
-    }
+        int tenantId, int payrollId, ApiObject.PayrollLayer layer) =>
+        await UpdateAsync(payrollId, layer);
 
     /// <summary>
     /// Delete a payroll layer
@@ -122,16 +91,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     /// <param name="layerId">The id of the payroll layer</param>
     [HttpDelete("{layerId}")]
     [ApiOperationId("DeletePayrollLayer")]
-    public async Task<IActionResult> DeletePayrollLayerAsync(int tenantId, int payrollId, int layerId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(payrollId, layerId);
-    }
+    public async Task<IActionResult> DeletePayrollLayerAsync(int tenantId, int payrollId, int layerId) =>
+        await DeleteAsync(payrollId, layerId);
 
     #region Attributes
 
@@ -148,16 +109,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [NotFoundResponse]
     [ApiOperationId("GetPayrollLayerAttribute")]
     public virtual async Task<ActionResult<string>> GetPayrollLayerAttributeAsync(
-        int tenantId, int payrollId, int layerId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(layerId, attributeName);
-    }
+        int tenantId, int payrollId, int layerId, string attributeName) =>
+        await GetAttributeAsync(layerId, attributeName);
 
     /// <summary>
     /// Set a payroll layer attribute
@@ -174,16 +127,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetPayrollLayerAttribute")]
     public virtual async Task<ActionResult<string>> SetPayrollLayerAttributeAsync(
-        int tenantId, int payrollId, int layerId, string attributeName, [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(layerId, attributeName, value);
-    }
+        int tenantId, int payrollId, int layerId, string attributeName, [FromBody] string value) =>
+        await SetAttributeAsync(layerId, attributeName, value);
 
     /// <summary>
     /// Delete a payroll layer attribute
@@ -196,16 +141,8 @@ public class PayrollLayerController : Api.Controller.PayrollLayerController
     [HttpDelete("{layerId}/attributes/{attributeName}")]
     [ApiOperationId("DeletePayrollLayerAttribute")]
     public virtual async Task<ActionResult<bool>> DeletePayrollLayerAttributeAsync(
-        int tenantId, int payrollId, int layerId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(layerId, attributeName);
-    }
+        int tenantId, int payrollId, int layerId, string attributeName) =>
+        await DeleteAttributeAsync(layerId, attributeName);
 
     #endregion
 

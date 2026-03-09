@@ -53,7 +53,7 @@ BEGIN
     ON dbo.[Script].[RegulationId] = [Regulations].[Id]
   -- active scripts only
   WHERE dbo.[Script].[Status] = 0
-    AND dbo.[Script].[Created] < @createdBefore
+    AND dbo.[Script].[Created] <= @createdBefore
     AND (
       @scriptNames IS NULL
       OR LOWER(dbo.[Script].[Name]) IN (

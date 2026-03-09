@@ -75,7 +75,7 @@ BEGIN
     ON dbo.[Report].[RegulationId] = [Regulations].[Id]
   -- active reports only
   WHERE dbo.[Report].[Status] = 0
-    AND dbo.[Report].[Created] < @createdBefore
+    AND dbo.[Report].[Created] <= @createdBefore
     AND (@userType IS NULL OR dbo.[Report].[UserType] <= @userType)
     AND ((@includeClusters IS NULL AND @excludeClusters IS NULL)
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[Report].[Clusters]) = 1)

@@ -1,24 +1,31 @@
 ﻿using System;
-using Microsoft.Extensions.Configuration;
+using System.Net.Http;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
-using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Domain.Application;
+using PayrollEngine.Domain.Model.Repository;
+using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Domain.Application.Service;
 
 namespace PayrollEngine.Api.Core;
 
+/// <summary>
+/// Factory that registers all domain application service implementations into the DI container.
+/// Organizes registrations by domain area (tenant, regulation, payroll, case values, payrun, reports).
+/// </summary>
 internal static class ApiServiceFactory
 {
-    // services setup
-    internal static void SetupApiServices(IServiceCollection services, IConfiguration configuration)
+    /// <summary>
+    /// Register all domain service implementations as scoped services.
+    /// </summary>
+    /// <param name="services">Service collection to configure</param>
+    internal static void SetupApiServices(IServiceCollection services)
     {
         // system services
         services.AddScoped(NewRegulationShareService);
 
         // services
-        TenantServiceFactory.SetupServices(services, configuration);
+        TenantServiceFactory.SetupServices(services);
         RegulationServiceFactory.SetupServices(services);
         PayrollServiceFactory.SetupServices(services);
         CaseValueServiceFactory.SetupServices(services);
@@ -33,16 +40,9 @@ internal static class ApiServiceFactory
 
     private static class TenantServiceFactory
     {
-        private static IConfiguration Configuration { get; set; }
-
         // services setup
-        internal static void SetupServices(IServiceCollection services, IConfiguration configuration)
+        internal static void SetupServices(IServiceCollection services)
         {
-            Configuration = configuration;
-
-            // webhook timeout
-            WebhookDispatchService.Timeout = GetWebhookTimeout();
-
             services.AddScoped(NewTenantService);
             services.AddScoped(NewCalendarService);
             services.AddScoped(NewWebhookService);
@@ -76,18 +76,8 @@ internal static class ApiServiceFactory
                 serviceProvider.GetRequiredService<ITenantRepository>(),
                 serviceProvider.GetRequiredService<IUserRepository>(),
                 serviceProvider.GetRequiredService<IWebhookRepository>(),
-                serviceProvider.GetRequiredService<IWebhookMessageRepository>());
-        }
-
-        private static TimeSpan GetWebhookTimeout()
-        {
-            var timeout = TimeSpan.FromMinutes(1);
-            if (Configuration != null)
-            {
-                var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
-                timeout = serverConfiguration.WebhookTimeout;
-            }
-            return timeout;
+                serviceProvider.GetRequiredService<IWebhookMessageRepository>(),
+                serviceProvider.GetRequiredService<IHttpClientFactory>());
         }
 
         private static IUserService NewUserService(IServiceProvider serviceProvider) =>
@@ -322,10 +312,37 @@ internal static class ApiServiceFactory
             services.AddScoped(NewPayrunService);
             services.AddScoped(NewPayrunParameterService);
             services.AddScoped(NewPayrunJobService);
+            services.AddScoped(NewPayrunPreviewService);
             services.AddScoped(NewPayrollResultService);
             services.AddScoped(NewPayrollResultContextService);
             services.AddScoped(NewPayrollConsolidatedResultService);
         }
+
+        private static IPayrunPreviewService NewPayrunPreviewService(IServiceProvider serviceProvider) =>
+            new PayrunPreviewService(
+                serviceProvider.GetRequiredService<IDbContext>(),
+                serviceProvider.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>(),
+                serviceProvider.GetRequiredService<IScriptProvider>(),
+                serviceProvider.GetRequiredService<IUserRepository>(),
+                serviceProvider.GetRequiredService<IDivisionRepository>(),
+                serviceProvider.GetRequiredService<ITaskRepository>(),
+                serviceProvider.GetRequiredService<ILogRepository>(),
+                serviceProvider.GetRequiredService<IEmployeeRepository>(),
+                serviceProvider.GetRequiredService<IGlobalCaseValueRepository>(),
+                serviceProvider.GetRequiredService<INationalCaseValueRepository>(),
+                serviceProvider.GetRequiredService<ICompanyCaseValueRepository>(),
+                serviceProvider.GetRequiredService<IEmployeeCaseValueRepository>(),
+                serviceProvider.GetRequiredService<IPayrunJobRepository>(),
+                serviceProvider.GetRequiredService<ILookupSetRepository>(),
+                serviceProvider.GetRequiredService<IRegulationRepository>(),
+                serviceProvider.GetRequiredService<IRegulationShareRepository>(),
+                serviceProvider.GetRequiredService<IPayrollRepository>(),
+                serviceProvider.GetRequiredService<IPayrollResultRepository>(),
+                serviceProvider.GetRequiredService<IPayrollConsolidatedResultRepository>(),
+                serviceProvider.GetRequiredService<IPayrollResultSetRepository>(),
+                serviceProvider.GetRequiredService<ICalendarRepository>(),
+                serviceProvider.GetRequiredService<IPayrollCalculatorProvider>(),
+                serviceProvider.GetRequiredService<IWebhookDispatchService>());
 
         private static IPayrunService NewPayrunService(IServiceProvider serviceProvider) =>
             new PayrunService(

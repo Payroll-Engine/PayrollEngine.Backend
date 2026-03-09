@@ -26,4 +26,10 @@ public class DerivedCaseToolSettings : FunctionToolSettings
     public ICalendarRepository CalendarRepository { get; set; }
     public IPayrollCalculatorProvider PayrollCalculatorProvider { get; set; }
     public IWebhookDispatchService WebhookDispatchService { get; set; }
+
+    /// <summary>
+    /// Optional preloaded derived regulation cache for bulk operations.
+    /// When set, derived cases/fields/relations are read from cache instead of database.
+    /// </summary>
+    public DerivedPayrollCache DerivedCache { get; set; }
 }

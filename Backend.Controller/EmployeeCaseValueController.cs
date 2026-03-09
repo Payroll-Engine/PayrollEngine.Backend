@@ -9,9 +9,14 @@ using ApiObject = PayrollEngine.Api.Model;
 
 namespace PayrollEngine.Backend.Controller;
 
-/// <inheritdoc/>
+/// <summary>
+/// Read-only controller for employee case values.
+/// Case values are created and managed through case changes (see PayrollController).
+/// Direct create, update or delete operations are not supported.
+/// </summary>
 [ApiControllerName("Employee case values")]
 [Route("api/tenants/{tenantId}/employees/{employeeId}/cases")]
+[TenantAuthorize]
 public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueController
 {
     /// <inheritdoc/>
@@ -35,20 +40,12 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     [ApiOperationId("QueryEmployeeCaseValues")]
     public async Task<ActionResult> QueryEmployeeCaseValuesAsync(int tenantId, int employeeId, [FromQuery] CaseValueQuery query)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // employee with tenant check
         var employee = await ParentService.GetAsync(Runtime.DbContext, tenantId, employeeId);
         if (employee == null)
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
-
         return await QueryItemsAsync(employeeId, query);
     }
 
@@ -65,19 +62,11 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     public async Task<ActionResult<IEnumerable<string>>> GetEmployeeCaseValueSlotsAsync(int tenantId, int employeeId,
         [Required] string caseFieldName)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // employee check
         if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
-
         return Ok(await GetCaseValueSlotsAsync(employeeId, caseFieldName));
     }
 
@@ -94,19 +83,11 @@ public class EmployeeCaseValueController : Api.Controller.EmployeeCaseValueContr
     [ApiOperationId("GetEmployeeCaseValue")]
     public async Task<ActionResult<ApiObject.CaseValue>> GetEmployeeCaseValueAsync(int tenantId, int employeeId, int caseValueId)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // employee check
         if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
-
         return await GetAsync(employeeId, caseValueId);
     }
 }

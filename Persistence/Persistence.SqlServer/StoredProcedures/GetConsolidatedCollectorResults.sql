@@ -1,4 +1,4 @@
-﻿SET ANSI_NULLS ON
+SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
@@ -17,154 +17,77 @@ GO
 
 -- =============================================
 -- Get employee collector results from a time period
+-- fully denormalized: zero JOINs, all filters on CollectorResult columns
 -- =============================================
 CREATE PROCEDURE dbo.[GetConsolidatedCollectorResults]
-  -- the tenant id
-  @tenantId AS INT,
-  -- the employee id
-  @employeeId AS INT,
-  -- the division id
-  @divisionId AS INT = NULL,
-  -- the collector name hashes: JSON array of INT
-  @collectorNameHashes AS VARCHAR(MAX) = NULL,
-  -- the period start hashes: JSON array of INT
-  @periodStartHashes AS VARCHAR(MAX) = NULL,
-  -- payrun job status (bit mask)
-  @jobStatus AS INT = NULL,
-  -- the forecast name
-  @forecast AS VARCHAR(128) = NULL,
-  -- evaluation date
-  @evaluationDate AS DATETIME2(7) = NULL
+    @tenantId AS INT,
+    @employeeId AS INT,
+    @divisionId AS INT = NULL,
+    @collectorNameHashes AS VARCHAR(MAX) = NULL,
+    @periodStartHashes AS VARCHAR(MAX) = NULL,
+    @jobStatus AS INT = NULL,
+    @forecast AS VARCHAR(128) = NULL,
+    @evaluationDate AS DATETIME2(7) = NULL,
+    @noRetro AS BIT = 0,
+    @excludeParentJobId AS INT = NULL
 AS
 BEGIN
-  -- SET NOCOUNT ON added to prevent extra result sets from
-  -- interfering with SELECT statements
-  SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
-  DECLARE @collectorNameHash INT;
-  DECLARE @collectorCount INT;
-  SELECT @collectorCount = COUNT(*) FROM OPENJSON(@collectorNameHashes);
+    DECLARE @collectorNameHash INT;
+    DECLARE @collectorCount INT;
+    SELECT @collectorCount = COUNT(*) FROM OPENJSON(@collectorNameHashes);
 
-  -- special query for single collector
-  -- better perfomance to indexed column of the collector name
-  if (@collectorCount= 1)
-  BEGIN
-    SELECT @collectorNameHash = CAST(value AS INT)
+    IF (@collectorCount = 1)
+    BEGIN
+        SELECT @collectorNameHash = CAST(value AS INT)
         FROM OPENJSON(@collectorNameHashes);
+    END;
 
-    SELECT * FROM (
-    SELECT dbo.[PayrollResult].[EmployeeId],
-        dbo.[PayrollResult].[DivisionId],
-        dbo.[PayrollResult].[PayrunId],
-        dbo.[PayrollResult].[PayrunJobId],
-        dbo.[PayrunJob].[JobStatus],
-        dbo.[PayrunJob].[Forecast],
-        dbo.[CollectorResult].*,
-        ROW_NUMBER() OVER (
-        PARTITION BY
-            dbo.[PayrollResult].[PayrunId],
-            dbo.[CollectorResult].[CollectorName],
-            dbo.[CollectorResult].[Start]
-        ORDER BY
-            dbo.[CollectorResult].[Created] DESC,
-            dbo.[CollectorResult].[Id] DESC
-        ) AS RowNumber
-    FROM dbo.[CollectorResult]
-    INNER JOIN dbo.[PayrollResult]
-        ON dbo.[PayrollResult].[Id] = dbo.[CollectorResult].[PayrollResultId]
-    INNER JOIN dbo.[PayrunJob]
-        ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-    WHERE (dbo.[PayrunJob].[TenantId] = @tenantId)
-        AND (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-        AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
-        )
-        AND (
-            @periodStartHashes IS NULL
-            OR dbo.[CollectorResult].[StartHash] IN (
-                SELECT CAST(value AS INT)
-                FROM OPENJSON(@periodStartHashes)
-                )
-        )
-        AND (
-            @collectorNameHashes IS NULL
-            OR dbo.[CollectorResult].[CollectorNameHash] = @collectorNameHash
-        )
-        AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-        )
-        AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-        )
-        AND (
-            @evaluationDate IS NULL
-            OR dbo.[CollectorResult].[Created] <= @evaluationDate
-        )
-    ) AS GroupCollectorResult
-    WHERE RowNumber = 1;
-END
-ELSE
-BEGIN
-    SELECT * FROM (
-    SELECT dbo.[PayrollResult].[EmployeeId],
-        dbo.[PayrollResult].[DivisionId],
-        dbo.[PayrollResult].[PayrunId],
-        dbo.[PayrollResult].[PayrunJobId],
-        dbo.[PayrunJob].[JobStatus],
-        dbo.[PayrunJob].[Forecast],
-        dbo.[CollectorResult].*,
-        ROW_NUMBER() OVER (
-        PARTITION BY
-            dbo.[PayrollResult].[PayrunId],
-            dbo.[CollectorResult].[CollectorName],
-            dbo.[CollectorResult].[Start]
-        ORDER BY
-            dbo.[CollectorResult].[Created] DESC,
-            dbo.[CollectorResult].[Id] DESC
-        ) AS RowNumber
-    FROM dbo.[CollectorResult]
-    INNER JOIN dbo.[PayrollResult]
-        ON dbo.[PayrollResult].[Id] = dbo.[CollectorResult].[PayrollResultId]
-    INNER JOIN dbo.[PayrunJob]
-        ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-    WHERE (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-        AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
-        )
-        AND (
-            @periodStartHashes IS NULL
-            OR dbo.[CollectorResult].[StartHash] IN (
-                SELECT CAST(value AS INT)
-                FROM OPENJSON(@periodStartHashes)
-                )
-        )
-        AND (
-            @collectorNameHashes IS NULL
-            OR dbo.[CollectorResult].[CollectorNameHash] IN (
-                SELECT CAST(value AS INT)
-                FROM OPENJSON(@collectorNameHashes)
-                )
-        )
-        AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-        )
-        AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-        )
-        AND (
-            @evaluationDate IS NULL
-            OR dbo.[CollectorResult].[Created] <= @evaluationDate
-        )
-    ) AS GroupCollectorResult
-    WHERE RowNumber = 1;
-END
+    DECLARE @startHash INT;
+    DECLARE @startHashCount INT;
+    SELECT @startHashCount = COUNT(*) FROM OPENJSON(@periodStartHashes);
+
+    IF (@startHashCount = 1)
+    BEGIN
+        SELECT @startHash = CAST(value AS INT)
+        FROM OPENJSON(@periodStartHashes);
+    END;
+
+    ;WITH Winners AS (
+        SELECT
+            r.[Id],
+            ROW_NUMBER() OVER (
+                PARTITION BY r.[CollectorNameHash], r.[Start]
+                ORDER BY r.[Created] DESC, r.[Id] DESC
+            ) AS RowNumber
+        FROM dbo.[CollectorResult] r
+        WHERE r.[TenantId] = @tenantId
+          AND r.[EmployeeId] = @employeeId
+          AND (
+              (@startHashCount = 1 AND r.[StartHash] = @startHash)
+              OR (@startHashCount > 1 AND r.[StartHash] IN (
+                  SELECT CAST(value AS INT) FROM OPENJSON(@periodStartHashes)))
+          )
+          AND (@divisionId IS NULL OR r.[DivisionId] = @divisionId)
+          AND (@collectorNameHashes IS NULL OR @collectorCount = 0
+               OR (@collectorCount = 1 AND r.[CollectorNameHash] = @collectorNameHash)
+               OR (@collectorCount > 1 AND r.[CollectorNameHash] IN (
+                   SELECT CAST(value AS INT) FROM OPENJSON(@collectorNameHashes))))
+          AND (@evaluationDate IS NULL OR r.[Created] <= @evaluationDate)
+          AND (@jobStatus IS NULL
+               OR r.[PayrunJobId] IN (
+                   SELECT pj.[Id] FROM dbo.[PayrunJob] pj
+                   WHERE pj.[JobStatus] & @jobStatus = pj.[JobStatus]))
+          AND (r.[Forecast] IS NULL OR r.[Forecast] = @forecast)
+          AND (@noRetro = 0 OR r.[ParentJobId] IS NULL)
+          AND (@excludeParentJobId IS NULL OR r.[ParentJobId] IS NULL
+               OR r.[ParentJobId] <> @excludeParentJobId)
+    )
+    SELECT r.*
+    FROM dbo.[CollectorResult] r
+    INNER JOIN Winners w ON w.[Id] = r.[Id]
+    WHERE w.RowNumber = 1
+    OPTION (RECOMPILE);
 END
 GO
-
-

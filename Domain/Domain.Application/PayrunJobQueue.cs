@@ -1,43 +1,70 @@
 using System;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
+using System.Threading.Channels;
 using PayrollEngine.Domain.Application.Service;
 
 namespace PayrollEngine.Domain.Application;
 
 /// <summary>
-/// Background queue for payrun job processing using System.Threading.Channels
+/// Background queue for payrun job processing using System.Threading.Channels.
+/// Uses a bounded channel to prevent unbounded memory growth under sustained load.
 /// </summary>
 public class PayrunJobQueue : IPayrunJobQueue
 {
-    private readonly Channel<PayrunJobQueueItem> _queue;
+    /// <summary>
+    /// Default maximum number of queued jobs
+    /// </summary>
+    private const int DefaultCapacity = 100;
+
+    private readonly Channel<PayrunJobQueueItem> queue;
+
+    /// <summary>
+    /// Initializes a new instance of the PayrunJobQueue with default capacity
+    /// </summary>
+    public PayrunJobQueue() :
+        this(DefaultCapacity)
+    {
+    }
 
     /// <summary>
     /// Initializes a new instance of the PayrunJobQueue
     /// </summary>
-    public PayrunJobQueue()
+    /// <param name="capacity">Maximum number of queued jobs (must be greater than zero)</param>
+    public PayrunJobQueue(int capacity)
     {
-        // Unbounded channel - jobs will queue without blocking
-        // This is appropriate since job creation is already validated
-        var options = new UnboundedChannelOptions
+        if (capacity <= 0)
         {
-            SingleReader = true,  // Only one worker reads
-            SingleWriter = false  // Multiple requests can write
+            throw new ArgumentOutOfRangeException(nameof(capacity), capacity,
+                "Queue capacity must be greater than zero.");
+        }
+
+        var options = new BoundedChannelOptions(capacity)
+        {
+            SingleReader = true,   // only one worker reads
+            SingleWriter = false,  // multiple requests can write
+            FullMode = BoundedChannelFullMode.DropWrite // TryWrite returns false when full
         };
-        _queue = Channel.CreateUnbounded<PayrunJobQueueItem>(options);
+        queue = Channel.CreateBounded<PayrunJobQueueItem>(options);
     }
 
     /// <inheritdoc />
-    public async ValueTask EnqueueAsync(PayrunJobQueueItem item)
+    public ValueTask EnqueueAsync(PayrunJobQueueItem item)
     {
         ArgumentNullException.ThrowIfNull(item);
-        await _queue.Writer.WriteAsync(item);
+
+        if (!queue.Writer.TryWrite(item))
+        {
+            throw new InvalidOperationException(
+                "The payrun job queue is full. The server cannot accept new jobs at this time. Please retry later.");
+        }
+
+        return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc />
     public async ValueTask<PayrunJobQueueItem> DequeueAsync(CancellationToken cancellationToken)
     {
-        return await _queue.Reader.ReadAsync(cancellationToken);
+        return await queue.Reader.ReadAsync(cancellationToken);
     }
 }

@@ -17,154 +17,83 @@ GO
 
 -- =============================================
 -- Get employee wage type results from a time period
+-- fully denormalized: zero JOINs, all filters on WageTypeResult columns
 -- =============================================
 CREATE PROCEDURE dbo.[GetConsolidatedWageTypeResults]
-  -- the tenant id
-  @tenantId AS INT,
-  -- the employee id
-  @employeeId AS INT,
-  -- the division id
-  @divisionId AS INT = NULL,
-  -- the wage type number: JSON array of DECIMAL(28, 6)
-  @wageTypeNumbers AS VARCHAR(MAX) = NULL,
-  -- the period start hashes: JSON array of INT
-  @periodStartHashes AS VARCHAR(MAX) = NULL,
-  -- payrun job status (bit mask)
-  @jobStatus AS INT = NULL,
-  -- the forecast name
-  @forecast AS VARCHAR(128) = NULL,
-  -- evaluation date
-  @evaluationDate AS DATETIME2(7) = NULL
+    @tenantId AS INT,
+    @employeeId AS INT,
+    @divisionId AS INT = NULL,
+    @wageTypeNumbers AS VARCHAR(MAX) = NULL,
+    @periodStartHashes AS VARCHAR(MAX) = NULL,
+    @jobStatus AS INT = NULL,
+    @forecast AS VARCHAR(128) = NULL,
+    @evaluationDate AS DATETIME2(7) = NULL,
+    @noRetro AS BIT = 0,
+    @excludeParentJobId AS INT = NULL
 AS
 BEGIN
-  -- SET NOCOUNT ON added to prevent extra result sets from
-  -- interfering with SELECT statements
-  SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
-  DECLARE @wageTypeNumber DECIMAL(28, 6);
-  DECLARE @wageTypeCount INT;
-  SELECT @wageTypeCount = COUNT(*) FROM OPENJSON(@wageTypeNumbers);
-  
-  -- special query for single wage type
-  -- better perfomance to indexed column of the wage type number
-  if (@wageTypeCount= 1)
-  BEGIN
-      SELECT @wageTypeNumber = CAST(value AS DECIMAL(28, 6))
-          FROM OPENJSON(@wageTypeNumbers);
+    DECLARE @wageTypeNumber DECIMAL(28, 6);
+    DECLARE @wageTypeCount INT;
+    SELECT @wageTypeCount = COUNT(*) FROM OPENJSON(@wageTypeNumbers);
 
-      SELECT * FROM (
-        SELECT dbo.[PayrollResult].[EmployeeId],
-          dbo.[PayrollResult].[DivisionId],
-          dbo.[PayrollResult].[PayrunId],
-          dbo.[PayrollResult].[PayrunJobId],
-          dbo.[PayrunJob].[JobStatus],
-          dbo.[PayrunJob].[Forecast],
-          dbo.[WageTypeResult].*,
-          ROW_NUMBER() OVER (
-            PARTITION BY
-                dbo.[PayrollResult].[PayrunId],
-                dbo.[WageTypeResult].[WageTypeNumber],
-                dbo.[WageTypeResult].[Start]
-            ORDER BY
-                dbo.[WageTypeResult].[Created] DESC,
-                dbo.[WageTypeResult].[Id] DESC
+    IF (@wageTypeCount = 1)
+    BEGIN
+        SELECT @wageTypeNumber = CAST(value AS DECIMAL(28, 6))
+        FROM OPENJSON(@wageTypeNumbers);
+    END;
+
+    -- single-hash fast path: equality seek on StartHash
+    DECLARE @startHash INT;
+    DECLARE @startHashCount INT;
+    SELECT @startHashCount = COUNT(*) FROM OPENJSON(@periodStartHashes);
+
+    IF (@startHashCount = 1)
+    BEGIN
+        SELECT @startHash = CAST(value AS INT)
+        FROM OPENJSON(@periodStartHashes);
+    END;
+
+    -- Phase 1: select winning IDs via index-only scan
+    -- Index key order: (TenantId, EmployeeId, StartHash, WageTypeNumber)
+    -- → seeks directly to the period, constant cost regardless of history
+    ;WITH Winners AS (
+        SELECT
+            wtr.[Id],
+            ROW_NUMBER() OVER (
+                PARTITION BY wtr.[WageTypeNumber], wtr.[Start]
+                ORDER BY wtr.[Created] DESC, wtr.[Id] DESC
             ) AS RowNumber
-        FROM dbo.[WageTypeResult]
-        INNER JOIN dbo.[PayrollResult]
-          ON dbo.[PayrollResult].[Id] = dbo.[WageTypeResult].[PayrollResultId]
-        INNER JOIN dbo.[PayrunJob]
-          ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-        WHERE (dbo.[PayrunJob].[TenantId] = @tenantId)
-          AND (dbo.[PayrollResult].[EmployeeId] = @employeeId)
+        FROM dbo.[WageTypeResult] wtr
+        WHERE wtr.[TenantId] = @tenantId
+          AND wtr.[EmployeeId] = @employeeId
+          -- period filter: single hash → equality seek; multiple → IN list
           AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
+              (@startHashCount = 1 AND wtr.[StartHash] = @startHash)
+              OR (@startHashCount > 1 AND wtr.[StartHash] IN (
+                  SELECT CAST(value AS INT) FROM OPENJSON(@periodStartHashes)))
           )
-          AND (
-            @periodStartHashes IS NULL
-             OR dbo.[WageTypeResult].[StartHash] IN (
-                SELECT CAST(value AS INT)
-                FROM OPENJSON(@periodStartHashes)
-              )
-          )
-          AND (
-            dbo.[WageTypeResult].[WageTypeNumber] = @wageTypeNumber
-          )
-          AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-          )
-          AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-          )
-          AND (
-            @evaluationDate IS NULL
-            OR dbo.[WageTypeResult].[Created] <= @evaluationDate
-          )
-        ) AS GroupWageTypeResult
-      WHERE RowNumber = 1;
-  END
-  ELSE
-  BEGIN
-      SELECT * FROM (
-        SELECT dbo.[PayrollResult].[EmployeeId],
-          dbo.[PayrollResult].[DivisionId],
-          dbo.[PayrollResult].[PayrunId],
-          dbo.[PayrollResult].[PayrunJobId],
-          dbo.[PayrunJob].[JobStatus],
-          dbo.[PayrunJob].[Forecast],
-          dbo.[WageTypeResult].*,
-          ROW_NUMBER() OVER (
-            PARTITION BY
-                dbo.[PayrollResult].[PayrunId],
-                dbo.[WageTypeResult].[WageTypeNumber],
-                dbo.[WageTypeResult].[Start]
-            ORDER BY
-                dbo.[WageTypeResult].[Created] DESC,
-                dbo.[WageTypeResult].[Id] DESC
-            ) AS RowNumber
-        FROM dbo.[WageTypeResult]
-        INNER JOIN dbo.[PayrollResult]
-          ON dbo.[PayrollResult].[Id] = dbo.[WageTypeResult].[PayrollResultId]
-        INNER JOIN dbo.[PayrunJob]
-          ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-        WHERE (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-          AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
-          )
-          AND (
-            @periodStartHashes IS NULL
-             OR dbo.[WageTypeResult].[StartHash] IN (
-                SELECT CAST(value AS INT)
-                FROM OPENJSON(@periodStartHashes)
-              )
-          )
-          AND (
-            @wageTypeNumbers IS NULL
-            OR dbo.[WageTypeResult].[WageTypeNumber] IN (
-              SELECT CAST(value AS DECIMAL(28, 6))
-              FROM OPENJSON(@wageTypeNumbers)
-              )
-          )
-          AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-          )
-          AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-          )
-          AND (
-            @evaluationDate IS NULL
-            OR dbo.[WageTypeResult].[Created] <= @evaluationDate
-          )
-        ) AS GroupWageTypeResult
-      WHERE RowNumber = 1;
-  END
-
+          AND (@divisionId IS NULL OR wtr.[DivisionId] = @divisionId)
+          AND (@wageTypeNumbers IS NULL OR @wageTypeCount = 0
+               OR (@wageTypeCount = 1 AND wtr.[WageTypeNumber] = @wageTypeNumber)
+               OR (@wageTypeCount > 1 AND wtr.[WageTypeNumber] IN (
+                   SELECT CAST(value AS DECIMAL(28, 6)) FROM OPENJSON(@wageTypeNumbers))))
+          AND (@evaluationDate IS NULL OR wtr.[Created] <= @evaluationDate)
+          AND (@jobStatus IS NULL
+               OR wtr.[PayrunJobId] IN (
+                   SELECT pj.[Id] FROM dbo.[PayrunJob] pj
+                   WHERE pj.[JobStatus] & @jobStatus = pj.[JobStatus]))
+          AND (wtr.[Forecast] IS NULL OR wtr.[Forecast] = @forecast)
+          AND (@noRetro = 0 OR wtr.[ParentJobId] IS NULL)
+          AND (@excludeParentJobId IS NULL OR wtr.[ParentJobId] IS NULL
+               OR wtr.[ParentJobId] <> @excludeParentJobId)
+    )
+    -- Phase 2: key lookup only for winning rows
+    SELECT wtr.*
+    FROM dbo.[WageTypeResult] wtr
+    INNER JOIN Winners w ON w.[Id] = wtr.[Id]
+    WHERE w.RowNumber = 1
+    OPTION (RECOMPILE);
 END
 GO
-
-

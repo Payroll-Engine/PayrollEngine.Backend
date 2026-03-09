@@ -27,13 +27,16 @@ internal sealed class CSharpCompiler
     private string AssemblyName { get; }
     private AssemblyInfo AssemblyInfo { get; }
     private bool DumpCompilerSource { get; }
+    private bool ScriptSafetyAnalysis { get; }
 
-    internal CSharpCompiler(string assemblyName, bool dumpCompilerSource) :
-        this(assemblyName, null, dumpCompilerSource)
+    internal CSharpCompiler(string assemblyName, bool dumpCompilerSource,
+        bool scriptSafetyAnalysis = false) :
+        this(assemblyName, null, dumpCompilerSource, scriptSafetyAnalysis)
     {
     }
 
-    private CSharpCompiler(string assemblyName, AssemblyInfo assemblyInfo, bool dumpCompilerSource)
+    private CSharpCompiler(string assemblyName, AssemblyInfo assemblyInfo,
+        bool dumpCompilerSource, bool scriptSafetyAnalysis)
     {
         if (string.IsNullOrWhiteSpace(assemblyName))
         {
@@ -43,6 +46,7 @@ internal sealed class CSharpCompiler
         AssemblyName = assemblyName;
         AssemblyInfo = assemblyInfo;
         DumpCompilerSource = dumpCompilerSource;
+        ScriptSafetyAnalysis = scriptSafetyAnalysis;
     }
 
     static CSharpCompiler()
@@ -241,16 +245,27 @@ internal sealed class CSharpCompiler
         // references
         var allReferences = new List<MetadataReference>(DefaultReferences);
 
-        // create bits
-        using var peStream = new MemoryStream();
         var assemblyName = $"{tenantId}_{scriptCode.ToPayrollHash()}_{AssemblyName}";
-        var compilation = CSharpCompilation.Create(assemblyName,
+        var csharpCompilation = CSharpCompilation.Create(assemblyName,
                 syntaxTrees,
                 allReferences,
                 new(OutputKind.DynamicallyLinkedLibrary,
                     optimizationLevel: OptimizationLevel.Release,
-                    assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default))
-            .Emit(peStream);
+                    assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));
+
+        // safety analysis: reject banned APIs before emitting
+        if (ScriptSafetyAnalysis)
+        {
+            var safetyViolations = ScriptSafetyAnalyzer.Analyze(csharpCompilation, userTreeCount: codes.Count);
+            if (safetyViolations.Count > 0)
+            {
+                throw new ScriptCompileException(safetyViolations);
+            }
+        }
+
+        // emit
+        using var peStream = new MemoryStream();
+        var compilation = csharpCompilation.Emit(peStream);
 
         // error handling
         if (!compilation.Success)

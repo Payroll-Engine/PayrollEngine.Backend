@@ -1,8 +1,10 @@
 ﻿//#define CASE_VALUE_LOAD
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace PayrollEngine.Domain.Model.Repository;
 
@@ -49,8 +51,12 @@ public class CaseValueCache : ICaseValueCache
     /// </summary>
     private string Forecast { get; }
 
-    private Dictionary<CaseValueKey, List<CaseValue>> caseValuesCache;
-    private Dictionary<CaseValueKey, List<CaseValue>> casePeriodValuesCache;
+    private ConcurrentDictionary<CaseValueKey, List<CaseValue>> caseValuesCache;
+    private ConcurrentDictionary<CaseValueKey, List<CaseValue>> casePeriodValuesCache;
+
+    // one semaphore per cache: serializes initialization, allows concurrent reads after first load
+    private readonly SemaphoreSlim caseValuesCacheInitLock = new(1, 1);
+    private readonly SemaphoreSlim casePeriodValuesCacheInitLock = new(1, 1);
 
     /// <summary>
     /// Case value cache constructor
@@ -84,46 +90,54 @@ public class CaseValueCache : ICaseValueCache
             throw new ArgumentException(nameof(caseFieldName));
         }
 
-        // setup cache
+        // setup cache – double-checked locking with SemaphoreSlim (async-safe)
         if (caseValuesCache == null)
         {
-#if CASE_VALUE_LOAD
-                var stopwatch = new System.Diagnostics.Stopwatch();
-                stopwatch.Start();
-#endif
-
-            // all values until the evaluation date
-            var allCaseValues = (await CaseValueRepository.GetCaseValuesAsync(Context,
-                new()
-                {
-                    ParentId = ParentId,
-                    DivisionScope = DivisionScope.GlobalAndLocal,
-                    DivisionId = DivisionId,
-                    Forecast = Forecast,
-                },
-                evaluationDate: EvaluationDate)).ToList();
-
-#if CASE_VALUE_LOAD
-                stopwatch.Stop();
-                PayrollEngine.Log.Information($"Load all case fields ({allCaseValues.Count} values): {stopwatch.ElapsedMilliseconds} ms");
-#endif
-
-            caseValuesCache = new();
-            var caseFieldValues = allCaseValues.GroupBy(x => new { ParentId, x.CaseFieldName, x.CaseSlot });
-            foreach (var caseFieldValue in caseFieldValues)
+            await caseValuesCacheInitLock.WaitAsync();
+            try
             {
-                var valueReference = CaseValueReference.ToReference(caseFieldValue.Key.CaseFieldName, caseFieldValue.Key.CaseSlot);
-                caseValuesCache.Add(new(ParentId, valueReference), caseFieldValue.ToList());
+                if (caseValuesCache == null)
+                {
+#if CASE_VALUE_LOAD
+                    var stopwatch = new System.Diagnostics.Stopwatch();
+                    stopwatch.Start();
+#endif
+
+                    // all values until the evaluation date
+                    var allCaseValues = (await CaseValueRepository.GetCaseValuesAsync(Context,
+                        new()
+                        {
+                            ParentId = ParentId,
+                            DivisionScope = DivisionScope.GlobalAndLocal,
+                            DivisionId = DivisionId,
+                            Forecast = Forecast,
+                        },
+                        evaluationDate: EvaluationDate)).ToList();
+
+#if CASE_VALUE_LOAD
+                    stopwatch.Stop();
+                    PayrollEngine.Log.Information($"Load all case fields ({allCaseValues.Count} values): {stopwatch.ElapsedMilliseconds} ms");
+#endif
+
+                    var newCache = new ConcurrentDictionary<CaseValueKey, List<CaseValue>>();
+                    var caseFieldValues = allCaseValues.GroupBy(x => new { ParentId, x.CaseFieldName, x.CaseSlot });
+                    foreach (var caseFieldValue in caseFieldValues)
+                    {
+                        var valueReference = CaseValueReference.ToReference(caseFieldValue.Key.CaseFieldName, caseFieldValue.Key.CaseSlot);
+                        newCache.TryAdd(new(ParentId, valueReference), caseFieldValue.ToList());
+                    }
+                    caseValuesCache = newCache;
+                }
+            }
+            finally
+            {
+                caseValuesCacheInitLock.Release();
             }
         }
 
         // cache lookup with case slot filtering
-        var key = new CaseValueKey(ParentId, caseFieldName);
-        if (!caseValuesCache.TryGetValue(key, out var async))
-        {
-            return new List<CaseValue>();
-        }
-        return async;
+        var key = new CaseValueKey(ParentId, new CaseValueReference(caseFieldName).Reference);
+        return caseValuesCache.TryGetValue(key, out var caseValues) ? caseValues : [];
     }
 
     /// <inheritdoc />
@@ -134,64 +148,81 @@ public class CaseValueCache : ICaseValueCache
             throw new ArgumentException(nameof(caseFieldName));
         }
 
-        // setup cache
+        // setup cache – double-checked locking with SemaphoreSlim (async-safe)
         if (casePeriodValuesCache == null)
         {
-            // non forecasts: all values until the evaluation date
-            // forecasts: all values
-            var allValuesPeriod = string.IsNullOrWhiteSpace(Forecast) ?
-                new(Date.MinValue, EvaluationDate) : new DatePeriod();
-
-#if CASE_VALUE_LOAD
-                var stopwatch = new System.Diagnostics.Stopwatch();
-                stopwatch.Start();
-#endif
-
-            var allCaseValues = (await CaseValueRepository.GetPeriodCaseValuesAsync(Context,
-                new()
-                {
-                    ParentId = ParentId,
-                    DivisionScope = DivisionScope.GlobalAndLocal,
-                    DivisionId = DivisionId,
-                    Forecast = Forecast,
-                },
-                period: allValuesPeriod,
-                evaluationDate: EvaluationDate)).ToList();
-
-            casePeriodValuesCache = new();
-            var caseFieldValues = allCaseValues.GroupBy(x => x.GetCaseValueReference());
-            foreach (var caseFieldValue in caseFieldValues)
+            await casePeriodValuesCacheInitLock.WaitAsync();
+            try
             {
-                var valueKey = new CaseValueKey(ParentId, caseFieldValue.Key);
-                casePeriodValuesCache.TryAdd(valueKey, caseFieldValue.ToList());
-            }
+                if (casePeriodValuesCache == null)
+                {
+                    // non forecasts: all values until the evaluation date
+                    // forecasts: all values
+                    var allValuesPeriod = string.IsNullOrWhiteSpace(Forecast) ?
+                        new(Date.MinValue, EvaluationDate) : new DatePeriod();
 
 #if CASE_VALUE_LOAD
-                stopwatch.Stop();
-                PayrollEngine.Log.Information($"Load all case fields ({allCaseValues.Count} values): {stopwatch.ElapsedMilliseconds} ms");
+                    var stopwatch = new System.Diagnostics.Stopwatch();
+                    stopwatch.Start();
 #endif
+
+                    var allCaseValues = (await CaseValueRepository.GetPeriodCaseValuesAsync(Context,
+                        new()
+                        {
+                            ParentId = ParentId,
+                            DivisionScope = DivisionScope.GlobalAndLocal,
+                            DivisionId = DivisionId,
+                            Forecast = Forecast,
+                        },
+                        period: allValuesPeriod,
+                        evaluationDate: EvaluationDate)).ToList();
+
+                    var newCache = new ConcurrentDictionary<CaseValueKey, List<CaseValue>>();
+                    var caseFieldValues = allCaseValues.GroupBy(x => x.GetCaseValueReference());
+                    foreach (var caseFieldValue in caseFieldValues)
+                    {
+                        var valueKey = new CaseValueKey(ParentId, caseFieldValue.Key);
+                        newCache.TryAdd(valueKey, caseFieldValue.ToList());
+                    }
+                    casePeriodValuesCache = newCache;
+
+#if CASE_VALUE_LOAD
+                    stopwatch.Stop();
+                    PayrollEngine.Log.Information($"Load all case fields ({allCaseValues.Count} values): {stopwatch.ElapsedMilliseconds} ms");
+#endif
+                }
+            }
+            finally
+            {
+                casePeriodValuesCacheInitLock.Release();
+            }
         }
 
         // cache lookup with case slot filtering
-        var key = new CaseValueKey(ParentId, caseFieldName);
-        if (casePeriodValuesCache.TryGetValue(key, out var periodValues))
-        {
-            return periodValues;
-        }
-        return new List<CaseValue>();
+        var key = new CaseValueKey(ParentId, new CaseValueReference(caseFieldName).Reference);
+        return casePeriodValuesCache.TryGetValue(key, out var periodValues) ? periodValues : [];
     }
 
     /// <inheritdoc />
-    public async Task<CaseValue> GetRetroCaseValueAsync(string caseFieldName, DatePeriod period) =>
-        await CaseValueRepository.GetRetroCaseValueAsync(Context,
-            new()
-            {
-                ParentId = ParentId,
-                DivisionScope = DivisionScope.GlobalAndLocal,
-                DivisionId = DivisionId,
-                Forecast = Forecast,
-            },
-            period: period,
-            caseFieldName: caseFieldName);
-
+    public async Task<CaseValue> GetRetroCaseValueAsync(string caseFieldName, DatePeriod period)
+    {
+        var allCaseValues = (await GetCaseValuesAsync(caseFieldName)).ToList();
+        var caseValue = allCaseValues
+            .Where(cv => // created within the period
+                         (period.IsWithin(cv.Created) ||
+                          // cancelled within the period
+                          (cv.CancellationDate != null &&
+                           period.IsWithin(cv.CancellationDate.Value)) &&
+                          // division filter
+                          (cv.DivisionId == null || cv.DivisionId == DivisionId) &&
+                          // forecast filter
+                          (string.IsNullOrWhiteSpace(Forecast) ?
+                              string.IsNullOrWhiteSpace(cv.Forecast) :
+                              string.Equals(Forecast, cv.Forecast))))
+            // order from newest to oldest
+            .OrderByDescending(x => x.Created)
+            // oldest created
+            .MinBy(x => x.Start);
+        return caseValue;
+    }
 }

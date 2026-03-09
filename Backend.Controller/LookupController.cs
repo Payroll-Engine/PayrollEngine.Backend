@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Lookups")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/lookups")]
+[TenantAuthorize]
 public class LookupController : Api.Controller.LookupController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class LookupController : Api.Controller.LookupController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLookups")]
     public async Task<ActionResult> QueryLookupsAsync(int tenantId, 
-        int regulationId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(regulationId, query);
-    }
+        int regulationId, [FromQuery] Query query) =>
+        await QueryItemsAsync(regulationId, query);
 
     /// <summary>
     /// Get a regulation lookup
@@ -53,16 +46,8 @@ public class LookupController : Api.Controller.LookupController
     [NotFoundResponse]
     [ApiOperationId("GetLookup")]
     public async Task<ActionResult<ApiObject.Lookup>> GetLookupAsync(int tenantId,
-        int regulationId, int lookupId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(regulationId, lookupId);
-    }
+        int regulationId, int lookupId) =>
+        await GetAsync(regulationId, lookupId);
 
     /// <summary>
     /// Add a new regulation lookup
@@ -77,16 +62,8 @@ public class LookupController : Api.Controller.LookupController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateLookup")]
     public async Task<ActionResult<ApiObject.Lookup>> CreateLookupAsync(int tenantId,
-        int regulationId, ApiObject.Lookup lookup)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(regulationId, lookup);
-    }
+        int regulationId, ApiObject.Lookup lookup) =>
+        await CreateAsync(regulationId, lookup);
 
     /// <summary>
     /// Update a regulation lookup
@@ -101,16 +78,8 @@ public class LookupController : Api.Controller.LookupController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateLookup")]
     public async Task<ActionResult<ApiObject.Lookup>> UpdateLookupAsync(int tenantId,
-        int regulationId, ApiObject.Lookup lookup)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(regulationId, lookup);
-    }
+        int regulationId, ApiObject.Lookup lookup) =>
+        await UpdateAsync(regulationId, lookup);
 
     /// <summary>
     /// Delete a regulation lookup
@@ -120,16 +89,8 @@ public class LookupController : Api.Controller.LookupController
     /// <param name="lookupId">The id of the lookup</param>
     [HttpDelete("{lookupId}")]
     [ApiOperationId("DeleteLookup")]
-    public async Task<IActionResult> DeleteLookupAsync(int tenantId, int regulationId, int lookupId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(regulationId, lookupId);
-    }
+    public async Task<IActionResult> DeleteLookupAsync(int tenantId, int regulationId, int lookupId) => 
+        await DeleteAsync(regulationId, lookupId);
 
     #region Sets
 
@@ -146,16 +107,8 @@ public class LookupController : Api.Controller.LookupController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryLookupSets")]
     public override async Task<ActionResult> QueryLookupSetsAsync(int tenantId,
-        int regulationId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.QueryLookupSetsAsync(tenantId, regulationId, query);
-    }
+        int regulationId, [FromQuery] Query query) =>
+        await base.QueryLookupSetsAsync(tenantId, regulationId, query);
 
     /// <summary>
     /// Get a regulation lookup set
@@ -168,16 +121,8 @@ public class LookupController : Api.Controller.LookupController
     [NotFoundResponse]
     [ApiOperationId("GetLookupSet")]
     public async Task<ActionResult<ApiObject.LookupSet>> GetLookupSetAsync(int tenantId,
-        int regulationId, int lookupId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetSetAsync(regulationId, lookupId);
-    }
+        int regulationId, int lookupId) =>
+        await GetSetAsync(regulationId, lookupId);
 
     /// <summary>
     /// Add lookup set including the lookup values
@@ -191,16 +136,8 @@ public class LookupController : Api.Controller.LookupController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateLookupSets")]
     public async Task<ActionResult> CreateLookupSetsAsync(int tenantId,
-        int regulationId, ApiObject.LookupSet[] lookupSets)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateSetsAsync(regulationId, lookupSets);
-    }
+        int regulationId, ApiObject.LookupSet[] lookupSets) =>
+        await CreateSetsAsync(regulationId, lookupSets);
 
     /// <summary>
     /// Delete lookup set including the lookup values
@@ -210,16 +147,8 @@ public class LookupController : Api.Controller.LookupController
     /// <param name="lookupId">The id of the lookup</param>
     [HttpDelete("sets/{lookupId}")]
     [ApiOperationId("DeleteLookupSet")]
-    public async Task<ActionResult> DeleteLookupSetAsync(int tenantId, int regulationId, int lookupId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteSetAsync(regulationId, lookupId);
-    }
+    public async Task<ActionResult> DeleteLookupSetAsync(int tenantId, int regulationId, int lookupId) => 
+        await DeleteSetAsync(regulationId, lookupId);
 
     #endregion
 

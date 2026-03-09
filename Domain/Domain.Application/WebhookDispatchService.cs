@@ -1,45 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
-using PayrollEngine.Serialization;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using PayrollEngine.Domain.Model;
+using PayrollEngine.Serialization;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Application;
 
 /// <summary>
-/// Simple webhook dispatcher
-/// The default webhook timeout is 5 seconds
+/// Simple webhook dispatcher using IHttpClientFactory for proper DNS rotation and connection pooling.
+/// The default webhook timeout is 5 seconds, configurable via named HttpClient registration.
 /// </summary>
 public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRepository userRepository,
-        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository)
+        IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository,
+        IHttpClientFactory httpClientFactory)
     : IWebhookDispatchService
 {
-    private static HttpClient HttpClient { get; }
-
-    public static TimeSpan Timeout
-    {
-        get => HttpClient.Timeout;
-        set => HttpClient.Timeout = value;
-    }
+    /// <summary>
+    /// Named HttpClient identifier for DI configuration
+    /// </summary>
+    public static readonly string HttpClientName = "WebhookDispatch";
 
     private ITenantRepository TenantRepository { get; } = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
     private IUserRepository UserRepository { get; } = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     private IWebhookRepository WebhookRepository { get; } = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
     private IWebhookMessageRepository MessageRepository { get; } = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
+    private IHttpClientFactory HttpClientFactory { get; } = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
 
-    // ReSharper disable once GrammarMistakeInComment
-    /// <summary>
-    /// Only one http client
-    /// prevent sockets-overflow exception, by creating the http client for any request.
-    /// See https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient.-ctor?f1url=https%3A%2F%2Fmsdn.microsoft.com%2Fquery%2Fdev16.query%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Net.Http.HttpClient.%2523ctor);k(DevLang-csharp)
-    /// </summary>
-    static WebhookDispatchService()
+    /// <inheritdoc />
+    public async Task<bool> HasWebhooksAsync(IDbContext context, int tenantId)
     {
-        HttpClient = new();
+        var webhooks = await WebhookRepository.QueryAsync(context, tenantId, new()
+        {
+            Status = ObjectStatus.Active
+        });
+        return webhooks.Any();
     }
 
     /// <inheritdoc />
@@ -112,6 +110,10 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         }
     }
 
+    /// <summary>
+    /// Dispatch a single webhook: build the runtime message, optionally persist tracking,
+    /// POST to the receiver, and record the response.
+    /// </summary>
     private async Task<string> DispatchWebhook(IDbContext context, string tenant, string user,
         Webhook webhook, WebhookDispatchMessage dispatchMessage)
     {
@@ -141,13 +143,15 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
             await MessageRepository.CreateAsync(context, webhook.Id, webhookMessage);
         }
 
-        // post
+        // post - each call gets a fresh HttpClient from the factory,
+        // ensuring proper DNS rotation and connection pooling
         Log.Debug($"Sending web hook {webhook.Name} to {webhook.ReceiverAddress}");
         try
         {
+            var httpClient = HttpClientFactory.CreateClient(HttpClientName);
             var jsonMessage = DefaultJsonSerializer.Serialize(webhookMessage);
             var message = DefaultJsonSerializer.SerializeJson(jsonMessage);
-            var response = await HttpClient.PostAsync(webhook.ReceiverAddress, message);
+            var response = await httpClient.PostAsync(webhook.ReceiverAddress, message);
             webhookMessage.ResponseStatus = (int)response.StatusCode;
             if (response.IsSuccessStatusCode)
             {

@@ -35,7 +35,6 @@ public class CaseBuildRuntime : CaseChangeRuntimeBase, ICaseBuildRuntime
             {
                 // create script
                 using var script = CreateScript(typeof(CaseBuildFunction), @case);
-
                 // call the script function
                 return script.Build();
             });

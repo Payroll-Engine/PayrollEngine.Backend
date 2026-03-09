@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Case audits")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/cases/{caseId}/audits")]
+[TenantAuthorize]
 public class CaseAuditController : Api.Controller.CaseAuditController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class CaseAuditController : Api.Controller.CaseAuditController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("QueryCaseAudits")]
-    public async Task<ActionResult> QueryCaseAuditsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(caseId, query);
-    }
+    public async Task<ActionResult> QueryCaseAuditsAsync(int tenantId, int regulationId, int caseId, [FromQuery] Query query) =>
+        await QueryItemsAsync(caseId, query);
 
     /// <summary>
     /// Get a regulation case audit
@@ -55,14 +48,6 @@ public class CaseAuditController : Api.Controller.CaseAuditController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetCaseAudit")]
-    public async Task<ActionResult<ApiObject.CaseAudit>> GetCaseAuditAsync(int tenantId, int regulationId, int caseId, int auditId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(caseId, auditId);
-    }
+    public async Task<ActionResult<ApiObject.CaseAudit>> GetCaseAuditAsync(int tenantId, int regulationId, int caseId, int auditId) =>
+        await GetAsync(caseId, auditId);
 }

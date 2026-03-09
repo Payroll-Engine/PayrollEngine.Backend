@@ -515,4 +515,372 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
 
     #endregion
 
+    #region Add Multiple Cases (Bulk)
+
+    public virtual async Task<List<T>> AddCaseChangesAsync(IDbContext context, int tenantId, int payrollId,
+        IEnumerable<(int ParentId, T CaseChange)> caseChanges)
+    {
+        if (tenantId <= 0)
+        {
+            throw new ArgumentException(nameof(tenantId));
+        }
+        if (payrollId <= 0)
+        {
+            throw new ArgumentException(nameof(payrollId));
+        }
+
+        var changesList = caseChanges.ToList();
+        if (!changesList.Any())
+        {
+            return [];
+        }
+
+        // shared caches to avoid redundant lookups
+        var caseFieldCache = new Dictionary<string, CaseField>();
+        var caseCache = new Dictionary<string, Case>();
+
+        // resolve culture once from the first change
+        var firstChange = changesList.First().CaseChange;
+        var culture = await GetChangeCultureAsync(context, tenantId, firstChange);
+
+        // pre-populate case field cache for all unique field names
+        var allFieldNames = changesList
+            .SelectMany(c => c.CaseChange.Values?.Select(v => v.CaseFieldName) ?? [])
+            .Distinct()
+            .ToList();
+        foreach (var fieldName in allFieldNames)
+        {
+            var caseField = (await PayrollRepository.GetDerivedCaseFieldsAsync(context,
+                new() { TenantId = tenantId, PayrollId = payrollId },
+                [fieldName])).FirstOrDefault();
+            if (caseField != null)
+            {
+                caseFieldCache[fieldName] = caseField;
+            }
+        }
+
+        // === Preload latest case values for OnChanges optimization ===
+        // Replaces N individual SELECT queries (one per case value) with one query per unique parentId
+        var hasOnChangesFields = caseFieldCache.Values.Any(cf => cf.ValueCreationMode == CaseValueCreationMode.OnChanges);
+        var latestValuesCache = new Dictionary<int, List<CaseValue>>();
+        if (hasOnChangesFields)
+        {
+            var uniqueParentIds = changesList.Select(c => c.ParentId).Distinct().ToList();
+            foreach (var pid in uniqueParentIds)
+            {
+                var preloadQuery = new Query
+                {
+                    OrderBy = $"{nameof(CaseValue.Created)} DESC"
+                };
+                latestValuesCache[pid] = (await CaseValueRepository.QueryAsync(context, pid, preloadQuery)).ToList();
+            }
+        }
+
+        // single transaction for all changes
+        using var txScope = TransactionFactory.NewTransactionScope();
+        var results = new List<T>();
+
+        foreach (var (parentId, caseChange) in changesList)
+        {
+            if (parentId <= 0)
+            {
+                throw new ArgumentException(nameof(parentId));
+            }
+            // skip case changes without values (e.g. filtered by controller validation)
+            if (caseChange?.Values == null || !caseChange.Values.Any())
+            {
+                continue;
+            }
+
+            var result = await AddCaseChangeInternalAsync(
+                context, tenantId, payrollId, parentId, caseChange, culture, caseFieldCache, caseCache,
+                latestValuesCache);
+            results.Add(result);
+        }
+
+        txScope.Complete();
+
+        return results;
+    }
+
+    /// <summary>
+    /// Internal case change creation with optional caches (shared between single and bulk operations)
+    /// </summary>
+    private async Task<T> AddCaseChangeInternalAsync(IDbContext context, int tenantId, int payrollId,
+        int parentId, T caseChange, string culture,
+        Dictionary<string, CaseField> caseFieldCache,
+        Dictionary<string, Case> caseCache,
+        Dictionary<int, List<CaseValue>> latestValuesCache = null)
+    {
+        CaseType? caseType = null;
+
+        // sync value created date
+        if (caseChange.Created != DateTime.MinValue)
+        {
+            foreach (var caseValue in caseChange.Values)
+            {
+                if (caseValue.Created == DateTime.MinValue)
+                {
+                    caseValue.Created = caseChange.Created;
+                }
+            }
+        }
+
+        // collect cases with case fields
+        var cases = new List<Case>();
+        var caseFields = new List<CaseField>();
+        foreach (var caseValue in caseChange.Values)
+        {
+            // case field (from cache or db)
+            if (!caseFieldCache.TryGetValue(caseValue.CaseFieldName, out var caseField))
+            {
+                caseField = (await PayrollRepository.GetDerivedCaseFieldsAsync(context,
+                    new() { TenantId = tenantId, PayrollId = payrollId },
+                    [caseValue.CaseFieldName])).FirstOrDefault();
+                caseFieldCache[caseValue.CaseFieldName] = caseField ?? throw new PayrollException($"Unknown case field {caseValue.CaseFieldName}.");
+            }
+            caseFields.Add(caseField);
+
+            // case (from cache or db)
+            var caseCacheKey = caseChange.ValidationCaseName ?? $"field:{caseField.Id}";
+            if (!caseCache.TryGetValue(caseCacheKey, out var @case))
+            {
+                if (string.IsNullOrWhiteSpace(caseChange.ValidationCaseName))
+                {
+                    var caseId = await CaseFieldRepository.GetParentIdAsync(context, caseField.Id);
+                    if (!caseId.HasValue)
+                    {
+                        throw new PayrollException($"Unknown case for case field {caseField}.");
+                    }
+                    var regulationId = await CaseRepository.GetParentIdAsync(context, caseId.Value);
+                    if (!regulationId.HasValue)
+                    {
+                        throw new PayrollException($"Unknown regulation case with id {caseId} on case field {caseField}.");
+                    }
+
+                    @case = await CaseRepository.GetAsync(context, regulationId.Value, caseId.Value);
+                }
+                else
+                {
+                    @case = (await PayrollRepository.GetDerivedCasesAsync(context,
+                                query: new() { TenantId = tenantId, PayrollId = payrollId },
+                                caseNames: [caseChange.ValidationCaseName])).FirstOrDefault();
+                }
+
+                caseCache[caseCacheKey] = @case ?? throw new PayrollException($"Missing case for case field {caseField}.");
+            }
+            cases.Add(@case);
+        }
+
+        // case change division
+        if (caseChange.DivisionId.HasValue && caseFields.All(x => x.ValueScope != ValueScope.Local))
+        {
+            caseChange.DivisionId = null;
+        }
+
+        // remove unchanged case value
+        var updateFields = new List<CaseField>();
+        var updateValues = new List<CaseValue>();
+        for (var i = 0; i < caseChange.Values.Count; i++)
+        {
+            var caseField = caseFields[i];
+            var caseValue = caseChange.Values[i];
+
+            var createValue = true;
+            switch (caseField.ValueCreationMode)
+            {
+                case CaseValueCreationMode.OnChanges:
+                    CaseValue latestCaseValue;
+                    if (latestValuesCache != null && latestValuesCache.TryGetValue(parentId, out var parentValues))
+                    {
+                        // bulk path: lookup from preloaded cache (sorted by Created DESC)
+                        var divisionId = caseChange.DivisionId;
+                        latestCaseValue = parentValues.FirstOrDefault(v =>
+                            string.Equals(v.CaseFieldName, caseField.Name) &&
+                            (!divisionId.HasValue || v.DivisionId == divisionId.Value));
+                    }
+                    else
+                    {
+                        // single-case fallback: original DB query
+                        var filter = $"{nameof(CaseValue.CaseFieldName)} eq '{caseField.Name}'";
+                        if (caseChange.DivisionId.HasValue)
+                        {
+                            filter += $" and {nameof(CaseValue.DivisionId)} eq {caseChange.DivisionId.Value}";
+                        }
+                        var query = new Query
+                        {
+                            Top = 1,
+                            OrderBy = $"{nameof(CaseValue.Created)} DESC",
+                            Filter = filter
+                        };
+                        latestCaseValue = (await CaseValueRepository.QueryAsync(context, parentId, query)).FirstOrDefault();
+                    }
+                    if (latestCaseValue != null && EqualCaseValue(latestCaseValue, caseValue) ||
+                        (latestCaseValue == null && caseValue?.Value == null))
+                    {
+                        createValue = false;
+                    }
+                    break;
+                case CaseValueCreationMode.Always:
+                    break;
+                case CaseValueCreationMode.Discard:
+                    createValue = false;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            if (createValue)
+            {
+                updateFields.Add(caseField);
+                updateValues.Add(caseValue);
+            }
+            else
+            {
+                caseChange.IgnoredValues ??= [];
+                caseChange.IgnoredValues.Add(caseValue);
+            }
+        }
+        caseFields = updateFields;
+        caseChange.Values = updateValues;
+
+        // case change without any changed case value
+        if (!updateFields.Any())
+        {
+            return caseChange;
+        }
+
+        // create case change (no nested transaction — caller manages the scope)
+        await CreateAsync(context, parentId, caseChange);
+
+        // create case values
+        for (var i = 0; i < caseChange.Values.Count; i++)
+        {
+            var caseValue = caseChange.Values[i];
+            var @case = cases[i];
+            var caseField = caseFields[i];
+
+            // case slot
+            if (!string.IsNullOrWhiteSpace(caseValue.CaseSlot) && caseValue.CaseSlotLocalizations == null)
+            {
+                var slot = @case.Slots?.FirstOrDefault(x => string.Equals(x.Name, caseValue.CaseSlot));
+                if (slot != null)
+                {
+                    caseValue.CaseSlotLocalizations = slot.NameLocalizations;
+                }
+            }
+
+            // case name
+            caseValue.CaseName = @case.Name;
+            caseValue.CaseNameLocalizations = @case.NameLocalizations;
+
+            // culture
+            caseField.Culture = caseValue.Culture ?? culture;
+
+            // case field name
+            caseValue.CaseFieldNameLocalizations = caseField.NameLocalizations;
+
+            // ensure change forecast on all values
+            caseValue.Forecast = caseChange.Forecast;
+
+            // case value tags
+            caseValue.Tags = caseValue.Tags;
+
+            // case type
+            if (caseType.HasValue)
+            {
+                if (@case.CaseType != caseType.Value)
+                {
+                    throw new PayrollException($"Different case types within a case change: {@case.CaseType} and {caseType.Value}.");
+                }
+            }
+            else
+            {
+                caseType = @case.CaseType;
+            }
+
+            // division: global or local value
+            switch (caseField.ValueScope)
+            {
+                case ValueScope.Local:
+                    var changeDivision = caseChange.DivisionId.HasValue;
+                    var valueDivision = caseValue.DivisionId.HasValue;
+
+                    if (changeDivision && valueDivision && caseChange.DivisionId.Value != caseValue.DivisionId.Value)
+                    {
+                        throw new PayrollException($"Invalid case value division on case field: {caseField.Name}.");
+                    }
+
+                    if (!changeDivision && !valueDivision)
+                    {
+                        throw new PayrollException($"Missing case value division on case field: {caseField.Name}.");
+                    }
+
+                    if (!valueDivision)
+                    {
+                        caseValue.DivisionId = caseChange.DivisionId;
+                    }
+                    break;
+                case ValueScope.Global:
+                    caseValue.DivisionId = null;
+                    break;
+            }
+
+            // value type and kind
+            caseValue.ValueType = caseField.ValueType;
+
+            // ensure json string
+            caseValue.Value ??= string.Empty;
+
+            // culture
+            caseValue.Culture = caseField.Culture ?? culture;
+
+            // case value setup
+            if (caseValue is CaseValueSetup caseValueSetup)
+            {
+                await CaseValueSetupRepository.CreateAsync(context, parentId, caseValueSetup);
+            }
+            else
+            {
+                await CaseValueRepository.CreateAsync(context, parentId, caseValue);
+            }
+
+            // update preloaded cache so subsequent changes for the same parentId see inserted values
+            if (latestValuesCache != null)
+            {
+                if (!latestValuesCache.TryGetValue(parentId, out var cachedValues))
+                {
+                    cachedValues = [];
+                    latestValuesCache[parentId] = cachedValues;
+                }
+                cachedValues.Insert(0, caseValue); // prepend = newest first
+            }
+        }
+
+        // create case value changes
+        await CreateCaseValuesAsync(context, caseChange);
+
+        // cancellation case change: update cancellation data on cancelled case change
+        if (caseChange.CancellationId.HasValue)
+        {
+            var cancellationCaseChange = await GetAsync(context, parentId, caseChange.CancellationId.Value);
+            if (cancellationCaseChange == null)
+            {
+                throw new PayrollException($"Invalid cancellation case change with id {caseChange.CancellationId.Value}.");
+            }
+
+            if (cancellationCaseChange.CancellationId.HasValue)
+            {
+                throw new PayrollException($"Case change with id {cancellationCaseChange.Id} already cancelled.");
+            }
+
+            cancellationCaseChange.CancellationId = caseChange.Id;
+            cancellationCaseChange.CancellationDate = caseChange.CancellationDate;
+            await UpdateAsync(context, parentId, cancellationCaseChange);
+        }
+
+        return caseChange;
+    }
+
+    #endregion
+
 }

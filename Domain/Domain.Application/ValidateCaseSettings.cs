@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PayrollEngine.Domain.Application.Service;
+namespace PayrollEngine.Domain.Application;
 
 public class ValidateCaseSettings
 {
@@ -15,4 +15,9 @@ public class ValidateCaseSettings
     public DateTime? EvaluationDate { get; set; }
     public DateTime? RegulationDate { get; set; }
     public DateTime? CancellationDate { get; init; }
+
+    /// <summary>
+    /// Optional preloaded derived regulation cache for bulk operations
+    /// </summary>
+    public DerivedPayrollCache DerivedCache { get; init; }
 }

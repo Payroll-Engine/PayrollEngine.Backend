@@ -38,6 +38,11 @@ public class ScriptCompiler
     public static bool DumpCompilerSources { get; set; }
 
     /// <summary>
+    /// Enable static safety analysis of user scripts during compilation (default: false)
+    /// </summary>
+    public static bool ScriptSafetyAnalysis { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ScriptCompiler"/> class
     /// </summary>
     /// <param name="scriptObject">The script object</param>
@@ -118,14 +123,20 @@ public class ScriptCompiler
         // compile code
         var compiler = new CSharpCompiler(
             assemblyName: ScriptObjectType.FullName,
-            dumpCompilerSource: DumpCompilerSources);
+            dumpCompilerSource: DumpCompilerSources,
+            scriptSafetyAnalysis: ScriptSafetyAnalysis);
         return compiler.CompileAssembly(tenantId, codes);
     }
 
     /// <summary>
-    /// Build function codes
+    /// Build function codes by applying user expressions and action results
+    /// into the embedded function templates (e.g. "WageTypeValueFunction.cs").
     /// </summary>
-    /// <param name="actions">Function action codes</param>
+    /// <param name="actions">Pre-parsed action results keyed by function type.</param>
+    /// <returns>
+    /// Dictionary keyed by <see cref="FunctionType"/>, where each value is a
+    /// fully assembled C# source code string ready for compilation.
+    /// </returns>
     private Dictionary<FunctionType, string> BuildFunctionCodes(Dictionary<FunctionType,
         List<ActionResult>> actions)
     {
@@ -144,8 +155,13 @@ public class ScriptCompiler
     }
 
     /// <summary>
-    /// Build action results
+    /// Parse configured actions for each function type into executable code fragments.
     /// </summary>
+    /// <returns>
+    /// Dictionary keyed by <see cref="FunctionType"/>, where each value is a list of
+    /// <see cref="ActionResult"/> containing the generated code and invocation snippets.
+    /// Empty when no actions are configured on the script object.
+    /// </returns>
     private Dictionary<FunctionType, List<ActionResult>> BuildActionResults()
     {
         var actionCodes = new Dictionary<FunctionType, List<ActionResult>>();
@@ -162,8 +178,14 @@ public class ScriptCompiler
     }
 
     /// <summary>
-    /// Build object codes
+    /// Build object codes from system and function embedded scripts.
     /// </summary>
+    /// <returns>
+    /// Dictionary keyed by embedded resource name (e.g. "RuntimeBase.cs"),
+    /// where each value is a single C# source code string loaded from that resource.
+    /// Consumed by <see cref="Compile"/> which filters out function-template files
+    /// and collects the remaining sources for compilation.
+    /// </returns>
     private Dictionary<string, string> BuildObjectCodes()
     {
         var objectCodes = new Dictionary<string, string>();
@@ -178,7 +200,7 @@ public class ScriptCompiler
             foreach (var script in EmbeddedScriptNames)
             {
                 var codeName = script.EnsureEnd(".cs");
-                objectCodes.Add(codeName, CodeFactory.GetEmbeddedCodeFile(codeName));
+                objectCodes.TryAdd(codeName, CodeFactory.GetEmbeddedCodeFile(codeName));
             }
         }
         return objectCodes;

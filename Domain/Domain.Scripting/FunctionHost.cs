@@ -6,6 +6,14 @@ using PayrollEngine.Domain.Model.Repository;
 namespace PayrollEngine.Domain.Scripting;
 
 /// <inheritdoc/>
+/// <remarks>
+/// This class bridges the synchronous <see cref="IFunctionHost"/> scripting API
+/// with the async persistence layer. Sync-over-async via
+/// <c>ConfigureAwait(false).GetAwaiter().GetResult()</c> is intentional here:
+/// user scripts execute synchronously and cannot propagate async through the
+/// compilation boundary. <c>ConfigureAwait(false)</c> avoids capturing any
+/// ambient context, reducing the risk of deadlocks in hosted environments.
+/// </remarks>
 public class FunctionHost : IFunctionHost
 {
     private FunctionHostSettings Settings { get; }
@@ -40,7 +48,8 @@ public class FunctionHost : IFunctionHost
         {
             throw new ArgumentNullException(nameof(task));
         }
-        _ = TaskRepository.CreateAsync(Settings.DbContext, tenantId, task).Result;
+        _ = TaskRepository.CreateAsync(Settings.DbContext, tenantId, task)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
     /// <inheritdoc/>
@@ -56,6 +65,7 @@ public class FunctionHost : IFunctionHost
         {
             return;
         }
-        _ = LogRepository.CreateAsync(Settings.DbContext, tenantId, log).Result;
+        _ = LogRepository.CreateAsync(Settings.DbContext, tenantId, log)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
     }
 }

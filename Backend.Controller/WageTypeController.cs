@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Wage types")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/wagetypes")]
+[TenantAuthorize]
 public class WageTypeController : Api.Controller.WageTypeController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryWageTypes")]
     public async Task<ActionResult> QueryWageTypesAsync(int tenantId, int regulationId,
-        [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(regulationId, query);
-    }
+        [FromQuery] Query query) =>
+        await QueryItemsAsync(regulationId, query);
 
     /// <summary>
     /// Get a regulation wageType
@@ -54,16 +47,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [NotFoundResponse]
     [ApiOperationId("GetWageType")]
     public async Task<ActionResult<ApiObject.WageType>> GetWageTypeAsync(
-        int tenantId, int regulationId, int wageTypeId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(regulationId, wageTypeId);
-    }
+        int tenantId, int regulationId, int wageTypeId) =>
+        await GetAsync(regulationId, wageTypeId);
 
     /// <summary>
     /// Add a new regulation wage type
@@ -78,16 +63,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateWageType")]
     public async Task<ActionResult<ApiObject.WageType>> CreateWageTypeAsync(
-        int tenantId, int regulationId, ApiObject.WageType wageType)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(regulationId, wageType);
-    }
+        int tenantId, int regulationId, ApiObject.WageType wageType) =>
+        await CreateAsync(regulationId, wageType);
 
     /// <summary>
     /// Update a regulation wage type
@@ -102,16 +79,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateWageType")]
     public async Task<ActionResult<ApiObject.WageType>> UpdateWageTypeAsync(
-        int tenantId, int regulationId, ApiObject.WageType wageType)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(regulationId, wageType);
-    }
+        int tenantId, int regulationId, ApiObject.WageType wageType) =>
+        await UpdateAsync(regulationId, wageType);
 
     /// <summary>
     /// Rebuild regulation wage type
@@ -123,16 +92,8 @@ public class WageTypeController : Api.Controller.WageTypeController
     [NotFoundResponse]
     [ApiOperationId("RebuildWageType")]
     public async Task<ActionResult> RebuildWageTypeAsync(int tenantId,
-        int regulationId, int wageTypeId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await RebuildAsync(regulationId, wageTypeId);
-    }
+        int regulationId, int wageTypeId) =>
+        await RebuildAsync(regulationId, wageTypeId);
 
     /// <summary>
     /// Delete a regulation wage type
@@ -143,14 +104,6 @@ public class WageTypeController : Api.Controller.WageTypeController
     [HttpDelete("{wageTypeId}")]
     [ApiOperationId("DeleteWageType")]
     public async Task<IActionResult> DeleteWageTypeAsync(int tenantId,
-        int regulationId, int wageTypeId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(regulationId, wageTypeId);
-    }
+        int regulationId, int wageTypeId) =>
+        await DeleteAsync(regulationId, wageTypeId);
 }

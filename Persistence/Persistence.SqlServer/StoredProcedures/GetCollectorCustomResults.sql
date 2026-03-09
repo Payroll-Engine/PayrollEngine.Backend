@@ -1,4 +1,4 @@
-﻿SET ANSI_NULLS ON
+SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
@@ -17,6 +17,7 @@ GO
 
 -- =============================================
 -- Get employee collector custom results from a time period
+-- fully denormalized: zero JOINs, all filters on CollectorCustomResult columns
 -- =============================================
 CREATE PROCEDURE dbo.[GetCollectorCustomResults]
   -- the tenant id
@@ -52,108 +53,102 @@ BEGIN
   SELECT @collectorCount = COUNT(*) FROM OPENJSON(@collectorNameHashes);
 
   -- special query for single collector
-  -- better perfomance to indexed column of the collector name
-  if (@collectorCount= 1)
+  -- better performance to indexed column of the collector name
+  IF (@collectorCount = 1)
   BEGIN
     SELECT @collectorNameHash = CAST(value AS INT)
-        FROM OPENJSON(@collectorNameHashes);
+      FROM OPENJSON(@collectorNameHashes);
 
-    SELECT TOP (100) PERCENT dbo.[CollectorCustomResult].*
-    FROM dbo.[PayrollResult]
-    INNER JOIN dbo.[PayrunJob]
-    ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-    INNER JOIN dbo.[CollectorResult]
-    ON dbo.[PayrollResult].[Id] = dbo.[CollectorResult].[PayrollResultId]
-    INNER JOIN dbo.[CollectorCustomResult]
-    ON dbo.[CollectorResult].[Id] = dbo.[CollectorCustomResult].[CollectorResultId]
-    WHERE (dbo.[PayrollResult].[TenantId] = @tenantId)
-        AND (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-        AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
+    -- zero-JOIN query: single collector optimization
+    SELECT TOP (100) PERCENT ccr.*
+    FROM dbo.[CollectorCustomResult] ccr
+    WHERE (ccr.[TenantId] = @tenantId)
+      AND (ccr.[EmployeeId] = @employeeId)
+      AND (
+        @divisionId IS NULL
+        OR ccr.[DivisionId] = @divisionId
+      )
+      AND (
+        @payrunJobId IS NULL
+        OR ccr.[PayrunJobId] = @payrunJobId
+      )
+      AND (
+        @parentPayrunJobId IS NULL
+        OR ccr.[ParentJobId] = @parentPayrunJobId
+      )
+      AND (
+        @collectorNameHashes IS NULL
+        OR ccr.[CollectorNameHash] = @collectorNameHash
+      )
+      AND (
+        (@periodStart IS NULL AND @periodEnd IS NULL)
+        OR ccr.[Start] BETWEEN @periodStart AND @periodEnd
+      )
+      AND (
+        @jobStatus IS NULL
+        OR ccr.[PayrunJobId] IN (
+          SELECT pj.[Id] FROM dbo.[PayrunJob] pj
+          WHERE pj.[Id] = ccr.[PayrunJobId]
+            AND pj.[JobStatus] & @jobStatus = pj.[JobStatus]
         )
-        AND (
-            @payrunJobId IS NULL
-            OR dbo.[PayrunJob].[Id] = @payrunJobId
+      )
+      AND (
+        ccr.[Forecast] IS NULL
+        OR ccr.[Forecast] = @forecast
+      )
+      AND (
+        @evaluationDate IS NULL
+        OR ccr.[Created] <= @evaluationDate
+      )
+    ORDER BY ccr.[Created]
+  END
+  ELSE
+  BEGIN
+    -- zero-JOIN query: multiple collectors
+    SELECT TOP (100) PERCENT ccr.*
+    FROM dbo.[CollectorCustomResult] ccr
+    WHERE (ccr.[TenantId] = @tenantId)
+      AND (ccr.[EmployeeId] = @employeeId)
+      AND (
+        @divisionId IS NULL
+        OR ccr.[DivisionId] = @divisionId
+      )
+      AND (
+        @payrunJobId IS NULL
+        OR ccr.[PayrunJobId] = @payrunJobId
+      )
+      AND (
+        @parentPayrunJobId IS NULL
+        OR ccr.[ParentJobId] = @parentPayrunJobId
+      )
+      AND (
+        @collectorNameHashes IS NULL
+        OR ccr.[CollectorNameHash] IN (
+          SELECT value
+          FROM OPENJSON(@collectorNameHashes)
         )
-        AND (
-            @parentPayrunJobId IS NULL
-            OR dbo.[PayrunJob].[ParentJobId] = @parentPayrunJobId
+      )
+      AND (
+        (@periodStart IS NULL AND @periodEnd IS NULL)
+        OR ccr.[Start] BETWEEN @periodStart AND @periodEnd
+      )
+      AND (
+        @jobStatus IS NULL
+        OR ccr.[PayrunJobId] IN (
+          SELECT pj.[Id] FROM dbo.[PayrunJob] pj
+          WHERE pj.[Id] = ccr.[PayrunJobId]
+            AND pj.[JobStatus] & @jobStatus = pj.[JobStatus]
         )
-        AND (
-            @collectorNameHashes IS NULL
-            OR dbo.[CollectorCustomResult].[CollectorNameHash] = @collectorNameHash
-        )
-        AND (
-            (@periodStart IS NULL AND @periodEnd IS NULL)
-            OR
-            dbo.[PayrunJob].[PeriodStart] BETWEEN @periodStart AND @periodEnd
-        )
-        AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-        )
-        AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-        )
-        AND (
-            @evaluationDate IS NULL
-            OR dbo.[CollectorResult].[Created] <= @evaluationDate
-        )
-    ORDER BY dbo.[CollectorResult].[Created]
-END
-ELSE
-BEGIN
-    SELECT TOP (100) PERCENT dbo.[CollectorCustomResult].*
-    FROM dbo.[PayrollResult]
-    INNER JOIN dbo.[PayrunJob]
-    ON dbo.[PayrollResult].[PayrunJobId] = dbo.[PayrunJob].[Id]
-    INNER JOIN dbo.[CollectorResult]
-    ON dbo.[PayrollResult].[Id] = dbo.[CollectorResult].[PayrollResultId]
-    INNER JOIN dbo.[CollectorCustomResult]
-    ON dbo.[CollectorResult].[Id] = dbo.[CollectorCustomResult].[CollectorResultId]
-    WHERE (dbo.[PayrollResult].[TenantId] = @tenantId)
-        AND (dbo.[PayrollResult].[EmployeeId] = @employeeId)
-        AND (
-            @divisionId IS NULL
-            OR dbo.[PayrollResult].[DivisionId] = @divisionId
-        )
-        AND (
-            @payrunJobId IS NULL
-            OR dbo.[PayrunJob].[Id] = @payrunJobId
-        )
-        AND (
-            @parentPayrunJobId IS NULL
-            OR dbo.[PayrunJob].[ParentJobId] = @parentPayrunJobId
-        )
-        AND (
-            @collectorNameHashes IS NULL
-            OR dbo.[CollectorCustomResult].[CollectorNameHash] IN (
-                SELECT value
-                FROM OPENJSON(@collectorNameHashes)
-            )
-        )
-        AND (
-            (@periodStart IS NULL AND @periodEnd IS NULL)
-            OR
-            dbo.[PayrunJob].[PeriodStart] BETWEEN @periodStart AND @periodEnd
-        )
-        AND (
-            @jobStatus IS NULL
-            OR dbo.[PayrunJob].[JobStatus] & @jobStatus = dbo.[PayrunJob].[JobStatus]
-            )
-        AND (
-            [PayrunJob].[Forecast] IS NULL
-            OR [PayrunJob].[Forecast] = @forecast
-            )
-        AND (
-            @evaluationDate IS NULL
-            OR dbo.[CollectorResult].[Created] <= @evaluationDate
-            )
-    ORDER BY dbo.[CollectorResult].[Created]
-END
+      )
+      AND (
+        ccr.[Forecast] IS NULL
+        OR ccr.[Forecast] = @forecast
+      )
+      AND (
+        @evaluationDate IS NULL
+        OR ccr.[Created] <= @evaluationDate
+      )
+    ORDER BY ccr.[Created]
+  END
 END
 GO
-
-

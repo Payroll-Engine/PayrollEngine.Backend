@@ -8,6 +8,13 @@ namespace PayrollEngine.Domain.Model;
 public interface IWebhookDispatchService
 {
     /// <summary>
+    /// Test for available webhooks
+    /// </summary>
+    /// <param name="context">The database context</param>
+    /// <param name="tenantId">The tenant id</param>
+    Task<bool> HasWebhooksAsync(IDbContext context, int tenantId);
+
+    /// <summary>
     /// Invoke webhook and receive the response object
     /// </summary>
     /// <param name="context">The database context</param>

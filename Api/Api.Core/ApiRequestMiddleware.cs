@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -12,6 +14,7 @@ public class ApiRequestMiddleware
     private RequestDelegate Next { get; }
     private string ApiKey { get; }
     private AuthenticationMode AuthMode { get; }
+    private bool SwaggerEnabled { get; }
 
     /// <summary>
     /// Api request middleware
@@ -24,6 +27,7 @@ public class ApiRequestMiddleware
         var auth = configuration.GetAuthConfiguration();
         AuthMode = auth.Mode;
         ApiKey = AuthMode == AuthenticationMode.ApiKey ? configuration.GetApiKey() : null;
+        SwaggerEnabled = configuration.GetConfiguration<PayrollServerConfiguration>().EnableSwagger;
     }
 
     /// <summary>
@@ -36,20 +40,20 @@ public class ApiRequestMiddleware
     {
         var path = context.Request.Path;
 
-        // root redirect — skip in OAuth mode, handled by rewriter
-        if ("/".Equals(path.Value) && AuthMode != AuthenticationMode.OAuth)
+        // root redirect — only when swagger is enabled, skip in OAuth mode (handled by rewriter)
+        if ("/".Equals(path.Value) && SwaggerEnabled && AuthMode != AuthenticationMode.OAuth)
         {
             context.Response.Redirect("/swagger");
             return;
         }
 
-        // API key check — skip swagger paths
+        // API key check — skip swagger paths only when swagger is enabled
         if (AuthMode == AuthenticationMode.ApiKey &&
-            !path.StartsWithSegments("/swagger"))
+            !(SwaggerEnabled && path.StartsWithSegments("/swagger")))
         {
             if (string.IsNullOrWhiteSpace(ApiKey) ||
                 !context.Request.Headers.TryGetValue(BackendSpecification.ApiKeyHeader, out var headerApiKey) ||
-                !string.Equals(ApiKey, headerApiKey))
+                !FixedTimeApiKeyEquals(ApiKey, headerApiKey))
             {
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Invalid Api Key");
@@ -57,6 +61,29 @@ public class ApiRequestMiddleware
             }
         }
 
+        // API version response header
+        context.Response.Headers[BackendSpecification.ApiVersionHeader] =
+            BackendSpecification.CurrentApiVersion.ToString(2);
+
         await Next(context);
+    }
+
+    /// <summary>
+    /// Compares the configured API key with the request header value using
+    /// a constant-time comparison to prevent timing side-channel attacks.
+    /// </summary>
+    /// <param name="expected">The configured API key.</param>
+    /// <param name="actual">The API key from the request header.</param>
+    /// <returns><c>true</c> if the keys match; otherwise <c>false</c>.</returns>
+    private static bool FixedTimeApiKeyEquals(string expected, string actual)
+    {
+        if (string.IsNullOrEmpty(actual))
+        {
+            return false;
+        }
+
+        var expectedBytes = Encoding.UTF8.GetBytes(expected);
+        var actualBytes = Encoding.UTF8.GetBytes(actual);
+        return CryptographicOperations.FixedTimeEquals(expectedBytes, actualBytes);
     }
 }

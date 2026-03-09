@@ -7,6 +7,12 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Abstract base repository for regulation child objects with audit trail support.
+/// Automatically creates audit records on create, update, and delete when auditing is enabled.
+/// </summary>
+/// <typeparam name="TDomain">Domain object type with audit tracking</typeparam>
+/// <typeparam name="TAudit">Corresponding audit domain object type</typeparam>
 public abstract class TrackChildDomainRepository<TDomain, TAudit>(IRegulationRepository regulationRepository,
     string tableName, string parentFieldName, IAuditChildDomainRepository<TAudit> auditRepository, bool auditEnabled)
     : ChildDomainRepository<TDomain>(tableName, parentFieldName),

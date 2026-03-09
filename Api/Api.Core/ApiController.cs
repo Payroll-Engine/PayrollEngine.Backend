@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,8 +59,10 @@ public abstract class ApiController(IControllerRuntime runtime) : ControllerBase
             return NotFound();
         }
 
-        Response.Headers.Append("Access-Control-Allow-Origin", "*");
-        Response.Headers.Append("Access-Control-Allow-Methods", string.Join(",", supportedMethods));
+        // CORS headers are handled by the ASP.NET Core CORS middleware
+        // (configured in ApiStartupExtensions via CorsConfiguration).
+        // No manual Access-Control-* headers needed here.
+        Response.Headers.Append("Allow", string.Join(",", supportedMethods));
         return Ok();
     }
 
@@ -80,15 +82,13 @@ public abstract class ApiController(IControllerRuntime runtime) : ControllerBase
             return Unauthorized($"Invalid tenant with id {tenantId}");
         }
 
-        // apply tenant culture to the current thread
+        // apply tenant culture to the current async context
         if (!string.IsNullOrWhiteSpace(tenant.Culture))
         {
-            var currentCulture = Thread.CurrentThread.CurrentCulture.Name;
-            if (!string.Equals(currentCulture, tenant.Culture))
+            if (!string.Equals(CultureInfo.CurrentCulture.Name, tenant.Culture))
             {
-                Thread.CurrentThread.CurrentCulture = new(tenant.Culture);
+                CultureInfo.CurrentCulture = new(tenant.Culture);
             }
-
         }
         return null;
     }

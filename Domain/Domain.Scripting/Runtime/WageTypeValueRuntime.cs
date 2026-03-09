@@ -45,12 +45,6 @@ public class WageTypeValueRuntime : WageTypeRuntimeBase, IWageTypeValueRuntime
             {
                 // create script
                 using var script = CreateScript(typeof(WageTypeValueFunction), wageType);
-                /* *** test ***
-                if ("WageTypeName".Equals(wageType.Name))
-                {
-                    // test ops
-                }
-                */
                 return ScriptValueConvert.ToDecimalValue(script.GetValue());
             });
             return task.WaitScriptResult(typeof(WageTypeValueFunction), Timeout);

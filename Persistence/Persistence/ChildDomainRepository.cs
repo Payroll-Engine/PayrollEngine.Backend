@@ -12,6 +12,11 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Abstract base repository for child domain objects that belong to a parent entity.
+/// Provides parent-scoped query, get, create, update, and delete operations.
+/// </summary>
+/// <typeparam name="T">Child domain object type (e.g. CaseField under Case, PayrollLayer under Payroll)</typeparam>
 public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDomainRepository<T>
     where T : IDomainObject
 {
@@ -198,10 +203,10 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
             throw new ArgumentNullException(nameof(item));
         }
 
-        // create transaction
-        using var txScope = TransactionFactory.NewTransactionScope();
+        // transaction guard: no-op if already inside an ambient scope
+        using var txGuard = TransactionFactory.NewTransactionGuard();
         var inserted = await InsertObject(context, parentId, item);
-        txScope.Complete();
+        txGuard.Complete();
         return inserted ? item : default;
     }
 
@@ -245,15 +250,22 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         var count = 0;
 
+        // bulk transaction across all chunks
+        using var txScope = TransactionFactory.NewTransactionScope();
+
         // chunk process
         var chunkSize = Math.Min(1000, BulkChunkSize);
         foreach (var chunk in items.Chunk(chunkSize))
         {
 
             // collect data
+            var now = Date.Now;
             var parameterSet = chunk.AsParallel()
                 .Select(result =>
                 {
+                    // set created/updated dates (same as InsertObject)
+                    result.InitCreatedDate(now);
+
                     var parameters = new DbParameterCollection();
                     GetCreateData(parentId, result, parameters);
                     return parameters;
@@ -264,12 +276,26 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
             var dataTable = parameterSet.ToDataTable(TableName);
 
             // insert data table
-            await context.BulkInsertAsync(dataTable);
+            try
+            {
+                await context.BulkInsertAsync(dataTable);
+            }
+            catch (Exception exception)
+            {
+                var transformed = context.TransformException(exception);
+                if (transformed != exception)
+                {
+                    throw transformed;
+                }
+                throw;
+            }
 
             count += chunk.Length;
         }
+
+        txScope.Complete();
         stopwatch.Stop();
-        Log.Debug($"Bulk import {count} items in {stopwatch.ElapsedMilliseconds} ms");
+        Log.Trace($"Bulk import {count} items in {stopwatch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
@@ -369,13 +395,13 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), item.Id);
         var query = queryBuilder.ToString();
 
-        // transaction
-        using var txScope = TransactionFactory.NewTransactionScope();
+        // transaction guard: no-op if already inside an ambient scope
+        using var txGuard = TransactionFactory.NewTransactionGuard();
         // db update
         await ExecuteAsync(context, query, parameters);
         // children
         await OnUpdatedAsync(context, parentId, item);
-        txScope.Complete();
+        txGuard.Complete();
 
         return item;
     }
@@ -419,7 +445,8 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         }
 
         var deleted = false;
-        using var txScope = TransactionFactory.NewTransactionScope();
+        // transaction guard: no-op if already inside an ambient scope
+        using var txGuard = TransactionFactory.NewTransactionGuard();
         if (await OnDeletingAsync(context, itemId))
         {
             // item
@@ -429,7 +456,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
             // DELETE execution
             deleted = (await ExecuteAsync(context, compileQuery)) > 0;
         }
-        txScope.Complete();
+        txGuard.Complete();
         return deleted;
     }
 

@@ -9,9 +9,14 @@ using ApiObject = PayrollEngine.Api.Model;
 
 namespace PayrollEngine.Backend.Controller;
 
-/// <inheritdoc/>
+/// <summary>
+/// Read-only controller for company case values.
+/// Case values are created and managed through case changes (see PayrollController).
+/// Direct create, update or delete operations are not supported.
+/// </summary>
 [ApiControllerName("Company case values")]
 [Route("api/tenants/{tenantId}/companycases")]
+[TenantAuthorize]
 public class CompanyCaseValueController : Api.Controller.CompanyCaseValueController
 {
     /// <inheritdoc/>
@@ -33,16 +38,8 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryCompanyCaseValues")]
-    public async Task<ActionResult> QueryCompanyCaseValuesAsync(int tenantId, [FromQuery] CaseValueQuery query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryCompanyCaseValuesAsync(int tenantId, [FromQuery] CaseValueQuery query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get company case value slots
@@ -55,12 +52,6 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     [ApiOperationId("GetCompanyCaseValueSlots")]
     public async Task<ActionResult<IEnumerable<string>>> GetCompanyCaseValueSlotsAsync(int tenantId, [Required] string caseFieldName)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
         if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
         {
             return BadRequest($"Unknown tenant with id {tenantId}");
@@ -78,14 +69,6 @@ public class CompanyCaseValueController : Api.Controller.CompanyCaseValueControl
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCompanyCaseValue")]
-    public async Task<ActionResult<ApiObject.CaseValue>> GetCompanyCaseValue(int tenantId, int caseValueId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, caseValueId);
-    }
+    public async Task<ActionResult<ApiObject.CaseValue>> GetCompanyCaseValue(int tenantId, int caseValueId) =>
+        await GetAsync(tenantId, caseValueId);
 }

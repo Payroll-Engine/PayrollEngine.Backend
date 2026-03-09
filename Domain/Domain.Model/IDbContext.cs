@@ -38,14 +38,13 @@ public interface IDbContext
     /// <typeparam name="T">The type of results to return.</typeparam>
     /// <param name="sql">The SQL to execute for the query.</param>
     /// <param name="param">The parameters to pass, if any.</param>
-    /// <param name="transaction">The transaction to use, if any.</param>
     /// <param name="commandTimeout">The command timeout (in seconds).</param>
     /// <param name="commandType">The type of command to execute.</param>
     /// <returns>
     /// A sequence of data of <typeparamref name="T"/>; if a basic type (int, string, etc.) is queried then the data from the first column in assumed, otherwise an instance is
     /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
-    Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
+    Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null,
         int? commandTimeout = null, CommandType? commandType = null);
 
     /// <summary>
@@ -54,10 +53,9 @@ public interface IDbContext
     /// <typeparam name="T">The type of result to return.</typeparam>
     /// <param name="sql">The SQL to execute for the query.</param>
     /// <param name="param">The parameters to pass, if any.</param>
-    /// <param name="transaction">The transaction to use, if any.</param>
     /// <param name="commandTimeout">The command timeout (in seconds).</param>
     /// <param name="commandType">The type of command to execute.</param>
-    Task<T> QueryFirstAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
+    Task<T> QueryFirstAsync<T>(string sql, object param = null,
         int? commandTimeout = null, CommandType? commandType = null);
 
     /// <summary>
@@ -66,22 +64,20 @@ public interface IDbContext
     /// <typeparam name="T">The type of result to return.</typeparam>
     /// <param name="sql">The SQL to execute for the query.</param>
     /// <param name="param">The parameters to pass, if any.</param>
-    /// <param name="transaction">The transaction to use, if any.</param>
     /// <param name="commandTimeout">The command timeout (in seconds).</param>
     /// <param name="commandType">The type of command to execute.</param>
     Task<T> QuerySingleAsync<T>(string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+        int? commandTimeout = null, CommandType? commandType = null);
 
     /// <summary>
     /// Execute a command asynchronously using Task.
     /// </summary>
     /// <param name="sql">The SQL to execute for this query.</param>
     /// <param name="param">The parameters to use for this query.</param>
-    /// <param name="transaction">The transaction to use for this query.</param>
     /// <param name="commandTimeout">Number of seconds before command execution timeout.</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The number of rows affected.</returns>
-    Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null,
+    Task<int> ExecuteAsync(string sql, object param = null,
         int? commandTimeout = null, CommandType? commandType = null);
 
     /// <summary>
@@ -90,11 +86,10 @@ public interface IDbContext
     /// <typeparam name="T">The type to return.</typeparam>
     /// <param name="sql">The SQL to execute.</param>
     /// <param name="param">The parameters to use for this command.</param>
-    /// <param name="transaction">The transaction to use for this command.</param>
     /// <param name="commandTimeout">Number of seconds before command execution timeout.</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The first cell returned, as <typeparamref name="T"/>.</returns>
-    Task<T> ExecuteScalarAsync<T>(string sql, object param = null, IDbTransaction transaction = null,
+    Task<T> ExecuteScalarAsync<T>(string sql, object param = null,
         int? commandTimeout = null, CommandType? commandType = null);
     
     #endregion
@@ -107,6 +102,24 @@ public interface IDbContext
     /// <param name="dataTable">The data to insert.</param>
     /// <remarks>Executed as transaction</remarks>
     System.Threading.Tasks.Task BulkInsertAsync(DataTable dataTable);
+
+    #endregion
+
+    #region Maintenance
+
+    /// <summary>
+    /// Update statistics for all tables using FULLSCAN.
+    /// Prevents query plan degradation after large bulk imports (e.g. lookup values)
+    /// or after accumulation of many payrun results.
+    /// </summary>
+    System.Threading.Tasks.Task UpdateStatisticsAsync();
+
+    /// <summary>
+    /// Update statistics for high-volume tables only using FULLSCAN.
+    /// Covers: LookupValue, payrun result tables, case value tables.
+    /// Faster than <see cref="UpdateStatisticsAsync"/> — use for automatic triggers after bulk imports.
+    /// </summary>
+    System.Threading.Tasks.Task UpdateStatisticsTargetedAsync();
 
     #endregion
 

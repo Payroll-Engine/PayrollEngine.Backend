@@ -1,4 +1,4 @@
-﻿namespace PayrollEngine.Persistence.DbSchema;
+namespace PayrollEngine.Persistence.DbSchema;
 
 public static class ParameterGetWageTypeResults
 {
@@ -14,4 +14,6 @@ public static class ParameterGetWageTypeResults
     public static readonly string Forecast = "@forecast";
     public static readonly string JobStatus = "@jobStatus";
     public static readonly string EvaluationDate = "@evaluationDate";
+    public static readonly string NoRetro = "@noRetro";
+    public static readonly string ExcludeParentJobId = "@excludeParentJobId";
 }

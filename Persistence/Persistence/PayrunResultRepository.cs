@@ -12,6 +12,12 @@ public class PayrunResultRepository() : ChildDomainRepository<PayrunResult>(DbSc
 {
     protected override void GetObjectCreateData(PayrunResult result, DbParameterCollection parameters)
     {
+        parameters.Add(nameof(result.TenantId), result.TenantId, DbType.Int32);
+        parameters.Add(nameof(result.EmployeeId), result.EmployeeId, DbType.Int32);
+        parameters.Add(nameof(result.DivisionId), result.DivisionId, DbType.Int32);
+        parameters.Add(nameof(result.PayrunJobId), result.PayrunJobId, DbType.Int32);
+        parameters.Add(nameof(result.Forecast), result.Forecast);
+        parameters.Add(nameof(result.ParentJobId), result.ParentJobId, DbType.Int32);
         parameters.Add(nameof(result.Source), result.Source);
         parameters.Add(nameof(result.Name), result.Name);
         parameters.Add(nameof(result.NameLocalizations), JsonSerializer.SerializeNamedDictionary(result.NameLocalizations));

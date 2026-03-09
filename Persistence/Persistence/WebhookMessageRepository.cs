@@ -4,6 +4,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="WebhookMessage"/> persistence (table: WebhookMessage).</summary>
 public class WebhookMessageRepository() : ChildDomainRepository<WebhookMessage>(DbSchema.Tables.WebhookMessage,
     DbSchema.WebhookMessageColumn.WebhookId), IWebhookMessageRepository
 {

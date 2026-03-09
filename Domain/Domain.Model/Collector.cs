@@ -153,7 +153,7 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     {
         get
         {
-            if (Threshold.HasValue)
+            if (!Threshold.HasValue)
             {
                 return null;
             }
@@ -175,7 +175,7 @@ public class Collector : ScriptTrackDomainObject<CollectorAudit>, IDerivableObje
     /// <summary>
     /// The minimum collected values
     /// </summary>
-    public decimal Minimum => values.Any() ? values.Max() : 0M;
+    public decimal Minimum => values.Any() ? values.Min() : 0M;
 
     /// <summary>
     /// The maximum collected value

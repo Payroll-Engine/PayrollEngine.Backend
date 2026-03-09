@@ -29,20 +29,13 @@ BEGIN
   -- interfering with SELECT statements
   SET NOCOUNT ON;
 
-  -- transaction start
-  BEGIN TRANSACTION;
-
-  SAVE TRANSACTION DeletePayrunJobTransaction;
-
-  BEGIN TRY
-
     -- payrun results
     DELETE [dbo].[PayrunResult]
     FROM [dbo].[PayrunResult]
     INNER JOIN [dbo].[PayrollResult]
       ON [dbo].[PayrunResult].[PayrollResultId] = [dbo].[PayrollResult].[Id]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrollResult].[TenantId] = @tenantId
       AND
         [dbo].[PayrollResult].[PayrunJobId] = @payrunJobId
 
@@ -54,7 +47,7 @@ BEGIN
     INNER JOIN [dbo].[PayrollResult]
       ON [dbo].[WageTypeResult].[PayrollResultId] = [dbo].[PayrollResult].[Id]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrollResult].[TenantId] = @tenantId
       AND
         [dbo].[PayrollResult].[PayrunJobId] = @payrunJobId
 
@@ -64,7 +57,7 @@ BEGIN
     INNER JOIN [dbo].[PayrollResult]
       ON [dbo].[WageTypeResult].[PayrollResultId] = [dbo].[PayrollResult].[Id]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrollResult].[TenantId] = @tenantId
       AND
         [dbo].[PayrollResult].[PayrunJobId] = @payrunJobId
 
@@ -76,7 +69,7 @@ BEGIN
     INNER JOIN [dbo].[PayrollResult]
       ON [dbo].[CollectorResult].[PayrollResultId] = [dbo].[PayrollResult].[Id]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrollResult].[TenantId] = @tenantId
       AND
         [dbo].[PayrollResult].[PayrunJobId] = @payrunJobId
 
@@ -86,7 +79,7 @@ BEGIN
     INNER JOIN [dbo].[PayrollResult]
       ON [dbo].[CollectorResult].[PayrollResultId] = [dbo].[PayrollResult].[Id]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrollResult].[TenantId] = @tenantId
       AND
         [dbo].[PayrollResult].[PayrunJobId] = @payrunJobId
 
@@ -94,15 +87,17 @@ BEGIN
     DELETE
     FROM [dbo].[PayrollResult]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrollResult].[TenantId] = @tenantId
       AND
         [dbo].[PayrollResult].[PayrunJobId] = @payrunJobId
 
     -- payrun job emplyoee
     DELETE [dbo].[PayrunJobEmployee]
     FROM [dbo].[PayrunJobEmployee]
+    INNER JOIN [dbo].[PayrunJob]
+      ON [dbo].[PayrunJobEmployee].[PayrunJobId] = [dbo].[PayrunJob].[Id]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrunJob].[TenantId] = @tenantId
       AND
         [dbo].[PayrunJobEmployee].[PayrunJobId] = @payrunJobId
 
@@ -110,26 +105,9 @@ BEGIN
     DELETE [dbo].[PayrunJob]
     FROM [dbo].[PayrunJob]
     WHERE
-        @tenantId = @tenantId 
+        [dbo].[PayrunJob].[TenantId] = @tenantId
       AND
         [dbo].[PayrunJob].[Id] = @payrunJobId
-
-    -- transaction end
-    COMMIT TRANSACTION;
-
-    -- success
-    RETURN 1
-  END TRY
-
-  BEGIN CATCH
-    IF @@TRANCOUNT > 0
-    BEGIN
-      ROLLBACK TRANSACTION DeletePayrunJobTransaction;
-    END
-
-    -- failure
-    RETURN 0
-  END CATCH
 END
 GO
 

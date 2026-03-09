@@ -75,7 +75,7 @@ BEGIN
     ON dbo.[WageType].[RegulationId] = [Regulations].[Id]
   -- active wage types only
   WHERE dbo.[WageType].[Status] = 0
-    AND dbo.[WageType].[Created] < @createdBefore
+    AND dbo.[WageType].[Created] <= @createdBefore
     AND ((@includeClusters IS NULL AND @excludeClusters IS NULL)
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[WageType].[Clusters]) = 1)
     AND (

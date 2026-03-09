@@ -213,6 +213,12 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             // created resource
             return new CreatedObjectResult(Request.Path, MapDomainToApi(domainObject));
         }
+        catch (PersistenceException exception)
+        {
+            return exception.ErrorType == PersistenceErrorType.UniqueConstraint
+                ? Conflict(exception.Message)
+                : UnprocessableEntity(exception.Message);
+        }
         catch (Exception exception)
         {
             return InternalServerError(exception);
@@ -280,6 +286,75 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
 
             return MapDomainToApi(createdObjects);
         }
+        catch (PersistenceException exception)
+        {
+            return exception.ErrorType == PersistenceErrorType.UniqueConstraint
+                ? Conflict(exception.Message)
+                : UnprocessableEntity(exception.Message);
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
+    }
+
+    /// <summary>
+    /// Bulk create resources (no return of created items)
+    /// </summary>
+    /// <param name="parentId">The parent id</param>
+    /// <param name="apiObjects">The API objects</param>
+    /// <returns>Count of created items</returns>
+    protected async Task<ActionResult<int>> CreateBulkAsync(int parentId, IEnumerable<TApi> apiObjects)
+    {
+        try
+        {
+            // argument check
+            if (apiObjects == null)
+            {
+                return UndefinedObjectRequest();
+            }
+            // parent
+            if (parentId <= 0)
+            {
+                return InvalidParentRequest(parentId);
+            }
+            // existing parent
+            if (!await ParentService.ExistsAsync(Runtime.DbContext, parentId))
+            {
+                return NotFound(typeof(TParent), parentId);
+            }
+
+            // map objects from api to domain
+            var domainObjects = new List<TDomain>();
+            foreach (var apiObject in apiObjects)
+            {
+                if (apiObject.Id > 0)
+                {
+                    return CreateObjectWithIdRequest();
+                }
+                try
+                {
+                    domainObjects.Add(MapApiToDomain(apiObject));
+                }
+                catch (PayrollMapException exception)
+                {
+                    var message = exception.GetBaseMessage();
+                    Log.Error(exception, message);
+                    return UnprocessableEntity(message);
+                }
+            }
+
+            // bulk create (no return of individual items)
+            await ChildService.CreateBulkAsync(Runtime.DbContext, parentId, domainObjects);
+
+            return domainObjects.Count;
+        }
+        catch (PersistenceException exception)
+        {
+            return exception.ErrorType == PersistenceErrorType.UniqueConstraint
+                ? Conflict(exception.Message)
+                : UnprocessableEntity(exception.Message);
+        }
         catch (Exception exception)
         {
             return InternalServerError(exception);
@@ -342,6 +417,12 @@ public abstract class RepositoryChildObjectController<TParentService, TService, 
             }
 
             return MapDomainToApi(domainObject);
+        }
+        catch (PersistenceException exception)
+        {
+            return exception.ErrorType == PersistenceErrorType.UniqueConstraint
+                ? Conflict(exception.Message)
+                : UnprocessableEntity(exception.Message);
         }
         catch (Exception exception)
         {

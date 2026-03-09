@@ -59,13 +59,13 @@ public class CaseRelationValidateRuntime : CaseRelationRuntimeBase, ICaseRelatio
     }
 
     /// <inheritdoc />
-    public void AddCaseFieldIssue(string message, string caseFieldName, int number)
+    public void AddCaseFieldIssue(string caseFieldName, string message, int number)
     {
         if (string.IsNullOrWhiteSpace(message))
         {
             throw new ArgumentException(nameof(message));
         }
-        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
+        var caseField = CaseValueProvider.CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).GetAwaiter().GetResult();
         if (caseField == null)
         {
             throw new ScriptException($"Unknown case field {caseFieldName}.");

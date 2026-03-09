@@ -50,10 +50,11 @@ public class Startup
         // configuration
         var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
 
-        // database command timeout
+        // database context
         var dbContext = new Persistence.SqlServer.DbContext(
             connectionString: connectionString,
-            defaultCommendTimeout: Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds));
+            defaultCommendTimeout: Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds),
+            collation: serverConfiguration.DbCollation);
 
         // setup services
         services.AddApiServices(

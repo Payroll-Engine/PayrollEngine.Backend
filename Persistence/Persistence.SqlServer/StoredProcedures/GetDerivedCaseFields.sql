@@ -53,7 +53,7 @@ BEGIN
     ON dbo.[Case].[RegulationId] = [Regulations].[Id]
   -- active case fields only
   WHERE dbo.[CaseField].[Status] = 0
-    AND dbo.[CaseField].[Created] < @createdBefore
+    AND dbo.[CaseField].[Created] <= @createdBefore
     AND ((@includeClusters IS NULL AND @excludeClusters IS NULL)
         OR dbo.IsMatchingCluster(@includeClusters, @excludeClusters, dbo.[CaseField].[Clusters]) = 1)
     AND (

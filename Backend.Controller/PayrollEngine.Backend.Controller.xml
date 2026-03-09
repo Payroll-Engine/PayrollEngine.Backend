@@ -512,7 +512,11 @@
             <returns>The company case document</returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.CompanyCaseValueController">
-            <inheritdoc/>
+            <summary>
+            Read-only controller for company case values.
+            Case values are created and managed through case changes (see PayrollController).
+            Direct create, update or delete operations are not supported.
+            </summary>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.CompanyCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICompanyCaseValueService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
@@ -681,7 +685,11 @@
             <returns>The employee case document</returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.EmployeeCaseValueController">
-            <inheritdoc/>
+            <summary>
+            Read-only controller for employee case values.
+            Case values are created and managed through case changes (see PayrollController).
+            Direct create, update or delete operations are not supported.
+            </summary>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.IEmployeeService,PayrollEngine.Domain.Application.Service.IEmployeeCaseValueService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
@@ -741,6 +749,14 @@
             <param name="tenantId">The tenant id</param>
             <param name="employee">The employee to add</param>
             <returns>The newly created employee</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.EmployeeController.CreateEmployeesBulkAsync(System.Int32,PayrollEngine.Api.Model.Employee[])">
+            <summary>
+            Bulk create employees
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="employees">The employees to create</param>
+            <returns>The number of created employees</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.EmployeeController.UpdateEmployeeAsync(System.Int32,PayrollEngine.Api.Model.Employee)">
             <summary>
@@ -847,7 +863,11 @@
             <returns>The global case document</returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.GlobalCaseValueController">
-            <inheritdoc/>
+            <summary>
+            Read-only controller for global case values.
+            Case values are created and managed through case changes (see PayrollController).
+            Direct create, update or delete operations are not supported.
+            </summary>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.GlobalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.IGlobalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
@@ -1175,7 +1195,11 @@
             <returns>The national case document</returns>
         </member>
         <member name="T:PayrollEngine.Backend.Controller.NationalCaseValueController">
-            <inheritdoc/>
+            <summary>
+            Read-only controller for national case values.
+            Case values are created and managed through case changes (see PayrollController).
+            Direct create, update or delete operations are not supported.
+            </summary>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.NationalCaseValueController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrollService,PayrollEngine.Domain.Application.Service.IRegulationService,PayrollEngine.Domain.Application.Service.INationalCaseValueService,PayrollEngine.Domain.Application.Service.ILookupSetService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
@@ -1412,6 +1436,21 @@
             <param name="payrollId">The payroll id</param>
             <param name="caseChangeSetup">The case change setup</param>
             <returns>The case change setup with the created case values <see cref="T:PayrollEngine.CaseValueCreationMode"/>, including issues</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrollController.AddPayrollCasesBulkAsync(System.Int32,System.Int32,PayrollEngine.Api.Model.CaseChangeSetup[])">
+            <summary>
+            Bulk create case changes
+            </summary>
+            <remarks>
+            Request body contains an array of case change setups.
+            All changes are processed in a single transaction (all-or-nothing).
+            Cancellation is not supported in bulk operations.
+            All case changes must be of the same case type.
+            </remarks>
+            <param name="tenantId">The tenant id</param>
+            <param name="payrollId">The payroll id</param>
+            <param name="caseChangeSetups">The case change setups</param>
+            <returns>The number of created case changes</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrollController.GetPayrollCasesAsync(System.Int32,System.Int32,System.Nullable{PayrollEngine.CaseType},System.String[],System.Nullable{PayrollEngine.OverrideType},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
@@ -1862,7 +1901,7 @@
         <member name="T:PayrollEngine.Backend.Controller.PayrunJobController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrunJobService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Domain.Application.Service.IPayrunJobQueue,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.IPayrunJobService,PayrollEngine.Domain.Model.IWebhookDispatchService,PayrollEngine.Domain.Application.Service.IPayrunJobQueue,PayrollEngine.Domain.Application.Service.IPayrunPreviewService,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.QueryPayrunJobsAsync(System.Int32,PayrollEngine.Query)">
@@ -1899,6 +1938,22 @@
             <param name="tenantId">The tenant id</param>
             <param name="jobInvocation">The payrun job invocation</param>
             <returns>HTTP 202 Accepted with the payrun job and Location header for status polling</returns>
+        </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.PreviewPayrunJobAsync(System.Int32,PayrollEngine.Api.Model.PayrunJobInvocation)">
+            <summary>
+            Preview a payrun job for a single employee (synchronous).
+            Returns calculation results as a PayrollResultSet without persisting to the database.
+            <para>Restriction: preview results are not persisted, so wage type expressions
+            that query historical results (e.g. GetPeriodWageTypeResults) will not find
+            results from previous preview invocations. Only already persisted payrun job
+            results are available during preview calculation.</para>
+            <para>The preview accepts any <c>RetroPayMode</c> to match production behavior.
+            If retroactive calculation is actually triggered (mutations detected in prior periods),
+            the endpoint returns HTTP 422 Unprocessable Entity.</para>
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="jobInvocation">The payrun job invocation with exactly one employee identifier</param>
+            <returns>The payroll result set containing wage type results, collector results, and payrun results</returns>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.GetPayrunJobStatusAsync(System.Int32,System.Int32)">
             <summary>

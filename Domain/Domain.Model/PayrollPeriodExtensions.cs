@@ -59,7 +59,7 @@ public static class PayrollPeriodExtensions
                 periods.Add(period);
 
                 // target period
-                if (datePeriod.IsWithin(targetMoment))
+                if (period.GetDatePeriod().IsWithin(targetMoment))
                 {
                     break;
                 }

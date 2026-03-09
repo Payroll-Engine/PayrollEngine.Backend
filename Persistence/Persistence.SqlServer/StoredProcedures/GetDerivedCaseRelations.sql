@@ -78,7 +78,7 @@ BEGIN
     ON dbo.[CaseRelation].[RegulationId] = [Regulations].[Id]
   -- active case relation only
   WHERE dbo.[CaseRelation].[Status] = 0
-    AND dbo.[CaseRelation].[Created] < @createdBefore
+    AND dbo.[CaseRelation].[Created] <= @createdBefore
     AND (
       @sourceCaseName IS NULL
       OR LOWER(dbo.[CaseRelation].[SourceCaseName]) = LOWER(@sourceCaseName)

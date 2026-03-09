@@ -6,6 +6,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace PayrollEngine.Api.Core;
 
+/// <summary>
+/// Default implementation of <see cref="IControllerRuntime"/>.
+/// Provides all shared dependencies required by API controllers (database, configuration,
+/// link generation, API explorer, and script provider).
+/// Registered as scoped service in <see cref="ApiFactory"/>.
+/// </summary>
 public class ControllerRuntime(IDbContext dbContext, IConfiguration configuration, LinkGenerator linkGenerator,
         IApiDescriptionGroupCollectionProvider apiExplorer, IScriptProvider scriptProvider)
     : IControllerRuntime

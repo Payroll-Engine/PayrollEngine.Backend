@@ -14,6 +14,22 @@ public static class ApiQueryFactory
         GetQueryMethods().Keys.OrderBy(x => x).ToList();
 
     /// <summary>Loads queries on demand (GET endpoints)</summary>
+    /// <remarks>
+    /// SECURITY: This method exposes all [HttpGet] controller methods (except [QueryIgnore])
+    /// to report scripts via reflection-based invocation in <see cref="QueryService"/>.
+    /// The following invariants must hold for safe operation:
+    /// <list type="bullet">
+    ///   <item>Every exposed method MUST have a <c>tenantId</c> parameter.
+    ///         <see cref="QueryService.SetupMethodParameters"/> overwrites it with the
+    ///         report's tenant id, preventing cross-tenant access.</item>
+    ///   <item>Methods without <c>tenantId</c> (e.g. admin endpoints) MUST be marked
+    ///         with <see cref="QueryIgnoreAttribute"/> or use [HttpPost].</item>
+    ///   <item>The reflection invoke bypasses ASP.NET Core middleware, authorization
+    ///         filters and model binding. The calling report endpoint has already
+    ///         passed through the full pipeline, but the sub-query does not.</item>
+    /// </list>
+    /// When adding new [HttpGet] endpoints, verify these invariants or add [QueryIgnore].
+    /// </remarks>
     internal static Dictionary<string, QueryMethodInfo> GetQueryMethods()
     {
         var queries = new Dictionary<string, QueryMethodInfo>();

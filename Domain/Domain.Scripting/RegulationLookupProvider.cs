@@ -1,9 +1,10 @@
-﻿using System;
+﻿using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Model.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Scripting;
 
@@ -16,6 +17,7 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
     /// The derived lookup
     /// </summary>
     private ILookup<string, Lookup> Lookups { get; set; }
+    private readonly SemaphoreSlim lookupsLock = new(1, 1);
 
     private IDbContext DbContext { get; }
     private IPayrollRepository PayrollRepository { get; }
@@ -45,7 +47,6 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
         return lookups.Contains(lookupName);
     }
 
-    /// <inheritdoc />
     public async Task<LookupSet> GetLookupAsync(IDbContext context, string lookupName)
     {
         // lookup
@@ -169,14 +170,32 @@ public sealed class RegulationLookupProvider : IRegulationLookupProvider
 
     private async Task<ILookup<string, Lookup>> GetLookupsAsync()
     {
-        if (Lookups == null)
+        if (Lookups != null)
         {
+            return Lookups;
+        }
+
+        await lookupsLock.WaitAsync();
+        try
+        {
+            // double-check
+            if (Lookups != null)
+            {
+                return Lookups;
+            }
+
             var lookups = (await PayrollRepository.GetDerivedLookupsAsync(DbContext,
                 PayrollQuery,
                 overrideType: OverrideType.Active)).ToList();
+
+            // atomic assignment: only after complete load
             Lookups = lookups.Cast<Lookup>().ToLookup(col => col.Name, col => col);
+            return Lookups;
         }
-        return Lookups;
+        finally
+        {
+            lookupsLock.Release();
+        }
     }
 
     private async Task<List<LookupValue>> GetLookupValuesAsync(string lookupName)

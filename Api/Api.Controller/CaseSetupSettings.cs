@@ -1,4 +1,5 @@
 ﻿using System;
+using PayrollEngine.Domain.Application;
 using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Api.Controller;
@@ -16,4 +17,9 @@ internal sealed class CaseSetupSettings
     internal DateTime RegulationDate { get; init; }
     internal DateTime EvaluationDate { get; init; }
     internal string ClusterSetName { get; init; }
+
+    /// <summary>
+    /// Optional preloaded derived regulation cache for bulk operations
+    /// </summary>
+    internal DerivedPayrollCache DerivedCache { get; init; }
 }

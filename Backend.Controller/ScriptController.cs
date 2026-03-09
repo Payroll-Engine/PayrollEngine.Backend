@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Scripts")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/scripts")]
+[TenantAuthorize]
 public class ScriptController : Api.Controller.ScriptController
 {
     /// <inheritdoc/>
@@ -31,16 +32,8 @@ public class ScriptController : Api.Controller.ScriptController
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryScripts")]
     public async Task<ActionResult> QueryScriptsAsync(int tenantId, int regulationId, 
-        [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(regulationId, query);
-    }
+        [FromQuery] Query query) =>
+        await QueryItemsAsync(regulationId, query);
 
     /// <summary>
     /// Get a regulation script
@@ -54,16 +47,8 @@ public class ScriptController : Api.Controller.ScriptController
     [NotFoundResponse]
     [ApiOperationId("GetScript")]
     public async Task<ActionResult<ApiObject.Script>> GetScriptAsync(int tenantId,
-        int regulationId, int scriptId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(regulationId, scriptId);
-    }
+        int regulationId, int scriptId) =>
+        await GetAsync(regulationId, scriptId);
 
     /// <summary>
     /// Add a new regulation script
@@ -78,16 +63,8 @@ public class ScriptController : Api.Controller.ScriptController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateScript")]
     public async Task<ActionResult<ApiObject.Script>> CreateScriptAsync(int tenantId,
-        int regulationId, ApiObject.Script script)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(regulationId, script);
-    }
+        int regulationId, ApiObject.Script script) =>
+        await CreateAsync(regulationId, script);
 
     /// <summary>
     /// Update a regulation script
@@ -102,16 +79,8 @@ public class ScriptController : Api.Controller.ScriptController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateScript")]
     public async Task<ActionResult<ApiObject.Script>> UpdateScriptAsync(int tenantId,
-        int regulationId, ApiObject.Script script)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(regulationId, script);
-    }
+        int regulationId, ApiObject.Script script) =>
+        await UpdateAsync(regulationId, script);
 
     /// <summary>
     /// Delete a regulation script
@@ -122,14 +91,6 @@ public class ScriptController : Api.Controller.ScriptController
     [HttpDelete("{scriptId}")]
     [ApiOperationId("DeleteScript")]
     public async Task<IActionResult> DeleteScriptAsync(int tenantId, 
-        int regulationId, int scriptId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(regulationId, scriptId);
-    }
+        int regulationId, int scriptId) =>
+        await DeleteAsync(regulationId, scriptId);
 }

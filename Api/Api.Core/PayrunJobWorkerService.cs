@@ -12,7 +12,22 @@ using PayrollEngine.Domain.Application.Service;
 namespace PayrollEngine.Api.Core;
 
 /// <summary>
-/// Background service that processes payrun jobs from the queue
+/// Background service that dequeues and processes payrun jobs.
+/// <para>
+/// Job lifecycle ownership:
+/// <list type="bullet">
+///   <item><b>Abort</b> – set and persisted by <see cref="PayrunProcessor"/> (via AbortJobAsync),
+///         which also sets <see cref="PayrunJob.JobEnd"/>.</item>
+///   <item><b>Complete</b> – set and persisted by this worker after the processor returns
+///         without setting <see cref="PayrunJob.JobEnd"/> (success path).</item>
+///   <item><b>Infrastructure abort</b> – set by this worker when the processor throws
+///         an unhandled exception or the service shuts down.</item>
+/// </list>
+/// The worker uses <see cref="PayrunJob.JobEnd"/> (not <see cref="PayrunJob.JobStatus"/>)
+/// to detect whether the processor already finalized the job, because the invocation's
+/// <c>JobStatus</c> (the desired target status) is applied to the job object before
+/// processing starts and does not indicate actual completion.
+/// </para>
 /// </summary>
 public class PayrunJobWorkerService : BackgroundService
 {
@@ -72,6 +87,20 @@ public class PayrunJobWorkerService : BackgroundService
         Log.Debug("Payrun Job Worker Service stopped");
     }
 
+    /// <summary>
+    /// Processes a single payrun job from the queue.
+    /// <para>
+    /// The processor sets <see cref="PayrunJob.JobEnd"/> only when it finalizes the job
+    /// itself (abort scenarios via <c>AbortJobAsync</c>). On the success path, the
+    /// processor returns the job with <c>JobEnd == null</c>, signalling that the worker
+    /// is responsible for finalization.
+    /// </para>
+    /// <para>
+    /// Note: <see cref="PayrunJob.JobStatus"/> cannot be used to detect finalization
+    /// because the invocation's target status (e.g. <c>Complete</c>) is applied to
+    /// the job object in <c>CreateOrLoadJobAsync</c> before processing starts.
+    /// </para>
+    /// </summary>
     private async Task ProcessJobAsync(
         PayrunJobQueueItem queueItem)
     {
@@ -98,17 +127,30 @@ public class PayrunJobWorkerService : BackgroundService
         // Process the job (this is the long-running operation)
         var payrunJob = await processor.Process(queueItem.JobInvocation);
 
-        await MarkJobCompletedAsync(queueItem, "Payrun worker service completed.");
-        Log.Debug(
-            $"Completed payrun job {payrunJob.Id} with status {payrunJob.JobStatus}.");
+        // Finalize based on the actual processor result.
+        // The processor sets JobEnd only when it finalizes the job itself (AbortJobAsync).
+        // On the success path, JobEnd remains null → worker must finalize.
+        if (payrunJob.JobEnd != null)
+        {
+            // Processor already finalized (abort or retro-complete) and persisted
+            Log.Debug(
+                $"Payrun job {payrunJob.Id} finished with processor status {payrunJob.JobStatus}.");
+        }
+        else
+        {
+            // Success path: processor returned without finalizing
+            await FinalizeJobCompletedAsync(queueItem, payrunJob);
+            Log.Debug(
+                $"Finalized payrun job {payrunJob.Id} as {PayrunJobStatus.Complete}.");
+        }
 
-        // Send webhook notification for job completion
+        // Send webhook notification with the actual job status
         await SendJobCompletionWebhookAsync(
             dbContext,
             webhookDispatcher,
             queueItem.TenantId,
             payrunJob,
-            queueItem.JobInvocation.UserId);
+            payrunJob.CreatedUserId);
     }
 
     private static PayrunProcessorSettings BuildProcessorSettings(
@@ -128,7 +170,6 @@ public class PayrunJobWorkerService : BackgroundService
             NationalCaseValueRepository = serviceProvider.GetRequiredService<INationalCaseValueRepository>(),
             CompanyCaseValueRepository = serviceProvider.GetRequiredService<ICompanyCaseValueRepository>(),
             EmployeeCaseValueRepository = serviceProvider.GetRequiredService<IEmployeeCaseValueRepository>(),
-            PayrunRepository = serviceProvider.GetRequiredService<IPayrunRepository>(),
             PayrunJobRepository = serviceProvider.GetRequiredService<IPayrunJobRepository>(),
             RegulationLookupSetRepository = serviceProvider.GetRequiredService<ILookupSetRepository>(),
             RegulationRepository = serviceProvider.GetRequiredService<IRegulationRepository>(),
@@ -141,11 +182,24 @@ public class PayrunJobWorkerService : BackgroundService
             PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>(),
             WebhookDispatchService = serviceProvider.GetRequiredService<IWebhookDispatchService>(),
             FunctionLogTimeout = serverConfiguration.FunctionLogTimeout,
+            LogEmployeeTiming = serverConfiguration.LogEmployeeTiming,
             AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout,
+            MaxParallelEmployees = serverConfiguration.GetMaxParallelEmployees(),
+            MaxRetroPayrunPeriods = serverConfiguration.MaxRetroPayrunPeriods,
             ScriptProvider = scriptProvider
         };
     }
 
+    /// <summary>
+    /// Marks a payrun job as aborted due to an infrastructure failure
+    /// (unhandled exception, service shutdown).
+    /// <para>
+    /// Only updates the job if <see cref="PayrunJob.JobEnd"/> is not already set,
+    /// preventing overwrites of processor-set abort states.
+    /// </para>
+    /// </summary>
+    /// <param name="queueItem">The queue item identifying the job.</param>
+    /// <param name="reason">Human-readable abort reason.</param>
     private async Task MarkJobAbortedAsync(PayrunJobQueueItem queueItem, string reason)
     {
         try
@@ -157,7 +211,7 @@ public class PayrunJobWorkerService : BackgroundService
             var job = await payrunJobRepository.GetAsync(
                 dbContext, queueItem.TenantId, queueItem.PayrunJobId);
 
-            if (job != null && !job.JobStatus.IsFinal())
+            if (job != null && job.JobEnd == null)
             {
                 job.JobStatus = PayrunJobStatus.Abort;
                 job.JobEnd = Date.Now;
@@ -177,7 +231,16 @@ public class PayrunJobWorkerService : BackgroundService
         }
     }
 
-    private async Task MarkJobCompletedAsync(PayrunJobQueueItem queueItem, string reason)
+    /// <summary>
+    /// Finalizes a payrun job as completed after successful processor execution.
+    /// Only called when the processor returned without setting <see cref="PayrunJob.JobEnd"/>.
+    /// Uses <see cref="PayrunJobStatus.Complete"/> as the target status, independent
+    /// of the original invocation request status.
+    /// </summary>
+    /// <param name="queueItem">The queue item identifying the job.</param>
+    /// <param name="payrunJob">The in-memory job object returned by the processor,
+    /// updated with the final status for consistent webhook dispatch.</param>
+    private async Task FinalizeJobCompletedAsync(PayrunJobQueueItem queueItem, PayrunJob payrunJob)
     {
         try
         {
@@ -188,22 +251,26 @@ public class PayrunJobWorkerService : BackgroundService
             var job = await payrunJobRepository.GetAsync(
                 dbContext, queueItem.TenantId, queueItem.PayrunJobId);
 
-            if (job != null && (job.JobStatus != queueItem.JobInvocation.JobStatus || job.JobEnd == null))
+            if (job != null && job.JobEnd == null)
             {
-                job.JobStatus = queueItem.JobInvocation.JobStatus;
+                job.JobStatus = PayrunJobStatus.Complete;
                 job.JobEnd = Date.Now;
-                job.ErrorMessage = reason;
 
                 var duration = job.JobEnd.Value - job.JobStart;
                 var durationText = duration < TimeSpan.FromSeconds(1)
-                    ? $"{duration.TotalMicroseconds:2} ms"
+                    ? $"{duration.TotalMilliseconds:F2} ms"
                     : duration.ToReadableString();
-                job.Message = $"Job completed in {durationText}: {reason}";
+                job.Message = $"Completed payrun calculation successfully in {durationText}.";
 
                 await payrunJobRepository.UpdateAsync(dbContext, queueItem.TenantId, job);
 
+                // Update the in-memory object so webhook dispatch uses consistent data
+                payrunJob.JobStatus = job.JobStatus;
+                payrunJob.JobEnd = job.JobEnd;
+                payrunJob.Message = job.Message;
+
                 Log.Debug(
-                    $"Marked payrun job {queueItem.PayrunJobId} as completed: {reason}.");
+                    $"Marked payrun job {queueItem.PayrunJobId} as completed in {durationText}.");
             }
         }
         catch (Exception ex)
@@ -213,6 +280,12 @@ public class PayrunJobWorkerService : BackgroundService
         }
     }
 
+    /// <summary>
+    /// Sends a webhook notification for job completion or abort.
+    /// Uses the actual job status from the in-memory object, which is kept
+    /// in sync with the database by <see cref="FinalizeJobCompletedAsync"/>.
+    /// Webhook failures are logged but do not fail the job.
+    /// </summary>
     private static async Task SendJobCompletionWebhookAsync(
         IDbContext dbContext,
         IWebhookDispatchService webhookDispatcher,
@@ -222,6 +295,12 @@ public class PayrunJobWorkerService : BackgroundService
     {
         try
         {
+            // No webhooks configured, skip dispatch
+            if (!await webhookDispatcher.HasWebhooksAsync(dbContext, tenantId))
+            {
+                return;
+            }
+
             var action = payrunJob.JobStatus == PayrunJobStatus.Complete
                 ? WebhookAction.PayrunJobFinish
                 : WebhookAction.PayrunJobProcess;

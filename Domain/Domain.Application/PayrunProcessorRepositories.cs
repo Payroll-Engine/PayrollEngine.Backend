@@ -115,6 +115,17 @@ internal sealed class PayrunProcessorRepositories
         return user;
     }
 
+    internal async Task<int> ResolveUserIdAsync(string identifier)
+    {
+        var users = (await Settings.UserRepository.QueryAsync(
+            Settings.DbContext, Tenant.Id, QueryFactory.NewIdentifierQuery(identifier))).ToList();
+        if (users.Count != 1)
+        {
+            throw new PayrunException($"Unknown user with identifier {identifier}");
+        }
+        return users.First().Id;
+    }
+
     internal async Task<PayrunJob> LoadPayrunJobAsync(int payrunJobId)
     {
         var payrunJob = await Settings.PayrunJobRepository.GetAsync(Settings.DbContext, Tenant.Id, payrunJobId);
@@ -123,15 +134,5 @@ internal sealed class PayrunProcessorRepositories
             throw new PayrunException($"Unknown payrun job with id {payrunJobId}");
         }
         return payrunJob;
-    }
-
-    internal async Task<Payrun> LoadPayrunAsync(int payrunId)
-    {
-        var payrun = await Settings.PayrunRepository.GetAsync(Settings.DbContext, Tenant.Id, payrunId);
-        if (payrun == null)
-        {
-            throw new PayrunException($"Unknown payrun with id {payrunId}");
-        }
-        return payrun;
     }
 }

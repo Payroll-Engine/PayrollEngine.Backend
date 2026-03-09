@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Case relations")]
 [Route("api/tenants/{tenantId}/regulations/{regulationId}/caserelations")]
+[TenantAuthorize]
 public class CaseRelationController : Api.Controller.CaseRelationController
 {
     /// <inheritdoc/>
@@ -30,16 +31,8 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryCaseRelations")]
-    public async Task<ActionResult> QueryCaseRelationsAsync(int tenantId, int regulationId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(regulationId, query);
-    }
+    public async Task<ActionResult> QueryCaseRelationsAsync(int tenantId, int regulationId, [FromQuery] Query query) =>
+        await QueryItemsAsync(regulationId, query);
 
     /// <summary>
     /// Get a regulation case relation
@@ -52,16 +45,8 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCaseRelation")]
-    public async Task<ActionResult<ApiObject.CaseRelation>> GetCaseRelationAsync(int tenantId, int regulationId, int relationId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(regulationId, relationId);
-    }
+    public async Task<ActionResult<ApiObject.CaseRelation>> GetCaseRelationAsync(int tenantId, int regulationId, int relationId) =>
+        await GetAsync(regulationId, relationId);
 
     /// <summary>
     /// Add a new regulation case relation
@@ -76,16 +61,8 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateCaseRelation")]
     public async Task<ActionResult<ApiObject.CaseRelation>> CreateCaseRelationAsync(int tenantId,
-        int regulationId, ApiObject.CaseRelation caseRelation)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(regulationId, caseRelation);
-    }
+        int regulationId, ApiObject.CaseRelation caseRelation) =>
+        await CreateAsync(regulationId, caseRelation);
 
     /// <summary>
     /// Update a regulation case relation
@@ -100,16 +77,8 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateCaseRelation")]
     public async Task<ActionResult<ApiObject.CaseRelation>> UpdateCaseRelationAsync(int tenantId,
-        int regulationId, ApiObject.CaseRelation caseRelation)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(regulationId, caseRelation);
-    }
+        int regulationId, ApiObject.CaseRelation caseRelation) =>
+        await UpdateAsync(regulationId, caseRelation);
 
     /// <summary>
     /// Rebuild regulation case relation
@@ -120,16 +89,8 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     [HttpPut("{relationId}/rebuild")]
     [NotFoundResponse]
     [ApiOperationId("RebuildCaseRelation")]
-    public async Task<ActionResult> RebuildCaseRelationAsync(int tenantId, int regulationId, int relationId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await RebuildAsync(regulationId, relationId);
-    }
+    public async Task<ActionResult> RebuildCaseRelationAsync(int tenantId, int regulationId, int relationId) =>
+        await RebuildAsync(regulationId, relationId);
 
     /// <summary>
     /// Delete a regulation case relation
@@ -139,14 +100,6 @@ public class CaseRelationController : Api.Controller.CaseRelationController
     /// <param name="relationId">The id of the case relation</param>
     [HttpDelete("{relationId}")]
     [ApiOperationId("DeleteCaseRelation")]
-    public async Task<IActionResult> DeleteCaseRelationAsync(int tenantId, int regulationId, int relationId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(regulationId, relationId);
-    }
+    public async Task<IActionResult> DeleteCaseRelationAsync(int tenantId, int regulationId, int relationId) =>
+        await DeleteAsync(regulationId, relationId);
 }

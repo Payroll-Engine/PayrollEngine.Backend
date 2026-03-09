@@ -1730,6 +1730,21 @@
             The wage type result id (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.CollectorName">
             <summary>
             The collector name (immutable)
@@ -1791,6 +1806,21 @@
         <member name="P:PayrollEngine.Api.Model.CollectorResult.PayrollResultId">
             <summary>
             The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectorId">
@@ -3040,14 +3070,14 @@
             The payrun job invocation API object
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrunId">
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrunName">
             <summary>
-            The payrun id (immutable)
+            The payrun name (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.UserId">
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.UserIdentifier">
             <summary>
-            The user id (immutable)
+            The user identifier (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayrunJobId">
@@ -3191,6 +3221,21 @@
         <member name="P:PayrollEngine.Api.Model.PayrunResult.PayrollResultId">
             <summary>
             The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunResult.Source">
@@ -4246,6 +4291,21 @@
             The wage type result id (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.WageTypeNumber">
             <summary>
             The wage type number (immutable)
@@ -4312,6 +4372,21 @@
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.PayrollResultId">
             <summary>
             The payroll result id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.TenantId">
+            <summary>
+            The tenant id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.EmployeeId">
+            <summary>
+            The employee id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.DivisionId">
+            <summary>
+            The division id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.WageTypeId">

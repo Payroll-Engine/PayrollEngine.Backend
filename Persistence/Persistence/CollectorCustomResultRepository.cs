@@ -13,6 +13,12 @@ public class CollectorCustomResultRepository() : ChildDomainRepository<Collector
 {
     protected override void GetObjectCreateData(CollectorCustomResult result, DbParameterCollection parameters)
     {
+        parameters.Add(nameof(result.TenantId), result.TenantId, DbType.Int32);
+        parameters.Add(nameof(result.EmployeeId), result.EmployeeId, DbType.Int32);
+        parameters.Add(nameof(result.DivisionId), result.DivisionId, DbType.Int32);
+        parameters.Add(nameof(result.PayrunJobId), result.PayrunJobId, DbType.Int32);
+        parameters.Add(nameof(result.Forecast), result.Forecast);
+        parameters.Add(nameof(result.ParentJobId), result.ParentJobId, DbType.Int32);
         parameters.Add(nameof(result.CollectorName), result.CollectorName);
         parameters.Add(nameof(result.CollectorNameHash), result.CollectorNameHash);
         parameters.Add(nameof(result.CollectorNameLocalizations), JsonSerializer.SerializeNamedDictionary(result.CollectorNameLocalizations));

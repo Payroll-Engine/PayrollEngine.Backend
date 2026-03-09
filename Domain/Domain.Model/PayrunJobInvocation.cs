@@ -22,14 +22,14 @@ public class PayrunJobInvocation : IEquatable<PayrunJobInvocation>
     public string Owner { get; set; }
 
     /// <summary>
-    /// The payrun id (immutable)
+    /// The payrun name (immutable)
     /// </summary>
-    public int PayrunId { get; set; }
+    public string PayrunName { get; set; }
 
     /// <summary>
-    /// The user id (immutable)
+    /// The user identifier (immutable)
     /// </summary>
-    public int UserId { get; set; }
+    public string UserIdentifier { get; set; }
 
     /// <summary>
     /// The payrun job id (immutable)

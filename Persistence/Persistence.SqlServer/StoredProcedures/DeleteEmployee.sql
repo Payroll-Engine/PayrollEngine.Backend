@@ -28,13 +28,7 @@ BEGIN
   -- SET NOCOUNT ON added to prevent extra result sets from
   -- interfering with SELECT statements
   SET NOCOUNT ON;
-  SET XACT_ABORT ON;
 
-  -- transaction start
-  BEGIN TRANSACTION;
-  SAVE TRANSACTION DeleteEmployeeTransaction;
-
-  BEGIN TRY
     -- employee payroll results
     DELETE [dbo].[PayrunResult]
     FROM [dbo].[PayrunResult]
@@ -130,23 +124,6 @@ BEGIN
     DELETE
     FROM [dbo].[Employee]
     WHERE [TenantId] = @tenantId AND [Id] = @employeeId
-
-    -- transaction end
-    COMMIT TRANSACTION;
-    
-    -- success
-    RETURN 1
-  END TRY
-
-  BEGIN CATCH
-    IF @@TRANCOUNT > 0
-    BEGIN
-      ROLLBACK TRANSACTION DeleteEmployeeTransaction;
-    END
-    
-    -- failure
-    RETURN 0
-  END CATCH
 END
 GO
 

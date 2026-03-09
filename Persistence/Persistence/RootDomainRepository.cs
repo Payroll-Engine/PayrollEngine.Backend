@@ -10,6 +10,11 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Abstract base repository for top-level (root) domain objects that belong directly to a tenant.
+/// Provides query, get, create, update, and delete operations without a parent entity context.
+/// </summary>
+/// <typeparam name="T">Root domain object type (e.g. Tenant, Calendar, User)</typeparam>
 public abstract class RootDomainRepository<T>(string tableName) : DomainRepository<T>(tableName),
     IRootDomainRepository<T>
     where T : IDomainObject
@@ -73,13 +78,12 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         queryBuilder.AppendIdentitySelect();
         var query = queryBuilder.ToString();
 
+        // transaction guard: no-op if already inside an ambient scope
+        using var txGuard = TransactionFactory.NewTransactionGuard();
         // db insert
         try
         {
-            //using var connection = context.NewConnection();
-            //connection.Open();
             item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
-            //item.Id = (int)await ExecuteScalarAsync(connection, query, parameters);
         }
         catch (Exception exception)
         {
@@ -90,6 +94,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
             }
             throw;
         }
+        txGuard.Complete();
 
         return item;
     }
@@ -192,10 +197,10 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), obj.Id);
         var query = queryBuilder.ToString();
 
-        // transaction
-        using var txScope = TransactionFactory.NewTransactionScope();
+        // transaction guard: no-op if already inside an ambient scope
+        using var txGuard = TransactionFactory.NewTransactionGuard();
         await ExecuteAsync(context, query, parameters);
-        txScope.Complete();
+        txGuard.Complete();
         return obj;
     }
 
@@ -226,8 +231,12 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         var query = DbQueryFactory.NewDeleteQuery(TableName, id);
         var compileQuery = CompileQuery(query);
 
+        // transaction guard: no-op if already inside an ambient scope
+        using var txGuard = TransactionFactory.NewTransactionGuard();
         // DELETE execution
-        return (await ExecuteAsync(context, compileQuery)) > 0;
+        var deleted = (await ExecuteAsync(context, compileQuery)) > 0;
+        txGuard.Complete();
+        return deleted;
     }
 
     #endregion

@@ -14,6 +14,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payrolls")]
 [Route("api/tenants/{tenantId}/payrolls")]
+[TenantAuthorize]
 public class PayrollController : Api.Controller.PayrollController
 {
     /// <inheritdoc/>
@@ -35,16 +36,8 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryPayrolls")]
-    public async Task<ActionResult> QueryPayrollsAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryPayrollsAsync(int tenantId, [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a payroll
@@ -55,16 +48,8 @@ public class PayrollController : Api.Controller.PayrollController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayroll")]
-    public async Task<ActionResult<ApiObject.Payroll>> GetPayrollAsync(int tenantId, int payrollId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, payrollId);
-    }
+    public async Task<ActionResult<ApiObject.Payroll>> GetPayrollAsync(int tenantId, int payrollId) =>
+        await GetAsync(tenantId, payrollId);
 
     /// <summary>
     /// Add a new payroll
@@ -106,16 +91,8 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdatePayroll")]
-    public async Task<ActionResult<ApiObject.Payroll>> UpdatePayrollAsync(int tenantId, ApiObject.Payroll payroll)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, payroll);
-    }
+    public async Task<ActionResult<ApiObject.Payroll>> UpdatePayrollAsync(int tenantId, ApiObject.Payroll payroll) =>
+        await UpdateAsync(tenantId, payroll);
 
     /// <summary>
     /// Delete a payroll
@@ -124,16 +101,8 @@ public class PayrollController : Api.Controller.PayrollController
     /// <param name="payrollId">The payroll id</param>
     [HttpDelete("{payrollId}")]
     [ApiOperationId("DeletePayroll")]
-    public async Task<IActionResult> DeletePayrollAsync(int tenantId, int payrollId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, payrollId);
-    }
+    public async Task<IActionResult> DeletePayrollAsync(int tenantId, int payrollId) =>
+        await DeleteAsync(tenantId, payrollId);
 
     #endregion
 
@@ -152,15 +121,8 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [ApiOperationId("GetPayrollRegulations")]
     public async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetPayrollRegulationsAsync(int tenantId,
-        int payrollId, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollRegulationsAsync(
+        int payrollId, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollRegulationsAsync(
             new()
             {
                 TenantId = tenantId,
@@ -168,7 +130,6 @@ public class PayrollController : Api.Controller.PayrollController
                 RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             });
-    }
 
     #endregion
 
@@ -188,13 +149,6 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult<ApiObject.Case[]>> GetPayrollAvailableCasesAsync(int tenantId,
         int payrollId, [FromQuery][Required] ApiObject.PayrollCaseQuery query)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-
         // sync query with mandatory path parameters
         query.TenantId = tenantId;
         query.PayrollId = payrollId;
@@ -222,17 +176,8 @@ public class PayrollController : Api.Controller.PayrollController
     [QueryIgnore]
     public override async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseAsync(int tenantId, int payrollId,
         string caseName, [FromQuery][Required] ApiObject.CaseBuildQuery query,
-        [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<ApiObject.CaseChangeSetup>))] ApiObject.CaseChangeSetup caseChangeSetup = null)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-
-        return await base.BuildPayrollCaseAsync(tenantId, payrollId, caseName, query, caseChangeSetup);
-    }
+        [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<ApiObject.CaseChangeSetup>))] ApiObject.CaseChangeSetup caseChangeSetup = null) =>
+        await base.BuildPayrollCaseAsync(tenantId, payrollId, caseName, query, caseChangeSetup);
 
     #endregion
 
@@ -250,17 +195,8 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [ApiOperationId("QueryPayrollCaseChangeValues")]
     public override async Task<ActionResult> QueryPayrollCaseChangeValuesAsync(int tenantId, int payrollId,
-        [FromQuery] PayrollCaseChangeQuery query = null)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-
-        return await base.QueryPayrollCaseChangeValuesAsync(tenantId, payrollId, query);
-    }
+        [FromQuery] PayrollCaseChangeQuery query = null) =>
+        await base.QueryPayrollCaseChangeValuesAsync(tenantId, payrollId, query);
 
     #endregion
 
@@ -285,17 +221,9 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollCaseValues")]
     public async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollCaseValuesAsync(int tenantId, int payrollId,
         [FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] string[] caseFieldNames,
-        [FromQuery] int? employeeId = null,  [FromQuery] DateTime? regulationDate = null, 
-        [FromQuery] DateTime? evaluationDate = null, [FromQuery] string caseSlot = null)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-
-        return await GetPayrollCaseValuesAsync(
+        [FromQuery] int? employeeId = null, [FromQuery] DateTime? regulationDate = null,
+        [FromQuery] DateTime? evaluationDate = null, [FromQuery] string caseSlot = null) =>
+        await GetPayrollCaseValuesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -305,7 +233,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             startDate, endDate, caseFieldNames, caseSlot);
-    }
 
     /// <summary>
     /// Get payroll case values from a specific time moment
@@ -326,16 +253,8 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult<IEnumerable<ApiObject.CaseValue>>> GetPayrollTimeCaseValuesAsync(int tenantId,
         int payrollId, [FromQuery] CaseType caseType, [FromQuery] int? employeeId = null, [FromQuery] string[] caseFieldNames = null,
         [FromQuery] DateTime? valueDate = null,
-        [FromQuery] DateTime? regulationDate = null, [FromQuery] DateTime? evaluationDate = null)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-
-        return await base.GetPayrollTimeCaseValuesAsync(
+        [FromQuery] DateTime? regulationDate = null, [FromQuery] DateTime? evaluationDate = null) =>
+        await base.GetPayrollTimeCaseValuesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -345,7 +264,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             caseType, caseFieldNames, valueDate);
-    }
 
     /// <summary>
     /// Get available case period values
@@ -368,16 +286,8 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult<ApiObject.CaseFieldValue[]>> GetPayrollAvailableCaseFieldValuesAsync(int tenantId, int payrollId,
         [FromQuery][Required] int userId, [FromQuery][Required] string[] caseFieldNames, [FromQuery][Required] DateTime startDate,
         [FromQuery][Required] DateTime endDate, [FromQuery] int? employeeId = null, [FromQuery] DateTime? regulationDate = null,
-        [FromQuery] DateTime? evaluationDate = null, string culture = null)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-
-        return await base.GetPayrollAvailableCaseFieldValuesAsync(
+        [FromQuery] DateTime? evaluationDate = null, string culture = null) =>
+        await base.GetPayrollAvailableCaseFieldValuesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -387,7 +297,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             userId, caseFieldNames, startDate, endDate, culture);
-    }
 
     /// <summary>
     /// Add case change
@@ -407,6 +316,28 @@ public class PayrollController : Api.Controller.PayrollController
     public override async Task<ActionResult<ApiObject.CaseChange>> AddPayrollCaseAsync(int tenantId, int payrollId,
         [FromBody][Required] ApiObject.CaseChangeSetup caseChangeSetup) =>
         await base.AddPayrollCaseAsync(tenantId, payrollId, caseChangeSetup);
+
+    /// <summary>
+    /// Bulk create case changes
+    /// </summary>
+    /// <remarks>
+    /// Request body contains an array of case change setups.
+    /// All changes are processed in a single transaction (all-or-nothing).
+    /// Cancellation is not supported in bulk operations.
+    /// All case changes must be of the same case type.
+    /// </remarks>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="payrollId">The payroll id</param>
+    /// <param name="caseChangeSetups">The case change setups</param>
+    /// <returns>The number of created case changes</returns>
+    [HttpPost("{payrollId}/cases/bulk")]
+    [OkResponse]
+    [NotFoundResponse]
+    [UnprocessableEntityResponse]
+    [ApiOperationId("AddPayrollCasesBulk")]
+    public override async Task<ActionResult<int>> AddPayrollCasesBulkAsync(int tenantId, int payrollId,
+        [FromBody][Required] ApiObject.CaseChangeSetup[] caseChangeSetups) =>
+        await base.AddPayrollCasesBulkAsync(tenantId, payrollId, caseChangeSetups);
 
     #endregion
 
@@ -430,15 +361,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollCases")]
     public async Task<ActionResult<ApiObject.Case[]>> GetPayrollCasesAsync(int tenantId, int payrollId,
         [FromQuery] CaseType? caseType, [FromQuery] string[] caseNames, [FromQuery] OverrideType? overrideType,
-        [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await GetPayrollCasesAsync(
+        [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await GetPayrollCasesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -450,7 +374,6 @@ public class PayrollController : Api.Controller.PayrollController
             caseNames: caseNames,
             overrideType: overrideType,
             clusterSetName: clusterSetName);
-    }
 
     /// <summary>
     /// Get payroll case fields, sorted by order
@@ -469,15 +392,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollCaseFields")]
     public async Task<ActionResult<ApiObject.CaseField[]>> GetPayrollCaseFieldsAsync(int tenantId, int payrollId,
         [FromQuery] string[] caseFieldNames, [FromQuery] OverrideType? overrideType, [FromQuery] string clusterSetName,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollCaseFieldsAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollCaseFieldsAsync(
             new()
             {
                 TenantId = tenantId,
@@ -486,7 +402,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             caseFieldNames, overrideType, clusterSetName);
-    }
 
     /// <summary>
     /// Get payroll case relations, sorted by order
@@ -506,15 +421,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollCaseRelations")]
     public async Task<ActionResult<ApiObject.CaseRelation[]>> GetPayrollCaseRelationsAsync(int tenantId, int payrollId,
         [FromQuery] string sourceCaseName, [FromQuery] string targetCaseName, [FromQuery] OverrideType? overrideType,
-        [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollCaseRelationsAsync(
+        [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollCaseRelationsAsync(
             new()
             {
                 TenantId = tenantId,
@@ -523,7 +431,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             sourceCaseName, targetCaseName, overrideType, clusterSetName);
-    }
 
     /// <summary>
     /// Get payroll wage types
@@ -542,15 +449,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollWageTypes")]
     public async Task<ActionResult<ApiObject.WageType[]>> GetPayrollWageTypesAsync(int tenantId, int payrollId,
         [FromQuery] decimal[] wageTypeNumbers, [FromQuery] OverrideType? overrideType, [FromQuery] string clusterSetName,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollWageTypesAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollWageTypesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -559,7 +459,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             wageTypeNumbers, overrideType, clusterSetName);
-    }
 
     /// <summary>
     /// Get payroll collectors
@@ -578,15 +477,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollCollectors")]
     public async Task<ActionResult<ApiObject.Collector[]>> GetPayrollCollectorsAsync(int tenantId, int payrollId,
         [FromQuery] string[] collectorNames, [FromQuery] OverrideType? overrideType, [FromQuery] string clusterSetName,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollCollectorsAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollCollectorsAsync(
             new()
             {
                 TenantId = tenantId,
@@ -595,7 +487,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             collectorNames, overrideType, clusterSetName);
-    }
 
     /// <summary>
     /// Get payroll lookups
@@ -613,15 +504,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollLookups")]
     public async Task<ActionResult<ApiObject.Lookup[]>> GetPayrollLookupsAsync(int tenantId, int payrollId,
         [FromQuery] string[] lookupNames, [FromQuery] OverrideType? overrideType,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollLookupsAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollLookupsAsync(
             new()
             {
                 TenantId = tenantId,
@@ -630,7 +514,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             lookupNames, overrideType);
-    }
 
     /// <summary>
     /// Get payroll lookup values
@@ -648,15 +531,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollLookupValues")]
     public async Task<ActionResult<ApiObject.LookupValue[]>> GetPayrollLookupValuesAsync(int tenantId, int payrollId,
         [FromQuery] string[] lookupNames, [FromQuery] string[] lookupKeys,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollLookupValuesAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollLookupValuesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -665,7 +541,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             lookupNames, lookupKeys);
-    }
 
     /// <summary>
     /// Get payroll lookup data
@@ -683,15 +558,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollLookupData")]
     public async Task<ActionResult<IEnumerable<ApiObject.LookupData>>> GetPayrollLookupDataAsync(int tenantId, int payrollId,
         [FromQuery][Required] string[] lookupNames, [FromQuery] DateTime? regulationDate,
-        [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollLookupDataAsync(
+        [FromQuery] DateTime? evaluationDate, [FromQuery] string culture) =>
+        await base.GetPayrollLookupDataAsync(
             new()
             {
                 TenantId = tenantId,
@@ -700,7 +568,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             lookupNames, culture);
-    }
 
     /// <summary>
     /// Get payroll lookup value data
@@ -720,15 +587,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollLookupValueData")]
     public async Task<ActionResult<ApiObject.LookupValueData>> GetPayrollLookupValueDataAsync(int tenantId, int payrollId,
         [FromQuery][Required] string lookupName, [FromQuery] string lookupKey, [FromQuery] decimal? rangeValue,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollLookupValueDataAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] string culture) =>
+        await base.GetPayrollLookupValueDataAsync(
             new()
             {
                 TenantId = tenantId,
@@ -737,7 +597,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             lookupName, lookupKey, rangeValue, culture);
-    }
 
     /// <summary>
     /// Get payroll lookup range brackets
@@ -756,15 +615,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollLookupRanges")]
     public async Task<ActionResult<ApiObject.LookupRangeResult[]>> GetPayrollLookupRangesAsync(int tenantId, int payrollId,
         [FromQuery][Required] string[] lookupNames, [FromQuery] decimal? rangeValue,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] string culture)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollLookupRangesAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate, [FromQuery] string culture) =>
+        await base.GetPayrollLookupRangesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -773,7 +625,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             lookupNames, rangeValue, culture);
-    }
 
     /// <summary>
     /// Get payroll report sets
@@ -793,15 +644,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollReports")]
     public async Task<ActionResult<ApiObject.ReportSet[]>> GetPayrollReportsAsync(int tenantId, int payrollId,
         [FromQuery] string[] reportNames, [FromQuery] OverrideType? overrideType, [FromQuery] UserType? userType,
-        [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await GetPayrollReportsAsync(
+        [FromQuery] string clusterSetName, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await GetPayrollReportsAsync(
             query: new()
             {
                 TenantId = tenantId,
@@ -813,7 +657,6 @@ public class PayrollController : Api.Controller.PayrollController
             overrideType: overrideType,
             userType: userType,
             clusterSetName: clusterSetName);
-    }
 
     /// <summary>
     /// Get payroll report parameters
@@ -829,15 +672,8 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [ApiOperationId("GetPayrollReportParameters")]
     public async Task<ActionResult<ApiObject.ReportParameter[]>> GetPayrollReportParametersAsync(int tenantId, int payrollId,
-        [FromQuery] string[] reportNames, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollReportParametersAsync(
+        [FromQuery] string[] reportNames, [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollReportParametersAsync(
             new()
             {
                 TenantId = tenantId,
@@ -846,7 +682,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             reportNames);
-    }
 
     /// <summary>
     /// Get payroll report templates
@@ -864,15 +699,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollReportTemplates")]
     public async Task<ActionResult<ApiObject.ReportTemplate[]>> GetPayrollReportTemplatesAsync(int tenantId, int payrollId,
         [FromQuery] string[] reportNames, [FromQuery] string culture,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollReportTemplatesAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollReportTemplatesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -881,7 +709,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             reportNames, culture);
-    }
 
     /// <summary>
     /// Get payroll scripts
@@ -899,15 +726,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollScripts")]
     public async Task<ActionResult<ApiObject.Script[]>> GetPayrollScriptsAsync(int tenantId, int payrollId,
         [FromQuery] string[] scriptNames, [FromQuery] OverrideType? overrideType,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await GetPayrollScriptAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await GetPayrollScriptAsync(
             new()
             {
                 TenantId = tenantId,
@@ -916,7 +736,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             scriptNames, overrideType);
-    }
 
     /// <summary>
     /// Get payroll script actions
@@ -935,15 +754,8 @@ public class PayrollController : Api.Controller.PayrollController
     [ApiOperationId("GetPayrollScriptActions")]
     public async Task<ActionResult<ApiObject.ActionInfo[]>> GetPayrollScriptActionsAsync(int tenantId, int payrollId,
         [FromQuery] string[] scriptNames, [FromQuery] OverrideType? overrideType, [FromQuery] FunctionType functionType,
-        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetPayrollScriptActionsAsync(
+        [FromQuery] DateTime? regulationDate, [FromQuery] DateTime? evaluationDate) =>
+        await base.GetPayrollScriptActionsAsync(
             new()
             {
                 TenantId = tenantId,
@@ -952,7 +764,6 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             scriptNames, overrideType, functionType);
-    }
 
     #endregion
 
@@ -969,16 +780,8 @@ public class PayrollController : Api.Controller.PayrollController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetPayrollAttribute")]
-    public virtual async Task<ActionResult<string>> GetPayrollAttributeAsync(int tenantId, int payrollId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(payrollId, attributeName);
-    }
+    public virtual async Task<ActionResult<string>> GetPayrollAttributeAsync(int tenantId, int payrollId, string attributeName) =>
+        await GetAttributeAsync(payrollId, attributeName);
 
     /// <summary>
     /// Set a payroll attribute
@@ -994,16 +797,8 @@ public class PayrollController : Api.Controller.PayrollController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetPayrollAttribute")]
     public virtual async Task<ActionResult<string>> SetPayrollAttributeAsync(int tenantId, int payrollId, string attributeName,
-        [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(payrollId, attributeName, value);
-    }
+        [FromBody] string value) =>
+        await SetAttributeAsync(payrollId, attributeName, value);
 
     /// <summary>
     /// Delete a payroll attribute
@@ -1014,16 +809,8 @@ public class PayrollController : Api.Controller.PayrollController
     /// <returns>True if the attribute was deleted</returns>
     [HttpDelete("{payrollId}/attributes/{attributeName}")]
     [ApiOperationId("DeletePayrollAttribute")]
-    public virtual async Task<ActionResult<bool>> DeletePayrollAttributeAsync(int tenantId, int payrollId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if (authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(payrollId, attributeName);
-    }
+    public virtual async Task<ActionResult<bool>> DeletePayrollAttributeAsync(int tenantId, int payrollId, string attributeName) =>
+        await DeleteAttributeAsync(payrollId, attributeName);
 
     #endregion
 

@@ -39,7 +39,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
             // report parameters
             foreach (var reportParameter in report.Parameters)
             {
-                reportParameter.Value = await ParseParameter(request.UserId, reportParameter.Value, reportParameter.ParameterType);
+                reportParameter.Value = await ParseParameterAsync(request.UserId, reportParameter.Value, reportParameter.ParameterType);
             }
 
             // request parameters
@@ -51,7 +51,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
                         StringComparison.InvariantCultureIgnoreCase));
                     if (reportParameter != null)
                     {
-                        reportParameter.Value = await ParseParameter(request.UserId, requestParameter.Value, reportParameter.ParameterType);
+                        reportParameter.Value = await ParseParameterAsync(request.UserId, requestParameter.Value, reportParameter.ParameterType);
                     }
                 }
             }
@@ -152,7 +152,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
 
     #region Argument Parsing
 
-    private async Task<string> ParseParameter(int userId, string parameter, ReportParameterType parameterType)
+    private async Task<string> ParseParameterAsync(int userId, string parameter, ReportParameterType parameterType)
     {
         // system parameter
         switch (parameterType)
@@ -311,7 +311,7 @@ public abstract class ReportTool(Tenant tenant, ReportToolSettings settings) : F
                 // request parameter
                 if (requestParameters != null && requestParameters.TryGetValue(variableTypeName, out var parameter))
                 {
-                    variableValue = ParseParameter(userId, parameter, (ReportParameterType)parameterType).Result;
+                    variableValue = ParseParameterAsync(userId, parameter, (ReportParameterType)parameterType).GetAwaiter().GetResult();
                 }
 
                 if (string.IsNullOrWhiteSpace(variableValue) && reportParameters != null)

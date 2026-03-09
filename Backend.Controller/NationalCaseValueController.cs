@@ -9,9 +9,14 @@ using ApiObject = PayrollEngine.Api.Model;
 
 namespace PayrollEngine.Backend.Controller;
 
-/// <inheritdoc/>
+/// <summary>
+/// Read-only controller for national case values.
+/// Case values are created and managed through case changes (see PayrollController).
+/// Direct create, update or delete operations are not supported.
+/// </summary>
 [ApiControllerName("National case values")]
 [Route("api/tenants/{tenantId}/nationalcases")]
+[TenantAuthorize]
 public class NationalCaseValueController : Api.Controller.NationalCaseValueController
 {
     /// <inheritdoc/>
@@ -21,7 +26,8 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
         base(tenantService, caseValueService, payrollService, regulationService, lookupSetService, runtime)
     {
     }
-        /// <summary>
+
+    /// <summary>
     /// Query national case values
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
@@ -35,12 +41,6 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
     public async Task<ActionResult> QueryNationalCaseValuesAsync(int tenantId,
             [FromQuery] CaseValueQuery query)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
         if (!await ParentService.ExistsAsync(Runtime.DbContext, tenantId))
         {
             return BadRequest($"Unknown tenant with id {tenantId}");
@@ -58,16 +58,8 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
     [OkResponse]
     [ApiOperationId("GetNationalCaseValueSlots")]
     public async Task<ActionResult<IEnumerable<string>>> GetNationalCaseValueSlotsAsync(
-        int tenantId, [Required] string caseFieldName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return Ok(await GetCaseValueSlotsAsync(tenantId, caseFieldName));
-    }
+        int tenantId, [Required] string caseFieldName) =>
+        Ok(await GetCaseValueSlotsAsync(tenantId, caseFieldName));
 
     /// <summary>
     /// Get a national case value
@@ -80,15 +72,7 @@ public class NationalCaseValueController : Api.Controller.NationalCaseValueContr
     [NotFoundResponse]
     [ApiOperationId("GetNationalCaseValue")]
     public async Task<ActionResult<ApiObject.CaseValue>> GetNationalCaseValueAsync(
-        int tenantId, int caseValueId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, caseValueId);
-    }
+        int tenantId, int caseValueId) =>
+        await GetAsync(tenantId, caseValueId);
 
 }

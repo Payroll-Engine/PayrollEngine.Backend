@@ -10,6 +10,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="Employee"/> persistence with division management (table: Employee).</summary>
 public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) : ChildDomainRepository<Employee>(
     DbSchema.Tables.Employee, DbSchema.EmployeeColumn.TenantId), IEmployeeRepository
 {
@@ -117,6 +118,44 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
         {
             Log.Error(exception, exception.GetBaseMessage());
             return false;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Overrides the base bulk insert to also persist employee-division associations.
+    /// The base CreateBulkAsync uses SqlBulkCopy which does not call OnCreatedAsync,
+    /// so divisions would not be saved without this override.
+    /// </remarks>
+    public override async Task CreateBulkAsync(IDbContext context, int parentId, IEnumerable<Employee> items)
+    {
+        var employees = items.ToList();
+
+        // base bulk insert (employees without divisions)
+        await base.CreateBulkAsync(context, parentId, employees);
+
+        // retrieve created employees by identifier to get their generated IDs
+        var employeesWithDivisions = employees.Where(e => e.Divisions != null && e.Divisions.Any()).ToList();
+        if (!employeesWithDivisions.Any())
+        {
+            return;
+        }
+
+        foreach (var employee in employeesWithDivisions)
+        {
+            // query the created employee by identifier to get the generated id
+            var dbEmployee = (await SelectAsync<Employee>(context, TableName, new Dictionary<string, object>
+            {
+                { DbSchema.EmployeeColumn.TenantId, parentId },
+                { DbSchema.EmployeeColumn.Identifier, employee.Identifier }
+            })).FirstOrDefault();
+            if (dbEmployee == null)
+            {
+                throw new PayrollException($"Bulk created employee with identifier {employee.Identifier} not found.");
+            }
+
+            // save divisions
+            await SaveDivisions(context, parentId, dbEmployee.Id, employee.Divisions);
         }
     }
 

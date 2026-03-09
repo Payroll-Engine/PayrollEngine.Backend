@@ -10,6 +10,12 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Abstract base repository for all domain objects.
+/// Provides CRUD operations, query execution, attribute handling,
+/// and bulk insert support via Dapper against the configured SQL Server database.
+/// </summary>
+/// <typeparam name="T">Domain object type implementing <see cref="IDomainObject"/></typeparam>
 public abstract class DomainRepository<T>(string tableName) : TableRepository(tableName), IDomainRepository
     where T : IDomainObject
 {
@@ -24,7 +30,6 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="context">The database context</param>
     /// <param name="sql">The SQL to execute for the query</param>
     /// <param name="param">The parameters to pass, if any</param>
-    /// <param name="transaction">The transaction to use, if any</param>
     /// <param name="commandTimeout">The command timeout (in seconds)</param>
     /// <param name="commandType">The type of command to execute</param>
     /// <returns>
@@ -32,8 +37,8 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     protected async Task<IEnumerable<T>> QueryAsync(IDbContext context, string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-        await QueryAsync<T>(context, sql, param, transaction, commandTimeout, commandType);
+        int? commandTimeout = null, CommandType? commandType = null) =>
+        await QueryAsync<T>(context, sql, param, commandTimeout, commandType);
 
     /// <summary>
     /// Execute an item query
@@ -43,7 +48,6 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="context">The database context</param>
     /// <param name="sql">The SQL to execute for the query</param>
     /// <param name="param">The parameters to pass, if any</param>
-    /// <param name="transaction">The transaction to use, if any</param>
     /// <param name="commandTimeout">The command timeout (in seconds)</param>
     /// <param name="commandType">The type of command to execute</param>
     /// <returns>
@@ -51,8 +55,8 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     protected async Task<IEnumerable<TItem>> QueryAsync<TItem>(IDbContext context, string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-        await context.QueryAsync<TItem>(sql, param, transaction, commandTimeout, commandType);
+        int? commandTimeout = null, CommandType? commandType = null) =>
+        await context.QueryAsync<TItem>(sql, param, commandTimeout, commandType);
 
     /// <summary>
     /// Execute an single item query
@@ -61,7 +65,6 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="context">The database context</param>
     /// <param name="sql">The SQL to execute for the query</param>
     /// <param name="param">The parameters to pass, if any</param>
-    /// <param name="transaction">The transaction to use, if any</param>
     /// <param name="commandTimeout">The command timeout (in seconds)</param>
     /// <param name="commandType">The type of command to execute</param>
     /// <returns>
@@ -69,8 +72,8 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// created per row, and a direct column-name===member-name mapping is assumed (case-insensitive).
     /// </returns>
     protected async Task<TResult> QuerySingleAsync<TResult>(IDbContext context, string sql, object param = null,
-        IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-        await context.QuerySingleAsync<TResult>(sql, param, transaction, commandTimeout, commandType);
+        int? commandTimeout = null, CommandType? commandType = null) =>
+        await context.QuerySingleAsync<TResult>(sql, param, commandTimeout, commandType);
 
     #endregion
 
@@ -108,12 +111,11 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="context">The database context</param>
     /// <param name="sql">The SQL to execute for this query</param>
     /// <param name="param">The parameters to use for this query</param>
-    /// <param name="transaction">The transaction to use for this query</param>
     /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The number of rows affected</returns>
-    protected async Task<int> ExecuteAsync(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-        await context.ExecuteAsync(sql, param, transaction, commandTimeout, commandType);
+    protected async Task<int> ExecuteAsync(IDbContext context, string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null) =>
+        await context.ExecuteAsync(sql, param, commandTimeout, commandType);
 
     /// <summary>
     /// Execute parameterized SQL that selects a single value
@@ -121,12 +123,11 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="context">The database context</param>
     /// <param name="sql">The SQL to execute</param>
     /// <param name="param">The parameters to use for this command</param>
-    /// <param name="transaction">The transaction to use for this command</param>
     /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The first cell returned, as <typeparamref name="T"/></returns>
-    protected async Task<TValue> ExecuteScalarAsync<TValue>(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-        await context.ExecuteScalarAsync<TValue>(sql, param, transaction, commandTimeout, commandType);
+    protected async Task<TValue> ExecuteScalarAsync<TValue>(IDbContext context, string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null) =>
+        await context.ExecuteScalarAsync<TValue>(sql, param, commandTimeout, commandType);
 
     /// <summary>
     /// Execute parameterized SQL that selects a single value
@@ -134,12 +135,11 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     /// <param name="context">The database context</param>
     /// <param name="sql">The SQL to execute</param>
     /// <param name="param">The parameters to use for this command</param>
-    /// <param name="transaction">The transaction to use for this command</param>
     /// <param name="commandTimeout">Number of seconds before command execution timeout</param>
     /// <param name="commandType">Is it a stored proc or a batch?</param>
     /// <returns>The first cell returned, as <see cref="object"/></returns>
-    protected async Task<object> ExecuteScalarAsync(IDbContext context, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null) =>
-        await context.ExecuteScalarAsync<object>(sql, param, transaction, commandTimeout, commandType);
+    protected async Task<object> ExecuteScalarAsync(IDbContext context, string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null) =>
+        await context.ExecuteScalarAsync<object>(sql, param, commandTimeout, commandType);
 
     #endregion
 
@@ -303,8 +303,6 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
         {
             return null;
         }
-
-        await UpdateObjectAttributeAsync(context, attributeObject);
         return await UpdateObjectAttributeAsync(context, attributeObject);
     }
 
@@ -346,15 +344,15 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
         queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), attributeObject.Id);
         var dbQuery = queryBuilder.ToString();
 
-        // transaction
-        using var txScope = TransactionFactory.NewTransactionScope();
+        // transaction guard: no-op if already inside an ambient scope
+        using var txGuard = TransactionFactory.NewTransactionGuard();
         // UPDATE execution
         await context.ExecuteAsync(dbQuery, new
         {
             attributeObject.Updated,
             Attributes = attributes
         });
-        txScope.Complete();
+        txGuard.Complete();
         return true;
     }
 

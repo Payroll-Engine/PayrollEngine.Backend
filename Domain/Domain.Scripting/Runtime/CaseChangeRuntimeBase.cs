@@ -119,7 +119,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         caseName = caseName.EnsureNamespace(Namespace);
 
         // cache or search
-        return Case.FindCase(caseName) ?? CaseProvider.GetCaseAsync(Settings.DbContext, Payroll.Id, caseName).Result;
+        return Case.FindCase(caseName) ?? CaseProvider.GetCaseAsync(Settings.DbContext, Payroll.Id, caseName).GetAwaiter().GetResult();
     }
 
     #endregion
@@ -218,7 +218,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
 
     /// <inheritdoc />
     public void SetValue(string caseFieldName, object value) =>
-        GetCaseFieldSet(caseFieldName).SetValue(value);
+        GetCaseFieldSet(caseFieldName).SetValue(UnwrapActionValue(value));
 
     /// <inheritdoc />
     public virtual void InitValue(string caseFieldName, object value)
@@ -226,8 +226,26 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         var caseFieldSet = GetCaseFieldSet(caseFieldName, true);
         if (caseFieldSet.Value == null)
         {
-            caseFieldSet.SetValue(value);
+            caseFieldSet.SetValue(UnwrapActionValue(value));
         }
+    }
+
+    /// <summary>
+    /// Unwrap ActionValue to its primitive value.
+    /// Uses type name check to handle cross-assembly type identity (Roslyn scripting context).
+    /// </summary>
+    private static object UnwrapActionValue(object value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+        // type name check: ActionValue from scripting assembly may differ from backend assembly
+        if (value.GetType().FullName == "PayrollEngine.Client.Scripting.Function.ActionValue")
+        {
+            return ((dynamic)value).Value;
+        }
+        return value;
     }
 
     /// <inheritdoc />
@@ -394,7 +412,7 @@ public abstract class CaseChangeRuntimeBase : CaseRuntimeBase, ICaseChangeRuntim
         var caseFieldSet = Case.FindCaseField(caseFieldName);
         if (caseFieldSet == null)
         {
-            var caseField = CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).Result;
+            var caseField = CaseFieldProvider.GetCaseFieldAsync(Settings.DbContext, caseFieldName).GetAwaiter().GetResult();
             if (caseField == null)
             {
                 throw new ScriptException($"Unknown case field {caseFieldName}.");

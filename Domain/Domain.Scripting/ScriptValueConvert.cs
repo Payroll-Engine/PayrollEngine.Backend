@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using PayrollEngine.Client.Scripting;
 
 namespace PayrollEngine.Domain.Scripting;
 
 public static class ScriptValueConvert
 {
-    private static Dictionary<Type, bool> ValueTypes { get; } = new();
+    private static ConcurrentDictionary<Type, bool> ValueTypes { get; } = new();
 
     public static decimal? ToDecimalValue(dynamic scriptValue)
     {
@@ -25,7 +25,7 @@ public static class ScriptValueConvert
         }
 
         // value object
-        if (IsValueType(scriptValue.GetType()))
+        if (IsValueType(((object)scriptValue).GetType()))
         {
             return scriptValue.Value as decimal?;
         }
@@ -41,12 +41,6 @@ public static class ScriptValueConvert
         }
     }
 
-    private static bool IsValueType(Type type)
-    {
-        if (!ValueTypes.ContainsKey(type))
-        {
-            ValueTypes[type] = type.GetProperties().Any(x => string.Equals(x.Name, "Value"));
-        }
-        return ValueTypes[type];
-    }
+    private static bool IsValueType(Type type) =>
+        ValueTypes.GetOrAdd(type, t => t.GetProperties().Any(x => string.Equals(x.Name, "Value")));
 }

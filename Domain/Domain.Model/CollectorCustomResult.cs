@@ -16,6 +16,36 @@ public class CollectorCustomResult : DomainObjectBase, ITagObject,
     public int CollectorResultId { get; set; }
 
     /// <summary>
+    /// The tenant id (denormalized, immutable)
+    /// </summary>
+    public int TenantId { get; set; }
+
+    /// <summary>
+    /// The employee id (denormalized, immutable)
+    /// </summary>
+    public int EmployeeId { get; set; }
+
+    /// <summary>
+    /// The division id (denormalized, immutable)
+    /// </summary>
+    public int DivisionId { get; set; }
+
+    /// <summary>
+    /// The payrun job id (denormalized, immutable)
+    /// </summary>
+    public int PayrunJobId { get; set; }
+
+    /// <summary>
+    /// The forecast name (denormalized, immutable)
+    /// </summary>
+    public string Forecast { get; set; }
+
+    /// <summary>
+    /// The parent payrun job id (denormalized, immutable)
+    /// </summary>
+    public int? ParentJobId { get; set; }
+
+    /// <summary>
     /// The collector name (immutable)
     /// </summary>
     public string CollectorName { get; set; }

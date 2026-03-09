@@ -49,7 +49,7 @@ BEGIN
     ON dbo.[Report].[RegulationId] = [Regulations].[Id]
   -- active reports only
   WHERE dbo.[ReportTemplate].[Status] = 0
-    AND dbo.[ReportTemplate].[Created] < @createdBefore
+    AND dbo.[ReportTemplate].[Created] <= @createdBefore
     AND (
       @reportNames IS NULL
       OR LOWER(dbo.[Report].[Name]) IN (

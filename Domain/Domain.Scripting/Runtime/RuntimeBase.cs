@@ -110,7 +110,8 @@ public abstract class RuntimeBase : IRuntime
         if (employeeId > 0)
         {
             var employee = Settings.EmployeeRepository.GetAsync(
-                Settings.DbContext, TenantId, employeeId).Result;
+                Settings.DbContext, TenantId, employeeId)
+                .ConfigureAwait(false).GetAwaiter().GetResult();
             if (employee == null)
             {
                 throw new ScriptException($"Invalid employee id {employeeId}");
@@ -125,7 +126,8 @@ public abstract class RuntimeBase : IRuntime
         if (divisionId > 0)
         {
             var division = Settings.DivisionRepository.GetAsync(
-                Settings.DbContext, TenantId, divisionId).Result;
+                Settings.DbContext, TenantId, divisionId)
+                .ConfigureAwait(false).GetAwaiter().GetResult();
             if (division == null)
             {
                 throw new ScriptException($"Invalid division id {divisionId}");
@@ -152,7 +154,8 @@ public abstract class RuntimeBase : IRuntime
         if (employeeId > 0)
         {
             var employee = Settings.EmployeeRepository.GetAsync(
-                Settings.DbContext, TenantId, employeeId).Result;
+                Settings.DbContext, TenantId, employeeId)
+                .ConfigureAwait(false).GetAwaiter().GetResult();
             if (employee == null)
             {
                 throw new ScriptException($"Invalid employee id {employeeId}");
@@ -167,7 +170,8 @@ public abstract class RuntimeBase : IRuntime
         if (divisionId > 0)
         {
             var division = Settings.DivisionRepository.GetAsync(
-                Settings.DbContext, TenantId, divisionId).Result;
+                Settings.DbContext, TenantId, divisionId)
+                .ConfigureAwait(false).GetAwaiter().GetResult();
             if (division == null)
             {
                 throw new ScriptException($"Invalid division id {divisionId}");
@@ -245,7 +249,8 @@ public abstract class RuntimeBase : IRuntime
     private Calendar GetCalendar(string calendarName)
     {
         var calendar = Settings.CalendarRepository.GetByNameAsync(
-            Settings.DbContext, TenantId, calendarName).Result;
+            Settings.DbContext, TenantId, calendarName)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         if (calendar == null)
         {
             throw new ScriptException($"Unknown calendar {calendarName}");
@@ -312,7 +317,8 @@ public abstract class RuntimeBase : IRuntime
                 RequestOperation = requestOperation,
                 TrackMessage = false
             },
-            userId: UserId).Result;
+            userId: UserId)
+            .ConfigureAwait(false).GetAwaiter().GetResult();
         return result;
     }
 

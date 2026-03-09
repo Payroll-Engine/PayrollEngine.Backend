@@ -10,6 +10,11 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
 
+/// <summary>
+/// Validates derived case changes by resolving case inheritance across payroll layers
+/// and executing case-validate scripts. Ensures case field values meet all constraints
+/// before persisting a case change.
+/// </summary>
 public class DerivedCaseValidator : DerivedCaseTool
 {
     /// <summary>
@@ -123,18 +128,9 @@ public class DerivedCaseValidator : DerivedCaseTool
         }
 
         // case (derived)
-        var cases = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
-            new()
-            {
-                TenantId = Tenant.Id,
-                PayrollId = Payroll.Id,
-                RegulationDate = RegulationDate,
-                EvaluationDate = EvaluationDate
-            },
+        var cases = (await GetCachedDerivedCasesAsync(
             caseType: caseType,
-            caseNames: [caseName],
-            clusterSet: ClusterSet,
-            overrideType: OverrideType.Active)).Cast<Case>().ToList();
+            caseNames: [caseName])).Cast<Case>().ToList();
         if (!cases.Any())
         {
             var message = $"Missing case {caseName} in payroll with id {Payroll.Id}";
@@ -410,17 +406,8 @@ public class DerivedCaseValidator : DerivedCaseTool
         CaseValidate(cases, caseSet, issues);
 
         // case relations (active only)
-        var relations = (await PayrollRepository.GetDerivedCaseRelationsAsync(Settings.DbContext,
-            new()
-            {
-                TenantId = Tenant.Id,
-                PayrollId = Payroll.Id,
-                RegulationDate = RegulationDate,
-                EvaluationDate = EvaluationDate
-            },
-            sourceCaseName: caseSet.Name,
-            clusterSet: ClusterSet,
-            overrideType: OverrideType.Active)).ToList();
+        var relations = (await GetCachedDerivedCaseRelationsAsync(
+            sourceCaseName: caseSet.Name)).ToList();
         if (!relations.Any())
         {
             Log.Trace($"No related cases available for case {caseSet.Name}");
@@ -441,17 +428,8 @@ public class DerivedCaseValidator : DerivedCaseTool
             }
 
             // target case (derived)
-            var targetCase = (await PayrollRepository.GetDerivedCasesAsync(Settings.DbContext,
-                new()
-                {
-                    TenantId = Tenant.Id,
-                    PayrollId = Payroll.Id,
-                    RegulationDate = RegulationDate,
-                    EvaluationDate = EvaluationDate
-                },
-                caseNames: [targetRelation.Key.TargetCaseName],
-                clusterSet: ClusterSet,
-                overrideType: OverrideType.Active)).Cast<Case>().ToList();
+            var targetCase = (await GetCachedDerivedCasesAsync(
+                caseNames: [targetRelation.Key.TargetCaseName])).Cast<Case>().ToList();
             if (!targetCase.Any())
             {
                 throw new PayrollException($"Unknown related case with name {targetRelation.Key} in derived case {caseSet.Name}.");

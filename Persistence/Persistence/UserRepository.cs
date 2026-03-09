@@ -8,6 +8,7 @@ using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>Repository for <see cref="User"/> persistence with password management (table: User).</summary>
 public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User, DbSchema.UserColumn.TenantId),
     IUserRepository
 {

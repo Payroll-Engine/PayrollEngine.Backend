@@ -49,7 +49,7 @@ BEGIN
     ON dbo.[Lookup].[RegulationId] = [Regulations].[Id]
   -- active lookups only
   WHERE dbo.[LookupValue].[Status] = 0
-    AND dbo.[LookupValue].[Created] < @createdBefore
+    AND dbo.[LookupValue].[Created] <= @createdBefore
     AND (
       @lookupNames IS NULL
       OR LOWER(dbo.[Lookup].[Name]) IN (

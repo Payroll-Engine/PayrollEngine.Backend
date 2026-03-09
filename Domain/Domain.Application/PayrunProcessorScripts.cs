@@ -36,10 +36,7 @@ internal sealed class PayrunProcessorScripts
 
         // case value provider without employee case values
         var caseValueProvider = new CaseValueProvider(
-            globalCaseValueRepository: context.GlobalCaseValues,
-            nationalCaseValueRepository: context.NationalCaseValues,
-            companyCaseValueRepository: context.CompanyCaseValues,
-            new()
+            settings: new()
             {
                 DbContext = Settings.DbContext,
                 Calculator = context.Calculator,
@@ -47,7 +44,10 @@ internal sealed class PayrunProcessorScripts
                 EvaluationPeriod = context.EvaluationPeriod,
                 EvaluationDate = context.EvaluationDate,
                 RetroDate = context.RetroDate
-            });
+            },
+            globalCaseValueRepository: context.GlobalCaseValues,
+            nationalCaseValueRepository: context.NationalCaseValues,
+            companyCaseValueRepository: context.CompanyCaseValues);
 
         // execute payrun start script
         var start = new PayrunScriptController().Start(new()
@@ -62,7 +62,8 @@ internal sealed class PayrunProcessorScripts
             Payrun = Payrun,
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
-            ExecutionPhase = context.ExecutionPhase,
+            ExecutionPhase = PayrunExecutionPhase.Setup,
+            PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
             RegulationProvider = RegulationProvider,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
@@ -88,10 +89,7 @@ internal sealed class PayrunProcessorScripts
 
         // case value provider without employee case values
         var caseValueProvider = new CaseValueProvider(
-            globalCaseValueRepository: context.GlobalCaseValues,
-            nationalCaseValueRepository: context.NationalCaseValues,
-            companyCaseValueRepository: context.CompanyCaseValues,
-            new()
+            settings: new()
             {
                 DbContext = Settings.DbContext,
                 Calculator = context.Calculator,
@@ -99,7 +97,10 @@ internal sealed class PayrunProcessorScripts
                 EvaluationPeriod = context.EvaluationPeriod,
                 EvaluationDate = context.EvaluationDate,
                 RetroDate = context.RetroDate
-            });
+            },
+            globalCaseValueRepository: context.GlobalCaseValues,
+            nationalCaseValueRepository: context.NationalCaseValues,
+            companyCaseValueRepository: context.CompanyCaseValues);
 
         // execute payrun end script
         new PayrunScriptController().End(new()
@@ -114,7 +115,8 @@ internal sealed class PayrunProcessorScripts
             Payrun = Payrun,
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
-            ExecutionPhase = context.ExecutionPhase,
+            ExecutionPhase = PayrunExecutionPhase.Setup,
+            PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
             RegulationProvider = RegulationProvider,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
@@ -128,14 +130,14 @@ internal sealed class PayrunProcessorScripts
         });
     }
 
-    internal bool EmployeeStart(ICaseValueProvider caseValueProvider, PayrunContext context)
+    internal bool EmployeeStart(ICaseValueProvider caseValueProvider, PayrunEmployeeScope scope)
     {
         if (caseValueProvider.Employee == null)
         {
             throw new ArgumentException("Missing employee.");
         }
 
-        Log.Trace($"payrun start {context.PayrunJob.Name} on employee {caseValueProvider.Employee.Identifier}");
+        Log.Trace($"payrun start {scope.PayrunJob.Name} on employee {caseValueProvider.Employee.Identifier}");
 
         if (string.IsNullOrWhiteSpace(Payrun.EmployeeStartExpression))
         {
@@ -143,24 +145,27 @@ internal sealed class PayrunProcessorScripts
         }
 
         // execute payrun employee start script
+        // use the per-employee scope as RegulationProvider so scripts see the correct
+        // cloned DerivedCollectors (not null from the shared PayrunContext)
         var start = new PayrunScriptController().EmployeeStart(new()
         {
             DbContext = Settings.DbContext,
-            PayrollCulture = context.PayrollCulture,
+            PayrollCulture = scope.PayrollCulture,
             Namespace = null,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
-            User = context.User,
-            Payroll = context.Payroll,
+            User = scope.User,
+            Payroll = scope.Payroll,
             Payrun = Payrun,
-            PayrunJob = context.PayrunJob,
-            ParentPayrunJob = context.ParentPayrunJob,
-            ExecutionPhase = context.ExecutionPhase,
-            RegulationProvider = RegulationProvider,
+            PayrunJob = scope.PayrunJob,
+            ParentPayrunJob = scope.ParentPayrunJob,
+            ExecutionPhase = scope.ExecutionPhase,
+            PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
+            RegulationProvider = scope,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
-            RegulationLookupProvider = context.RegulationLookupProvider,
-            RuntimeValueProvider = context.RuntimeValueProvider,
+            RegulationLookupProvider = scope.RegulationLookupProvider,
+            RuntimeValueProvider = scope.RuntimeValueProvider,
             DivisionRepository = Settings.DivisionRepository,
             EmployeeRepository = Settings.EmployeeRepository,
             CalendarRepository = Settings.CalendarRepository,
@@ -170,14 +175,14 @@ internal sealed class PayrunProcessorScripts
         return start ?? true;
     }
 
-    internal void EmployeeEnd(ICaseValueProvider caseValueProvider, PayrunContext context)
+    internal void EmployeeEnd(ICaseValueProvider caseValueProvider, PayrunEmployeeScope scope)
     {
         if (caseValueProvider.Employee == null)
         {
             throw new ArgumentException("Missing employee.");
         }
 
-        Log.Trace($"payrun end {context.PayrunJob.Name} on employee {caseValueProvider.Employee.Identifier}");
+        Log.Trace($"payrun end {scope.PayrunJob.Name} on employee {caseValueProvider.Employee.Identifier}");
 
         if (string.IsNullOrWhiteSpace(Payrun.EmployeeEndExpression))
         {
@@ -185,24 +190,27 @@ internal sealed class PayrunProcessorScripts
         }
 
         // execute payrun employee end script
+        // use the per-employee scope as RegulationProvider so scripts see the correct
+        // cloned DerivedCollectors (not null from the shared PayrunContext)
         new PayrunScriptController().EmployeeEnd(new()
         {
             DbContext = Settings.DbContext,
-            PayrollCulture = context.PayrollCulture,
+            PayrollCulture = scope.PayrollCulture,
             Namespace = null,
             FunctionHost = FunctionHost,
             Tenant = Tenant,
-            User = context.User,
-            Payroll = context.Payroll,
+            User = scope.User,
+            Payroll = scope.Payroll,
             Payrun = Payrun,
-            PayrunJob = context.PayrunJob,
-            ParentPayrunJob = context.ParentPayrunJob,
-            ExecutionPhase = context.ExecutionPhase,
-            RegulationProvider = RegulationProvider,
+            PayrunJob = scope.PayrunJob,
+            ParentPayrunJob = scope.ParentPayrunJob,
+            ExecutionPhase = scope.ExecutionPhase,
+            PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
+            RegulationProvider = scope,
             ResultProvider = ResultProvider,
             CaseValueProvider = caseValueProvider,
-            RegulationLookupProvider = context.RegulationLookupProvider,
-            RuntimeValueProvider = context.RuntimeValueProvider,
+            RegulationLookupProvider = scope.RegulationLookupProvider,
+            RuntimeValueProvider = scope.RuntimeValueProvider,
             DivisionRepository = Settings.DivisionRepository,
             EmployeeRepository = Settings.EmployeeRepository,
             CalendarRepository = Settings.CalendarRepository,

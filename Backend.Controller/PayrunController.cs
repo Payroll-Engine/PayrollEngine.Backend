@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payruns")]
 [Route("api/tenants/{tenantId}/payruns")]
+[TenantAuthorize]
 public class PayrunController : Api.Controller.PayrunController
 {
     /// <inheritdoc/>
@@ -29,16 +30,8 @@ public class PayrunController : Api.Controller.PayrunController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryPayruns")]
-    public async Task<ActionResult> QueryPayrunsAsync(int tenantId, [FromQuery] Query query)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await QueryItemsAsync(tenantId, query);
-    }
+    public async Task<ActionResult> QueryPayrunsAsync(int tenantId, [FromQuery] Query query) =>
+        await QueryItemsAsync(tenantId, query);
 
     /// <summary>
     /// Get a payrun
@@ -50,16 +43,8 @@ public class PayrunController : Api.Controller.PayrunController
     [NotFoundResponse]
     [ApiOperationId("GetPayrun")]
     public async Task<ActionResult<ApiObject.Payrun>> GetPayrunAsync(
-        int tenantId, int payrunId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, payrunId);
-    }
+        int tenantId, int payrunId) =>
+        await GetAsync(tenantId, payrunId);
 
     /// <summary>
     /// Add a new payrun
@@ -73,16 +58,8 @@ public class PayrunController : Api.Controller.PayrunController
     [UnprocessableEntityResponse]
     [ApiOperationId("CreatePayrun")]
     public async Task<ActionResult<ApiObject.Payrun>> CreatePayrunAsync(
-        int tenantId, ApiObject.Payrun payrun)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await CreateAsync(tenantId, payrun);
-    }
+        int tenantId, ApiObject.Payrun payrun) =>
+        await CreateAsync(tenantId, payrun);
 
     /// <summary>
     /// Update a payrun
@@ -96,16 +73,8 @@ public class PayrunController : Api.Controller.PayrunController
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdatePayrun")]
     public async Task<ActionResult<ApiObject.Payrun>> UpdatePayrunAsync(
-        int tenantId, ApiObject.Payrun payrun)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await UpdateAsync(tenantId, payrun);
-    }
+        int tenantId, ApiObject.Payrun payrun) =>
+        await UpdateAsync(tenantId, payrun);
 
     /// <summary>
     /// Rebuild payrun
@@ -115,16 +84,8 @@ public class PayrunController : Api.Controller.PayrunController
     [HttpPut("{payrunId}/rebuild")]
     [NotFoundResponse]
     [ApiOperationId("RebuildPayrun")]
-    public async Task<ActionResult> RebuildPayrunAsync(int tenantId, int payrunId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await RebuildAsync(tenantId, payrunId);
-    }
+    public async Task<ActionResult> RebuildPayrunAsync(int tenantId, int payrunId) =>
+        await RebuildAsync(tenantId, payrunId);
 
     /// <summary>
     /// Delete a payrun
@@ -133,14 +94,6 @@ public class PayrunController : Api.Controller.PayrunController
     /// <param name="payrunId">The id of the payrun</param>
     [HttpDelete("{payrunId}")]
     [ApiOperationId("DeletePayrun")]
-    public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, payrunId);
-    }
+    public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId) =>
+        await DeleteAsync(tenantId, payrunId);
 }

@@ -66,7 +66,7 @@ public class CalendarMonthPayrollPeriod : IPayrollPeriod
 
     /// <inheritdoc />
     public IPayrollPeriod GetPayrollPeriod(DateTime moment, int offset = 0) =>
-        offset == 0 ? new(Culture, Calendar, moment) :
+        offset == 0 ? new CalendarMonthPayrollPeriod(Culture, Calendar, moment) :
             new CalendarMonthPayrollPeriod(Culture, Calendar, moment.AddMonths(offset));
 
     #endregion

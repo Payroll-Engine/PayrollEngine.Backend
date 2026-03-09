@@ -11,16 +11,16 @@ namespace PayrollEngine.Api.Model;
 public class PayrunJobInvocation : ApiObjectBase
 {
     /// <summary>
-    /// The payrun id (immutable)
+    /// The payrun name (immutable)
     /// </summary>
     [Required]
-    public int PayrunId { get; set; }
+    public string PayrunName { get; set; }
 
     /// <summary>
-    /// The user id (immutable)
+    /// The user identifier (immutable)
     /// </summary>
     [Required]
-    public int UserId { get; set; }
+    public string UserIdentifier { get; set; }
 
     /// <summary>
     /// The payrun job id (immutable)
@@ -98,7 +98,7 @@ public class PayrunJobInvocation : ApiObjectBase
     /// <summary>
     /// The function log level, default is information
     /// </summary>
-    public LogLevel LogLevel { get; set; } = LogLevel.Information;
+    public LogLevel LogLevel { get; set; }
 
     /// <summary>
     /// The payrun employee identifiers

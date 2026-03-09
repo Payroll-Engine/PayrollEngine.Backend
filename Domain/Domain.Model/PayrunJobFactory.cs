@@ -8,14 +8,16 @@ namespace PayrollEngine.Domain.Model;
 public static class PayrunJobFactory
 {
     /// <summary>
-    /// Create a new news payrun job
+    /// Create a new payrun job
     /// </summary>
     /// <param name="jobInvocation">The job invocation</param>
+    /// <param name="payrunId">The resolved payrun id</param>
+    /// <param name="userId">The resolved user id</param>
     /// <param name="divisionId">The division id</param>
     /// <param name="payrollId">The payroll id</param>
     /// <param name="payrollCalculator">The payroll calculator</param>
-    public static PayrunJob CreatePayrunJob(PayrunJobInvocation jobInvocation, int divisionId, int payrollId,
-        IPayrollCalculator payrollCalculator)
+    public static PayrunJob CreatePayrunJob(PayrunJobInvocation jobInvocation, int payrunId, int userId,
+        int divisionId, int payrollId, IPayrollCalculator payrollCalculator)
     {
         // evaluation date: treat undefined as now
         if (!jobInvocation.EvaluationDate.HasValue || jobInvocation.EvaluationDate.Value == Date.MinValue)
@@ -37,10 +39,10 @@ public static class PayrunJobFactory
         var payrunJob = new PayrunJob
         {
             // invocation
-            PayrunId = jobInvocation.PayrunId,
+            PayrunId = payrunId,
             PayrollId = payrollId,
             DivisionId = divisionId,
-            CreatedUserId = jobInvocation.UserId,
+            CreatedUserId = userId,
             ParentJobId = jobInvocation.ParentJobId,
             Name = jobInvocation.Name,
             Owner = jobInvocation.Owner,

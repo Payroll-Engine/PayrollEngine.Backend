@@ -12,6 +12,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Calendars")]
 [Route("api/tenants/{tenantId}/calendars")]
+[TenantAuthorize]
 public class CalendarController : Api.Controller.CalendarController
 {
     /// <inheritdoc/>
@@ -34,12 +35,6 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("QueryCalendars")]
     public async Task<ActionResult> QueryCalendarsAsync(int tenantId, [FromQuery] Query query)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
         return await QueryItemsAsync(tenantId, query);
     }
 
@@ -52,16 +47,8 @@ public class CalendarController : Api.Controller.CalendarController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetCalendar")]
-    public async Task<ActionResult<ApiObject.Calendar>> GetCalendarAsync(int tenantId, int calendarId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAsync(tenantId, calendarId);
-    }
+    public async Task<ActionResult<ApiObject.Calendar>> GetCalendarAsync(int tenantId, int calendarId) =>
+        await GetAsync(tenantId, calendarId);
 
     /// <summary>
     /// Add a new calendar
@@ -76,13 +63,6 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("CreateCalendar")]
     public async Task<ActionResult<ApiObject.Calendar>> CreateCalendarAsync(int tenantId, ApiObject.Calendar calendar)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // calendar check
         if (!MapApiToDomain(calendar).ValidTimeUnits())
         {
@@ -105,13 +85,6 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("UpdateCalendar")]
     public async Task<ActionResult<ApiObject.Calendar>> UpdateCalendarAsync(int tenantId, ApiObject.Calendar calendar)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // calendar check
         if (!MapApiToDomain(calendar).ValidTimeUnits())
         {
@@ -128,16 +101,8 @@ public class CalendarController : Api.Controller.CalendarController
     /// <param name="calendarId">The id of the calendar</param>
     [HttpDelete("{calendarId}")]
     [ApiOperationId("DeleteCalendar")]
-    public async Task<IActionResult> DeleteCalendarAsync(int tenantId, int calendarId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAsync(tenantId, calendarId);
-    }
+    public async Task<IActionResult> DeleteCalendarAsync(int tenantId, int calendarId) =>
+        await DeleteAsync(tenantId, calendarId);
 
     /// <summary>
     /// Get calendar period
@@ -158,16 +123,8 @@ public class CalendarController : Api.Controller.CalendarController
     [ApiOperationId("GetCalendarPeriod")]
     public override async Task<ActionResult<DatePeriod>> GetCalendarPeriodAsync(int tenantId,
         [FromQuery] string cultureName, [FromQuery] string calendarName,
-        [FromQuery] DateTime? periodMoment, [FromQuery] int? offset)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetCalendarPeriodAsync(tenantId, cultureName, calendarName, periodMoment, offset);
-    }
+        [FromQuery] DateTime? periodMoment, [FromQuery] int? offset) =>
+        await base.GetCalendarPeriodAsync(tenantId, cultureName, calendarName, periodMoment, offset);
 
     /// <summary>
     /// Get calendar cycle
@@ -189,16 +146,8 @@ public class CalendarController : Api.Controller.CalendarController
     public override async Task<ActionResult<DatePeriod>> GetCalendarCycleAsync(int tenantId,
         [FromQuery] string cultureName, [FromQuery] string calendarName,
         [FromQuery] DateTime? cycleMoment,
-        [FromQuery] int? offset)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetCalendarCycleAsync(tenantId, cultureName, calendarName, cycleMoment, offset);
-    }
+        [FromQuery] int? offset) =>
+        await base.GetCalendarCycleAsync(tenantId, cultureName, calendarName, cycleMoment, offset);
 
     /// <summary>
     /// Calculate calendar value
@@ -219,14 +168,6 @@ public class CalendarController : Api.Controller.CalendarController
     public override async Task<ActionResult<decimal?>> CalculateCalendarValueAsync(int tenantId,
         [FromQuery][Required] decimal value, [FromQuery] string cultureName, [FromQuery] string calendarName,
         [FromQuery] DateTime? evaluationDate, [FromQuery] DateTime? evaluationPeriodDate
-       )
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.CalculateCalendarValueAsync(tenantId, value, cultureName, calendarName, evaluationDate, evaluationPeriodDate);
-    }
+       ) =>
+        await base.CalculateCalendarValueAsync(tenantId, value, cultureName, calendarName, evaluationDate, evaluationPeriodDate);
 }

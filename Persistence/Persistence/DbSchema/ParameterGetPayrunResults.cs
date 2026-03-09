@@ -12,4 +12,5 @@ public static class ParameterGetPayrunResults
     public static readonly string Forecast = "@forecast";
     public static readonly string JobStatus = "@jobStatus";
     public static readonly string EvaluationDate = "@evaluationDate";
+    public static readonly string NoRetro = "@noRetro";
 }

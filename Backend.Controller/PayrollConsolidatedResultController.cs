@@ -13,6 +13,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Payroll consolidated results")]
 [Route("api/tenants/{tenantId}/payrollresults/consolidated")]
+[TenantAuthorize]
 public class PayrollConsolidatedResultController : Api.Controller.PayrollConsolidatedResultController
 {
     /// <inheritdoc/>
@@ -43,13 +44,6 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] string forecast, [FromQuery] PayrunJobStatus? jobStatus,
         [FromQuery] string[] tags)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         var results = await Service.GetPayrollResultAsync(Runtime.DbContext,
             new()
             {
@@ -86,13 +80,6 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] string[] collectorNames, [FromQuery] string forecast,
         [FromQuery] PayrunJobStatus? jobStatus, [FromQuery] string[] tags, [FromQuery] DateTime? evaluationDate)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // periods
         if (periodStarts == null || !periodStarts.Any())
         {
@@ -137,13 +124,6 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] decimal[] wageTypeNumbers, [FromQuery] string forecast,
         [FromQuery] string[] tags, [FromQuery] DateTime? evaluationDate, [FromQuery] PayrunJobStatus? jobStatus)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // periods
         if (periodStarts == null || !periodStarts.Any())
         {
@@ -188,13 +168,6 @@ public class PayrollConsolidatedResultController : Api.Controller.PayrollConsoli
         [FromQuery] int? divisionId, [FromQuery] string[] resultNames, [FromQuery] string forecast,
         [FromQuery] string[] tags, [FromQuery] DateTime? evaluationDate, [FromQuery] PayrunJobStatus? jobStatus)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // periods
         if (periodStarts == null || !periodStarts.Any())
         {

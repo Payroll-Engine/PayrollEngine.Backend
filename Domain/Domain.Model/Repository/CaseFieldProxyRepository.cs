@@ -1,9 +1,10 @@
 ﻿//#define CASE_FIELD_LOAD
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace PayrollEngine.Domain.Model.Repository;
 
@@ -22,6 +23,7 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
     }
 
     private IDictionary<CaseFieldKey, List<ChildCaseField>> derivedCaseFields;
+    private readonly SemaphoreSlim loadLock = new(1, 1);
 
     /// <summary>
     /// The payroll repository
@@ -140,35 +142,56 @@ public class CaseFieldProxyRepository : ICaseFieldProxyRepository
             return;
         }
 
+        await loadLock.WaitAsync();
+        try
+        {
+            // double-check
+            if (derivedCaseFields != null)
+            {
+                return;
+            }
+
 #if CASE_FIELD_LOAD
             var stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 #endif
 
-        derivedCaseFields = new Dictionary<CaseFieldKey, List<ChildCaseField>>();
+            var tempDict = new Dictionary<CaseFieldKey, List<ChildCaseField>>();
 
-        // load derived case fields
-        var caseFields = (await PayrollRepository.GetDerivedCaseFieldsAsync(context,
-            new()
+            var caseFields = (await PayrollRepository.GetDerivedCaseFieldsAsync(context,
+                new()
+                {
+                    TenantId = TenantId,
+                    PayrollId = PayrollId,
+                    RegulationDate = RegulationDate,
+                    EvaluationDate = EvaluationDate
+                },
+                clusterSet: ClusterSet,
+                overrideType: OverrideType.Active)).ToList();
+
+            var caseFieldsByName = caseFields.GroupBy(x => x.Name, x => x);
+            foreach (var caseFieldByName in caseFieldsByName)
             {
-                TenantId = TenantId,
-                PayrollId = PayrollId,
-                RegulationDate = RegulationDate,
-                EvaluationDate = EvaluationDate
-            },
-            clusterSet: ClusterSet,
-            overrideType: OverrideType.Active)).ToList();
+                tempDict.Add(new(PayrollId, caseFieldByName.Key), caseFieldByName.ToList());
+            }
 
-        // group by case field name
-        var caseFieldsByName = caseFields.GroupBy(x => x.Name, x => x);
-        foreach (var caseFieldByName in caseFieldsByName)
-        {
-            derivedCaseFields.Add(new(PayrollId, caseFieldByName.Key), caseFieldByName.ToList());
-        }
+            if (tempDict.Count == 0)
+            {
+                throw new PayrollException("Missing case fields");
+            }
+
+            // // atomic assignment: only after complete load
+            derivedCaseFields = tempDict;
 
 #if CASE_FIELD_LOAD
             stopwatch.Stop();
             PayrollEngine.Log.Information($"Load case fields ({caseFields.Count()} fields): {stopwatch.ElapsedMilliseconds} ms");
 #endif
+
+        }
+        finally
+        {
+            loadLock.Release();
+        }
     }
 }

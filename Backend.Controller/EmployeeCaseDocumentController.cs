@@ -9,6 +9,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Employee case documents")]
 [Route("api/tenants/{tenantId}/employees/{employeeId}/cases/{caseValueId}/documents")]
+[TenantAuthorize]
 public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumentController
 {
     /// <inheritdoc/>
@@ -34,26 +35,17 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
     public async Task<ActionResult> QueryEmployeeCaseDocumentsAsync(int tenantId, int employeeId, 
         int caseValueId, [FromQuery] Query query)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // employee check
         var parentEmployeeId = await ParentService.GetParentIdAsync(Runtime.DbContext, caseValueId);
         if (parentEmployeeId != employeeId)
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
-
         // case value check
         if (!await ParentService.ExistsAsync(Runtime.DbContext, caseValueId))
         {
             return BadRequest($"Unknown case value with id {caseValueId}");
         }
-
         return await QueryItemsAsync(caseValueId, query);
     }
 
@@ -72,25 +64,16 @@ public class EmployeeCaseDocumentController : Api.Controller.EmployeeCaseDocumen
     public async Task<ActionResult<ApiObject.CaseDocument>> GetEmployeeCaseDocumentAsync(int tenantId, 
         int employeeId, int caseValueId, int documentId)
     {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-
         // employee check
         if (!await ParentService.ExistsAsync(Runtime.DbContext, employeeId))
         {
             return BadRequest($"Unknown employee with id {employeeId}");
         }
-
         // case value check
         if (!await Service.ExistsAsync(Runtime.DbContext, caseValueId))
         {
             return BadRequest($"Unknown case value with id {caseValueId}");
         }
-
         return await GetAsync(caseValueId, documentId);
     }
 }

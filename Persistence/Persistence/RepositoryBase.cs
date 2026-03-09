@@ -7,6 +7,10 @@ using SqlKata.Compilers;
 
 namespace PayrollEngine.Persistence;
 
+/// <summary>
+/// Low-level base class for all repositories. Provides SQL query compilation via SqlKata
+/// and thin Dapper wrappers for SELECT, INSERT, UPDATE, DELETE, and scalar operations.
+/// </summary>
 public abstract class RepositoryBase
 {
     private readonly SqlServerCompiler compiler = new()

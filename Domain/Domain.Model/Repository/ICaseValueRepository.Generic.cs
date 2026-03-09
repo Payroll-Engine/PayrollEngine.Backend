@@ -41,14 +41,4 @@ public interface ICaseValueRepository<TDomain> : IChildDomainRepository<TDomain>
     /// <returns>The case values</returns>
     Task<IEnumerable<CaseValue>> GetPeriodCaseValuesAsync(IDbContext context, DomainCaseValueQuery query, DatePeriod period,
         string caseFieldName = null, DateTime? evaluationDate = null);
-
-    /// <summary>
-    /// Get retro case values from a certain time period
-    /// </summary>
-    /// <param name="context">The database context</param>
-    /// <param name="query">The case value query</param>
-    /// <param name="period">The date period</param>
-    /// <param name="caseFieldName">The case field name</param>
-    /// <returns>The retro case value</returns>
-    Task<CaseValue> GetRetroCaseValueAsync(IDbContext context, DomainCaseValueQuery query, DatePeriod period, string caseFieldName);
 }

@@ -183,7 +183,7 @@ internal abstract class CollectorResultCommandBase(IDbContext context) : ResultC
         }
 
         // forecast
-        if (!string.IsNullOrWhiteSpace(query.Forecast))
+        if (!string.IsNullOrWhiteSpace(query.Forecast))  
         {
             parameters.Add(DbSchema.ParameterGetCollectorResults.Forecast, query.Forecast);
         }
@@ -198,6 +198,18 @@ internal abstract class CollectorResultCommandBase(IDbContext context) : ResultC
         if (query.EvaluationDate.HasValue)
         {
             parameters.Add(DbSchema.ParameterGetCollectorResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
+        }
+
+        // no retro: exclude incremental retro jobs, return only original main-job payslip values per period
+        if (query.NoRetro)
+        {
+            parameters.Add(DbSchema.ParameterGetCollectorResults.NoRetro, true, DbType.Boolean);
+        }
+
+        // exclude retro jobs of the current payrun only: retro jobs from earlier payruns remain visible
+        if (query.ExcludeParentJobId.HasValue)
+        {
+            parameters.Add(DbSchema.ParameterGetCollectorResults.ExcludeParentJobId, query.ExcludeParentJobId.Value, DbType.Int32);
         }
 
         return parameters;

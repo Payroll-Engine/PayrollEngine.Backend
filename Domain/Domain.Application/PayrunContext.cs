@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Scripting;
 using PayrollEngine.Domain.Model.Repository;
@@ -22,12 +23,12 @@ internal sealed class PayrunContext : IRegulationProvider
     internal PayrunJob PayrunJob { get; set; }
     internal PayrunJob ParentPayrunJob { get; set; }
     internal List<RetroPayrunJob> RetroPayrunJobs { get; set; }
-    internal PayrunExecutionPhase ExecutionPhase { get; set; }
 
     internal IPayrollCalculator Calculator { get; set; }
     internal ICaseFieldProvider CaseFieldProvider { get; set; }
 
     internal DateTime EvaluationDate { get; set; }
+
     internal DateTime? RetroDate { get; init; }
     internal DatePeriod EvaluationPeriod { get; set; }
 
@@ -36,7 +37,8 @@ internal sealed class PayrunContext : IRegulationProvider
     internal CaseValueCache CompanyCaseValues { get; set; }
 
     internal List<Regulation> DerivedRegulations { get; set; }
-    internal ILookup<string, DerivedCollector> DerivedCollectors { get; set; }
+    /// <summary>Loaded once, used as clone source per employee</summary>
+    internal ILookup<string, DerivedCollector> SourceDerivedCollectors { get; set; }
     internal ILookup<decimal, DerivedWageType> DerivedWageTypes { get; set; }
 
     internal IRegulationLookupProvider RegulationLookupProvider { get; set; }
@@ -44,7 +46,8 @@ internal sealed class PayrunContext : IRegulationProvider
 
     #region IRegulationProvider
 
-    ILookup<string, DerivedCollector> IRegulationProvider.DerivedCollectors => DerivedCollectors;
+    // DerivedCollectors is not available at payrun level (only per employee via PayrunEmployeeScope)
+    ILookup<string, DerivedCollector> IRegulationProvider.DerivedCollectors => null;
     ILookup<decimal, DerivedWageType> IRegulationProvider.DerivedWageTypes => DerivedWageTypes;
 
     #endregion
@@ -52,31 +55,19 @@ internal sealed class PayrunContext : IRegulationProvider
     #region Calendar and Culture
 
     internal string CalendarName { get; set; }
-    internal string PayrollCulture => payrollCultures.Peek();
+    internal string PayrollCulture { get; private set; }
 
-    private readonly Stack<string> payrollCultures = new();
-
-    internal void PushPayrollCulture(string culture)
+    internal void SetPayrollCulture(string culture)
     {
-        payrollCultures.Push(culture);
-    }
-
-    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
-    internal void PopPayrollCulture(string culture)
-    {
-        if (!payrollCultures.Any() || !string.Equals(PayrollCulture, culture))
-        {
-            throw new InvalidOperationException();
-        }
-        payrollCultures.Pop();
+        PayrollCulture = culture ?? throw new ArgumentNullException(nameof(culture));
     }
 
     #endregion
 
     /// <summary>
-    /// Collected errors
+    /// Collected errors – ConcurrentDictionary so parallel employee threads can add safely.
     /// </summary>
-    internal Dictionary<Employee, Exception> Errors { get; } = new();
+    internal ConcurrentDictionary<Employee, Exception> Errors { get; } = new();
 
     internal string GetErrorMessages()
     {

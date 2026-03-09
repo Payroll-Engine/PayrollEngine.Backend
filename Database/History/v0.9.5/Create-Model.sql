@@ -9707,4 +9707,4 @@ END
 ELSE BEGIN
 	PRINT 'Payroll Engine database version successfully updated to release 0.9.5'
 END
-
+GO

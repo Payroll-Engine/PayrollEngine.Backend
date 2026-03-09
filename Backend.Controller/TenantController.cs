@@ -11,6 +11,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Tenants")]
 [Route("api/tenants")]
+[TenantAuthorize]
 public class TenantController : Api.Controller.TenantController
 {
     /// <inheritdoc/>
@@ -31,6 +32,7 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("QueryTenants")]
+    [SkipTenantAuth]
     public async Task<ActionResult> QueryTenantsAsync([FromQuery] Query query) =>
         await QueryItemsAsync(query);
 
@@ -45,6 +47,7 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("CreateTenant")]
+    [SkipTenantAuth]
     public async Task<ActionResult<ApiObject.Tenant>> CreateTenantAsync(ApiObject.Tenant tenant)
     {
         // unique tenant by identifier
@@ -66,6 +69,7 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("UpdateTenant")]
+    [SkipTenantAuth]
     public async Task<ActionResult<ApiObject.Tenant>> UpdateTenantAsync(ApiObject.Tenant tenant) =>
         await UpdateAsync(tenant);
 
@@ -76,6 +80,7 @@ public class TenantController : Api.Controller.TenantController
     /// <param name="tenantId">The tenant id</param>
     [HttpDelete("{tenantId}")]
     [ApiOperationId("DeleteTenant")]
+    [SkipTenantAuth]
     public async Task<IActionResult> DeleteTenantAsync(int tenantId) =>
         await DeleteAsync(tenantId);
 
@@ -89,6 +94,7 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [UnprocessableEntityResponse]
     [ApiOperationId("GetTenant")]
+    [SkipTenantAuth]
     public async Task<ActionResult<ApiObject.Tenant>> GetTenantAsync(int tenantId) =>
         await GetAsync(tenantId);
 
@@ -103,16 +109,8 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [ApiOperationId("GetTenantSharedRegulations")]
     public override async Task<ActionResult<IEnumerable<ApiObject.Regulation>>> GetSharedRegulationsAsync(
-        int tenantId, [FromQuery] int? divisionId)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetSharedRegulationsAsync(tenantId, divisionId);
-    }
+        int tenantId, [FromQuery] int? divisionId) =>
+        await base.GetSharedRegulationsAsync(tenantId, divisionId);
 
     /// <summary>
     /// Get the system script actions
@@ -125,16 +123,8 @@ public class TenantController : Api.Controller.TenantController
     [ApiOperationId("GetSystemScriptActions")]
     [QueryIgnore]
     public override async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionsAsync(
-        int tenantId, FunctionType functionType = FunctionType.All)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetSystemScriptActionsAsync(tenantId, functionType);
-    }
+        int tenantId, FunctionType functionType = FunctionType.All) =>
+        await base.GetSystemScriptActionsAsync(tenantId, functionType);
 
     /// <summary>
     /// Get the system script action properties
@@ -148,16 +138,8 @@ public class TenantController : Api.Controller.TenantController
     [ApiOperationId("GetSystemScriptActionProperties")]
     [QueryIgnore]
     public override async Task<ActionResult<IEnumerable<ApiObject.ActionInfo>>> GetSystemScriptActionPropertiesAsync(
-        int tenantId, FunctionType functionType = FunctionType.All, bool readOnly = true)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.GetSystemScriptActionPropertiesAsync(tenantId, functionType, readOnly);
-    }
+        int tenantId, FunctionType functionType = FunctionType.All, bool readOnly = true) =>
+        await base.GetSystemScriptActionPropertiesAsync(tenantId, functionType, readOnly);
 
     /// <summary>
     /// Execute a report query
@@ -178,16 +160,8 @@ public class TenantController : Api.Controller.TenantController
     [QueryIgnore]
     public override async Task<ActionResult<DataTable>> ExecuteReportQueryAsync(int tenantId,
         [FromQuery] string methodName, [FromQuery] string culture,
-        [FromBody] Dictionary<string, string> parameters = null)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await base.ExecuteReportQueryAsync(tenantId, methodName, culture, parameters);
-    }
+        [FromBody] Dictionary<string, string> parameters = null) =>
+        await base.ExecuteReportQueryAsync(tenantId, methodName, culture, parameters);
 
     #region Attributes
 
@@ -203,16 +177,8 @@ public class TenantController : Api.Controller.TenantController
     [UnprocessableEntityResponse]
     [ApiOperationId("GetTenantAttribute")]
     public virtual async Task<ActionResult<string>> GetTenantAttributeAsync(
-        int tenantId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await GetAttributeAsync(tenantId, attributeName);
-    }
+        int tenantId, string attributeName) =>
+        await GetAttributeAsync(tenantId, attributeName);
 
     /// <summary>
     /// Set a tenant attribute
@@ -227,16 +193,8 @@ public class TenantController : Api.Controller.TenantController
     [UnprocessableEntityResponse]
     [ApiOperationId("SetTenantAttribute")]
     public virtual async Task<ActionResult<string>> SetTenantAttributeAsync(
-        int tenantId, string attributeName, [FromBody] string value)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await SetAttributeAsync(tenantId, attributeName, value);
-    }
+        int tenantId, string attributeName, [FromBody] string value) =>
+        await SetAttributeAsync(tenantId, attributeName, value);
 
     /// <summary>
     /// Delete a tenant attribute
@@ -247,16 +205,8 @@ public class TenantController : Api.Controller.TenantController
     [HttpDelete("{tenantId}/attributes/{attributeName}")]
     [ApiOperationId("DeleteTenantAttribute")]
     public virtual async Task<ActionResult<bool>> DeleteTenantAttributeAsync(
-        int tenantId, string attributeName)
-    {
-        // authorization
-        var authResult = await TenantRequestAsync(tenantId);
-        if(authResult != null)
-        {
-            return authResult;
-        }
-        return await DeleteAttributeAsync(tenantId, attributeName);
-    }
+        int tenantId, string attributeName) =>
+        await DeleteAttributeAsync(tenantId, attributeName);
 
     #endregion
 

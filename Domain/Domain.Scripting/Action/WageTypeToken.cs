@@ -16,7 +16,9 @@ internal sealed class WageTypeToken : TokenBase
         /// <summary>Wage type period value (default)</summary>
         Period,
         /// <summary>Wage type cycle value, the year-to-date value</summary>
-        Cycle
+        Cycle,
+        /// <summary>Sum of retro corrections for the wage type within the current cycle</summary>
+        RetroSum
     }
 
     /// <summary>Default constructor</summary>
@@ -48,6 +50,7 @@ internal sealed class WageTypeToken : TokenBase
         {
             ValueScope.Period => ValueScope.Period,
             ValueScope.Cycle => ValueScope.Cycle,
+            ValueScope.RetroSum => ValueScope.RetroSum,
             _ => ValueScope.Period
         };
 
@@ -68,6 +71,9 @@ internal sealed class WageTypeToken : TokenBase
             case ValueScope.Cycle:
                 // wage type cycle value
                 return new(parseData, $"{nameof(WageTypeFunction.GetCycleWageTypeValue)}(\"{wageTypeName}\")");
+            case ValueScope.RetroSum:
+                // sum of retro corrections for the wage type within the current cycle
+                return new(parseData, $"{nameof(WageTypeFunction.GetRetroWageTypeValueSum)}(\"{wageTypeName}\")");
             default:
                 throw new ArgumentOutOfRangeException();
         }
