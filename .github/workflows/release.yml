@@ -194,9 +194,9 @@ jobs:
           cache-to: type=gha,mode=max
 
       # ── Generate swagger.json (Backend only) ────────
-      # Swashbuckle CLI installed as a global tool so 'swagger' is on PATH.
-      # Version must match Swashbuckle.AspNetCore PackageReference in Api.Core.
-      # Global tools are invoked without the 'dotnet' prefix: 'swagger tofile'.
+      # Swashbuckle follows .NET major versioning: library 10.x → CLI 10.x.
+      # Installed as a global tool (on PATH); invoked as 'swagger tofile'
+      # (without 'dotnet' prefix).
       - name: Setup .NET (for swagger generation)
         if: contains(github.repository, 'Backend')
         uses: actions/setup-dotnet@v4
@@ -213,7 +213,7 @@ jobs:
             --password ${{ secrets.PAT_DISPATCH }} \
             --store-password-in-clear-text
 
-          dotnet tool install --global Swashbuckle.AspNetCore.Cli --version 6.5.0
+          dotnet tool install --global Swashbuckle.AspNetCore.Cli --version 10.1.4
 
           dotnet restore
           dotnet build --configuration Release --no-restore
