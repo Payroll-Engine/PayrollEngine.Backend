@@ -186,7 +186,7 @@ The server configuration file `appsettings.json` contains the following settings
 
 | Setting                    | Description                                                 | Type       | Default        |
 |:--|:--|:--|:--|
-| `MaxParallelEmployees`     | Parallelism for employee processing <sup>6)</sup>           | string     | `0` (sequential) |
+| `MaxParallelEmployees`     | Parallelism for employee processing <sup>6)</sup>           | string     | `0` (auto, ProcessorCount) |
 | `MaxRetroPayrunPeriods`    | Maximum retro payrun periods per employee <sup>7)</sup>     | int        | 0 (unlimited)  |
 | `LogEmployeeTiming`        | Log employee processing timing                              | bool       | false          |
 
@@ -214,7 +214,7 @@ The server configuration file `appsettings.json` contains the following settings
 <sup>3)</sup> `HiddenControllers` cannot be combined with `VisibleControllers`.<br />
 <sup>4)</sup> Audit trail is not supported on bulk lookup values import.<br />
 <sup>5)</sup> Stores compilation scripts to the `ScriptDump` folder. Analysis feature only.<br />
-<sup>6)</sup> Values: `0` or `off` = sequential, `half` = ProcessorCount/2, `max` = ProcessorCount, `-1` = automatic, `1`–`N` = explicit thread count.<br />
+<sup>6)</sup> Values: `0` (or empty) = auto (ProcessorCount, default), `off` or `-1` = sequential (no parallelism), `half` = ProcessorCount/2, `max` = ProcessorCount, `1`–`N` = explicit thread count.<br />
 <sup>7)</sup> Safety guard against runaway retro calculations. 0 = no limit.<br />
 <sup>8)</sup> When enabled, scripts are checked for banned API usage (`System.IO`, `System.Net`, `System.Diagnostics`, `System.Reflection`, etc.) before the assembly is emitted. Adds ~300 ms per compilation. Enable to harden script execution against unauthorized BCL access.<br />
 <sup>9)</sup> Used exclusively by Swagger UI to obtain tokens for the interactive API explorer. Not required for production API authentication.<br />

@@ -70,10 +70,10 @@ public class PayrollServerConfiguration
 
     /// <summary>
     /// Maximum degree of parallelism for employee processing.
-    /// 0 or off = sequential (default, no parallelism)
+    /// null or empty or 0 = auto (default, based on Environment.ProcessorCount)
+    /// off or -1 = sequential (no parallelism, useful for debugging)
     /// half = half CPU load, good balance
-    /// max = half CPU load, Full CPU utilization; monitor DB load
-    /// -1 = automatic (based on Environment.ProcessorCount),
+    /// max = full CPU utilization; monitor DB load
     /// 1 to N = explicit maximum thread count.
     /// </summary>
     public string MaxParallelEmployees { get; init; }
@@ -86,17 +86,20 @@ public class PayrollServerConfiguration
             case null:
             case "":
             case "0":
+                count = Environment.ProcessorCount;
+                break;
             case "off":
+            case "-1":
                 count = 0;
                 break;
             case "half":
-                count = Environment.ProcessorCount / 2;
+                count = Math.Max(1, Environment.ProcessorCount / 2);
                 break;
             case "max":
                 count = Environment.ProcessorCount;
                 break;
             default:
-                if (!int.TryParse(MaxParallelEmployees, out count) || count < -1)
+                if (!int.TryParse(MaxParallelEmployees, out count) || count < 1)
                 {
                     throw new ArgumentException($"Invalid MaxParallelEmployees value: {MaxParallelEmployees}");
                 }
