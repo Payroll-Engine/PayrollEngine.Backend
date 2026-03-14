@@ -58,6 +58,12 @@ internal abstract class QueryBuilderBase
                 queryOptions.Add(QuerySpecification.SelectOperation, query.Select);
             }
 
+            // apply
+            if (!string.IsNullOrWhiteSpace(query.Apply))
+            {
+                queryOptions.Add(QuerySpecification.ApplyOperation, query.Apply);
+            }
+
             // ignore paging in count mode
             if (queryMode == QueryMode.Item)
             {
@@ -215,7 +221,18 @@ internal abstract class QueryBuilderBase
         // filter
         if (filterClause != null)
         {
-            query = filterClause.Expression.Accept(new FilterClauseBuilder(query, QueryContext));
+            try
+            {
+                query = filterClause.Expression.Accept(new FilterClauseBuilder(query, QueryContext));
+            }
+            catch (QueryException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw new QueryException($"Query filter error: {exception.GetBaseMessage()}", exception);
+            }
         }
 
         if (queryMode == QueryMode.Item)

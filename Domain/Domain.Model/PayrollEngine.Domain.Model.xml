@@ -7929,6 +7929,20 @@
             Repository for employee case values
             </summary>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueRepository.GetTenantCaseValuesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Get case values for all active employees of a tenant at a specific point in time.
+            Returns one entry per active case value per employee, enriched with EmployeeId.
+            Uses a single JOIN query (GetEmployeeCaseValuesByTenant SP) instead of N+1 per-employee calls.
+            </summary>
+            <param name="context">The database context</param>
+            <param name="tenantId">The tenant id</param>
+            <param name="valueDate">The value date — only values active at this date (Start &lt;= valueDate &lt; End)</param>
+            <param name="evaluationDate">The evaluation date — only values created on or before this date</param>
+            <param name="caseFieldNames">Case field name filter (null = all fields)</param>
+            <param name="forecast">Forecast name (null = real values only)</param>
+            <returns>Case values for all active employees, each with EmployeeId set</returns>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IEmployeeCaseValueSetupRepository">
             <summary>
             Repository for national case value setup

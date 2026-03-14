@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<AssemblyName>PayrollEngine.Persistence.DbQuery.Tests</AssemblyName>
+		<RootNamespace>PayrollEngine.Persistence.DbQuery.Tests</RootNamespace>
+		<Description>Payroll Engine Persistence DbQuery Tests</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+		<PackageReference Include="xunit.v3" Version="3.2.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Persistence\PayrollEngine.Persistence.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -2880,8 +2880,8 @@ GO
 
 /****** Object:  Index [IX_CaseField.UniqueNamePerCase]    Script Date: 01.03.2026 22:35:19 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_CaseField.UniqueNamePerCase] ON [dbo].[CaseField] (
-  [Name] ASC,
-  [CaseId] ASC
+  [CaseId] ASC,
+  [Name] ASC
   )
   WITH (
       PAD_INDEX = OFF,
@@ -2912,7 +2912,10 @@ SET ANSI_PADDING ON
 GO
 
 /****** Object:  Index [IX_CaseRelation.SourceCaseName]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE NONCLUSTERED INDEX [IX_CaseRelation.SourceCaseName] ON [dbo].[CaseRelation] ([SourceCaseName] ASC)
+CREATE NONCLUSTERED INDEX [IX_CaseRelation.SourceCaseName] ON [dbo].[CaseRelation] (
+  [RegulationId] ASC,
+  [SourceCaseName] ASC
+  )
   WITH (
       PAD_INDEX = OFF,
       STATISTICS_NORECOMPUTE = OFF,
@@ -2928,7 +2931,10 @@ SET ANSI_PADDING ON
 GO
 
 /****** Object:  Index [IX_CaseRelation.TargetCaseName]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetCaseName] ON [dbo].[CaseRelation] ([TargetCaseName] ASC)
+CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetCaseName] ON [dbo].[CaseRelation] (
+  [RegulationId] ASC,
+  [TargetCaseName] ASC
+  )
   WITH (
       PAD_INDEX = OFF,
       STATISTICS_NORECOMPUTE = OFF,
@@ -2944,7 +2950,10 @@ SET ANSI_PADDING ON
 GO
 
 /****** Object:  Index [IX_CaseRelation.TargetSlot]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetSlot] ON [dbo].[CaseRelation] ([TargetCaseSlot] ASC)
+CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetSlot] ON [dbo].[CaseRelation] (
+  [RegulationId] ASC,
+  [TargetCaseSlot] ASC
+  )
   WITH (
       PAD_INDEX = OFF,
       STATISTICS_NORECOMPUTE = OFF,
@@ -3055,6 +3064,28 @@ GO
 SET ANSI_PADDING ON
 GO
 
+/****** Object:  Index [IX_CompanyCaseValue.TenantId_Cover]
+-- Covering index for per-tenant company case value queries.
+-- Lead key: TenantId (matches the Unique constraint lead key and SP WHERE filter).
+-- INCLUDE eliminates Key Lookups on Value/Start/End/CancellationDate/Forecast/Created.
+******/
+CREATE NONCLUSTERED INDEX [IX_CompanyCaseValue.TenantId_Cover]
+  ON [dbo].[CompanyCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING ON
+GO
+
 /****** Object:  Index [IX_CompanyCaseValue.CaseFieldName]    Script Date: 01.03.2026 22:35:19 ******/
 CREATE NONCLUSTERED INDEX [IX_CompanyCaseValue.CaseFieldName] ON [dbo].[CompanyCaseValue] ([CaseFieldName] ASC)
   WITH (
@@ -3147,6 +3178,26 @@ GO
 SET ANSI_PADDING ON
 GO
 
+/****** Object:  Index [IX_Employee.TenantId]
+-- Supports tenant-wide employee queries (GetEmployeeCaseValuesByTenant).
+-- Lead key: TenantId enables Index Seek when filtering all active employees per tenant.
+******/
+CREATE NONCLUSTERED INDEX [IX_Employee.TenantId]
+  ON [dbo].[Employee] ([TenantId] ASC, [Status] ASC)
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING ON
+GO
+
 /****** Object:  Index [IX_Employee.UniqueIdentifierPerTenant]    Script Date: 01.03.2026 22:35:19 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_Employee.UniqueIdentifierPerTenant] ON [dbo].[Employee] (
   [Identifier] ASC,
@@ -3157,6 +3208,29 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Employee.UniqueIdentifierPerTenant] ON [dbo
       STATISTICS_NORECOMPUTE = OFF,
       SORT_IN_TEMPDB = OFF,
       IGNORE_DUP_KEY = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING ON
+GO
+
+/****** Object:  Index [IX_EmployeeCaseValue.EmployeeId_Cover]
+-- Covering index for per-employee and tenant-wide case value queries.
+-- Lead key: EmployeeId for the per-employee SP filter (WHERE EmployeeId = @parentId).
+-- INCLUDE covers Start/End/Value/CancellationDate/Forecast/Created to avoid Key Lookups
+-- on the GetEmployeeCaseValues and GetEmployeeCaseValuesByTenant hot paths.
+******/
+CREATE NONCLUSTERED INDEX [IX_EmployeeCaseValue.EmployeeId_Cover]
+  ON [dbo].[EmployeeCaseValue] ([EmployeeId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
       DROP_EXISTING = OFF,
       ONLINE = OFF,
       ALLOW_ROW_LOCKS = ON,
@@ -3246,6 +3320,28 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_EmployeeDivision.UniqueEmployeePerDivision]
       STATISTICS_NORECOMPUTE = OFF,
       SORT_IN_TEMPDB = OFF,
       IGNORE_DUP_KEY = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING ON
+GO
+
+/****** Object:  Index [IX_GlobalCaseValue.TenantId_Cover]
+-- Covering index for per-tenant global case value queries.
+-- Lead key: TenantId (matches the Unique constraint lead key and SP WHERE filter).
+-- INCLUDE eliminates Key Lookups on Value/Start/End/CancellationDate/Forecast/Created.
+******/
+CREATE NONCLUSTERED INDEX [IX_GlobalCaseValue.TenantId_Cover]
+  ON [dbo].[GlobalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
       DROP_EXISTING = OFF,
       ONLINE = OFF,
       ALLOW_ROW_LOCKS = ON,
@@ -3360,14 +3456,36 @@ GO
 
 /****** Object:  Index [IX_LookupValue.UniqueValueKeyPerLookup]    Script Date: 01.03.2026 22:35:19 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_LookupValue.UniqueValueKeyPerLookup] ON [dbo].[LookupValue] (
-  [LookupHash] ASC,
-  [LookupId] ASC
+  [LookupId] ASC,
+  [LookupHash] ASC
   )
   WITH (
       PAD_INDEX = OFF,
       STATISTICS_NORECOMPUTE = OFF,
       SORT_IN_TEMPDB = OFF,
       IGNORE_DUP_KEY = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING ON
+GO
+
+/****** Object:  Index [IX_NationalCaseValue.TenantId_Cover]
+-- Covering index for per-tenant national case value queries.
+-- Lead key: TenantId (matches the Unique constraint lead key and SP WHERE filter).
+-- INCLUDE eliminates Key Lookups on Value/Start/End/CancellationDate/Forecast/Created.
+******/
+CREATE NONCLUSTERED INDEX [IX_NationalCaseValue.TenantId_Cover]
+  ON [dbo].[NationalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
       DROP_EXISTING = OFF,
       ONLINE = OFF,
       ALLOW_ROW_LOCKS = ON,
@@ -3471,7 +3589,7 @@ SET ANSI_PADDING ON
 GO
 
 /****** Object:  Index [IX_Regulation.UniqueNamePerTenant]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueNamePerTenant] ON [dbo].[Payroll] (
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueNamePerTenant] ON [dbo].[Regulation] (
   [Name] ASC,
   [TenantId] ASC
   )
@@ -3605,19 +3723,6 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Payrun.UniqueNamePerPayroll] ON [dbo].[Payr
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_PayrunJob.JobStatus]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE NONCLUSTERED INDEX [IX_PayrunJob.JobStatus] ON [dbo].[PayrunJob] ([JobStatus] DESC)
-  WITH (
-      PAD_INDEX = OFF,
-      STATISTICS_NORECOMPUTE = OFF,
-      SORT_IN_TEMPDB = OFF,
-      DROP_EXISTING = OFF,
-      ONLINE = OFF,
-      ALLOW_ROW_LOCKS = ON,
-      ALLOW_PAGE_LOCKS = ON
-      ) ON [PRIMARY]
-GO
-
 /****** Object:  Index [IX_PayrunJob.ParentJob]    Script Date: 01.03.2026 22:35:19 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrunJob.ParentJob] ON [dbo].[PayrunJob] ([ParentJobId] ASC)
   WITH (
@@ -3666,8 +3771,8 @@ GO
 
 /****** Object:  Index [IX_PayrunParameter.UniqueNamePerPayrun]    Script Date: 01.03.2026 22:35:19 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IX_PayrunParameter.UniqueNamePerPayrun] ON [dbo].[PayrunParameter] (
-  [Name] ASC,
-  [Id] ASC
+  [PayrunId] ASC,
+  [Name] ASC
   )
   WITH (
       PAD_INDEX = OFF,
@@ -3851,10 +3956,10 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_ReportTemplate.UniqueTemplatePerPeport]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportTemplate.UniqueTemplatePerPeport] ON [dbo].[ReportTemplate] (
-  [Name] ASC,
-  [Id] ASC
+/****** Object:  Index [IX_ReportTemplate.UniqueTemplatePerReport]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportTemplate.UniqueTemplatePerReport] ON [dbo].[ReportTemplate] (
+  [ReportId] ASC,
+  [Name] ASC
   )
   WITH (
       PAD_INDEX = OFF,
@@ -3868,18 +3973,6 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_ReportTemplate.UniqueTemplatePerPeport] ON 
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_Script.FunctionType]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE NONCLUSTERED INDEX [IX_Script.FunctionType] ON [dbo].[Script] ([FunctionTypeMask] ASC)
-  WITH (
-      PAD_INDEX = OFF,
-      STATISTICS_NORECOMPUTE = OFF,
-      SORT_IN_TEMPDB = OFF,
-      DROP_EXISTING = OFF,
-      ONLINE = OFF,
-      ALLOW_ROW_LOCKS = ON,
-      ALLOW_PAGE_LOCKS = ON
-      ) ON [PRIMARY]
-GO
 
 SET ANSI_PADDING ON
 GO
@@ -3993,18 +4086,6 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_WageType.UniqueNumberPerRegulation] ON [dbo
       ) ON [PRIMARY]
 GO
 
-/****** Object:  Index [IX_WageType.WageTypeNumber]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE NONCLUSTERED INDEX [IX_WageType.WageTypeNumber] ON [dbo].[WageType] ([WageTypeNumber] ASC)
-  WITH (
-      PAD_INDEX = OFF,
-      STATISTICS_NORECOMPUTE = OFF,
-      SORT_IN_TEMPDB = OFF,
-      DROP_EXISTING = OFF,
-      ONLINE = OFF,
-      ALLOW_ROW_LOCKS = ON,
-      ALLOW_PAGE_LOCKS = ON
-      ) ON [PRIMARY]
-GO
 
 /****** Object:  Index [IX_WageTypeCustomResult.Employee_WageType]    Script Date: 01.03.2026 22:35:19 ******/
 -- WageTypeCustomResult
@@ -8324,6 +8405,94 @@ BEGIN
   IF EXISTS ##EmployeeCaseChangeValuePivot
     -- transaction end
     COMMIT TRANSACTION;
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[GetEmployeeCaseValuesByTenant] ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Get employee case values for all active employees of a tenant at a point in time.
+-- Single-pass JOIN query — no Global Temp Table, no N+1 per-employee calls.
+-- Supports valueDate (Start/End filter), evaluationDate, fieldNames filter, forecast.
+-- Uses: IX_Employee.TenantId + IX_EmployeeCaseValue.EmployeeId_Cover
+-- =============================================
+IF EXISTS (
+    SELECT *
+    FROM sysobjects
+    WHERE id = object_id(N'[dbo].[GetEmployeeCaseValuesByTenant]')
+      AND OBJECTPROPERTY(id, N'IsProcedure') = 1
+    )
+BEGIN
+  DROP PROCEDURE dbo.[GetEmployeeCaseValuesByTenant]
+END
+GO
+
+CREATE PROCEDURE dbo.[GetEmployeeCaseValuesByTenant]
+  -- the tenant id
+  @tenantId       AS INT,
+  -- the value date: only values active at this date are returned (Start <= valueDate < End)
+  @valueDate      AS DATETIME2(7) = NULL,
+  -- the evaluation date: only values created on or before this date are returned
+  @evaluationDate AS DATETIME2(7) = NULL,
+  -- the case field names filter: JSON array of NVARCHAR(128), NULL = all fields
+  @fieldNames     AS NVARCHAR(MAX) = NULL,
+  -- the forecast name: NULL = real values only, name = real + forecast values
+  @forecast       AS NVARCHAR(128) = NULL
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    ecv.[Id],
+    ecv.[Status],
+    ecv.[Created],
+    ecv.[Updated],
+    ecv.[EmployeeId],
+    ecv.[DivisionId],
+    ecv.[CaseName],
+    ecv.[CaseNameLocalizations],
+    ecv.[CaseFieldName],
+    ecv.[CaseFieldNameLocalizations],
+    ecv.[CaseSlot],
+    ecv.[CaseSlotLocalizations],
+    ecv.[ValueType],
+    ecv.[Value],
+    ecv.[NumericValue],
+    ecv.[Culture],
+    ecv.[CaseRelation],
+    ecv.[CancellationDate],
+    ecv.[Start],
+    ecv.[End],
+    ecv.[Forecast],
+    ecv.[Tags],
+    ecv.[Attributes]
+  FROM dbo.[EmployeeCaseValue] ecv
+  INNER JOIN dbo.[Employee] e
+    ON e.[Id] = ecv.[EmployeeId]
+  WHERE
+    e.[TenantId] = @tenantId
+    AND e.[Status] = 0
+    AND ecv.[CancellationDate] IS NULL
+    AND (@evaluationDate IS NULL OR ecv.[Created] <= @evaluationDate)
+    AND (@valueDate IS NULL OR ecv.[Start] IS NULL OR ecv.[Start] <= @valueDate)
+    AND (@valueDate IS NULL OR ecv.[End]   IS NULL OR ecv.[End]   >  @valueDate)
+    AND (
+      (@forecast IS NULL     AND ecv.[Forecast] IS NULL)
+      OR (@forecast IS NOT NULL AND (ecv.[Forecast] IS NULL OR ecv.[Forecast] = @forecast))
+    )
+    AND (
+      @fieldNames IS NULL
+      OR ecv.[CaseFieldName] IN (SELECT [value] FROM OPENJSON(@fieldNames))
+    )
+  ORDER BY
+    ecv.[EmployeeId] ASC,
+    ecv.[CaseFieldName] ASC,
+    ecv.[Created] DESC
 END
 GO
 

@@ -253,8 +253,11 @@ public class PayrollController : Api.Controller.PayrollController
     public async Task<ActionResult<IEnumerable<ApiObject.CaseValue>>> GetPayrollTimeCaseValuesAsync(int tenantId,
         int payrollId, [FromQuery] CaseType caseType, [FromQuery] int? employeeId = null, [FromQuery] string[] caseFieldNames = null,
         [FromQuery] DateTime? valueDate = null,
-        [FromQuery] DateTime? regulationDate = null, [FromQuery] DateTime? evaluationDate = null) =>
-        await base.GetPayrollTimeCaseValuesAsync(
+        [FromQuery] DateTime? regulationDate = null, [FromQuery] DateTime? evaluationDate = null)
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        var result = await base.GetPayrollTimeCaseValuesAsync(
             new()
             {
                 TenantId = tenantId,
@@ -264,6 +267,12 @@ public class PayrollController : Api.Controller.PayrollController
                 EvaluationDate = evaluationDate
             },
             caseType, caseFieldNames, valueDate);
+
+        stopwatch.Stop();
+        Log.Information($"GetPayrollTimeCaseValuesAsync {result.Value.Count()} executed in {stopwatch.ElapsedMilliseconds} ms");
+
+        return result;
+    }
 
     /// <summary>
     /// Get available case period values

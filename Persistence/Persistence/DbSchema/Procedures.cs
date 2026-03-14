@@ -45,6 +45,7 @@ public static class Procedures
     public static readonly string GetCompanyCaseChangeValues = "GetCompanyCaseChangeValues";
 
     public static readonly string GetEmployeeCaseValues = "GetEmployeeCaseValues";
+    public static readonly string GetEmployeeCaseValuesByTenant = "GetEmployeeCaseValuesByTenant";
     public static readonly string GetEmployeeCaseChangeValues = "GetEmployeeCaseChangeValues";
 
     // payrun job

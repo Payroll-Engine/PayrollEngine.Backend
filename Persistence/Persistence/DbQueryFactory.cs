@@ -38,18 +38,11 @@ public static class DbQueryFactory
         var dbQuery = queryBuilder.BuildQuery(tableName, query, queryMode);
 
         // object status
-        if (query?.Status != null)
-        {
-            switch (query.Status)
-            {
-                case ObjectStatus.Active:
-                    dbQuery.Where(DbSchema.ObjectColumn.Status, (int)ObjectStatus.Active);
-                    break;
-                case ObjectStatus.Inactive:
-                    dbQuery.Where(DbSchema.ObjectColumn.Status, (int)ObjectStatus.Inactive);
-                    break;
-            }
-        }
+        dbQuery
+            .When(query?.Status == ObjectStatus.Active,
+                q => q.Where(DbSchema.ObjectColumn.Status, (int)ObjectStatus.Active))
+            .When(query?.Status == ObjectStatus.Inactive,
+                q => q.Where(DbSchema.ObjectColumn.Status, (int)ObjectStatus.Inactive));
 
         return dbQuery;
     }

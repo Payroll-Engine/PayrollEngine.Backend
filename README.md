@@ -7,6 +7,35 @@ The Backend is the ASP.NET Core REST API server at the core of the Payroll Engin
 
 ---
 
+## Contents
+
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Open API](#open-api)
+- [Authentication](#authentication)
+- [Application Settings](#application-settings)
+  - [General](#general)
+  - [Swagger / OpenAPI](#swagger--openapi)
+  - [Authentication](#authentication-1)
+  - [Audit Trail](#audit-trail)
+  - [Scripting & Compilation](#scripting--compilation)
+  - [Database & Timeouts](#database--timeouts)
+  - [Payrun Processing](#payrun-processing)
+  - [CORS](#cors)
+  - [Rate Limiting](#rate-limiting)
+  - [Configuration Examples](#configuration-examples)
+  - [Database Connection String](#database-connection-string)
+- [Application Logs](#application-logs)
+- [C# Script Compiler](#c-script-compiler)
+- [Docker Support](#docker-support)
+- [Commands](#commands)
+- [Solution Projects](#solution-projects)
+- [Migration to 1.0](#migration-to-10)
+- [Further Documents](#further-documents)
+- [Third Party Components](#third-party-components)
+
+---
+
 ## Prerequisites
 
 | Requirement | Minimum |
@@ -81,7 +110,7 @@ The API is accessible at the configured URL. When `EnableSwagger` is set to `tru
 
 ## Open API
 
-The Payroll Engine API supports the [Open API](https://www.openapis.org/) specification and describes the interface to the [Swagger](https://swagger.io/) tool. The document [REST Service Endpoints](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrollRestServicesEndpoints.pdf) document describes the available endpoints.
+The Payroll Engine API supports the [Open API](https://www.openapis.org/) specification and describes the interface to the [Swagger](https://swagger.io/) tool. The document [REST Service Endpoints](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrollRestServicesEndpoints.pdf) describes the available endpoints.
 
 > Payroll Engine [swagger.json](docs/swagger.json)
 
@@ -93,29 +122,29 @@ The Payroll Engine API supports the [Open API](https://www.openapis.org/) specif
 | `.../payruns/jobs/preview` | POST | Synchronous single-employee payrun preview without persisting results |
 | `.../employees/bulk` | POST | Bulk employee creation via `SqlBulkCopy` for high-throughput import |
 
-## API Versioning
+### API Versioning
+
 Starting with the 1.0 release, no version header is required in the HTTP request. Future major versions will require the HTTP header **X-Version** with the version number.
 
-## API Content Type
+### API Content Type
+
 The Payroll REST API supports HTTP requests in `JSON` format.
 
 ---
 
-## Migration to 1.0
+## Authentication
 
-### Breaking Change: PayrunJobInvocation
-`PayrunJobInvocation` has been refactored from id-based to name/identifier-based references:
-- **Removed**: `PayrunId` and `UserId` properties from API and domain models
-- **Required**: `PayrunName` and `UserIdentifier` are now the required fields
+The API supports three authentication modes, configured via `Authentication:Mode` in `appsettings.json`:
 
-Clients must update payrun job invocations to use name-based references instead of numeric ids.
+**None** — No authentication. All requests are accepted. Development/internal use only.
 
-### Async Payrun Job Processing
-Payrun jobs are now processed asynchronously by default via a background queue:
-- Job is pre-created and persisted before enqueue
-- Returns HTTP 202 with a location header for status polling
-- Webhook notification on job completion or abort
-- Bounded channel with backpressure (capacity: 100)
+**ApiKey** — Static API key. The client must send the key in the `Api-Key` HTTP header. The key is resolved in the following order:
+1. Environment variable `PayrollApiKey`
+2. Configuration value `Authentication:ApiKey` in `appsettings.json`
+
+**OAuth** — OAuth 2.0 / JWT Bearer token. Requires `Authority` and `Audience` configuration. The client must send a valid Bearer token in the `Authorization` header. Authority and audience are validated at startup to prevent token confusion.
+
+> When authentication is active and Swagger is enabled, Swagger UI requires the corresponding credentials.
 
 ---
 
@@ -275,7 +304,8 @@ Production configuration with OAuth, CORS and rate limiting:
 }
 ```
 
-### Database connection string
+### Database Connection String
+
 The backend database connection string is determined by the following priority:
 
 1. Environment variable `PayrollDatabaseConnection`.
@@ -286,26 +316,13 @@ The backend database connection string is determined by the following priority:
 ---
 
 ## Application Logs
+
 The backend server stores its logs in the application folder `logs`.
 
 ---
 
-## Authentication
-The API supports three authentication modes, configured via `Authentication:Mode` in `appsettings.json`:
-
-**None** — No authentication. All requests are accepted. Development/internal use only.
-
-**ApiKey** — Static API key. The client must send the key in the `Api-Key` HTTP header. The key is resolved in the following order:
-1. Environment variable `PayrollApiKey`
-2. Configuration value `Authentication:ApiKey` in `appsettings.json`
-
-**OAuth** — OAuth 2.0 / JWT Bearer token. Requires `Authority` and `Audience` configuration. The client must send a valid Bearer token in the `Authorization` header. Authority and audience are validated at startup to prevent token confusion.
-
-> When authentication is active and Swagger is enabled, Swagger UI requires the corresponding credentials.
-
----
-
 ## C# Script Compiler
+
 The business logic defined by the business in C# is compiled into binary files (assemblies) by the backend using [Roslyn](https://github.com/dotnet/roslyn). This procedure has a positive effect on the runtime performance, so that even extensive calculations can be performed sufficiently quickly. At runtime, the backend keeps the assemblies in a cache. To optimize memory usage, unused assemblies are periodically deleted (application setting `AssemblyCacheTimeout`).
 
 You can use the `InitializeScriptCompiler` application setting to start the Roslyn engine when the application starts, thereby eliminating the runtime delay.
@@ -313,24 +330,6 @@ You can use the `InitializeScriptCompiler` application setting to start the Rosl
 To perform a more in-depth analysis, set the `DumpCompilerSources` application setting to force the C# script compiler to save the source scripts of the compilation as disk files. These files are stored in the `ScriptDump` folder within the application folder, ordered by function type and dump date.
 
 When `ScriptSafetyAnalysis` is enabled, user scripts are statically checked for banned API usage before the assembly is emitted. See footnote 8 in the application settings for details.
-
----
-
-## Solution Projects
-
-| Name                                  | Type       | Description                                       |
-|:--|:--|:--|
-| `PayrollEngine.Domain.Model`          | Library    | Domain objects and repositories                   |
-| `PayrollEngine.Domain.Scripting`      | Library    | Scripting services                                |
-| `PayrollEngine.Domain.Application`    | Library    | Application service                               |
-| `PayrollEngine.Persistence`           | Library    | Repository implementations                        |
-| `PayrollEngine.Persistence.SqlServer` | Library    | SQL Server implementation                         |
-| `PayrollEngine.Api.Model`             | Library    | REST API data transfer objects                    |
-| `PayrollEngine.Api.Core`              | Library    | REST core services (query, filter, serialization) |
-| `PayrollEngine.Api.Map`               | Library    | Mapping between REST and domain objects           |
-| `PayrollEngine.Api.Controller`        | Library    | REST controllers (business logic per resource)    |
-| `PayrollEngine.Backend.Controller`    | Library    | ASP.NET routing controllers (HTTP routing and model binding) |
-| `PayrollEngine.Backend.Server`        | Exe        | Web application server with REST API              |
 
 ---
 
@@ -342,6 +341,7 @@ See the [Container Setup](https://payrollengine.org/setup/container-setup) docum
 > ⚠️ The examples below use sample credentials for local development only. Never use these values in production.
 
 ### Pre-built image (ghcr.io)
+
 Pull and run the pre-built image:
 ```bash
 docker run -p 5001:8080 \
@@ -353,6 +353,7 @@ docker run -p 5001:8080 \
 Verify API is accessible at http://localhost:5001
 
 ### Build from source (development)
+
 ```bash
 docker build -t payroll-backend .
 docker run -p 5001:8080 \
@@ -386,7 +387,46 @@ Helper scripts in the `Commands` folder:
 
 ---
 
+## Solution Projects
+
+| Name                                  | Type       | Description                                       |
+|:--|:--|:--|
+| `PayrollEngine.Domain.Model`          | Library    | Domain objects and repositories                   |
+| `PayrollEngine.Domain.Scripting`      | Library    | Scripting services                                |
+| `PayrollEngine.Domain.Application`    | Library    | Application service                               |
+| `PayrollEngine.Persistence`           | Library    | Repository implementations                        |
+| `PayrollEngine.Persistence.SqlServer` | Library    | SQL Server implementation                         |
+| `PayrollEngine.Api.Model`             | Library    | REST API data transfer objects                    |
+| `PayrollEngine.Api.Core`              | Library    | REST core services (query, filter, serialization) |
+| `PayrollEngine.Api.Map`               | Library    | Mapping between REST and domain objects           |
+| `PayrollEngine.Api.Controller`        | Library    | REST controllers (business logic per resource)    |
+| `PayrollEngine.Backend.Controller`    | Library    | ASP.NET routing controllers (HTTP routing and model binding) |
+| `PayrollEngine.Backend.Server`        | Exe        | Web application server with REST API              |
+
+---
+
+## Migration to 1.0
+
+### Breaking Change: PayrunJobInvocation
+
+`PayrunJobInvocation` has been refactored from id-based to name/identifier-based references:
+- **Removed**: `PayrunId` and `UserId` properties from API and domain models
+- **Required**: `PayrunName` and `UserIdentifier` are now the required fields
+
+Clients must update payrun job invocations to use name-based references instead of numeric ids.
+
+### Async Payrun Job Processing
+
+Payrun jobs are now processed asynchronously by default via a background queue:
+- Job is pre-created and persisted before enqueue
+- Returns HTTP 202 with a location header for status polling
+- Webhook notification on job completion or abort
+- Bounded channel with backpressure (capacity: 100)
+
+---
+
 ## Further Documents
+
 - [OData](OData.md) — query syntax reference
 - [Database](Database.md) — schema, scripts, and maintenance
 - [Developer Guidelines](Dev-Guidelines.md) — adding new objects and fields
@@ -394,6 +434,7 @@ Helper scripts in the `Commands` folder:
 ---
 
 ## Third Party Components
+
 - Object mapping with [Mapperly](https://github.com/riok/mapperly/) — license `Apache 2.0`
 - OpenAPI with [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/) — license `MIT`
 - Database query builder with [SqlKata](https://github.com/sqlkata/querybuilder/) — license `MIT`

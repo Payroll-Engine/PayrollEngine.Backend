@@ -2838,6 +2838,159 @@ END
 GO
 -- #endregion DB_SCRIPTS
 
+-- #region AI_INDEX_MIGRATION
+-- New indexes and SP for tenant-wide employee case value queries (AI/MCP support)
+-- Adds: IX_Employee.TenantId, IX_EmployeeCaseValue.EmployeeId_Cover,
+--       IX_GlobalCaseValue.TenantId_Cover, IX_NationalCaseValue.TenantId_Cover,
+--       IX_CompanyCaseValue.TenantId_Cover, SP GetEmployeeCaseValuesByTenant
+-- Safe to run on existing databases: DROP_EXISTING = OFF / IF NOT EXISTS guards
+
+-- Index: IX_Employee.TenantId
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'IX_Employee.TenantId'
+      AND object_id = OBJECT_ID('dbo.Employee')
+)
+BEGIN
+  CREATE NONCLUSTERED INDEX [IX_Employee.TenantId]
+    ON [dbo].[Employee] ([TenantId] ASC, [Status] ASC)
+    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
+          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+  PRINT '[OK] Index IX_Employee.TenantId created';
+END
+ELSE
+  PRINT '[SKIP] Index IX_Employee.TenantId already exists';
+GO
+
+-- Index: IX_EmployeeCaseValue.EmployeeId_Cover
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'IX_EmployeeCaseValue.EmployeeId_Cover'
+      AND object_id = OBJECT_ID('dbo.EmployeeCaseValue')
+)
+BEGIN
+  CREATE NONCLUSTERED INDEX [IX_EmployeeCaseValue.EmployeeId_Cover]
+    ON [dbo].[EmployeeCaseValue] ([EmployeeId] ASC, [CaseFieldName] ASC)
+    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
+             [CancellationDate], [Forecast], [Created], [Status])
+    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
+          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+  PRINT '[OK] Index IX_EmployeeCaseValue.EmployeeId_Cover created';
+END
+ELSE
+  PRINT '[SKIP] Index IX_EmployeeCaseValue.EmployeeId_Cover already exists';
+GO
+
+-- Index: IX_GlobalCaseValue.TenantId_Cover
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'IX_GlobalCaseValue.TenantId_Cover'
+      AND object_id = OBJECT_ID('dbo.GlobalCaseValue')
+)
+BEGIN
+  CREATE NONCLUSTERED INDEX [IX_GlobalCaseValue.TenantId_Cover]
+    ON [dbo].[GlobalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
+             [CancellationDate], [Forecast], [Created], [Status])
+    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
+          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+  PRINT '[OK] Index IX_GlobalCaseValue.TenantId_Cover created';
+END
+ELSE
+  PRINT '[SKIP] Index IX_GlobalCaseValue.TenantId_Cover already exists';
+GO
+
+-- Index: IX_NationalCaseValue.TenantId_Cover
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'IX_NationalCaseValue.TenantId_Cover'
+      AND object_id = OBJECT_ID('dbo.NationalCaseValue')
+)
+BEGIN
+  CREATE NONCLUSTERED INDEX [IX_NationalCaseValue.TenantId_Cover]
+    ON [dbo].[NationalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
+             [CancellationDate], [Forecast], [Created], [Status])
+    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
+          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+  PRINT '[OK] Index IX_NationalCaseValue.TenantId_Cover created';
+END
+ELSE
+  PRINT '[SKIP] Index IX_NationalCaseValue.TenantId_Cover already exists';
+GO
+
+-- Index: IX_CompanyCaseValue.TenantId_Cover
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'IX_CompanyCaseValue.TenantId_Cover'
+      AND object_id = OBJECT_ID('dbo.CompanyCaseValue')
+)
+BEGIN
+  CREATE NONCLUSTERED INDEX [IX_CompanyCaseValue.TenantId_Cover]
+    ON [dbo].[CompanyCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
+             [CancellationDate], [Forecast], [Created], [Status])
+    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
+          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+  PRINT '[OK] Index IX_CompanyCaseValue.TenantId_Cover created';
+END
+ELSE
+  PRINT '[SKIP] Index IX_CompanyCaseValue.TenantId_Cover already exists';
+GO
+
+-- SP: GetEmployeeCaseValuesByTenant
+IF EXISTS (
+    SELECT * FROM sysobjects
+    WHERE id = object_id(N'[dbo].[GetEmployeeCaseValuesByTenant]')
+      AND OBJECTPROPERTY(id, N'IsProcedure') = 1
+)
+BEGIN
+  DROP PROCEDURE dbo.[GetEmployeeCaseValuesByTenant];
+END
+GO
+
+CREATE PROCEDURE dbo.[GetEmployeeCaseValuesByTenant]
+  @tenantId       AS INT,
+  @valueDate      AS DATETIME2(7) = NULL,
+  @evaluationDate AS DATETIME2(7) = NULL,
+  @fieldNames     AS NVARCHAR(MAX) = NULL,
+  @forecast       AS NVARCHAR(128) = NULL
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT
+    ecv.[Id], ecv.[Status], ecv.[Created], ecv.[Updated],
+    ecv.[EmployeeId], ecv.[DivisionId],
+    ecv.[CaseName], ecv.[CaseNameLocalizations],
+    ecv.[CaseFieldName], ecv.[CaseFieldNameLocalizations],
+    ecv.[CaseSlot], ecv.[CaseSlotLocalizations],
+    ecv.[ValueType], ecv.[Value], ecv.[NumericValue], ecv.[Culture],
+    ecv.[CaseRelation], ecv.[CancellationDate], ecv.[Start], ecv.[End],
+    ecv.[Forecast], ecv.[Tags], ecv.[Attributes]
+  FROM dbo.[EmployeeCaseValue] ecv
+  INNER JOIN dbo.[Employee] e ON e.[Id] = ecv.[EmployeeId]
+  WHERE
+    e.[TenantId] = @tenantId
+    AND e.[Status] = 0
+    AND ecv.[CancellationDate] IS NULL
+    AND (@evaluationDate IS NULL OR ecv.[Created] <= @evaluationDate)
+    AND (@valueDate IS NULL OR ecv.[Start] IS NULL OR ecv.[Start] <= @valueDate)
+    AND (@valueDate IS NULL OR ecv.[End]   IS NULL OR ecv.[End]   >  @valueDate)
+    AND (
+      (@forecast IS NULL     AND ecv.[Forecast] IS NULL)
+      OR (@forecast IS NOT NULL AND (ecv.[Forecast] IS NULL OR ecv.[Forecast] = @forecast))
+    )
+    AND (
+      @fieldNames IS NULL
+      OR ecv.[CaseFieldName] IN (SELECT [value] FROM OPENJSON(@fieldNames))
+    )
+  ORDER BY ecv.[EmployeeId] ASC, ecv.[CaseFieldName] ASC, ecv.[Created] DESC
+END
+GO
+PRINT '[OK] Stored procedure GetEmployeeCaseValuesByTenant created';
+GO
+-- #endregion AI_INDEX_MIGRATION
+
 -- #region VERSION_SET
 DECLARE @errorID int
 INSERT INTO dbo.[Version] (

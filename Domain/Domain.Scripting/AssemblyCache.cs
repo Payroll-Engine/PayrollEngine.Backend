@@ -138,6 +138,14 @@ public class AssemblyCache
     private static readonly ConcurrentDictionary<int, TenantAssemblyLoadContext> TenantContexts = new();
 
     /// <summary>
+    /// Per-tenant semaphore used to serialize assembly loading and prevent two
+    /// concurrent threads from loading the same binary into the same
+    /// <see cref="TenantAssemblyLoadContext"/>, which would throw
+    /// "Assembly with same name is already loaded".
+    /// </summary>
+    private static readonly ConcurrentDictionary<int, SemaphoreSlim> TenantLoadLocks = new();
+
+    /// <summary>
     /// Holder for the shared eviction timer. The outer field is
     /// <c>static readonly</c> (satisfies NDepend ND1901); the inner
     /// timer is set exactly once via <see cref="TryInitialize"/>.
@@ -296,25 +304,70 @@ public class AssemblyCache
         }
 
         // --- load into the tenant-scoped context ----------------------------
-        LogStopwatch.Start(nameof(GetObjectAssembly));
-
-        // Retrieve or create the dedicated load context for this tenant.
-        // Using a per-tenant context means the CLR type resolver is scoped to
-        // that tenant; assemblies from different tenants can never see each
-        // other's types even if they share the same AppDomain.
-        var tenantContext = TenantContexts.GetOrAdd(tenantId, _ => new TenantAssemblyLoadContext());
-        var assembly = tenantContext.LoadFromBinary(binary);
-
-        LogStopwatch.Stop(nameof(GetObjectAssembly));
-
-        if (CacheEnabled)
+        // Serialize loading per tenant: two concurrent threads racing on the
+        // same cache miss would both call LoadFromBinary with the same assembly
+        // name into the same TenantAssemblyLoadContext, causing the CLR to
+        // throw "Assembly with same name is already loaded".
+        var tenantLock = TenantLoadLocks.GetOrAdd(tenantId, _ => new SemaphoreSlim(1, 1));
+        tenantLock.Wait();
+        try
         {
-            // TryAdd is intentionally non-blocking; a concurrent thread may
-            // win the race, and we simply discard our copy on the next call.
-            Assemblies.TryAdd(key, new AssemblyRuntime(assembly));
-        }
+            // Double-check: another thread may have loaded while we were waiting.
+            if (CacheEnabled && Assemblies.TryGetValue(key, out cached))
+            {
+#if ASSEMBLY_CACHE
+                cacheRatio.UpdateWithLog(hit: true);
+#endif
+                cached.LastUsed = Date.Now;
+                return cached.Assembly;
+            }
 
-        return assembly;
+            LogStopwatch.Start(nameof(GetObjectAssembly));
+
+            Assembly assembly;
+            if (CacheEnabled)
+            {
+                // Retrieve or create the dedicated load context for this tenant.
+                // Using a per-tenant context means the CLR type resolver is scoped
+                // to that tenant; assemblies from different tenants can never see
+                // each other's types even if they share the same AppDomain.
+                var tenantContext = TenantContexts.GetOrAdd(tenantId, _ => new TenantAssemblyLoadContext());
+                try
+                {
+                    assembly = tenantContext.LoadFromBinary(binary);
+                    Assemblies.TryAdd(key, new AssemblyRuntime(assembly));
+                }
+                catch (Exception ex)
+                {
+                    // The tenant load context is in an undefined state (e.g. the same
+                    // assembly name was already loaded into it after a ScriptPublish
+                    // without a backend restart). Evict the broken context so the next
+                    // request gets a fresh one and can recover automatically.
+                    CacheClearTenant(tenantId);
+                    throw new PayrollException(
+                        $"Failed to load script assembly for tenant {tenantId}, type {type.Name}. " +
+                        $"The tenant assembly cache has been cleared — retry the operation. " +
+                        $"({ex.GetBaseMessage()})", ex);
+                }
+            }
+            else
+            {
+                // Cache is disabled: use a fresh, per-invocation load context so
+                // that repeated calls never attempt to load the same assembly name
+                // into a shared context. The context is kept alive by the assembly
+                // reference and collected once the assembly is no longer in use.
+                var freshContext = new TenantAssemblyLoadContext();
+                assembly = freshContext.LoadFromBinary(binary);
+            }
+
+            LogStopwatch.Stop(nameof(GetObjectAssembly));
+
+            return assembly;
+        }
+        finally
+        {
+            tenantLock.Release();
+        }
     }
 
     // -------------------------------------------------------------------------

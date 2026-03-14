@@ -454,12 +454,28 @@ public abstract class PayrollController(IPayrollContextService context, IControl
             var caseValueDate = (valueDate ?? CurrentEvaluationDate).ToUtc();
             var caseEvaluationDate = (query.EvaluationDate ?? caseValueDate).ToUtc();
 
-            // calendar
-            DomainObject.Calendar calendar = await GetPayrollCalendarAsync(querySetup.Tenant,
-                querySetup.Division, querySetup.Employee);
-
             // server configuration
             var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>();
+
+            // Tenant-wide employee query: no employeeId + CaseType.Employee
+            // Single SP call (GetEmployeeCaseValuesByTenant) — no N+1, no C# loop.
+            // Uses IX_Employee.TenantId + IX_EmployeeCaseValue.EmployeeId_Cover.
+            if (caseType == CaseType.Employee && querySetup.Employee == null)
+            {
+                var domainValues = await EmployeeCaseValueService.Repository.GetTenantCaseValuesAsync(
+                    Runtime.DbContext,
+                    tenantId: query.TenantId,
+                    valueDate: caseValueDate,
+                    evaluationDate: caseEvaluationDate,
+                    caseFieldNames: caseFieldNames?.Length > 0 ? caseFieldNames : null,
+                    forecast: null);
+
+                var caseValueMap = new CaseValueMap();
+                return domainValues.Select(caseValueMap.ToApi).ToList();
+            }
+
+            // Single employee or non-employee case type (existing behaviour)
+            var calendar = await GetPayrollCalendarAsync(querySetup.Tenant, querySetup.Division, querySetup.Employee);
 
             // settings
             var settings = new CaseValueToolSettings

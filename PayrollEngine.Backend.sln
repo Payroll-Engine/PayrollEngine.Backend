@@ -44,6 +44,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Backend.Serve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Persistence", "Persistence\Persistence\PayrollEngine.Persistence.csproj", "{E568C91A-A8D2-4E56-BACA-4D9432000B80}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Persistence.DbQuery.Tests", "Persistence\Persistence.DbQuery.Tests\PayrollEngine.Persistence.DbQuery.Tests.csproj", "{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbScripts", "DbScripts", "{310A2C3A-18E3-4725-906B-899562617D1F}"
 	ProjectSection(SolutionItems) = preProject
 		DbScripts\CreateObjectsDbScript.sql = DbScripts\CreateObjectsDbScript.sql
@@ -104,6 +106,10 @@ Global
 		{E568C91A-A8D2-4E56-BACA-4D9432000B80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E568C91A-A8D2-4E56-BACA-4D9432000B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E568C91A-A8D2-4E56-BACA-4D9432000B80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +125,7 @@ Global
 		{408CC34C-1A24-44C5-8123-12AC75854426} = {4F6F6D67-ECD7-4D8F-B1AD-34DB2C0783F1}
 		{696595D8-55C0-48FD-8D22-9A6BADE6ABD2} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
 		{E568C91A-A8D2-4E56-BACA-4D9432000B80} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
+		{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
 		{310A2C3A-18E3-4725-906B-899562617D1F} = {FB52813B-8A24-40E3-98AA-DC140C590DC3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

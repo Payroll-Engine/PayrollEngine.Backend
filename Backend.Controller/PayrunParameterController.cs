@@ -77,7 +77,7 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     [OkResponse]
     [NotFoundResponse]
     [UnprocessableEntityResponse]
-    [ApiOperationId("UpdatePayrun")]
+    [ApiOperationId("UpdatePayrunParameter")]
     public async Task<ActionResult<ApiObject.PayrunParameter>> UpdatePayrunAsync(
         int tenantId, int payrunId, ApiObject.PayrunParameter parameter) =>
         await UpdateAsync(payrunId, parameter);
@@ -89,7 +89,7 @@ public class PayrunParameterController : Api.Controller.PayrunParameterControlle
     /// <param name="payrunId">The payrun id</param>
     /// <param name="parameterId">The id of the payrun parameter</param>
     [HttpDelete("{parameterId}")]
-    [ApiOperationId("DeletePayrun")]
+    [ApiOperationId("DeletePayrunParameter")]
     public async Task<IActionResult> DeletePayrunAsync(int tenantId, int payrunId, int parameterId) =>
         await DeleteAsync(payrunId, parameterId);
 }
