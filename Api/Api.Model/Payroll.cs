@@ -90,7 +90,7 @@ public class Payroll : ApiObjectBase
     /// <summary>
     /// Cluster sets
     /// </summary>
-    public ClusterSet[] ClusterSets { get; set; }
+    public List<ClusterSet> ClusterSets { get; set; }
 
     /// <summary>
     /// Custom attributes

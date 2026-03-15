@@ -26,6 +26,7 @@ public abstract class ReportRepositoryBase<T>(IRegulationRepository regulationRe
         parameters.Add(nameof(report.Category), report.Category);
         parameters.Add(nameof(report.AttributeMode), report.AttributeMode, DbType.Int32);
         parameters.Add(nameof(report.UserType), report.UserType, DbType.Int32);
+        parameters.Add(nameof(report.ReportIsolation), report.ReportIsolation, DbType.Int32);
         parameters.Add(nameof(report.Queries), JsonSerializer.SerializeNamedDictionary(report.Queries));
         parameters.Add(nameof(report.Relations), DefaultJsonSerializer.Serialize(report.Relations));
         parameters.Add(nameof(report.BuildExpression), report.BuildExpression);

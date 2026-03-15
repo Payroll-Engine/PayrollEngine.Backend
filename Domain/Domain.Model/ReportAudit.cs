@@ -55,6 +55,11 @@ public class ReportAudit : ScriptAuditDomainObject, IDomainAttributeObject
     public UserType UserType { get; set; }
 
     /// <summary>
+    /// The report isolation level
+    /// </summary>
+    public ReportIsolation ReportIsolation { get; set; }
+
+    /// <summary>
     /// The report queries, key is the query name and value the api operation name
     /// </summary>
     public Dictionary<string, string> Queries { get; set; }

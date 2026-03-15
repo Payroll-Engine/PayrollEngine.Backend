@@ -64,7 +64,7 @@ public class Case : ApiObjectBase
     /// <summary>
     /// The base case fields
     /// </summary>
-    public CaseFieldReference[] BaseCaseFields { get; set; }
+    public List<CaseFieldReference> BaseCaseFields { get; set; }
 
     /// <summary>
     /// The override type

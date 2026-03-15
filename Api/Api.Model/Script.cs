@@ -27,6 +27,11 @@ public class Script : ApiObjectBase
     [Required]
     public string Value { get; set; }
 
+    /// <summary>
+    /// The override type
+    /// </summary>
+    public OverrideType OverrideType { get; set; }
+
     /// <inheritdoc/>
     public override string ToString() =>
         $"{Name} {base.ToString()}";

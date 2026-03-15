@@ -50,6 +50,16 @@ public class ReportAudit : ApiObjectBase
     public ReportAttributeMode AttributeMode { get; set; }
 
     /// <summary>
+    /// The user type
+    /// </summary>
+    public UserType UserType { get; set; }
+
+    /// <summary>
+    /// The report isolation level
+    /// </summary>
+    public ReportIsolation ReportIsolation { get; set; }
+
+    /// <summary>
     /// The override type
     /// </summary>
     public OverrideType OverrideType { get; set; }

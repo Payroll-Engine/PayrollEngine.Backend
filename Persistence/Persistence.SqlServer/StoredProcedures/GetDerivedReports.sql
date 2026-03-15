@@ -60,6 +60,7 @@ BEGIN
     dbo.[Report].[Relations],
     dbo.[Report].[AttributeMode],
     dbo.[Report].[UserType],
+    dbo.[Report].[ReportIsolation],
     dbo.[Report].[BuildExpression],
     dbo.[Report].[StartExpression],
     dbo.[Report].[EndExpression],

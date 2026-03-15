@@ -91,11 +91,6 @@ public class PayrunJob : ApiObjectBase
     public string Forecast { get; set; }
 
     /// <summary>
-    /// The culture including the calendar (immutable)
-    /// </summary>
-    public string Culture { get; set; }
-
-    /// <summary>
     /// The cycle name (immutable)
     /// </summary>
     [Required]
@@ -207,7 +202,7 @@ public class PayrunJob : ApiObjectBase
     /// <summary>
     /// The payrun employees
     /// </summary>
-    public PayrunJobEmployee[] Employees { get; set; }
+    public List<PayrunJobEmployee> Employees { get; set; }
 
     /// <summary>
     /// Custom attributes

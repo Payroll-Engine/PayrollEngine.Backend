@@ -32,19 +32,6 @@ PRINT '';
 
 PRINT '--- Pre-flight duplicate checks ---';
 
--- BUG-1: Regulation (Name, TenantId)
-IF EXISTS (
-    SELECT TenantId, [Name]
-    FROM dbo.[Regulation]
-    GROUP BY TenantId, [Name]
-    HAVING COUNT(*) > 1
-)
-BEGIN
-    RAISERROR('PRE-FLIGHT FAILED: Duplicate (TenantId, Name) found in [Regulation]. Fix data before running this script.', 16, 1);
-    RETURN;
-END
-PRINT '[OK] Regulation: no duplicates on (TenantId, Name)';
-
 -- BUG-2: PayrunParameter (PayrunId, Name)
 IF EXISTS (
     SELECT [PayrunId], [Name]
@@ -79,10 +66,16 @@ BEGIN TRANSACTION;
 BEGIN TRY
 
 -- =============================================================================
--- BUG-1: IX_Regulation.UniqueNamePerTenant was on [Payroll] instead of [Regulation]
+-- BUG-1: IX_Regulation.UniqueNamePerTenant was misplaced on [Payroll]
+--        [Payroll] already has IX_Payroll.UniqueNamePerTenant → redundant.
+--        [Regulation] must NOT have a (Name, TenantId) unique constraint:
+--        Regulations are versioned — same name with different ValidFrom is the
+--        intended pattern. IX_Regulation.UniqueValidFromeRegulation on
+--        (Name, ValidFrom, TenantId) already enforces the correct uniqueness.
+--        Correction: drop the misplaced index from [Payroll], nothing else.
 -- =============================================================================
 
--- Step 1: Remove the wrongly-placed index from [Payroll]
+-- Drop the misplaced index from [Payroll]
 IF EXISTS (
     SELECT 1 FROM sys.indexes
     WHERE name = 'IX_Regulation.UniqueNamePerTenant'
@@ -90,26 +83,23 @@ IF EXISTS (
 )
 BEGIN
     DROP INDEX [IX_Regulation.UniqueNamePerTenant] ON dbo.[Payroll];
-    PRINT '[FIX] BUG-1: Dropped IX_Regulation.UniqueNamePerTenant from [Payroll]';
+    PRINT '[FIX] BUG-1: Dropped misplaced IX_Regulation.UniqueNamePerTenant from [Payroll] (redundant with IX_Payroll.UniqueNamePerTenant)';
 END
+ELSE
+    PRINT '[SKIP] BUG-1: Misplaced IX_Regulation.UniqueNamePerTenant on [Payroll] already removed';
 
--- Step 2: Create the correct index on [Regulation]
-IF NOT EXISTS (
+-- Drop the incorrectly added index on [Regulation] (added by the wrong fix)
+IF EXISTS (
     SELECT 1 FROM sys.indexes
     WHERE name = 'IX_Regulation.UniqueNamePerTenant'
       AND object_id = OBJECT_ID('dbo.Regulation')
 )
 BEGIN
-    CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueNamePerTenant]
-        ON dbo.[Regulation] ([Name] ASC, [TenantId] ASC)
-        WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF,
-              IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF,
-              ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
-        ON [PRIMARY];
-    PRINT '[FIX] BUG-1: Created IX_Regulation.UniqueNamePerTenant on [Regulation]';
+    DROP INDEX [IX_Regulation.UniqueNamePerTenant] ON dbo.[Regulation];
+    PRINT '[FIX] BUG-1: Dropped erroneous IX_Regulation.UniqueNamePerTenant from [Regulation] (breaks versioning)';
 END
 ELSE
-    PRINT '[SKIP] BUG-1: IX_Regulation.UniqueNamePerTenant on [Regulation] already exists';
+    PRINT '[SKIP] BUG-1: IX_Regulation.UniqueNamePerTenant on [Regulation] not present';
 
 -- =============================================================================
 -- BUG-2: IX_PayrunParameter.UniqueNamePerPayrun used (Name, Id) — Id is PK,

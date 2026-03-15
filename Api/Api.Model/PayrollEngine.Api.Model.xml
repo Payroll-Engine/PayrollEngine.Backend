@@ -3429,6 +3429,11 @@
             The user type (default: employee)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Report.ReportIsolation">
+            <summary>
+            The report isolation level
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Report.Queries">
             <summary>
             The report queries, key is the query name and value the api operation name
@@ -3510,6 +3515,16 @@
         <member name="P:PayrollEngine.Api.Model.ReportAudit.AttributeMode">
             <summary>
             The report attribute mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.UserType">
+            <summary>
+            The user type
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.ReportAudit.ReportIsolation">
+            <summary>
+            The report isolation level
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.ReportAudit.OverrideType">

@@ -2201,6 +2201,7 @@ CREATE TABLE [dbo].[Report] (
   [OverrideType] [int] NOT NULL,
   [AttributeMode] [int] NOT NULL,
   [UserType] [int] NOT NULL,
+  [ReportIsolation] [int] NOT NULL,
   [BuildExpression] [nvarchar](max) NULL,
   [StartExpression] [nvarchar](max) NULL,
   [EndExpression] [nvarchar](max) NULL,
@@ -2244,6 +2245,7 @@ CREATE TABLE [dbo].[ReportAudit] (
   [AttributeMode] [int] NOT NULL,
   [OverrideType] [int] NOT NULL,
   [UserType] [int] NOT NULL,
+  [ReportIsolation] [int] NOT NULL,
   [BuildExpression] [nvarchar](max) NULL,
   [StartExpression] [nvarchar](max) NULL,
   [EndExpression] [nvarchar](max) NULL,
@@ -3588,22 +3590,10 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Index [IX_Regulation.UniqueNamePerTenant]    Script Date: 01.03.2026 22:35:19 ******/
-CREATE UNIQUE NONCLUSTERED INDEX [IX_Regulation.UniqueNamePerTenant] ON [dbo].[Regulation] (
-  [Name] ASC,
-  [TenantId] ASC
-  )
-  WITH (
-      PAD_INDEX = OFF,
-      STATISTICS_NORECOMPUTE = OFF,
-      SORT_IN_TEMPDB = OFF,
-      IGNORE_DUP_KEY = OFF,
-      DROP_EXISTING = OFF,
-      ONLINE = OFF,
-      ALLOW_ROW_LOCKS = ON,
-      ALLOW_PAGE_LOCKS = ON
-      ) ON [PRIMARY]
-GO
+-- NOTE: IX_Regulation.UniqueNamePerTenant is intentionally NOT defined on [Regulation].
+-- Regulations are versioned: same Name with different ValidFrom is the intended pattern.
+-- IX_Regulation.UniqueValidFromeRegulation on (Name, ValidFrom, TenantId) enforces
+-- the correct per-version uniqueness constraint.
 
 /****** Object:  Index [IX_PayrollLayer.Priority]    Script Date: 01.03.2026 22:35:19 ******/
 CREATE NONCLUSTERED INDEX [IX_PayrollLayer.Priority] ON [dbo].[PayrollLayer] ([Priority] ASC)
@@ -4708,6 +4698,10 @@ ALTER TABLE [dbo].[Report] ADD CONSTRAINT [DF_Report_UserType] DEFAULT((0))
 FOR [UserType]
 GO
 
+ALTER TABLE [dbo].[Report] ADD CONSTRAINT [DF_Report_ReportIsolation] DEFAULT((0))
+FOR [ReportIsolation]
+GO
+
 ALTER TABLE [dbo].[ReportAudit] ADD CONSTRAINT [DF_ReportAudit_Status] DEFAULT((0))
 FOR [Status]
 GO
@@ -4722,6 +4716,10 @@ GO
 
 ALTER TABLE [dbo].[ReportAudit] ADD CONSTRAINT [DF_ReportAudit_UserType] DEFAULT((0))
 FOR [UserType]
+GO
+
+ALTER TABLE [dbo].[ReportAudit] ADD CONSTRAINT [DF_ReportAudit_ReportIsolation] DEFAULT((0))
+FOR [ReportIsolation]
 GO
 
 ALTER TABLE [dbo].[ReportLog] ADD CONSTRAINT [DF_ReportLog_Status] DEFAULT((0))
@@ -8044,6 +8042,7 @@ BEGIN
     dbo.[Report].[Relations],
     dbo.[Report].[AttributeMode],
     dbo.[Report].[UserType],
+    dbo.[Report].[ReportIsolation],
     dbo.[Report].[BuildExpression],
     dbo.[Report].[StartExpression],
     dbo.[Report].[EndExpression],

@@ -31,6 +31,21 @@ public class PayrunResult : ApiObjectBase
     public int DivisionId { get; set; }
 
     /// <summary>
+    /// The payrun job id (denormalized, immutable)
+    /// </summary>
+    public int PayrunJobId { get; set; }
+
+    /// <summary>
+    /// The forecast name (denormalized, immutable)
+    /// </summary>
+    public string Forecast { get; set; }
+
+    /// <summary>
+    /// The parent payrun job id (denormalized, immutable)
+    /// </summary>
+    public int? ParentJobId { get; set; }
+
+    /// <summary>
     /// The result source (immutable)
     /// </summary>
     [Required]

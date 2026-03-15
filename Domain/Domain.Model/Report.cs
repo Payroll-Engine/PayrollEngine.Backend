@@ -64,6 +64,11 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
     public UserType UserType { get; set; }
 
     /// <summary>
+    /// The report isolation level
+    /// </summary>
+    public ReportIsolation ReportIsolation { get; set; }
+
+    /// <summary>
     /// The report queries, key is the query name and value the api operation name
     /// </summary>
     public Dictionary<string, string> Queries { get; set; }
@@ -141,6 +146,7 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
             Category = Category,
             AttributeMode = AttributeMode,
             UserType = UserType,
+            ReportIsolation = ReportIsolation,
             Queries = Queries,
             Relations = Relations,
             BuildExpression = BuildExpression,
@@ -165,6 +171,7 @@ public class Report : ScriptTrackDomainObject<ReportAudit>, IDerivableObject, IC
         Category = audit.Category;
         AttributeMode = audit.AttributeMode;
         UserType = audit.UserType;
+        ReportIsolation = audit.ReportIsolation;
         Queries = audit.Queries.Copy();
         Relations = audit.Relations.Copy();
         BuildExpression = audit.BuildExpression;

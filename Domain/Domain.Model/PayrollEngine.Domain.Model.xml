@@ -6645,6 +6645,11 @@
             The user type (default: employee)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Report.ReportIsolation">
+            <summary>
+            The report isolation level
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Report.Queries">
             <summary>
             The report queries, key is the query name and value the api operation name
@@ -6772,6 +6777,11 @@
         <member name="P:PayrollEngine.Domain.Model.ReportAudit.UserType">
             <summary>
             The user type (default: employee)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.ReportAudit.ReportIsolation">
+            <summary>
+            The report isolation level
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.ReportAudit.Queries">
