@@ -55,7 +55,7 @@ RETURN (
           AND [Regulation].[Created] <= @createdBefore
           AND (
             [Regulation].[ValidFrom] IS NULL
-            OR [Regulation].[ValidFrom] < @regulationDate
+            OR [Regulation].[ValidFrom] <= @regulationDate
             )
           AND [PayrollLayer].[Status] = 0
           AND [PayrollLayer].[PayrollId] = @payrollId

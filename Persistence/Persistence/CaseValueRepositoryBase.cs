@@ -256,8 +256,11 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         // https://stackoverflow.com/questions/50590851/how-to-join-multiple-where-clauses-together-in-sqlkata
         if (period.HasEnd)
         {
-            // sub condition: ([Created] IS NULL OR [Created] < 'periodEnd')
-            dbQuery.WhereNullOrValue(DbSchema.CaseValueColumn.Start, "<", period.End);
+            // sub condition: ([Start] IS NULL OR [Start] <= 'periodEnd')
+            // Use <= (inclusive) so that a case value whose Start equals the period end
+            // (e.g. Start = EvaluationDate) is included. A strict < would exclude values
+            // that start exactly on the evaluation date, which is semantically incorrect.
+            dbQuery.WhereNullOrValue(DbSchema.CaseValueColumn.Start, "<=", period.End);
         }
         if (period.HasStart)
         {

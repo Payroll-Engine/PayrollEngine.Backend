@@ -1823,6 +1823,21 @@
             The division id (denormalized, immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectorId">
             <summary>
             The collector id (immutable)
@@ -2940,11 +2955,6 @@
             The forecast name (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.PayrunJob.Culture">
-            <summary>
-            The culture including the calendar (immutable)
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJob.CycleName">
             <summary>
             The cycle name (immutable)
@@ -3236,6 +3246,21 @@
         <member name="P:PayrollEngine.Api.Model.PayrunResult.DivisionId">
             <summary>
             The division id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunResult.Source">
@@ -3950,6 +3975,11 @@
             The script
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Script.OverrideType">
+            <summary>
+            The override type
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Api.Model.Script.ToString">
             <inheritdoc/>
         </member>
@@ -4402,6 +4432,21 @@
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.DivisionId">
             <summary>
             The division id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.PayrunJobId">
+            <summary>
+            The payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.Forecast">
+            <summary>
+            The forecast name (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.ParentJobId">
+            <summary>
+            The parent payrun job id (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.WageTypeId">
