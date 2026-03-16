@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using PayrollEngine.Api.Core;
+using PayrollEngine.Api.Model;
 
 namespace PayrollEngine.Backend.Controller;
 
@@ -54,4 +56,15 @@ public class AdminController : PayrollEngine.Api.Core.AdminController
     [QueryIgnore]
     public override ActionResult<IEnumerable<string>> GetApiReportMethods() =>
         base.GetApiReportMethods();
+
+    /// <summary>
+    /// Get backend server information including version, database, authentication and runtime configuration
+    /// </summary>
+    /// <returns>Backend information</returns>
+    [HttpGet("information")]
+    [OkResponse]
+    [ApiOperationId("GetBackendInformation")]
+    [QueryIgnore]
+    public override async Task<ActionResult<BackendInformation>> GetBackendInformationAsync() =>
+        await base.GetBackendInformationAsync();
 }

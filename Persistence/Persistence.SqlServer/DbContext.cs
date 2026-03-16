@@ -173,6 +173,20 @@ public class DbContext : IDbContext
     }
 
     /// <inheritdoc />
+    public async Task<DatabaseInformation> GetDatabaseInformationAsync()
+    {
+        var builder = new SqlConnectionStringBuilder(ConnectionString);
+        var version = await ExecuteScalarAsync<string>(
+            "SELECT CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(50))");
+        return new DatabaseInformation
+        {
+            Type = "SqlServer",
+            Name = builder.InitialCatalog,
+            Version = version
+        };
+    }
+
+    /// <inheritdoc />
     public Exception TransformException(Exception exception)
     {
         if (exception is not SqlException sqlException)

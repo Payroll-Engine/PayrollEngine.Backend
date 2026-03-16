@@ -22,6 +22,7 @@ public sealed class StubDbContext : IDbContext
     public Task<Exception> TestVersionAsync() => throw new NotSupportedException();
     public Task<Tenant> GetTenantAsync(int tenantId, string tenantIdentifier = null) => throw new NotSupportedException();
     public Exception TransformException(Exception exception) => throw new NotSupportedException();
+    public Task<DatabaseInformation> GetDatabaseInformationAsync() => throw new NotImplementedException();
     public Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null) => throw new NotSupportedException();
     public Task<T> QueryFirstAsync<T>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null) => throw new NotSupportedException();
     public Task<T> QuerySingleAsync<T>(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null) => throw new NotSupportedException();

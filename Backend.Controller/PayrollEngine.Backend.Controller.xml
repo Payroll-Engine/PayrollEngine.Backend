@@ -34,6 +34,12 @@
             </summary>
             <returns>List of web method names</returns>
         </member>
+        <member name="M:PayrollEngine.Backend.Controller.AdminController.GetBackendInformationAsync">
+            <summary>
+            Get backend server information including version, database, authentication and runtime configuration
+            </summary>
+            <returns>Backend information</returns>
+        </member>
         <member name="T:PayrollEngine.Backend.Controller.CalendarController">
             <inheritdoc/>
         </member>

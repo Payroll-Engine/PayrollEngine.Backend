@@ -99,6 +99,132 @@
         <member name="M:PayrollEngine.Api.Model.ApiObjectBase.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Api.Model.BackendAuditTrailInformation">
+            <summary>Audit trail feature flags</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuditTrailInformation.Script">
+            <summary>Script audit trail enabled</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuditTrailInformation.Lookup">
+            <summary>Lookup and lookup value audit trail enabled</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuditTrailInformation.Input">
+            <summary>Case, case field and case relation audit trail enabled</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuditTrailInformation.Payrun">
+            <summary>Collector and wage type audit trail enabled</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuditTrailInformation.Report">
+            <summary>Report, report template and report parameter audit trail enabled</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.BackendAuthInformation">
+            <summary>Backend authentication information (no secrets exposed)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuthInformation.Mode">
+            <summary>Authentication mode: None, ApiKey or OAuth</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuthInformation.OAuthAuthority">
+            <summary>OAuth token authority URL — only set when Mode is OAuth</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendAuthInformation.OAuthAudience">
+            <summary>OAuth expected audience — only set when Mode is OAuth</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.BackendCorsInformation">
+            <summary>CORS runtime information</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendCorsInformation.IsActive">
+            <summary>Whether CORS is active (at least one allowed origin configured)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendCorsInformation.AllowedOrigins">
+            <summary>Allowed origins — empty when CORS is inactive</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.BackendDatabaseInformation">
+            <summary>Database runtime information</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendDatabaseInformation.Type">
+            <summary>Database type (e.g. "SqlServer")</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendDatabaseInformation.Name">
+            <summary>Database catalog name</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendDatabaseInformation.Version">
+            <summary>Database server version (e.g. "16.0.4175.1")</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.BackendInformation">
+            <summary>Backend server information for client diagnostics and compatibility checks</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendInformation.Version">
+            <summary>Backend assembly version (e.g. "0.10.0-beta.1")</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendInformation.BuildDate">
+            <summary>Backend assembly build date (UTC)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendInformation.ApiVersion">
+            <summary>REST API version (e.g. "1.0")</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendInformation.ApiName">
+            <summary>REST API name</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendInformation.Authentication">
+            <summary>Authentication configuration (no secrets)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendInformation.Database">
+            <summary>Database runtime information</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendInformation.Runtime">
+            <summary>Runtime configuration</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.BackendRateLimitingInformation">
+            <summary>Rate limiting runtime information</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRateLimitingInformation.IsActive">
+            <summary>Whether any rate limiting policy is active</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRateLimitingInformation.GlobalPermitLimit">
+            <summary>Global policy: max requests per window (0 = inactive)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRateLimitingInformation.GlobalWindowSeconds">
+            <summary>Global policy: window size in seconds</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRateLimitingInformation.PayrunJobStartPermitLimit">
+            <summary>Payrun job start policy: max requests per window (0 = inactive)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRateLimitingInformation.PayrunJobStartWindowSeconds">
+            <summary>Payrun job start policy: window size in seconds</summary>
+        </member>
+        <member name="T:PayrollEngine.Api.Model.BackendRuntimeInformation">
+            <summary>Backend runtime configuration information</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.MaxParallelEmployees">
+            <summary>Resolved maximum parallel employee threads (0 = sequential)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.MaxRetroPayrunPeriods">
+            <summary>Maximum retro payrun periods (0 = unlimited)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.DbCommandTimeoutSeconds">
+            <summary>Database command timeout in seconds</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.DbTransactionTimeoutSeconds">
+            <summary>Database transaction timeout in seconds</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.AssemblyCacheTimeoutSeconds">
+            <summary>Script assembly cache timeout in seconds</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.WebhookTimeoutSeconds">
+            <summary>Webhook call timeout in seconds</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.ScriptSafetyAnalysis">
+            <summary>Static safety analysis of user scripts enabled</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.AuditTrail">
+            <summary>Audit trail feature flags</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.Cors">
+            <summary>CORS configuration</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.RateLimiting">
+            <summary>Rate limiting configuration</summary>
+        </member>
         <member name="T:PayrollEngine.Api.Model.Calendar">
             <summary>
             The division API object

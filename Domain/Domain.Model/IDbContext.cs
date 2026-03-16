@@ -28,6 +28,9 @@ public interface IDbContext
     /// <summary>Transform a database exception</summary>
     Exception TransformException(Exception exception);
 
+    /// <summary>Get database runtime information (type, name, server version)</summary>
+    Task<DatabaseInformation> GetDatabaseInformationAsync();
+
     #endregion
 
     #region Query

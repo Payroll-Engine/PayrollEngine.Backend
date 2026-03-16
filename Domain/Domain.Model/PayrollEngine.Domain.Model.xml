@@ -3226,6 +3226,18 @@
             Copy constructor
             </summary>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.DatabaseInformation">
+            <summary>Database runtime information</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DatabaseInformation.Type">
+            <summary>Database type (e.g. "SqlServer")</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DatabaseInformation.Name">
+            <summary>Database name (catalog)</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.DatabaseInformation.Version">
+            <summary>Database server version (e.g. "16.0.4175.1")</summary>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.DefaultPayrollCalculatorProvider">
             <summary>
             Default provider for payroll calculators
@@ -3878,6 +3890,9 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.IDbContext.TransformException(System.Exception)">
             <summary>Transform a database exception</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.GetDatabaseInformationAsync">
+            <summary>Get database runtime information (type, name, server version)</summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.IDbContext.QueryAsync``1(System.String,System.Object,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
             <summary>
