@@ -3,17 +3,19 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 /// <summary>Repository for <see cref="User"/> persistence with password management (table: User).</summary>
-public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User, DbSchema.UserColumn.TenantId),
+public class UserRepository() : ChildDomainRepository<User>(Tables.User, UserColumn.TenantId),
     IUserRepository
 {
     public async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
-        await ExistsAnyAsync(context, DbSchema.UserColumn.TenantId, tenantId, DbSchema.UserColumn.Identifier, identifier);
+        await ExistsAnyAsync(context, UserColumn.TenantId, tenantId, UserColumn.Identifier, identifier);
 
     protected override void GetObjectCreateData(User user, DbParameterCollection parameters)
     {
@@ -54,7 +56,7 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
     }
 
     /// <inheritdoc />
-    public async System.Threading.Tasks.Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, PasswordChangeRequest changeRequest)
+    public async Task UpdatePasswordAsync(IDbContext context, int tenantId, int userId, PasswordChangeRequest changeRequest)
     {
         if (changeRequest == null)
         {
@@ -111,7 +113,7 @@ public class UserRepository() : ChildDomainRepository<User>(DbSchema.Tables.User
         parameters.Add(nameof(user.Password), user.Password);
         parameters.Add(nameof(user.StoredSalt), user.StoredSalt, DbType.Binary);
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), userId);
+        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), userId, context);
         var sql = queryBuilder.ToString();
 
         // transaction

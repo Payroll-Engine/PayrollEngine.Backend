@@ -1,6 +1,7 @@
 namespace PayrollEngine.Api.Model;
 
 /// <summary>Database runtime information</summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class BackendDatabaseInformation
 {
     /// <summary>Database type (e.g. "SqlServer")</summary>

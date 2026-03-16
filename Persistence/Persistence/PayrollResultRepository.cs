@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(DbSchema.Tables.PayrollResult,
-    DbSchema.PayrollResultColumn.TenantId), IPayrollResultRepository
+public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Tables.PayrollResult,
+    PayrollResultColumn.TenantId), IPayrollResultRepository
 {
     #region Result Values
 
@@ -24,13 +25,13 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Db
 
         // db query
         var dbQuery = DbQueryFactory.NewTypeQuery<PayrollResultValue>(
-            DbSchema.Tables.PayrollResultPivot, query);
+            Tables.PayrollResultPivot, query);
 
         // employee
-        dbQuery.Item1.Where(DbSchema.PayrollResultColumn.TenantId, tenantId);
+        dbQuery.Item1.Where(PayrollResultColumn.TenantId, tenantId);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // SELECT execution
         IEnumerable<PayrollResultValue> items = (await QueryCaseValuesAsync<PayrollResultValue>(context,
@@ -38,7 +39,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Db
             {
                 ParentId = tenantId,
                 EmployeeId = employeeId,
-                StoredProcedure = DbSchema.Procedures.GetPayrollResultValues,
+                StoredProcedure = Procedures.GetPayrollResultValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2
             })).ToList();
@@ -55,13 +56,13 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Db
 
         // db query
         var dbQuery = DbQueryFactory.NewTypeQuery<PayrollResultValue>(
-            DbSchema.Tables.PayrollResultPivot, query, QueryMode.ItemCount);
+            Tables.PayrollResultPivot, query, QueryMode.ItemCount);
 
         // employee
-        dbQuery.Item1.Where(DbSchema.PayrollResultColumn.TenantId, tenantId);
+        dbQuery.Item1.Where(PayrollResultColumn.TenantId, tenantId);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // SELECT execution
         var count = await QueryCaseValueCountAsync(context,
@@ -69,7 +70,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Db
             {
                 ParentId = tenantId,
                 EmployeeId = employeeId,
-                StoredProcedure = DbSchema.Procedures.GetPayrollResultValues,
+                StoredProcedure = Procedures.GetPayrollResultValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2
             });

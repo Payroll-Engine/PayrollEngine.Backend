@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
-using PayrollEngine.Persistence.DbQuery;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
@@ -71,7 +72,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
             parentId, query);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // execute stored procedure
         var items = (await QueryCaseValuesAsync<TDomain>(context,
@@ -99,7 +100,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         SetupDbQuery(dbQuery.Item1, query);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // execute stored procedure
         var count = await QueryCaseValueCountAsync(context,
@@ -144,11 +145,11 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
 
         // filter and group by case field name
         query.Select(nameof(CaseValue.CaseSlot));
-        query.Where(DbSchema.CaseValueColumn.CaseFieldName, caseFieldName);
+        query.Where(CaseValueColumn.CaseFieldName, caseFieldName);
         query.GroupBy(nameof(CaseValue.CaseSlot));
 
         // compile and execute query
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         var caseValues = await QueryAsync<CaseValue>(context, compileQuery);
 
         // select case slots
@@ -177,30 +178,30 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         // filter by case field name
         if (!string.IsNullOrWhiteSpace(caseFieldName))
         {
-            dbQuery.Where(DbSchema.CaseValueColumn.CaseFieldName, caseFieldName);
+            dbQuery.Where(CaseValueColumn.CaseFieldName, caseFieldName);
         }
 
         // forecast filter
         if (string.IsNullOrWhiteSpace(query.Forecast))
         {
             // only results without forecast
-            dbQuery.WhereNull(DbSchema.CaseValueColumn.Forecast);
+            dbQuery.WhereNull(CaseValueColumn.Forecast);
         }
         else
         {
             // specific forecast results plus results without forecast
-            dbQuery.WhereNullOrValue(DbSchema.CaseValueColumn.Forecast, query.Forecast);
+            dbQuery.WhereNullOrValue(CaseValueColumn.Forecast, query.Forecast);
         }
 
         // ignore newer created objects
         if (evaluationDate.HasValue)
         {
-            dbQuery.Where(DbSchema.ObjectColumn.Created, "<", evaluationDate);
+            dbQuery.Where(ObjectColumn.Created, "<", evaluationDate);
         }
 
         // order from newest to oldest
-        dbQuery.OrderBy(DbSchema.ObjectColumn.Created);
-        var compileQuery = CompileQuery(dbQuery);
+        dbQuery.OrderBy(ObjectColumn.Created);
+        var compileQuery = CompileQuery(dbQuery, context);
         return await QueryAsync<CaseValue>(context, compileQuery);
     }
 
@@ -230,25 +231,25 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         // filter by case field name
         if (!string.IsNullOrWhiteSpace(caseFieldName))
         {
-            dbQuery.Where(DbSchema.CaseValueColumn.CaseFieldName, caseFieldName);
+            dbQuery.Where(CaseValueColumn.CaseFieldName, caseFieldName);
         }
 
         // forecast filter
         if (string.IsNullOrWhiteSpace(query.Forecast))
         {
             // only results without forecast
-            dbQuery.WhereNull(DbSchema.CaseValueColumn.Forecast);
+            dbQuery.WhereNull(CaseValueColumn.Forecast);
         }
         else
         {
             // specific forecast results plus results without forecast
-            dbQuery.WhereNullOrValue(DbSchema.CaseValueColumn.Forecast, query.Forecast);
+            dbQuery.WhereNullOrValue(CaseValueColumn.Forecast, query.Forecast);
         }
 
         // ignore newer created objects
         if (evaluationDate.HasValue)
         {
-            dbQuery.Where(DbSchema.ObjectColumn.Created, "<", evaluationDate);
+            dbQuery.Where(ObjectColumn.Created, "<", evaluationDate);
         }
 
         // period filter: ignore values from outside periods
@@ -260,17 +261,17 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
             // Use <= (inclusive) so that a case value whose Start equals the period end
             // (e.g. Start = EvaluationDate) is included. A strict < would exclude values
             // that start exactly on the evaluation date, which is semantically incorrect.
-            dbQuery.WhereNullOrValue(DbSchema.CaseValueColumn.Start, "<=", period.End);
+            dbQuery.WhereNullOrValue(CaseValueColumn.Start, "<=", period.End);
         }
         if (period.HasStart)
         {
             // sub condition: ([Created] IS NULL OR [Created] > 'periodStart')
-            dbQuery.WhereNullOrValue(DbSchema.CaseValueColumn.End, ">", period.Start);
+            dbQuery.WhereNullOrValue(CaseValueColumn.End, ">", period.Start);
         }
 
         // order from newest to oldest
-        dbQuery.OrderByDesc(DbSchema.ObjectColumn.Created);
-        var compileQuery = CompileQuery(dbQuery);
+        dbQuery.OrderByDesc(ObjectColumn.Created);
+        var compileQuery = CompileQuery(dbQuery, context);
         return await QueryAsync<CaseValue>(context, compileQuery);
     }
 
@@ -282,7 +283,7 @@ public abstract class CaseValueRepositoryBase<TDomain>(string tableName, string 
         {
             throw new PayrollException("Missing case field name.");
         }
-        if (!await CaseFieldRepository.ExistsAsync(context, DbSchema.CaseFieldColumn.Name, item.CaseFieldName))
+        if (!await CaseFieldRepository.ExistsAsync(context, CaseFieldColumn.Name, item.CaseFieldName))
         {
             throw new PayrollException($"Unknown case field with name {item.CaseFieldName}.");
         }

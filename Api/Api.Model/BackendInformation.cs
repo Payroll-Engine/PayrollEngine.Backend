@@ -3,6 +3,7 @@ using System;
 namespace PayrollEngine.Api.Model;
 
 /// <summary>Backend server information for client diagnostics and compatibility checks</summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class BackendInformation
 {
     /// <summary>Backend assembly version (e.g. "0.10.0-beta.1")</summary>

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -67,35 +69,23 @@ internal sealed class PayrollRepositoryReportCommand : PayrollRepositoryCommandB
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedReports.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedReports.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedReports.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedReports.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (userType.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedReports.UserType, userType.Value);
-        }
-        if (clusterSet != null)
-        {
-            if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedReports.IncludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.IncludeClusters));
-            }
-            if (clusterSet.ExcludeClusters != null && clusterSet.ExcludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedReports.ExcludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.ExcludeClusters));
-            }
-        }
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedReports.ReportNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
+        parameters.Add(ParameterGetDerivedReports.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedReports.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedReports.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedReports.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedReports.UserType,
+            userType);
+        parameters.Add(ParameterGetDerivedReports.IncludeClusters,
+            clusterSet?.IncludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.IncludeClusters) : null);
+        parameters.Add(ParameterGetDerivedReports.ExcludeClusters,
+            clusterSet?.ExcludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.ExcludeClusters) : null);
+        parameters.Add(ParameterGetDerivedReports.ReportNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
 
         // retrieve all derived reports (stored procedure)
-        var reports = (await DbContext.QueryAsync<DerivedReport>(DbSchema.Procedures.GetDerivedReports,
+        var reports = (await DbContext.QueryAsync<DerivedReport>(Procedures.GetDerivedReports,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedReports(reports, overrideType);

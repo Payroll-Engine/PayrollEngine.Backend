@@ -47,14 +47,14 @@ internal static class ApiFactory
 
         // test database — skipped during Swashbuckle CLI swagger generation (no real DB available)
         var swaggerGeneration = !string.IsNullOrEmpty(
-            System.Environment.GetEnvironmentVariable("PAYROLL_SWAGGER_GENERATION"));
+            Environment.GetEnvironmentVariable("PAYROLL_SWAGGER_GENERATION"));
         if (!swaggerGeneration)
         {
             var exception = dbContext.TestVersionAsync().GetAwaiter().GetResult();
             if (exception != null)
             {
                 Log.Critical(exception, exception.GetBaseException().Message);
-                return;
+                throw new PayrollException($"Database startup failed: {exception.GetBaseException().Message}", exception);
             }
         }
         services.AddTransient(_ => dbContext);

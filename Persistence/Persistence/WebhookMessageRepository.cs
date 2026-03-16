@@ -1,12 +1,13 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 /// <summary>Repository for <see cref="WebhookMessage"/> persistence (table: WebhookMessage).</summary>
-public class WebhookMessageRepository() : ChildDomainRepository<WebhookMessage>(DbSchema.Tables.WebhookMessage,
-    DbSchema.WebhookMessageColumn.WebhookId), IWebhookMessageRepository
+public class WebhookMessageRepository() : ChildDomainRepository<WebhookMessage>(Tables.WebhookMessage,
+    WebhookMessageColumn.WebhookId), IWebhookMessageRepository
 {
     protected override void GetObjectCreateData(WebhookMessage message, DbParameterCollection parameters)
     {

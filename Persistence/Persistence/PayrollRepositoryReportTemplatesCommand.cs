@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -48,23 +50,17 @@ internal sealed class PayrollRepositoryReportTemplatesCommand : PayrollRepositor
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.ReportNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
-        // culture
-        if (!String.IsNullOrWhiteSpace(culture))
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedReportTemplates.Culture, culture);
-        }
+        parameters.Add(ParameterGetDerivedReportTemplates.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedReportTemplates.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedReportTemplates.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedReportTemplates.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedReportTemplates.ReportNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
+        parameters.Add(ParameterGetDerivedReportTemplates.Culture,
+            string.IsNullOrWhiteSpace(culture) ? null : culture);
 
         // retrieve all derived report templates (stored procedure)
-        var reportTemplates = (await DbContext.QueryAsync<DerivedReportTemplate>(DbSchema.Procedures.GetDerivedReportTemplates,
+        var reportTemplates = (await DbContext.QueryAsync<DerivedReportTemplate>(Procedures.GetDerivedReportTemplates,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedReportTemplates(reportTemplates, overrideType);

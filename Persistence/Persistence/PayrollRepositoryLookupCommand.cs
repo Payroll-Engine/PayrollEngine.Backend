@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -48,16 +50,13 @@ internal sealed class PayrollRepositoryLookupCommand : PayrollRepositoryCommandB
 
         // retrieve all derived lookups (stored procedure)
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedLookups.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedLookups.LookupNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
-        var lookups = (await DbContext.QueryAsync<DerivedLookup>(DbSchema.Procedures.GetDerivedLookups,
+        parameters.Add(ParameterGetDerivedLookups.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedLookups.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedLookups.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedLookups.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedLookups.LookupNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
+        var lookups = (await DbContext.QueryAsync<DerivedLookup>(Procedures.GetDerivedLookups,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         // consolidation

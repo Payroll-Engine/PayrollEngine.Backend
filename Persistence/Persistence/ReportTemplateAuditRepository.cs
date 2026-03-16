@@ -1,12 +1,13 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class ReportTemplateAuditRepository() : AuditChildDomainRepository<ReportTemplateAudit>(
-        DbSchema.Tables.ReportTemplateAudit, DbSchema.ReportTemplateAuditColumn.ReportTemplateId),
+        Tables.ReportTemplateAudit, ReportTemplateAuditColumn.ReportTemplateId),
     IReportTemplateAuditRepository
 {
     protected override void GetObjectCreateData(ReportTemplateAudit audit, DbParameterCollection parameters)

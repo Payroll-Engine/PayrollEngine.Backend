@@ -1,19 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class ReportTemplateRepository(IRegulationRepository regulationRepository,
     IReportRepository reportRepository, IReportTemplateAuditRepository auditRepository, bool auditEnabled) :
     TrackChildDomainRepository<ReportTemplate, ReportTemplateAudit>(regulationRepository,
-        DbSchema.Tables.ReportTemplate, DbSchema.ReportTemplateColumn.ReportId,
+        Tables.ReportTemplate, ReportTemplateColumn.ReportId,
         auditRepository, auditEnabled), IReportTemplateRepository
 {
     private IReportRepository ReportRepository { get; } = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
@@ -110,7 +111,7 @@ public class ReportTemplateRepository(IRegulationRepository regulationRepository
         query.ApplyTo(dbQuery);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
         return compileQuery;
     }
 }

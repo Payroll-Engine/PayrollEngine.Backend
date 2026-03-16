@@ -4,16 +4,17 @@ using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class EmployeeCaseValueRepository(ICaseFieldRepository caseFieldRepository) : CaseValueRepository(
-    DbSchema.Tables.EmployeeCaseValue, DbSchema.EmployeeCaseValueColumn.EmployeeId,
+    Tables.EmployeeCaseValue, EmployeeCaseValueColumn.EmployeeId,
     caseFieldRepository), IEmployeeCaseValueRepository
 {
-    protected override string CaseValueTableName => DbSchema.Tables.EmployeeCaseValuePivot;
-    protected override string CaseValueQueryProcedure => DbSchema.Procedures.GetEmployeeCaseValues;
+    protected override string CaseValueTableName => Tables.EmployeeCaseValuePivot;
+    protected override string CaseValueQueryProcedure => Procedures.GetEmployeeCaseValues;
 
     /// <inheritdoc />
     public async Task<IEnumerable<CaseValue>> GetTenantCaseValuesAsync(IDbContext context, int tenantId,
@@ -33,7 +34,7 @@ public class EmployeeCaseValueRepository(ICaseFieldRepository caseFieldRepositor
         }
 
         return await QueryAsync<CaseValue>(context,
-            DbSchema.Procedures.GetEmployeeCaseValuesByTenant,
+            Procedures.GetEmployeeCaseValuesByTenant,
             new
             {
                 tenantId,

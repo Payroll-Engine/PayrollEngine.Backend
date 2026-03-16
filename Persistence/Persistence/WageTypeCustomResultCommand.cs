@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -21,7 +22,7 @@ internal sealed class WageTypeCustomResultCommand : WageTypeResultCommandBase
         QueryBegin();
 
         // retrieve employee wage type values (stored procedure)
-        var values = await DbContext.QueryAsync<WageTypeCustomResult>(DbSchema.Procedures.GetWageTypeCustomResults,
+        var values = await DbContext.QueryAsync<WageTypeCustomResult>(Procedures.GetWageTypeCustomResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         QueryEnd(() => $"{{Result query wage type custom}} {GetItemsString(query.WageTypeNumbers?.Distinct())}");

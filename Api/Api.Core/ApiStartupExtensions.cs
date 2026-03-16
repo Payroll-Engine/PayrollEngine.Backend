@@ -207,7 +207,7 @@ public static class ApiStartupExtensions
             // XML comments -- skipped during Swashbuckle CLI swagger generation
             // (no XML files available without a full build output directory)
             var swaggerGen = !string.IsNullOrEmpty(
-                System.Environment.GetEnvironmentVariable("PAYROLL_SWAGGER_GENERATION"));
+                Environment.GetEnvironmentVariable("PAYROLL_SWAGGER_GENERATION"));
             if (!swaggerGen)
             {
                 if (serverConfiguration.XmlCommentFileNames == null || !serverConfiguration.XmlCommentFileNames.Any())
@@ -218,7 +218,7 @@ public static class ApiStartupExtensions
                     specification.ApiDocumentationFileName, serverConfiguration.XmlCommentFileNames);
                 setupAction.IncludeXmlComments(combinedXmlCommentFileName);
             }
-            });
+        });
         }
 
         // API Version

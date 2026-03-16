@@ -22,7 +22,8 @@ public static class LogExtensions
         appLifetime.ApplicationStarted.Register(() =>
         {
             var dbInfo = GetConnectionInfo(configuration);
-            Log.Information($"{environment.ApplicationName} > {GetApplicationAddress(appBuilder)} [database: {dbInfo.Server} > {dbInfo.Database}].");
+            var dbProvider = serverConfiguration.DbProvider ?? "SqlServer";
+            Log.Information($"{environment.ApplicationName} > {GetApplicationAddress(appBuilder)} [database: {dbProvider} | {dbInfo.Server} > {dbInfo.Database}].");
             Log.Debug($"Culture: {CultureInfo.CurrentCulture}");
 
             // parallel employee processing

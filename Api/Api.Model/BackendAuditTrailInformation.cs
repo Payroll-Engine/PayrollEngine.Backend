@@ -1,6 +1,7 @@
 namespace PayrollEngine.Api.Model;
 
 /// <summary>Audit trail feature flags</summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class BackendAuditTrailInformation
 {
     /// <summary>Script audit trail enabled</summary>

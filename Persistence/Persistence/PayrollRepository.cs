@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
@@ -12,7 +13,7 @@ public class PayrollRepository(IPayrollLayerRepository payrollLayerRepository,
         IRegulationRepository regulationRepository,
         ICaseFieldRepository caseFieldRepository, IReportSetRepository reportRepository,
         IScriptRepository scriptRepository)
-    : ChildDomainRepository<Payroll>(DbSchema.Tables.Payroll, DbSchema.PayrollColumn.TenantId), IPayrollRepository
+    : ChildDomainRepository<Payroll>(Tables.Payroll, PayrollColumn.TenantId), IPayrollRepository
 {
     private IPayrollLayerRepository PayrollLayerRepository { get; } = payrollLayerRepository ?? throw new ArgumentNullException(nameof(payrollLayerRepository));
     private IRegulationRepository RegulationRepository { get; } = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));

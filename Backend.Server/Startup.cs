@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Api.Core;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Backend.Server;
 
@@ -50,11 +51,17 @@ public class Startup
         // configuration — fall back to defaults when no section is present (e.g. Swashbuckle CLI)
         var serverConfiguration = Configuration.GetConfiguration<PayrollServerConfiguration>() ?? new();
 
-        // database context
-        var dbContext = new Persistence.SqlServer.DbContext(
-            connectionString: connectionString,
-            defaultCommendTimeout: Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds),
-            collation: serverConfiguration.DbCollation);
+        // database context -- provider selection via DbProvider setting
+        IDbContext dbContext = serverConfiguration.DbProvider?.ToLowerInvariant() switch
+        {
+            "mysql" => new Persistence.MySql.DbContext(
+                connectionString: connectionString,
+                defaultCommendTimeout: Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds)),
+            _ => new Persistence.SqlServer.DbContext(
+                connectionString: connectionString,
+                defaultCommendTimeout: Convert.ToInt32(serverConfiguration.DbCommandTimeout.TotalSeconds),
+                collation: serverConfiguration.DbCollation)
+        };
 
         // setup services
         services.AddApiServices(

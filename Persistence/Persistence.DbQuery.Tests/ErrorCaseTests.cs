@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using Xunit;
-using PayrollEngine.Persistence;
-using PayrollEngine.Persistence.DbQuery;
 using PayrollEngine.Persistence.DbQuery.Tests.Infrastructure;
+// ReSharper disable CommentTypo
+// ReSharper disable StringLiteralTypo
 
 namespace PayrollEngine.Persistence.DbQuery.Tests;
 
@@ -121,8 +121,8 @@ public class ErrorCaseTests : QueryTestBase
     [Fact]
     public void NullQuery_ProducesSelectAll()
     {
-        var query = global::PayrollEngine.Persistence.DbQueryFactory.NewQuery<TestEntity>(
-            null!, TableName, null, QueryMode.Item);
+        var query = DbQueryFactory.NewQuery<TestEntity>(
+            null!, TableName);
         var sql = Compiler.Compile(query).Sql;
         Assert.Contains(TableName, sql);
         Assert.DoesNotContain("WHERE", sql);
@@ -153,7 +153,7 @@ public class ErrorCaseTests : QueryTestBase
     public void Top_LargeValue_InBindings()
     {
         var result = Result(top: int.MaxValue);
-        Assert.True(result.Bindings.Any(b => Convert.ToInt64(b) == (long)int.MaxValue),
+        Assert.True(result.Bindings.Any(b => Convert.ToInt64(b) == int.MaxValue),
             $"Expected int.MaxValue in bindings. Got: [{string.Join(", ", result.Bindings)}]");
     }
 }

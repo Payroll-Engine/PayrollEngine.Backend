@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -64,23 +66,17 @@ internal sealed class PayrollRepositoryLookupValuesCommand : PayrollRepositoryCo
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedLookupValues.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedLookupValues.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedLookupValues.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedLookupValues.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedLookupValues.LookupNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
-        if (keys != null && keys.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedLookupValues.LookupKeys,
-                System.Text.Json.JsonSerializer.Serialize(keys));
-        }
+        parameters.Add(ParameterGetDerivedLookupValues.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedLookupValues.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedLookupValues.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedLookupValues.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedLookupValues.LookupNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
+        parameters.Add(ParameterGetDerivedLookupValues.LookupKeys,
+            keys?.Any() == true ? JsonSerializer.Serialize(keys) : null);
 
         // retrieve all derived lookup parameters (stored procedure)
-        var lookupParameters = (await DbContext.QueryAsync<DerivedLookupValue>(DbSchema.Procedures.GetDerivedLookupValues,
+        var lookupParameters = (await DbContext.QueryAsync<DerivedLookupValue>(Procedures.GetDerivedLookupValues,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedLookupValues(lookupParameters, overrideType);

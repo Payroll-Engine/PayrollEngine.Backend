@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Collections.Generic;
 using Dapper;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -43,21 +44,21 @@ public class DbParameterCollection : DynamicParameters
     /// </summary>
     /// <param name="status">Object status</param>
     public void AddStatus(ObjectStatus status) =>
-        Add(DbSchema.ObjectColumn.Status, status, DbType.Int32);
+        Add(ObjectColumn.Status, status, DbType.Int32);
 
     /// <summary>
     /// Add created date parameter
     /// </summary>
     /// <param name="created">Created date</param>
     public void AddCreated(DateTime created) =>
-        Add(DbSchema.ObjectColumn.Created, created, DbType.DateTime2);
+        Add(ObjectColumn.Created, created, DbType.DateTime2);
 
     /// <summary>
     /// Add updated date parameter
     /// </summary>
     /// <param name="updated">Updated date</param>
     public void AddUpdated(DateTime updated) =>
-        Add(DbSchema.ObjectColumn.Updated, updated, DbType.DateTime2);
+        Add(ObjectColumn.Updated, updated, DbType.DateTime2);
 
     /// <summary>
     /// Add parameter

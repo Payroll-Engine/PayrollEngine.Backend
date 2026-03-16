@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 /// <summary>Repository for <see cref="Division"/> persistence (table: Division).</summary>
-public class DivisionRepository() : ChildDomainRepository<Division>(DbSchema.Tables.Division,
-    DbSchema.DivisionColumn.TenantId), IDivisionRepository
+public class DivisionRepository() : ChildDomainRepository<Division>(Tables.Division,
+    DivisionColumn.TenantId), IDivisionRepository
 {
     protected override void GetObjectData(Division division, DbParameterCollection parameters)
     {
@@ -37,10 +38,10 @@ public class DivisionRepository() : ChildDomainRepository<Division>(DbSchema.Tab
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, tenantId);
 
         // filter by division ids
-        query.WhereIn(DbSchema.ObjectColumn.Id, divisionIds);
+        query.WhereIn(ObjectColumn.Id, divisionIds);
 
         // execute query
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         return await QueryAsync<Division>(context, compileQuery);
     }
 
@@ -59,10 +60,10 @@ public class DivisionRepository() : ChildDomainRepository<Division>(DbSchema.Tab
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, tenantId);
 
         // filter by division ids
-        query.WhereIn(DbSchema.DivisionColumn.Name, name);
+        query.WhereIn(DivisionColumn.Name, name);
 
         // execute query
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         return (await QueryAsync(context, compileQuery)).FirstOrDefault();
     }
 }

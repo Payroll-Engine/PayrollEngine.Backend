@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Persistence.DbSchema;
 using SqlKata;
 
 namespace PayrollEngine.Persistence;
@@ -40,9 +41,9 @@ public static class DbQueryFactory
         // object status
         dbQuery
             .When(query?.Status == ObjectStatus.Active,
-                q => q.Where(DbSchema.ObjectColumn.Status, (int)ObjectStatus.Active))
+                q => q.Where(ObjectColumn.Status, (int)ObjectStatus.Active))
             .When(query?.Status == ObjectStatus.Inactive,
-                q => q.Where(DbSchema.ObjectColumn.Status, (int)ObjectStatus.Inactive));
+                q => q.Where(ObjectColumn.Status, (int)ObjectStatus.Inactive));
 
         return dbQuery;
     }
@@ -77,7 +78,7 @@ public static class DbQueryFactory
     /// New query with table name and an object id condition
     /// </summary>
     public static SqlKata.Query NewQuery(string tableName, int objectId) =>
-        NewQuery(tableName, DbSchema.ObjectColumn.Id, objectId);
+        NewQuery(tableName, ObjectColumn.Id, objectId);
 
     #endregion
 
@@ -96,7 +97,7 @@ public static class DbQueryFactory
     {
         if (typeof(T).GetInterface(nameof(IDomainAttributeObject)) != null)
         {
-            var dynamicQueryBuilder = new DynamicTypeQueryBuilder<T>(DbSchema.Prefixes.AttributePrefixes);
+            var dynamicQueryBuilder = new DynamicTypeQueryBuilder<T>(Prefixes.AttributePrefixes);
             var dbQuery = BuildQuery(dynamicQueryBuilder, tableName, query, queryMode);
 
             // no attribute query
@@ -110,25 +111,39 @@ public static class DbQueryFactory
             {
                 if (column.IsTextAttributeField())
                 {
-                    dbQuery.SelectRaw(BuildAttributeQuery(column));
                     dynamicColumn = true;
                 }
                 else if (column.IsDateAttributeField())
                 {
-                    dbQuery.SelectRaw(BuildAttributeQuery(column, dbContext.DateTimeType));
                     dynamicColumn = true;
                 }
                 else if (column.IsNumericAttributeField())
                 {
-                    dbQuery.SelectRaw(BuildAttributeQuery(column, dbContext.DecimalType));
                     dynamicColumn = true;
                 }
             }
 
-            // ensure columns
+            // ensure * is added FIRST so MySQL allows SELECT *, expr FROM table
             if (dynamicColumn && !dbQuery.Clauses.Any(x => x is Column))
             {
                 dbQuery.Select("*");
+            }
+
+            // add attribute expressions AFTER *
+            foreach (var column in dynamicQueryBuilder.DynamicColumns)
+            {
+                if (column.IsTextAttributeField())
+                {
+                    dbQuery.SelectRaw(dbContext.BuildAttributeQuery(column));
+                }
+                else if (column.IsDateAttributeField())
+                {
+                    dbQuery.SelectRaw(dbContext.BuildAttributeQuery(column, dbContext.DateTimeType));
+                }
+                else if (column.IsNumericAttributeField())
+                {
+                    dbQuery.SelectRaw(dbContext.BuildAttributeQuery(column, dbContext.DecimalType));
+                }
             }
 
             // dynamic query
@@ -172,20 +187,6 @@ public static class DbQueryFactory
 
         var queryBuilder = new TypeQueryBuilder<T>();
         return BuildQuery(queryBuilder, tableName, query, queryMode);
-    }
-
-    private static string BuildAttributeQuery(string column, string valueAlias = null)
-    {
-        // ReSharper disable StringLiteralTypo
-        var attribute = column.RemoveAttributePrefix();
-        if (string.IsNullOrWhiteSpace(valueAlias))
-        {
-            return "(SELECT value FROM OPENJSON(Attributes) " + "" +
-                   $"WHERE [key] = '{attribute}') AS {column}";
-        }
-        return $"(SELECT CAST(value AS {valueAlias}) FROM OPENJSON(Attributes) " + "" +
-                           $"WHERE [key] = '{attribute}') AS {column}";
-        // ReSharper restore StringLiteralTypo
     }
 
     /// <summary>
@@ -237,7 +238,7 @@ public static class DbQueryFactory
     public static Tuple<SqlKata.Query, List<string>> NewTypeQuery<T>(string tableName, Query query = null,
         QueryMode queryMode = QueryMode.Item)
     {
-        var queryBuilder = new DynamicTypeQueryBuilder<T>(DbSchema.Prefixes.AttributePrefixes);
+        var queryBuilder = new DynamicTypeQueryBuilder<T>(Prefixes.AttributePrefixes);
         var dbQuery = BuildQuery(queryBuilder, tableName, query, queryMode);
         return new(dbQuery, queryBuilder.DynamicColumns);
     }
@@ -324,7 +325,7 @@ public static class DbQueryFactory
         {
             throw new ArgumentOutOfRangeException(nameof(objectId));
         }
-        return NewCountQuery(table, DbSchema.ObjectColumn.Id, objectId);
+        return NewCountQuery(table, ObjectColumn.Id, objectId);
     }
 
     /// <summary>
@@ -352,7 +353,7 @@ public static class DbQueryFactory
         {
             throw new ArgumentOutOfRangeException(nameof(objectId));
         }
-        return NewDeleteQuery(table, DbSchema.ObjectColumn.Id, objectId);
+        return NewDeleteQuery(table, ObjectColumn.Id, objectId);
     }
 
     /// <summary>

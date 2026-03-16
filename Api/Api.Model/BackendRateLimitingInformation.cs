@@ -1,6 +1,7 @@
 namespace PayrollEngine.Api.Model;
 
 /// <summary>Rate limiting runtime information</summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class BackendRateLimitingInformation
 {
     /// <summary>Whether any rate limiting policy is active</summary>

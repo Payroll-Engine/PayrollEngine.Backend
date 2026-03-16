@@ -1,15 +1,16 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Persistence.DbQuery;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 public class EmployeeCaseChangeRepository(CaseChangeRepositorySettings settings) : CaseChangeRepository<CaseChange>(
-        DbSchema.Tables.EmployeeCaseChange, DbSchema.EmployeeCaseChangeColumn.EmployeeId, settings),
+        Tables.EmployeeCaseChange, EmployeeCaseChangeColumn.EmployeeId, settings),
     IEmployeeCaseChangeRepository
 {
     protected override void GetObjectCreateData(CaseChange caseChange, DbParameterCollection parameters)
@@ -23,24 +24,24 @@ public class EmployeeCaseChangeRepository(CaseChangeRepositorySettings settings)
     {
         // db query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.EmployeeCaseChangeValuePivot, query);
+            Tables.EmployeeCaseChangeValuePivot, query);
 
         // employee
-        dbQuery.Item1.Where(DbSchema.EmployeeCaseValueColumn.EmployeeId, employeeId);
+        dbQuery.Item1.Where(EmployeeCaseValueColumn.EmployeeId, employeeId);
 
         // case change query filter
         var caseChangeQuery = query as CaseChangeQuery;
         caseChangeQuery?.ApplyTo(dbQuery.Item1);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // SELECT execution
         IEnumerable<CaseChangeCaseValue> items = (await QueryCaseValuesAsync<CaseChangeCaseValue>(context,
             new()
             {
                 ParentId = employeeId,
-                StoredProcedure = DbSchema.Procedures.GetEmployeeCaseChangeValues,
+                StoredProcedure = Procedures.GetEmployeeCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
                 Culture = caseChangeQuery?.Culture
@@ -52,24 +53,24 @@ public class EmployeeCaseChangeRepository(CaseChangeRepositorySettings settings)
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.EmployeeCaseChangeValuePivot, query, QueryMode.ItemCount);
+            Tables.EmployeeCaseChangeValuePivot, query, QueryMode.ItemCount);
 
         // employee
-        dbQuery.Item1.Where(DbSchema.EmployeeCaseValueColumn.EmployeeId, employeeId);
+        dbQuery.Item1.Where(EmployeeCaseValueColumn.EmployeeId, employeeId);
 
         // case change query filter
         var caseChangeQuery = query as CaseChangeQuery;
         caseChangeQuery?.ApplyTo(dbQuery.Item1);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // SELECT execution
         var count = await QueryCaseValueCountAsync(context,
             new()
             {
                 ParentId = employeeId,
-                StoredProcedure = DbSchema.Procedures.GetEmployeeCaseChangeValues,
+                StoredProcedure = Procedures.GetEmployeeCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
                 Culture = caseChangeQuery?.Culture

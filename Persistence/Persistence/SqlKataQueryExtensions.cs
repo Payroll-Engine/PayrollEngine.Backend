@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 using SqlKata;
 
 namespace PayrollEngine.Persistence;
@@ -28,12 +29,12 @@ public static class SqlKataQueryExtensions
         {
             if (query.ExcludeGlobal)
             {
-                sqlQuery.Where(DbSchema.CaseChangeColumn.DivisionId, query.DivisionId.Value);
+                sqlQuery.Where(CaseChangeColumn.DivisionId, query.DivisionId.Value);
             }
             else
             {
                 // include global case changes
-                sqlQuery.WhereNullOrValue(DbSchema.CaseChangeColumn.DivisionId, query.DivisionId.Value);
+                sqlQuery.WhereNullOrValue(CaseChangeColumn.DivisionId, query.DivisionId.Value);
             }
         }
     }
@@ -57,11 +58,11 @@ public static class SqlKataQueryExtensions
         sqlQuery.AddDivisionFilter(query.DivisionScope, query.DivisionId);
         if (!string.IsNullOrWhiteSpace(query.CaseName))
         {
-            sqlQuery.Where(DbSchema.CaseValueColumn.CaseName, query.CaseName);
+            sqlQuery.Where(CaseValueColumn.CaseName, query.CaseName);
         }
         if (!string.IsNullOrWhiteSpace(query.CaseFieldName))
         {
-            sqlQuery.Where(DbSchema.CaseValueColumn.CaseFieldName, query.CaseFieldName);
+            sqlQuery.Where(CaseValueColumn.CaseFieldName, query.CaseFieldName);
         }
     }
 
@@ -91,20 +92,20 @@ public static class SqlKataQueryExtensions
         {
             // query
             if (sqlQuery.Clauses.FirstOrDefault(x => x is BasicCondition condition &&
-                                                     string.Equals(DbSchema.ObjectColumn.Status, condition.Column)) is BasicCondition statusCondition)
+                                                     string.Equals(ObjectColumn.Status, condition.Column)) is BasicCondition statusCondition)
             {
                 sqlQuery.Clauses.Remove(statusCondition);
-                sqlQuery.Where(tableName.ToTableColumn(DbSchema.ObjectColumn.Status), query.Status);
+                sqlQuery.Where(tableName.ToTableColumn(ObjectColumn.Status), query.Status);
             }
-            sqlQuery.SelectAll(DbSchema.Tables.Employee);
+            sqlQuery.SelectAll(Tables.Employee);
 
             // relation between employee and employee-division
-            sqlQuery.LeftObjectJoin(DbSchema.Tables.Employee,
-                DbSchema.Tables.EmployeeDivision, DbSchema.EmployeeDivisionColumn.EmployeeId);
+            sqlQuery.LeftObjectJoin(Tables.Employee,
+                Tables.EmployeeDivision, EmployeeDivisionColumn.EmployeeId);
 
             // division filter
-            sqlQuery.RelatedWhere(DbSchema.Tables.EmployeeDivision,
-                DbSchema.EmployeeDivisionColumn.DivisionId, query.DivisionId.Value);
+            sqlQuery.RelatedWhere(Tables.EmployeeDivision,
+                EmployeeDivisionColumn.DivisionId, query.DivisionId.Value);
         }
     }
 
@@ -127,7 +128,7 @@ public static class SqlKataQueryExtensions
         // language
         if (!string.IsNullOrWhiteSpace(query.Culture))
         {
-            sqlQuery.Where(DbSchema.ReportTemplateColumn.Culture, query.Culture);
+            sqlQuery.Where(ReportTemplateColumn.Culture, query.Culture);
         }
     }
 }

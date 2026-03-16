@@ -1,23 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class CaseFieldRepository(IRegulationRepository regulationRepository, ICaseRepository caseRepository,
     ICaseFieldAuditRepository auditRepository, bool auditEnabled) :
-    TrackChildDomainRepository<CaseField, CaseFieldAudit>(regulationRepository, DbSchema.Tables.CaseField,
-        DbSchema.CaseFieldColumn.CaseId, auditRepository, auditEnabled), ICaseFieldRepository
+    TrackChildDomainRepository<CaseField, CaseFieldAudit>(regulationRepository, Tables.CaseField,
+        CaseFieldColumn.CaseId, auditRepository, auditEnabled), ICaseFieldRepository
 {
     private ICaseRepository CaseRepository { get; } = caseRepository;
 
     public async Task<bool> ExistsAnyAsync(IDbContext context, int caseId, IEnumerable<string> caseFieldNames) =>
-        await ExistsAnyAsync(context, DbSchema.CaseFieldColumn.CaseId, caseId, DbSchema.CaseFieldColumn.Name, caseFieldNames);
+        await ExistsAnyAsync(context, CaseFieldColumn.CaseId, caseId, CaseFieldColumn.Name, caseFieldNames);
 
     public async Task<IEnumerable<CaseField>> GetRegulationCaseFieldsAsync(IDbContext context, int tenantId,
         IEnumerable<string> caseFieldNames, int? regulationId = null)
@@ -33,21 +34,21 @@ public class CaseFieldRepository(IRegulationRepository regulationRepository, ICa
 
         var query = DbQueryFactory.NewQuery(TableName)
             .Select(GetColumnName("*"))
-            .Join(DbSchema.Tables.Case,
-                GetColumnName(DbSchema.CaseFieldColumn.CaseId),
-                GetIdColumnName(DbSchema.Tables.Case))
-            .Join(DbSchema.Tables.Regulation,
-                GetColumnName(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId),
-                GetIdColumnName(DbSchema.Tables.Regulation))
-            .Where(DbSchema.RegulationColumn.TenantId, tenantId)
-            .WhereIn(GetColumnName(DbSchema.CaseFieldColumn.Name), caseFieldNames);
+            .Join(Tables.Case,
+                GetColumnName(CaseFieldColumn.CaseId),
+                GetIdColumnName(Tables.Case))
+            .Join(Tables.Regulation,
+                GetColumnName(Tables.Case, CaseColumn.RegulationId),
+                GetIdColumnName(Tables.Regulation))
+            .Where(RegulationColumn.TenantId, tenantId)
+            .WhereIn(GetColumnName(CaseFieldColumn.Name), caseFieldNames);
 
         if (regulationId.HasValue)
         {
-            query = query.Where(GetColumnName(DbSchema.Tables.Regulation, DbSchema.ObjectColumn.Id), regulationId.Value);
+            query = query.Where(GetColumnName(Tables.Regulation, ObjectColumn.Id), regulationId.Value);
         }
 
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         var cases = await QueryAsync<CaseField>(context, compileQuery);
         return cases;
     }

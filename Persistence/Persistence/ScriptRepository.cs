@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 public class ScriptRepository(IRegulationRepository regulationRepository, IScriptAuditRepository auditRepository, 
     bool auditEnabled) : TrackChildDomainRepository<Script, ScriptAudit>(regulationRepository,
-    DbSchema.Tables.Script, DbSchema.ScriptColumn.RegulationId, auditRepository, auditEnabled), IScriptRepository
+    Tables.Script, ScriptColumn.RegulationId, auditRepository, auditEnabled), IScriptRepository
 {
     protected override void GetObjectCreateData(Script script, DbParameterCollection parameters)
     {
@@ -27,7 +28,7 @@ public class ScriptRepository(IRegulationRepository regulationRepository, IScrip
     }
 
     public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> scriptNames) =>
-        await ExistsAnyAsync(context, DbSchema.ScriptColumn.RegulationId, regulationId, DbSchema.ScriptColumn.Name, scriptNames);
+        await ExistsAnyAsync(context, ScriptColumn.RegulationId, regulationId, ScriptColumn.Name, scriptNames);
 
     public async Task<IEnumerable<Script>> GetFunctionScriptsAsync(IDbContext context, int regulationId,
         List<FunctionType> functionTypes = null, DateTime? evaluationDate = null)
@@ -42,19 +43,20 @@ public class ScriptRepository(IRegulationRepository regulationRepository, IScrip
         // ignore newer created objects
         if (evaluationDate.HasValue)
         {
-            query.Where(DbSchema.ObjectColumn.Created, "<", evaluationDate);
+            query.Where(ObjectColumn.Created, "<", evaluationDate);
         }
 
         // order from newest to oldest
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // filter by function types
         if (functionTypes != null)
         {
             var bitmask = functionTypes.ToBitmask();
+            var col = context.QuoteIdentifier(ScriptColumn.FunctionTypeMask);
             // Dapper does not support where clause with bitwise AND
             // see also https://docs.microsoft.com/en-us/sql/t-sql/language-elements/bitwise-and-transact-sql
-            compileQuery += $" AND ([{DbSchema.ScriptColumn.FunctionTypeMask}] & {bitmask} <> 0 OR [{DbSchema.ScriptColumn.FunctionTypeMask}] = 0)";
+            compileQuery += $" AND ({col} & {bitmask} <> 0 OR {col} = 0)";
         }
 
         var scripts = (await QueryAsync<Script>(context, compileQuery)).ToList();

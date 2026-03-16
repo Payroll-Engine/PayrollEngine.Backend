@@ -4,6 +4,7 @@ using Microsoft.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.UriParser;
 using Microsoft.OData.UriParser.Aggregation;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence.DbQuery;
 
@@ -37,7 +38,7 @@ internal abstract class QueryBuilderBase
             // status
             if (query.Status.HasValue)
             {
-                queryOptions.Add(DbSchema.ObjectColumn.Status, query.Status.Value.ToString());
+                queryOptions.Add(ObjectColumn.Status, query.Status.Value.ToString());
             }
 
             // order by

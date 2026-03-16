@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 public class NationalCaseChangeRepository(CaseChangeRepositorySettings settings) : CaseChangeRepository<CaseChange>(
-        DbSchema.Tables.NationalCaseChange, DbSchema.NationalCaseChangeColumn.TenantId, settings),
+        Tables.NationalCaseChange, NationalCaseChangeColumn.TenantId, settings),
     INationalCaseChangeRepository
 {
     protected override async Task<IEnumerable<CaseChangeCaseValue>> QueryCaseChangesValuesAsync(IDbContext context,
@@ -16,23 +17,23 @@ public class NationalCaseChangeRepository(CaseChangeRepositorySettings settings)
     {
         // db query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.NationalCaseChangeValuePivot, query);
+            Tables.NationalCaseChangeValuePivot, query);
         // tenant
-        dbQuery.Item1.Where(DbSchema.NationalCaseValueColumn.TenantId, tenantId);
+        dbQuery.Item1.Where(NationalCaseValueColumn.TenantId, tenantId);
 
         // case change query filter
         var caseChangeQuery = query as CaseChangeQuery;
         caseChangeQuery?.ApplyTo(dbQuery.Item1);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // SELECT execution
         IEnumerable<CaseChangeCaseValue> items = (await QueryCaseValuesAsync<CaseChangeCaseValue>(context,
             new()
             {
                 ParentId = parentId,
-                StoredProcedure = DbSchema.Procedures.GetNationalCaseChangeValues,
+                StoredProcedure = Procedures.GetNationalCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
                 Culture = caseChangeQuery?.Culture
@@ -44,24 +45,24 @@ public class NationalCaseChangeRepository(CaseChangeRepositorySettings settings)
     {
         // pivot query
         var dbQuery = DbQueryFactory.NewTypeQuery<CaseChangeCaseValue>(
-            DbSchema.Tables.NationalCaseChangeValuePivot, query, QueryMode.ItemCount);
+            Tables.NationalCaseChangeValuePivot, query, QueryMode.ItemCount);
 
         // tenant
-        dbQuery.Item1.Where(DbSchema.NationalCaseValueColumn.TenantId, tenantId);
+        dbQuery.Item1.Where(NationalCaseValueColumn.TenantId, tenantId);
 
         // case change query filter
         var caseChangeQuery = query as CaseChangeQuery;
         caseChangeQuery?.ApplyTo(dbQuery.Item1);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery.Item1);
+        var compileQuery = CompileQuery(dbQuery.Item1, context);
 
         // SELECT execution
         var count = await QueryCaseValueCountAsync(context,
             new()
             {
                 ParentId = parentId,
-                StoredProcedure = DbSchema.Procedures.GetNationalCaseChangeValues,
+                StoredProcedure = Procedures.GetNationalCaseChangeValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2,
                 Culture = caseChangeQuery?.Culture

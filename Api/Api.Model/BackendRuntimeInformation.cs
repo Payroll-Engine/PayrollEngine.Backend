@@ -1,6 +1,7 @@
 namespace PayrollEngine.Api.Model;
 
 /// <summary>Backend runtime configuration information</summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class BackendRuntimeInformation
 {
     /// <summary>Resolved maximum parallel employee threads (0 = sequential)</summary>

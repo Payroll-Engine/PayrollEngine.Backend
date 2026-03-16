@@ -1,11 +1,12 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
-public class ReportLogRepository() : ChildDomainRepository<ReportLog>(DbSchema.Tables.ReportLog,
-    DbSchema.ReportLogColumn.TenantId), IReportLogRepository
+public class ReportLogRepository() : ChildDomainRepository<ReportLog>(Tables.ReportLog,
+    ReportLogColumn.TenantId), IReportLogRepository
 {
     protected override void GetObjectCreateData(ReportLog log, DbParameterCollection parameters)
     {

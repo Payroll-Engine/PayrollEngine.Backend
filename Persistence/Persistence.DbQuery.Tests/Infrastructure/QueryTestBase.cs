@@ -1,7 +1,4 @@
 using SqlKata.Compilers;
-using PayrollEngine;
-using PayrollEngine.Persistence;
-using PayrollEngine.Persistence.DbQuery;
 using SqlKata;
 
 // Alias required: the test project namespace starts with PayrollEngine.Persistence.DbQuery,
@@ -90,7 +87,7 @@ public abstract class QueryTestBase
     // -------------------------------------------------------------------------
 
     private static SqlKata.Query BuildSqlQuery<T>(
-        global::PayrollEngine.Domain.Model.IDbContext dbContext,
+        Domain.Model.IDbContext dbContext,
         string filter, string orderBy, string select, int? top, int? skip,
         QueryMode queryMode, ObjectStatus? status = null, string apply = null)
     {
@@ -104,7 +101,7 @@ public abstract class QueryTestBase
             Status = status,
             Apply = apply
         };
-        return global::PayrollEngine.Persistence.DbQueryFactory.NewQuery<T>(
+        return DbQueryFactory.NewQuery<T>(
             dbContext, TableName, query, queryMode);
     }
 }

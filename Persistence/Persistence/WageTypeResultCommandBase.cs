@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Text.Json;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -62,56 +63,27 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.EmployeeId, query.EmployeeId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.EmployeeId, query.EmployeeId, DbType.Int32);
 
-        // division
-        if (query.DivisionId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.DivisionId, query.DivisionId.Value, DbType.Int32);
-        }
-
-        // payrun job
-        if (payrunJobId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.PayrunJobId, payrunJobId.Value, DbType.Int32);
-        }
-        if (parentPayrunJobId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.ParentPayrunJobId, parentPayrunJobId.Value, DbType.Int32);
-        }
-
-        // wage type numbers
-        if (numbers != null && numbers.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.WageTypeNumbers,
-                JsonSerializer.Serialize(numbers));
-        }
-
-        // period
-        if (query.Period != null)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.PeriodStart, query.Period.Start, DbType.DateTime2);
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.PeriodEnd, query.Period.End, DbType.DateTime2);
-        }
-
-        // forecast
-        if (!string.IsNullOrWhiteSpace(query.Forecast))
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.Forecast, query.Forecast);
-        }
-
-        // job status
-        if (query.JobStatus != null)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.JobStatus, query.JobStatus, DbType.Int32);
-        }
-
-        // evaluation
-        if (query.EvaluationDate.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
-        }
+        parameters.Add(ParameterGetWageTypeResults.DivisionId,
+            query.DivisionId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.PayrunJobId,
+            payrunJobId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.ParentPayrunJobId,
+            parentPayrunJobId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.WageTypeNumbers,
+            numbers?.Any() == true ? JsonSerializer.Serialize(numbers) : null);
+        parameters.Add(ParameterGetWageTypeResults.PeriodStart,
+            query.Period != null ? query.Period.Start : null, DbType.DateTime2);
+        parameters.Add(ParameterGetWageTypeResults.PeriodEnd,
+            query.Period != null ? query.Period.End : null, DbType.DateTime2);
+        parameters.Add(ParameterGetWageTypeResults.Forecast,
+            string.IsNullOrWhiteSpace(query.Forecast) ? null : query.Forecast);
+        parameters.Add(ParameterGetWageTypeResults.JobStatus,
+            query.JobStatus != null ? (object)query.JobStatus : null, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.EvaluationDate,
+            query.EvaluationDate, DbType.DateTime2);
 
         return parameters;
     }
@@ -164,58 +136,25 @@ internal abstract class WageTypeResultCommandBase(IDbContext context) : ResultCo
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetWageTypeResults.EmployeeId, query.EmployeeId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.EmployeeId, query.EmployeeId, DbType.Int32);
 
-        // division
-        if (query.DivisionId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.DivisionId, query.DivisionId.Value, DbType.Int32);
-        }
-
-        // wage type numbers
-        if (numbers != null && numbers.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.WageTypeNumbers,
-                JsonSerializer.Serialize(numbers));
-        }
-
-        // period
-        if (query.PeriodStarts != null && query.PeriodStarts.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.PeriodStartHashes,
-                JsonSerializer.Serialize(query.PeriodStarts.Select(x => x.GetPastDaysCount())));
-        }
-
-        // forecast
-        if (!string.IsNullOrWhiteSpace(query.Forecast))
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.Forecast, query.Forecast);
-        }
-
-        // job status
-        if (query.JobStatus != null)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.JobStatus, query.JobStatus, DbType.Int32);
-        }
-
-        // evaluation
-        if (query.EvaluationDate.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
-        }
-
-        // no retro: exclude incremental retro jobs, return only original main-job payslip values per period
-        if (query.NoRetro)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.NoRetro, true, DbType.Boolean);
-        }
-
-        // exclude retro jobs of the current payrun only: retro jobs from earlier payruns remain visible
-        if (query.ExcludeParentJobId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetWageTypeResults.ExcludeParentJobId, query.ExcludeParentJobId.Value, DbType.Int32);
-        }
+        parameters.Add(ParameterGetWageTypeResults.DivisionId,
+            query.DivisionId, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.WageTypeNumbers,
+            numbers?.Any() == true ? JsonSerializer.Serialize(numbers) : null);
+        parameters.Add(ParameterGetWageTypeResults.PeriodStartHashes,
+            query.PeriodStarts?.Any() == true
+                ? JsonSerializer.Serialize(query.PeriodStarts.Select(x => x.GetPastDaysCount())) : null);
+        parameters.Add(ParameterGetWageTypeResults.Forecast,
+            string.IsNullOrWhiteSpace(query.Forecast) ? null : query.Forecast);
+        parameters.Add(ParameterGetWageTypeResults.JobStatus,
+            query.JobStatus != null ? (object)query.JobStatus : null, DbType.Int32);
+        parameters.Add(ParameterGetWageTypeResults.EvaluationDate,
+            query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetWageTypeResults.NoRetro, query.NoRetro, DbType.Boolean);
+        parameters.Add(ParameterGetWageTypeResults.ExcludeParentJobId,
+            query.ExcludeParentJobId, DbType.Int32);
 
         return parameters;
     }

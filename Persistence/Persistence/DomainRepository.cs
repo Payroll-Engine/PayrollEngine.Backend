@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
@@ -146,10 +147,10 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
     #region Db Scripting
 
     protected string GetIdColumnName() =>
-        GetColumnName(DbSchema.ObjectColumn.Id);
+        GetColumnName(ObjectColumn.Id);
 
     protected string GetIdColumnName(string tableName) =>
-        GetColumnName(tableName, DbSchema.ObjectColumn.Id);
+        GetColumnName(tableName, ObjectColumn.Id);
 
     protected string GetColumnName(string columnName) =>
         GetColumnName(TableName, columnName);
@@ -193,7 +194,7 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
 
         // query
         var query = DbQueryFactory.NewCountQuery(TableName, id);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         var count = await context.ExecuteScalarAsync<int>(compileQuery);
@@ -225,7 +226,7 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
         // query
         var query = DbQueryFactory.NewCountQuery(TableName)
             .WhereIn(testColumn, testValues);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         var count = await context.ExecuteScalarAsync<int>(compileQuery);
@@ -255,7 +256,7 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
         // query
         var query = DbQueryFactory.NewCountQuery(TableName, parentColumn, parentId)
             .WhereIn(testColumn, testValues);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         var count = await context.ExecuteScalarAsync<int>(compileQuery);
@@ -313,12 +314,12 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
         {
             var query = DbQueryFactory.NewQuery(TableName, id).
                 Select(
-                    DbSchema.ObjectColumn.Id,
-                    DbSchema.ObjectColumn.Status,
-                    DbSchema.ObjectColumn.Created,
-                    DbSchema.ObjectColumn.Updated,
-                    DbSchema.AttributeObjectColumn.Attributes);
-            var compileQuery = CompileQuery(query);
+                    ObjectColumn.Id,
+                    ObjectColumn.Status,
+                    ObjectColumn.Created,
+                    ObjectColumn.Updated,
+                    AttributeObjectColumn.Attributes);
+            var compileQuery = CompileQuery(query, context);
             attributeObject = (await QueryAsync<T>(context, compileQuery)).FirstOrDefault() as IDomainAttributeObject;
         }
         return attributeObject;
@@ -337,11 +338,11 @@ public abstract class DomainRepository<T>(string tableName) : TableRepository(ta
         var attributes = JsonSerializer.SerializeNamedDictionary(attributeObject.Attributes);
         var parameters = new DbParameterCollection();
         parameters.AddUpdated(attributeObject.Updated);
-        parameters.Add(DbSchema.AttributeObjectColumn.Attributes, attributes);
+        parameters.Add(AttributeObjectColumn.Attributes, attributes);
 
         // build sql statement
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), attributeObject.Id);
+        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), attributeObject.Id, context);
         var dbQuery = queryBuilder.ToString();
 
         // transaction guard: no-op if already inside an ambient scope

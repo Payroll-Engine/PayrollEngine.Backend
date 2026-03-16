@@ -1,16 +1,17 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class CollectorRepository(IRegulationRepository regulationRepository,
     IScriptRepository scriptRepository, ICollectorAuditRepository auditRepository, bool auditEnabled)
-    : ScriptTrackChildDomainRepository<Collector, CollectorAudit>(DbSchema.Tables.Collector,
-        DbSchema.CollectorColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditEnabled), ICollectorRepository
+    : ScriptTrackChildDomainRepository<Collector, CollectorAudit>(Tables.Collector,
+        CollectorColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditEnabled), ICollectorRepository
 {
     protected override void GetObjectCreateData(Collector collector, DbParameterCollection parameters)
     {
@@ -46,5 +47,5 @@ public class CollectorRepository(IRegulationRepository regulationRepository,
     }
 
     public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<string> collectorNames) =>
-        await ExistsAnyAsync(context, DbSchema.CollectorColumn.RegulationId, regulationId, DbSchema.CollectorColumn.Name, collectorNames);
+        await ExistsAnyAsync(context, CollectorColumn.RegulationId, regulationId, CollectorColumn.Name, collectorNames);
 }

@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Persistence.DbQuery;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Persistence.DbSchema;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -86,7 +87,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         SetupDbQuery(dbQuery, query);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var items = (await QueryAsync<T>(context, compileQuery)).ToList();
@@ -110,7 +111,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         SetupDbQuery(dbQuery, query);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var count = await QuerySingleAsync<long>(context, compileQuery);
@@ -127,7 +128,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         var query = DbQueryFactory.NewQuery(TableName, itemId)
             .Select(ParentFieldName);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         var result = await QueryAsync<int>(context, compileQuery);
@@ -149,7 +150,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         var item = (await SelectAsync<T>(context, TableName, new()
         {
             { ParentFieldName, parentId },
-            { DbSchema.ObjectColumn.Id, itemId }
+            { ObjectColumn.Id, itemId }
         })).FirstOrDefault();
 
         // notification
@@ -315,14 +316,14 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         // build query statement
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
-        queryBuilder.AppendIdentitySelect();
+        queryBuilder.AppendDbInsert(TableName, parameters.GetNames(), context);
+        queryBuilder.AppendIdentitySelect(context);
         var query = queryBuilder.ToString();
 
         // db insert
         try
         {
-            item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
+            item.Id = Convert.ToInt32(await ExecuteScalarAsync(context, query, parameters));
         }
         catch (Exception exception)
         {
@@ -392,7 +393,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
 
         // build update statement
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), item.Id);
+        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), item.Id, context);
         var query = queryBuilder.ToString();
 
         // transaction guard: no-op if already inside an ambient scope
@@ -451,7 +452,7 @@ public abstract class ChildDomainRepository<T> : DomainRepository<T>, IChildDoma
         {
             // item
             var query = DbQueryFactory.NewDeleteQuery(TableName, itemId);
-            var compileQuery = CompileQuery(query);
+            var compileQuery = CompileQuery(query, context);
 
             // DELETE execution
             deleted = (await ExecuteAsync(context, compileQuery)) > 0;

@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Persistence.DbQuery;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbQuery;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -27,7 +27,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, query);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var items = (await QueryAsync<T>(context, compileQuery)).ToList();
@@ -41,7 +41,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         var dbQuery = DbQueryFactory.NewQuery<T>(context, TableName, query, QueryMode.ItemCount);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var count = await QuerySingleAsync<long>(context, compileQuery);
@@ -74,8 +74,8 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
 
         // build db statement
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
-        queryBuilder.AppendIdentitySelect();
+        queryBuilder.AppendDbInsert(TableName, parameters.GetNames(), context);
+        queryBuilder.AppendIdentitySelect(context);
         var query = queryBuilder.ToString();
 
         // transaction guard: no-op if already inside an ambient scope
@@ -83,7 +83,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         // db insert
         try
         {
-            item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
+            item.Id = Convert.ToInt32(await ExecuteScalarAsync(context, query, parameters));
         }
         catch (Exception exception)
         {
@@ -147,14 +147,14 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
 
             // build db statement
             var queryBuilder = new StringBuilder();
-            queryBuilder.AppendDbInsert(TableName, parameters.GetNames());
-            queryBuilder.AppendIdentitySelect();
+            queryBuilder.AppendDbInsert(TableName, parameters.GetNames(), context);
+            queryBuilder.AppendIdentitySelect(context);
             var query = queryBuilder.ToString();
 
             // insert
             try
             {
-                item.Id = (int)await ExecuteScalarAsync(context, query, parameters);
+                item.Id = Convert.ToInt32(await ExecuteScalarAsync(context, query, parameters));
             }
             catch (Exception exception)
             {
@@ -194,7 +194,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
 
         // build db statement
         var queryBuilder = new StringBuilder();
-        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), obj.Id);
+        queryBuilder.AppendDbUpdate(TableName, parameters.GetNames(), obj.Id, context);
         var query = queryBuilder.ToString();
 
         // transaction guard: no-op if already inside an ambient scope
@@ -229,7 +229,7 @@ public abstract class RootDomainRepository<T>(string tableName) : DomainReposito
         }
 
         var query = DbQueryFactory.NewDeleteQuery(TableName, id);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // transaction guard: no-op if already inside an ambient scope
         using var txGuard = TransactionFactory.NewTransactionGuard();

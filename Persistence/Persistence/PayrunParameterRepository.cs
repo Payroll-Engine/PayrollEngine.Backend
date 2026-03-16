@@ -1,12 +1,13 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrunParameterRepository() : ChildDomainRepository<PayrunParameter>(DbSchema.Tables.PayrunParameter,
-    DbSchema.PayrunParameterColumn.PayrunId), IPayrunParameterRepository
+public class PayrunParameterRepository() : ChildDomainRepository<PayrunParameter>(Tables.PayrunParameter,
+    PayrunParameterColumn.PayrunId), IPayrunParameterRepository
 {
     protected override void GetObjectCreateData(PayrunParameter payrun, DbParameterCollection parameters)
     {

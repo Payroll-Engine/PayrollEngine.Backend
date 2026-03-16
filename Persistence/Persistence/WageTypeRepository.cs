@@ -1,16 +1,17 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class WageTypeRepository(IRegulationRepository regulationRepository,
     IScriptRepository scriptRepository, IWageTypeAuditRepository auditRepository, bool auditEnabled)
-    : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>(DbSchema.Tables.WageType,
-        DbSchema.WageTypeColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditEnabled), IWageTypeRepository
+    : ScriptTrackChildDomainRepository<WageType, WageTypeAudit>(Tables.WageType,
+        WageTypeColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditEnabled), IWageTypeRepository
 {
     protected override void GetObjectCreateData(WageType wageType, DbParameterCollection parameters)
     {
@@ -44,5 +45,5 @@ public class WageTypeRepository(IRegulationRepository regulationRepository,
     }
 
     public async Task<bool> ExistsAnyAsync(IDbContext context, int regulationId, IEnumerable<decimal> wageTypeNumbers) =>
-        await ExistsAnyAsync(context, DbSchema.WageTypeColumn.RegulationId, regulationId, DbSchema.WageTypeColumn.WageTypeNumber, wageTypeNumbers);
+        await ExistsAnyAsync(context, WageTypeColumn.RegulationId, regulationId, WageTypeColumn.WageTypeNumber, wageTypeNumbers);
 }

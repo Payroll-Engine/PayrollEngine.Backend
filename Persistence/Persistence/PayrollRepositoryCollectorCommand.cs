@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -49,31 +51,21 @@ internal sealed class PayrollRepositoryCollectorCommand : PayrollRepositoryComma
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedCollectors.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (clusterSet != null)
-        {
-            if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedCollectors.IncludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.IncludeClusters));
-            }
-            if (clusterSet.ExcludeClusters != null && clusterSet.ExcludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedCollectors.ExcludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.ExcludeClusters));
-            }
-        }
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedCollectors.CollectorNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
+        parameters.Add(ParameterGetDerivedCollectors.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedCollectors.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedCollectors.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedCollectors.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedCollectors.IncludeClusters,
+            clusterSet?.IncludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.IncludeClusters) : null);
+        parameters.Add(ParameterGetDerivedCollectors.ExcludeClusters,
+            clusterSet?.ExcludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.ExcludeClusters) : null);
+        parameters.Add(ParameterGetDerivedCollectors.CollectorNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
 
         // retrieve all derived collectors (stored procedure)
-        var collectors = (await DbContext.QueryAsync<DerivedCollector>(DbSchema.Procedures.GetDerivedCollectors,
+        var collectors = (await DbContext.QueryAsync<DerivedCollector>(Procedures.GetDerivedCollectors,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedCollectors(collectors, overrideType);

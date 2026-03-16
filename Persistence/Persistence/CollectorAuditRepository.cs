@@ -1,12 +1,13 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class CollectorAuditRepository() : AuditChildDomainRepository<CollectorAudit>(DbSchema.Tables.CollectorAudit,
-    DbSchema.CollectorAuditColumn.CollectorId), ICollectorAuditRepository
+public class CollectorAuditRepository() : AuditChildDomainRepository<CollectorAudit>(Tables.CollectorAudit,
+    CollectorAuditColumn.CollectorId), ICollectorAuditRepository
 {
     protected override void GetObjectCreateData(CollectorAudit audit, DbParameterCollection parameters)
     {

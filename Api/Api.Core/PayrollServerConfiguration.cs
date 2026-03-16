@@ -50,6 +50,9 @@ public class PayrollServerConfiguration
     /// <summary>Database command timeout in seconds (default: 2 minutes)</summary>
     public TimeSpan DbCommandTimeout { get; set; } = TimeSpan.FromMinutes(2);
 
+    /// <summary>Database provider (default: SqlServer). Supported: SqlServer | MySql</summary>
+    public string DbProvider { get; set; } = "SqlServer";
+
     /// <summary>Required database collation (default: SQL_Latin1_General_CP1_CS_AS)</summary>
     public string DbCollation { get; set; }
 

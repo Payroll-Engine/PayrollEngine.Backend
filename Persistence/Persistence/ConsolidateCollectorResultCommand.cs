@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -20,7 +21,7 @@ internal sealed class ConsolidateCollectorResultCommand : CollectorResultCommand
         QueryBegin();
 
         // retrieve consolidated collector values (stored procedure)
-        var values = await DbContext.QueryAsync<CollectorResult>(DbSchema.Procedures.GetConsolidatedCollectorResults,
+        var values = await DbContext.QueryAsync<CollectorResult>(Procedures.GetConsolidatedCollectorResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         QueryEnd(() => $"{{Result query cons collector}} {GetItemsString(query.CollectorNames?.Distinct())}");

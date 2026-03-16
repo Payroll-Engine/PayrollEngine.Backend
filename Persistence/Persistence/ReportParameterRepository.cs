@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Data;
 using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class ReportParameterRepository(IRegulationRepository regulationRepository,
     IReportRepository reportRepository, IReportParameterAuditRepository auditRepository, bool auditEnabled) :
     TrackChildDomainRepository<ReportParameter, ReportParameterAudit>(regulationRepository,
-        DbSchema.Tables.ReportParameter, DbSchema.ReportParameterColumn.ReportId,
+        Tables.ReportParameter, ReportParameterColumn.ReportId,
         auditRepository, auditEnabled), IReportParameterRepository
 {
     private IReportRepository ReportRepository { get; } = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));

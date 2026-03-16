@@ -33,6 +33,7 @@ public static class Program
         }
         catch (Exception exception)
         {
+            Console.Error.WriteLine($"STARTUP EXCEPTION: {exception}");
             Log.Critical(exception, "Application terminated unexpectedly");
         }
         finally

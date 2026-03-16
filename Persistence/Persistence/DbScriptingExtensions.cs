@@ -1,7 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Collections.Generic;
+using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Persistence;
 
@@ -9,7 +10,7 @@ public static class DbScriptingExtensions
 {
     extension(StringBuilder stringBuilder)
     {
-        public void AppendDbInsert(string tableName, ICollection<string> fieldNames)
+        public void AppendDbInsert(string tableName, ICollection<string> fieldNames, IDbContext context)
         {
             if (fieldNames == null)
             {
@@ -18,10 +19,10 @@ public static class DbScriptingExtensions
 
             var lastValueKey = fieldNames.Last();
 
-            stringBuilder.Append($"INSERT INTO [{tableName}] (");
+            stringBuilder.Append($"INSERT INTO {context.QuoteIdentifier(tableName)} (");
             foreach (var field in fieldNames)
             {
-                stringBuilder.Append($"[{field}]");
+                stringBuilder.Append(context.QuoteIdentifier(field));
                 if (field != lastValueKey)
                 {
                     stringBuilder.Append(",");
@@ -40,7 +41,7 @@ public static class DbScriptingExtensions
         }
 
         public void AppendDbUpdate(string tableName,
-            ICollection<string> fieldNames, int id)
+            ICollection<string> fieldNames, int id, IDbContext context)
         {
             if (fieldNames == null)
             {
@@ -49,21 +50,21 @@ public static class DbScriptingExtensions
 
             var lastValueKey = fieldNames.Last();
 
-            stringBuilder.Append($"UPDATE [{tableName}] SET ");
+            stringBuilder.Append($"UPDATE {context.QuoteIdentifier(tableName)} SET ");
             foreach (var field in fieldNames)
             {
-                stringBuilder.Append($"[{field}] = @{field}");
+                stringBuilder.Append($"{context.QuoteIdentifier(field)} = @{field}");
                 if (field != lastValueKey)
                 {
                     stringBuilder.Append(",");
                 }
             }
-            stringBuilder.Append($" WHERE [Id] = {id};");
+            stringBuilder.Append($" WHERE {context.QuoteIdentifier("Id")} = {id};");
         }
 
-        public void AppendIdentitySelect()
+        public void AppendIdentitySelect(IDbContext context)
         {
-            stringBuilder.Append("SELECT CAST(SCOPE_IDENTITY() as int);");
+            stringBuilder.Append(context.LastInsertIdSql);
         }
     }
 }

@@ -1,6 +1,7 @@
 namespace PayrollEngine.Api.Model;
 
 /// <summary>CORS runtime information</summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class BackendCorsInformation
 {
     /// <summary>Whether CORS is active (at least one allowed origin configured)</summary>

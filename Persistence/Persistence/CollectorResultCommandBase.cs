@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Text.Json;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -62,56 +63,27 @@ internal abstract class CollectorResultCommandBase(IDbContext context) : ResultC
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetCollectorResults.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetCollectorResults.EmployeeId, query.EmployeeId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.EmployeeId, query.EmployeeId, DbType.Int32);
 
-        // division
-        if (query.DivisionId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.DivisionId, query.DivisionId.Value, DbType.Int32);
-        }
-
-        // payrun job
-        if (payrunJobId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.PayrunJobId, payrunJobId.Value, DbType.Int32);
-        }
-        if (parentPayrunJobId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.ParentPayrunJobId, parentPayrunJobId.Value, DbType.Int32);
-        }
-
-        // collector names
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.CollectorNameHashes,
-                JsonSerializer.Serialize(names.Select(x => x.ToPayrollHash())));
-        }
-
-        // period
-        if (query.Period != null)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.PeriodStart, query.Period.Start, DbType.DateTime2);
-            parameters.Add(DbSchema.ParameterGetCollectorResults.PeriodEnd, query.Period.End, DbType.DateTime2);
-        }
-
-        // forecast
-        if (!string.IsNullOrWhiteSpace(query.Forecast))
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.Forecast, query.Forecast);
-        }
-
-        // job status
-        if (query.JobStatus != null)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.JobStatus, query.JobStatus, DbType.Int32);
-        }
-
-        // evaluation
-        if (query.EvaluationDate.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
-        }
+        parameters.Add(ParameterGetCollectorResults.DivisionId,
+            query.DivisionId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.PayrunJobId,
+            payrunJobId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.ParentPayrunJobId,
+            parentPayrunJobId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.CollectorNameHashes,
+            names?.Any() == true ? JsonSerializer.Serialize(names.Select(x => x.ToPayrollHash())) : null);
+        parameters.Add(ParameterGetCollectorResults.PeriodStart,
+            query.Period != null ? query.Period.Start : null, DbType.DateTime2);
+        parameters.Add(ParameterGetCollectorResults.PeriodEnd,
+            query.Period != null ? query.Period.End : null, DbType.DateTime2);
+        parameters.Add(ParameterGetCollectorResults.Forecast,
+            string.IsNullOrWhiteSpace(query.Forecast) ? null : query.Forecast);
+        parameters.Add(ParameterGetCollectorResults.JobStatus,
+            query.JobStatus != null ? (object)query.JobStatus : null, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.EvaluationDate,
+            query.EvaluationDate, DbType.DateTime2);
 
         return parameters;
     }
@@ -159,58 +131,25 @@ internal abstract class CollectorResultCommandBase(IDbContext context) : ResultC
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetCollectorResults.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetCollectorResults.EmployeeId, query.EmployeeId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.EmployeeId, query.EmployeeId, DbType.Int32);
 
-        // division
-        if (query.DivisionId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.DivisionId, query.DivisionId.Value, DbType.Int32);
-        }
-
-        // collector names
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.CollectorNameHashes,
-                JsonSerializer.Serialize(names.Select(x => x.ToPayrollHash())));
-        }
-
-        // period
-        if (query.PeriodStarts != null && query.PeriodStarts.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.PeriodStartHashes,
-                JsonSerializer.Serialize(query.PeriodStarts.Select(x => x.GetPastDaysCount())));
-        }
-
-        // forecast
-        if (!string.IsNullOrWhiteSpace(query.Forecast))  
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.Forecast, query.Forecast);
-        }
-
-        // job status
-        if (query.JobStatus != null)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.JobStatus, query.JobStatus, DbType.Int32);
-        }
-
-        // evaluation
-        if (query.EvaluationDate.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
-        }
-
-        // no retro: exclude incremental retro jobs, return only original main-job payslip values per period
-        if (query.NoRetro)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.NoRetro, true, DbType.Boolean);
-        }
-
-        // exclude retro jobs of the current payrun only: retro jobs from earlier payruns remain visible
-        if (query.ExcludeParentJobId.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetCollectorResults.ExcludeParentJobId, query.ExcludeParentJobId.Value, DbType.Int32);
-        }
+        parameters.Add(ParameterGetCollectorResults.DivisionId,
+            query.DivisionId, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.CollectorNameHashes,
+            names?.Any() == true ? JsonSerializer.Serialize(names.Select(x => x.ToPayrollHash())) : null);
+        parameters.Add(ParameterGetCollectorResults.PeriodStartHashes,
+            query.PeriodStarts?.Any() == true
+                ? JsonSerializer.Serialize(query.PeriodStarts.Select(x => x.GetPastDaysCount())) : null);
+        parameters.Add(ParameterGetCollectorResults.Forecast,
+            string.IsNullOrWhiteSpace(query.Forecast) ? null : query.Forecast);
+        parameters.Add(ParameterGetCollectorResults.JobStatus,
+            query.JobStatus != null ? (object)query.JobStatus : null, DbType.Int32);
+        parameters.Add(ParameterGetCollectorResults.EvaluationDate,
+            query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetCollectorResults.NoRetro, query.NoRetro, DbType.Boolean);
+        parameters.Add(ParameterGetCollectorResults.ExcludeParentJobId,
+            query.ExcludeParentJobId, DbType.Int32);
 
         return parameters;
     }

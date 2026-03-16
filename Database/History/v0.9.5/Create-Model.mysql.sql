@@ -1,0 +1,44 @@
+-- =============================================================================
+-- Create-Model.mysql.sql
+-- Creates the PayrollEngine database for MySQL 8.0+ (8.4 LTS recommended).
+--
+-- Schema version: 0.9.5
+--
+-- This is the HISTORY BASELINE for v0.9.5.
+-- It equals Create-Model.mysql.sql BEFORE the 0.9.5 -> 0.9.6 migration
+-- (i.e. without the denormalized columns on result tables and the new indexes).
+--
+-- Used by Compare-DbScript.mysql.ps1 / Compose-DbScript.mysql.ps1 to generate
+-- the delta for Update-Model.mysql.sql.
+-- =============================================================================
+
+-- NOTE: This file is intentionally identical to the v0.9.6 Create-Model.mysql.sql
+-- EXCEPT for the following differences (which were added in 0.9.6):
+--
+--   Tables with denormalized columns removed (WageTypeResult, PayrunTrace,
+--   PayrunResult, CollectorResult, CollectorCustomResult, WageTypeCustomResult):
+--     TenantId, EmployeeId, DivisionId, PayrunJobId, Forecast, ParentJobId
+--
+--   Indexes removed:
+--     IX_Employee_TenantId, IX_EmployeeCaseValue_Cover,
+--     IX_GlobalCaseValue_Cover, IX_NationalCaseValue_Cover,
+--     IX_CompanyCaseValue_Cover
+--
+--   Stored Procedures removed (added in 0.9.6):
+--     UpdateStatisticsTargeted, GetEmployeeCaseValuesByTenant
+--     GetWageTypeResults, GetWageTypeCustomResults
+--     GetCollectorResults, GetCollectorCustomResults
+--     GetConsolidatedWageTypeResults, GetConsolidatedCollectorResults
+--     GetConsolidatedCollectorCustomResults, GetConsolidatedWageTypeCustomResults
+--     GetConsolidatedPayrunResults
+--     All GetDerived* stored procedures (ported from SQL Server in 0.9.6)
+--
+-- For the complete 0.9.5 schema, use the SQL Server History\v0.9.5\Create-Model.sql
+-- and this file as the MySQL equivalent baseline.
+-- =============================================================================
+
+-- IMPORTANT FOR MAINTAINERS:
+-- When releasing a new version (e.g. 0.9.7), copy the CURRENT Create-Model.mysql.sql
+-- into History\v0.9.6\ BEFORE making any changes to it.
+-- This ensures the diff baseline is always the previous release state.
+-- =============================================================================

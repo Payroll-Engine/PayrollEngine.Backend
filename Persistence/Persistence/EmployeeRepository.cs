@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 /// <summary>Repository for <see cref="Employee"/> persistence with division management (table: Employee).</summary>
 public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) : ChildDomainRepository<Employee>(
-    DbSchema.Tables.Employee, DbSchema.EmployeeColumn.TenantId), IEmployeeRepository
+    Tables.Employee, EmployeeColumn.TenantId), IEmployeeRepository
 {
     private IEmployeeDivisionRepository EmployeeDivisionRepository { get; } = divisionRepository ?? throw new ArgumentNullException(nameof(divisionRepository));
 
@@ -33,7 +34,7 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
     }
 
     public async Task<bool> ExistsAnyAsync(IDbContext context, int tenantId, string identifier) =>
-        await ExistsAnyAsync(context, DbSchema.EmployeeColumn.TenantId, tenantId, DbSchema.EmployeeColumn.Identifier, identifier);
+        await ExistsAnyAsync(context, EmployeeColumn.TenantId, tenantId, EmployeeColumn.Identifier, identifier);
 
     /// <inheritdoc />
     public override async Task<IEnumerable<Employee>> QueryAsync(IDbContext context, int tenantId, Query query = null)
@@ -86,7 +87,7 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
         divisionQuery.ApplyTo(dbQuery, TableName);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
         return compileQuery;
     }
 
@@ -100,19 +101,26 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
         }
 
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterDeleteEmployee.TenantId, tenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterDeleteEmployee.EmployeeId, employeeId, DbType.Int32);
-        parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+        parameters.Add(ParameterDeleteEmployee.TenantId, tenantId, DbType.Int32);
+        parameters.Add(ParameterDeleteEmployee.EmployeeId, employeeId, DbType.Int32);
+        if (context.StoredProcedureReturnValue)
+        {
+            parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+        }
 
         try
         {
             // delete employee (stored procedure)
-            await QueryAsync<Tenant>(context, DbSchema.Procedures.DeleteEmployee,
+            await QueryAsync<Tenant>(context, Procedures.DeleteEmployee,
                 parameters, commandType: CommandType.StoredProcedure);
 
             // stored procedure return value
-            var result = parameters.Get<int>("@sp_return");
-            return result == 1;
+            if (context.StoredProcedureReturnValue)
+            {
+                var result = parameters.Get<int>("@sp_return");
+                return result == 1;
+            }
+            return true;
         }
         catch (Exception exception)
         {
@@ -146,8 +154,8 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
             // query the created employee by identifier to get the generated id
             var dbEmployee = (await SelectAsync<Employee>(context, TableName, new Dictionary<string, object>
             {
-                { DbSchema.EmployeeColumn.TenantId, parentId },
-                { DbSchema.EmployeeColumn.Identifier, employee.Identifier }
+                { EmployeeColumn.TenantId, parentId },
+                { EmployeeColumn.Identifier, employee.Identifier }
             })).FirstOrDefault();
             if (dbEmployee == null)
             {
@@ -243,7 +251,7 @@ public class EmployeeRepository(IEmployeeDivisionRepository divisionRepository) 
             var division = existingDivisions.First();
             var query = new Query
             {
-                Filter = $"{nameof(DbSchema.EmployeeDivisionColumn.DivisionId)} eq {division.Id}"
+                Filter = $"{nameof(EmployeeDivisionColumn.DivisionId)} eq {division.Id}"
             };
             var employeeDivision = (await EmployeeDivisionRepository.QueryAsync(context, employeeId, query)).FirstOrDefault();
             if (employeeDivision != null)

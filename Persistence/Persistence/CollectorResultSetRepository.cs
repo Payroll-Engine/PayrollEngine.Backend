@@ -2,17 +2,18 @@
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class CollectorResultSetRepository(ICollectorCustomResultRepository wageTypeCustomResultRepository,
         bool bulkInsert)
-    : ChildDomainRepository<CollectorResultSet>(DbSchema.Tables.CollectorResult,
-        DbSchema.CollectorResultColumn.PayrollResultId), ICollectorResultSetRepository
+    : ChildDomainRepository<CollectorResultSet>(Tables.CollectorResult,
+        CollectorResultColumn.PayrollResultId), ICollectorResultSetRepository
 {
     private ICollectorCustomResultRepository CollectorCustomResultRepository { get; } = wageTypeCustomResultRepository ?? throw new ArgumentNullException(nameof(wageTypeCustomResultRepository));
     private bool BulkInsert { get; } = bulkInsert;

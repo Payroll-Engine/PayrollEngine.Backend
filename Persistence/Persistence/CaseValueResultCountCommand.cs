@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -31,20 +33,21 @@ internal sealed class CaseValueResultCountCommand : DomainRepositoryCommandBase
 
         // attributes requested, use the slow query
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterCaseValueQuery.ParentId, query.ParentId, DbType.Int32);
-        if (query.EmployeeId.HasValue)
+        parameters.Add(ParameterCaseValueQuery.ParentId, query.ParentId, DbType.Int32);
+        // EmployeeId and Culture are only supported by MySql CaseValue pivot SPs
+        if (context.CaseValueExtendedParameters)
         {
-            parameters.Add(DbSchema.ParameterCaseValueQuery.EmployeeId, query.EmployeeId.Value, DbType.Int32);
+            parameters.Add(ParameterCaseValueQuery.EmployeeId,
+                query.EmployeeId.HasValue ? (object)query.EmployeeId.Value : null, DbType.Int32);
         }
-        parameters.Add(DbSchema.ParameterCaseValueQuery.Sql, query.Query);
-        if (query.QueryAttributes != null && query.QueryAttributes.Any())
+        parameters.Add(ParameterCaseValueQuery.Sql, query.Query);
+        parameters.Add(ParameterCaseValueQuery.Attributes,
+            query.QueryAttributes?.Any() == true
+                ? JsonSerializer.Serialize(query.QueryAttributes) : null);
+        if (context.CaseValueExtendedParameters)
         {
-            parameters.Add(DbSchema.ParameterCaseValueQuery.Attributes,
-                System.Text.Json.JsonSerializer.Serialize(query.QueryAttributes));
-        }
-        if (!string.IsNullOrWhiteSpace(query.Culture))
-        {
-            parameters.Add(DbSchema.ParameterCaseValueQuery.Culture, query.Culture);
+            parameters.Add(ParameterCaseValueQuery.Culture,
+                string.IsNullOrWhiteSpace(query.Culture) ? null : query.Culture);
         }
 
         var counts = (await context.QueryAsync<long>(

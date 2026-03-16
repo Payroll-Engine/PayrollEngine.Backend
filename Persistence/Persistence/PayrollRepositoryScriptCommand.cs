@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -64,18 +66,15 @@ internal sealed class PayrollRepositoryScriptCommand : PayrollRepositoryCommandB
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedScripts.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedScripts.ScriptNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
+        parameters.Add(ParameterGetDerivedScripts.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedScripts.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedScripts.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedScripts.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedScripts.ScriptNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
 
         // retrieve all derived scripts (stored procedure)
-        var scripts = (await DbContext.QueryAsync<DerivedScript>(DbSchema.Procedures.GetDerivedScripts,
+        var scripts = (await DbContext.QueryAsync<DerivedScript>(Procedures.GetDerivedScripts,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedScripts(scripts, overrideType);

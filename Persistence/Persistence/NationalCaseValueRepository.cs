@@ -1,11 +1,12 @@
 ﻿using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 public class NationalCaseValueRepository(ICaseFieldRepository caseFieldRepository) : CaseValueRepository(
-        DbSchema.Tables.NationalCaseValue, DbSchema.NationalCaseValueColumn.TenantId, caseFieldRepository),
+        Tables.NationalCaseValue, NationalCaseValueColumn.TenantId, caseFieldRepository),
     INationalCaseValueRepository
 {
-    protected override string CaseValueTableName => DbSchema.Tables.NationalCaseValuePivot;
-    protected override string CaseValueQueryProcedure => DbSchema.Procedures.GetNationalCaseValues;
+    protected override string CaseValueTableName => Tables.NationalCaseValuePivot;
+    protected override string CaseValueQueryProcedure => Procedures.GetNationalCaseValues;
 }

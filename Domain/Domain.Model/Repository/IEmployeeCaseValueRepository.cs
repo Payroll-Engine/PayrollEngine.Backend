@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PayrollEngine.Domain.Model;
 
 namespace PayrollEngine.Domain.Model.Repository;
 

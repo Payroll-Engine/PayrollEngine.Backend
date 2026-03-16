@@ -1,12 +1,13 @@
 ﻿using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 public class CompanyCaseValueSetupRepository(ICaseFieldRepository caseFieldRepository,
         ICompanyCaseDocumentRepository caseDocumentRepository)
-    : CaseValueSetupRepository(DbSchema.Tables.CompanyCaseValue, DbSchema.CompanyCaseValueColumn.TenantId,
+    : CaseValueSetupRepository(Tables.CompanyCaseValue, CompanyCaseValueColumn.TenantId,
         caseFieldRepository, caseDocumentRepository), ICompanyCaseValueSetupRepository
 {
-    protected override string CaseValueTableName => DbSchema.Tables.CompanyCaseValuePivot;
-    protected override string CaseValueQueryProcedure => DbSchema.Procedures.GetCompanyCaseValues;
+    protected override string CaseValueTableName => Tables.CompanyCaseValuePivot;
+    protected override string CaseValueQueryProcedure => Procedures.GetCompanyCaseValues;
 }

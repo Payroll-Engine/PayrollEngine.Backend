@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollConsolidatedResultRepository() : ChildDomainRepository<PayrollResult>(DbSchema.Tables.PayrollResult,
-    DbSchema.PayrollResultColumn.TenantId), IPayrollConsolidatedResultRepository
+public class PayrollConsolidatedResultRepository() : ChildDomainRepository<PayrollResult>(Tables.PayrollResult,
+    PayrollResultColumn.TenantId), IPayrollConsolidatedResultRepository
 {
     /// <inheritdoc />
     public async Task<ConsolidatedPayrollResult> GetPayrollResultAsync(IDbContext context, PayrollResultQuery query)

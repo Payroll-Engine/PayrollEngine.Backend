@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -92,10 +93,33 @@ public class LookupSetRepository(IRegulationRepository regulationRepository,
                 }
             }
 
-            // create lookup values for each created lookup
-            foreach (var lookup in lookups)
+            // create lookup values for each lookup
+            // group by id to avoid duplicate inserts when the same lookup appears
+            // multiple times in the input (e.g. same name under different regulations)
+            var lookupById = lookups
+                .GroupBy(x => x.Id)
+                .Select(g =>
+                {
+                    var first = g.First();
+                    // merge values from all entries with the same id
+                    first.Values = g.SelectMany(x => x.Values ?? [])
+                                    .DistinctBy(v => (v.RangeValue, v.LookupHash))
+                                    .ToList();
+                    return first;
+                })
+                .ToList();
+
+            foreach (var lookup in lookupById)
             {
-                // performance optimization: insert case values with bulk mode
+                if (lookup.Values == null || !lookup.Values.Any())
+                {
+                    continue;
+                }
+
+                // delete existing values before re-inserting (clean-replace pattern)
+                await ValueRepository.DeleteAll(context, lookup.Id);
+
+                // performance optimization: insert lookup values with bulk mode
                 await ValueRepository.CreateBulkAsync(context, lookup.Id, lookup.Values);
             }
 
@@ -116,10 +140,10 @@ public class LookupSetRepository(IRegulationRepository regulationRepository,
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, regulationId);
 
         // filter by lookup name
-        query.WhereIn(DbSchema.LookupColumn.Name, name);
+        query.WhereIn(LookupColumn.Name, name);
 
         // execute query
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         return (await QueryAsync(context, compileQuery)).FirstOrDefault();
     }
 
@@ -173,11 +197,11 @@ public class LookupSetRepository(IRegulationRepository regulationRepository,
         }
 
         // select lookup value lookup-id and key-hash-code
-        var lookupValue = await SelectSingleAsync<LookupValue>(context, DbSchema.Tables.LookupValue,
+        var lookupValue = await SelectSingleAsync<LookupValue>(context, Tables.LookupValue,
             new()
             {
-                { DbSchema.LookupValueColumn.LookupId, lookupId },
-                { DbSchema.LookupValueColumn.KeyHash, lookupKey.ToPayrollHash() }
+                { LookupValueColumn.LookupId, lookupId },
+                { LookupValueColumn.KeyHash, lookupKey.ToPayrollHash() }
             });
         if (lookupValue == null)
         {
@@ -208,16 +232,14 @@ public class LookupSetRepository(IRegulationRepository regulationRepository,
         }
 
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetLookupRangeValue.LookupId, lookupId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetLookupRangeValue.RangeValue, rangeValue, DbType.Decimal);
-        if (lookupKey != null)
-        {
-            // filter by lookup key without the range value
-            parameters.Add(DbSchema.ParameterGetLookupRangeValue.KeyHash, lookupKey.ToPayrollHash(), DbType.Int32);
-        }
+        parameters.Add(ParameterGetLookupRangeValue.LookupId, lookupId, DbType.Int32);
+        parameters.Add(ParameterGetLookupRangeValue.RangeValue, rangeValue, DbType.Decimal);
+        // always pass KeyHash — null means no key filter (SP handles NULL)
+        parameters.Add(ParameterGetLookupRangeValue.KeyHash,
+            lookupKey?.ToPayrollHash(), DbType.Int32);
 
         // retrieve all derived lookups (stored procedure)
-        var lookupValue = (await QueryAsync<LookupValue>(context, DbSchema.Procedures.GetLookupRangeValue,
+        var lookupValue = (await QueryAsync<LookupValue>(context, Procedures.GetLookupRangeValue,
             parameters, commandType: CommandType.StoredProcedure)).FirstOrDefault();
         if (lookupValue == null)
         {

@@ -1,5 +1,32 @@
 # Database
-The database model is managed in T-SQL scripts. Adjustments to the model are made in SQL Server Management Studio and exported to files.
+The database model is managed in T-SQL scripts (SQL Server) and MySQL scripts.
+
+## MySQL Setup
+
+Run the following scripts in order against a MySQL 8.4 LTS server:
+
+```powershell
+# Adjust port/password as needed
+$mysql = 'mysql -uroot -p --port=3307 PayrollEngine'
+cmd /c "$mysql < Database\Create-Model.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\Functions.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetDerived.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetCaseValues.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetLookupRangeValue.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetResults.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\Remaining.mysql.sql"
+```
+
+Activate via environment variables:
+```powershell
+$env:PayrollDatabaseConnection = "Server=localhost;Port=3307;Database=PayrollEngine;User=root;Password=...;CharSet=utf8mb4;"
+$env:PayrollServerConfiguration__DbProvider = "MySql"
+$env:PayrollServerConfiguration__DbCollation = "utf8mb4_unicode_ci"
+```
+
+---
+
+The SQL Server model is managed in T-SQL scripts. Adjustments to the model are made in SQL Server Management Studio and exported to files.
 
 ## Database Script Export
 Steps to build the T-SQL **create** script:

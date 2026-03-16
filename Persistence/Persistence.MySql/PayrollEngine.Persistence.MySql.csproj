@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>PayrollEngine.Persistence.MySql</AssemblyName>
+		<RootNamespace>PayrollEngine.Persistence.MySql</RootNamespace>
+		<Description>Payroll Engine Persistence MySQL</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MySqlConnector" Version="2.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Persistence\PayrollEngine.Persistence.csproj" />
+	</ItemGroup>
+
+</Project>

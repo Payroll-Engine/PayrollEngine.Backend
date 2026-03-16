@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -28,7 +29,7 @@ internal sealed class CollectorCustomResultCommand : CollectorResultCommandBase
         QueryBegin();
 
         // retrieve employee collector values (stored procedure)
-        var values = await DbContext.QueryAsync<CollectorCustomResult>(DbSchema.Procedures.GetCollectorCustomResults,
+        var values = await DbContext.QueryAsync<CollectorCustomResult>(Procedures.GetCollectorCustomResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         QueryEnd(() => $"{{Result query collector custom}} {GetItemsString(query.CollectorNames?.Distinct())}");

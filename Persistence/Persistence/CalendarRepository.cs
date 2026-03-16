@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 /// <summary>Repository for <see cref="Calendar"/> persistence (table: Calendar).</summary>
-public class CalendarRepository() : ChildDomainRepository<Calendar>(DbSchema.Tables.Calendar,
-    DbSchema.CalendarColumn.TenantId), ICalendarRepository
+public class CalendarRepository() : ChildDomainRepository<Calendar>(Tables.Calendar,
+    CalendarColumn.TenantId), ICalendarRepository
 {
     protected override void GetObjectData(Calendar calendar, DbParameterCollection parameters)
     {
@@ -50,10 +51,10 @@ public class CalendarRepository() : ChildDomainRepository<Calendar>(DbSchema.Tab
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, tenantId);
 
         // filter by calendar ids
-        query.WhereIn(DbSchema.CalendarColumn.Name, name);
+        query.WhereIn(CalendarColumn.Name, name);
 
         // execute query
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         return (await QueryAsync(context, compileQuery)).FirstOrDefault();
     }
 }

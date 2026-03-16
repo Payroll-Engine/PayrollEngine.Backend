@@ -1,6 +1,7 @@
 ﻿using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
-public class NationalCaseDocumentRepository() : CaseDocumentRepository(DbSchema.Tables.NationalCaseDocument,
-    DbSchema.NationalCaseDocumentColumn.CaseValueId), INationalCaseDocumentRepository;
+public class NationalCaseDocumentRepository() : CaseDocumentRepository(Tables.NationalCaseDocument,
+    NationalCaseDocumentColumn.CaseValueId), INationalCaseDocumentRepository;

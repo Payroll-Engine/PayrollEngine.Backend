@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -38,8 +39,8 @@ internal static class DataTableExtensions
         var columnNames = new string[columnCount];
 
         // id column
-        dataTable.Columns.Add(DbSchema.ObjectColumn.Id, typeof(int));
-        columnNames[0] = DbSchema.ObjectColumn.Id;
+        dataTable.Columns.Add(ObjectColumn.Id, typeof(int));
+        columnNames[0] = ObjectColumn.Id;
 
         // value columns
         foreach (var name in firstParameter.ParameterNames)

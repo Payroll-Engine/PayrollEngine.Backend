@@ -3,13 +3,14 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class RegulationShareRepository(IRegulationRepository regulationRepository) :
-    RootDomainRepository<RegulationShare>(DbSchema.Tables.RegulationShare), IRegulationShareRepository
+    RootDomainRepository<RegulationShare>(Tables.RegulationShare), IRegulationShareRepository
 {
     private IRegulationRepository RegulationRepository { get; } = regulationRepository ?? throw new ArgumentNullException(nameof(regulationRepository));
 
@@ -52,7 +53,7 @@ public class RegulationShareRepository(IRegulationRepository regulationRepositor
         }
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var shares = (await QueryAsync<RegulationShare>(context, compileQuery)).FirstOrDefault();

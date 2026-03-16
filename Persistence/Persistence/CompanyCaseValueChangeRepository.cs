@@ -1,6 +1,7 @@
 ﻿using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
-public class CompanyCaseValueChangeRepository() : CaseValueChangeRepository(DbSchema.Tables.CompanyCaseValueChange,
-    DbSchema.CompanyCaseValueChangeColumn.CaseChangeId), ICompanyCaseValueChangeRepository;
+public class CompanyCaseValueChangeRepository() : CaseValueChangeRepository(Tables.CompanyCaseValueChange,
+    CompanyCaseValueChangeColumn.CaseChangeId), ICompanyCaseValueChangeRepository;

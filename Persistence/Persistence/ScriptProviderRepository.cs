@@ -40,7 +40,7 @@ public class ScriptProviderRepository : RepositoryBase, IScriptProvider
             .Select(nameof(IScriptObject.Binary))
             .Where(nameof(IScriptObject.Id), scriptObject.Id)
             .Where(nameof(IScriptObject.ScriptHash), scriptObject.ScriptHash);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         var binary = await context.QueryFirstAsync<byte[]>(compileQuery);
         return binary;

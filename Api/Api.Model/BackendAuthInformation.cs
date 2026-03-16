@@ -1,6 +1,7 @@
 namespace PayrollEngine.Api.Model;
 
 /// <summary>Backend authentication information (no secrets exposed)</summary>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class BackendAuthInformation
 {
     /// <summary>Authentication mode: None, ApiKey or OAuth</summary>

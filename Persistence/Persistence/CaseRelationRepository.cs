@@ -1,14 +1,16 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using CaseRelationAudit = PayrollEngine.Domain.Model.CaseRelationAudit;
 
 namespace PayrollEngine.Persistence;
 
 public class CaseRelationRepository(IRegulationRepository regulationRepository,
     IScriptRepository scriptRepository, ICaseRelationAuditRepository auditRepository, bool auditEnabled)
-    : ScriptTrackChildDomainRepository<CaseRelation, CaseRelationAudit>(DbSchema.Tables.CaseRelation,
-        DbSchema.CaseRelationColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditEnabled), ICaseRelationRepository
+    : ScriptTrackChildDomainRepository<CaseRelation, CaseRelationAudit>(Tables.CaseRelation,
+        CaseRelationColumn.RegulationId, regulationRepository, scriptRepository, auditRepository, auditEnabled), ICaseRelationRepository
 {
     protected override void GetObjectCreateData(CaseRelation relation, DbParameterCollection parameters)
     {

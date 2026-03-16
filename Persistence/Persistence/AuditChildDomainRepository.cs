@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -21,7 +22,7 @@ public abstract class AuditChildDomainRepository<T>
         // query: last created audit before the tracking object
         var query = DbQueryFactory.NewQuery(TableName, ParentFieldName, trackObjectId);
         // query compilation
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         var audit = (await QueryAsync<T>(context, compileQuery)).MaxBy(x => x.Created);
@@ -42,12 +43,12 @@ public abstract class AuditChildDomainRepository<T>
         // TOP 1
         query.Limit(1);
         // exclude newer ones
-        query.Where(DbSchema.ObjectColumn.Created, "<", moment);
+        query.Where(ObjectColumn.Created, "<", moment);
         // take the newest audit at the first place
-        query.OrderByDesc(DbSchema.ObjectColumn.Created);
+        query.OrderByDesc(ObjectColumn.Created);
 
         // query compilation
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         var audits = (await QueryAsync<T>(context, compileQuery)).ToList();

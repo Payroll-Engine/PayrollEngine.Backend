@@ -2,16 +2,18 @@
 using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 /// <summary>Repository for <see cref="Tenant"/> persistence (table: Tenant).</summary>
-public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.Tenant), ITenantRepository
+public class TenantRepository() : RootDomainRepository<Tenant>(Tables.Tenant), ITenantRepository
 {
     public async Task<bool> ExistsAsync(IDbContext context, string identifier) =>
-        await ExistsAsync(context, DbSchema.TenantColumn.Identifier, identifier);
+        await ExistsAsync(context, TenantColumn.Identifier, identifier);
 
     protected override void GetObjectCreateData(Tenant tenant, DbParameterCollection parameters)
     {
@@ -28,7 +30,7 @@ public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.T
     }
 
     /// <inheritdoc />
-    public System.Threading.Tasks.Task UpdateStatisticsAsync(IDbContext context) =>
+    public Task UpdateStatisticsAsync(IDbContext context) =>
         context.UpdateStatisticsAsync();
 
     /// <inheritdoc />
@@ -41,18 +43,25 @@ public class TenantRepository() : RootDomainRepository<Tenant>(DbSchema.Tables.T
         }
 
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterDeleteTenant.TenantId, tenantId, DbType.Int32);
-        parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+        parameters.Add(ParameterDeleteTenant.TenantId, tenantId, DbType.Int32);
+        if (context.StoredProcedureReturnValue)
+        {
+            parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+        }
 
         try
         {
             // delete tenant (stored procedure)
-            await QueryAsync<Tenant>(context, DbSchema.Procedures.DeleteTenant,
+            await QueryAsync<Tenant>(context, Procedures.DeleteTenant,
                 parameters, commandType: CommandType.StoredProcedure);
 
             // stored procedure return value
-            var result = parameters.Get<int>("@sp_return");
-            return result == 1;
+            if (context.StoredProcedureReturnValue)
+            {
+                var result = parameters.Get<int>("@sp_return");
+                return result == 1;
+            }
+            return true;
         }
         catch (Exception exception)
         {

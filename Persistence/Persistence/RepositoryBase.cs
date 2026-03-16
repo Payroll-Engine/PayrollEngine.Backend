@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using SqlKata.Compilers;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -13,16 +13,16 @@ namespace PayrollEngine.Persistence;
 /// </summary>
 public abstract class RepositoryBase
 {
-    private readonly SqlServerCompiler compiler = new()
-    {
-        UseLegacyPagination = false
-    };
-
     // Don't use the Sql or RawSql properties
-    protected string CompileQuery(SqlKata.Query query) => compiler.Compile(query).ToString();
+    // Compiler is resolved from IDbContext to support both SqlServer and MySql
+    protected string CompileQuery(SqlKata.Query query, IDbContext context)
+    {
+        var compiler = context.QueryCompiler;
+        return compiler.Compile(query).ToString();
+    }
 
     private async Task<IEnumerable<T>> SelectByIdAsync<T>(IDbContext context, string table, int id) where T : IDomainObject =>
-        await SelectAsync<T>(context, table, DbSchema.ObjectColumn.Id, id);
+        await SelectAsync<T>(context, table, ObjectColumn.Id, id);
 
     protected async Task<IEnumerable<T>> SelectAsync<T>(IDbContext context, string table, string column,
         object value) where T : IDomainObject =>
@@ -38,7 +38,7 @@ public abstract class RepositoryBase
 
         // query: SELECT
         var query = DbQueryFactory.NewQuery(table, conditions);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         return await context.QueryAsync<T>(compileQuery);
@@ -70,7 +70,7 @@ public abstract class RepositoryBase
 
         var query = $"SELECT {rightTable}.* " +
                   $"FROM {leftTable} INNER JOIN " +
-                  $"{rightTable} ON {leftTable}.{DbSchema.ObjectColumn.Id} = {rightTable}.{relationColumn}";
+                  $"{rightTable} ON {leftTable}.{ObjectColumn.Id} = {rightTable}.{relationColumn}";
 
         // SELECT execution
         return await context.QueryAsync<T>(query);

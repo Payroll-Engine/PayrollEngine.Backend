@@ -1,12 +1,12 @@
-﻿using PayrollEngine.Domain.Model;
-using System;
-using System.Data;
-using System.Linq;
-using System.Globalization;
-using System.Threading.Tasks;
+﻿using System;
 using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
+using System.Data;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
@@ -60,7 +60,7 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
         }
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // retrieve case changes
         var caseChanges = (await QueryAsync<T>(context, compileQuery)).ToList();
@@ -105,7 +105,7 @@ public abstract class CaseChangeRepository<T>(string tableName, string parentFie
         }
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var count = await QuerySingleAsync<long>(context, compileQuery);

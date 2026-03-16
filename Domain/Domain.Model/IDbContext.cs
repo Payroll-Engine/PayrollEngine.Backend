@@ -2,6 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using SqlKata.Compilers;
 
 namespace PayrollEngine.Domain.Model;
 
@@ -16,6 +17,24 @@ public interface IDbContext
 
     /// <summary>The decimal type name</summary>
     string DecimalType { get; }
+
+    /// <summary>SqlKata compiler for this database provider (SqlServer or MySql)</summary>
+    Compiler QueryCompiler { get; }
+
+    /// <summary>Build SQL fragment to extract a named attribute value from a JSON column</summary>
+    string BuildAttributeQuery(string column, string valueAlias = null);
+
+    /// <summary>Whether stored procedures support RETURN values (true for SqlServer, false for MySql)</summary>
+    bool StoredProcedureReturnValue { get; }
+
+    /// <summary>Whether CaseValue pivot SPs accept EmployeeId and Culture parameters (MySql only)</summary>
+    bool CaseValueExtendedParameters { get; }
+
+    /// <summary>Quote a database identifier (table or column name) for this provider</summary>
+    string QuoteIdentifier(string name);
+
+    /// <summary>SQL expression that returns the last inserted identity value</summary>
+    string LastInsertIdSql { get; }
 
     /// <summary>Test the required database version</summary>
     Task<Exception> TestVersionAsync();

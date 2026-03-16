@@ -1,12 +1,13 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class LookupValueAuditRepository() : AuditChildDomainRepository<LookupValueAudit>(
-    DbSchema.Tables.LookupValueAudit, DbSchema.LookupValueAuditColumn.LookupValueId), ILookupValueAuditRepository
+    Tables.LookupValueAudit, LookupValueAuditColumn.LookupValueId), ILookupValueAuditRepository
 {
     protected override void GetObjectCreateData(LookupValueAudit audit, DbParameterCollection parameters)
     {

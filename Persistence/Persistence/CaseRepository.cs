@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class CaseRepository(IRegulationRepository regulationRepository,
     IScriptRepository scriptRepository, ICaseAuditRepository auditRepository, bool auditEnabled)
-    : ScriptTrackChildDomainRepository<Case, CaseAudit>(DbSchema.Tables.Case, DbSchema.CaseColumn.RegulationId,
+    : ScriptTrackChildDomainRepository<Case, CaseAudit>(Tables.Case, CaseColumn.RegulationId,
         regulationRepository, scriptRepository, auditRepository, auditEnabled), ICaseRepository
 {
     public async Task<IEnumerable<Case>> QueryAsync(IDbContext context, int tenantId, string caseName, int? regulationId = null)
@@ -26,18 +27,18 @@ public class CaseRepository(IRegulationRepository regulationRepository,
 
         var query = DbQueryFactory.NewQuery(TableName)
             .Select(GetColumnName("*"))
-            .Join(DbSchema.Tables.Regulation,
-                GetColumnName(DbSchema.CaseColumn.RegulationId),
-                GetIdColumnName(DbSchema.Tables.Regulation))
-            .Where(DbSchema.RegulationColumn.TenantId, tenantId)
-            .Where(GetColumnName(DbSchema.CaseColumn.Name), caseName);
+            .Join(Tables.Regulation,
+                GetColumnName(CaseColumn.RegulationId),
+                GetIdColumnName(Tables.Regulation))
+            .Where(RegulationColumn.TenantId, tenantId)
+            .Where(GetColumnName(CaseColumn.Name), caseName);
 
         if (regulationId.HasValue)
         {
-            query = query.Where(GetColumnName(DbSchema.Tables.Regulation, DbSchema.ObjectColumn.Id), regulationId.Value);
+            query = query.Where(GetColumnName(Tables.Regulation, ObjectColumn.Id), regulationId.Value);
         }
 
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         var cases = await QueryAsync<Case>(context, compileQuery);
         return cases;
     }

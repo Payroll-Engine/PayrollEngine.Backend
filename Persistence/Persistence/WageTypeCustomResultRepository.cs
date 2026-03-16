@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Data;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class WageTypeCustomResultRepository() : ChildDomainRepository<WageTypeCustomResult>(
-        DbSchema.Tables.WageTypeCustomResult, DbSchema.WageTypeCustomResultColumn.WageTypeResultId),
+        Tables.WageTypeCustomResult, WageTypeCustomResultColumn.WageTypeResultId),
     IWageTypeCustomResultRepository
 {
     protected override void GetObjectCreateData(WageTypeCustomResult result, DbParameterCollection parameters)

@@ -2,13 +2,14 @@
 using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrollLayerRepository() : ChildDomainRepository<PayrollLayer>(DbSchema.Tables.PayrollLayer,
-    DbSchema.PayrollLayerColumn.PayrollId), IPayrollLayerRepository
+public class PayrollLayerRepository() : ChildDomainRepository<PayrollLayer>(Tables.PayrollLayer,
+    PayrollLayerColumn.PayrollId), IPayrollLayerRepository
 {
     protected override void GetObjectData(PayrollLayer payrollLayer, DbParameterCollection parameters)
     {
@@ -28,10 +29,10 @@ public class PayrollLayerRepository() : ChildDomainRepository<PayrollLayer>(DbSc
 
         // query
         var query = DbQueryFactory.NewCountQuery(TableName)
-            .Where(DbSchema.PayrollLayerColumn.PayrollId, payrollId)
-            .Where(DbSchema.PayrollLayerColumn.Level, level)
-            .Where(DbSchema.PayrollLayerColumn.Priority, priority);
-        var compileQuery = CompileQuery(query);
+            .Where(PayrollLayerColumn.PayrollId, payrollId)
+            .Where(PayrollLayerColumn.Level, level)
+            .Where(PayrollLayerColumn.Priority, priority);
+        var compileQuery = CompileQuery(query, context);
 
         // SELECT execution
         var count = await ExecuteScalarAsync<int>(context, compileQuery);

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Data;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class PayrunRepository(IScriptRepository scriptRepository) : ScriptChildDomainRepository<Payrun>(
-    DbSchema.Tables.Payrun, DbSchema.PayrunColumn.TenantId, scriptRepository), IPayrunRepository
+    Tables.Payrun, PayrunColumn.TenantId, scriptRepository), IPayrunRepository
 {
     // duplicated in ScriptTrackChildDomainRepository!
     public async Task RebuildAsync(IDbContext context, int tenantId, int payrunId)

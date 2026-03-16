@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -48,11 +49,11 @@ internal sealed class PayrollRepositoryRegulationCommand : PayrollRepositoryComm
         query.EvaluationDate ??= Date.Now;
         // retrieve all derived regulations (stored procedure)
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedPayrollRegulations.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedPayrollRegulations.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedPayrollRegulations.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedPayrollRegulations.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        var regulationDefinitions = (await DbContext.QueryAsync<Regulation>(DbSchema.Procedures.GetDerivedPayrollRegulations,
+        parameters.Add(ParameterGetDerivedPayrollRegulations.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedPayrollRegulations.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedPayrollRegulations.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedPayrollRegulations.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        var regulationDefinitions = (await DbContext.QueryAsync<Regulation>(Procedures.GetDerivedPayrollRegulations,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         // load the regulations

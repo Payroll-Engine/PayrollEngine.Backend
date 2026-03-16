@@ -3880,6 +3880,24 @@
         <member name="P:PayrollEngine.Domain.Model.IDbContext.DecimalType">
             <summary>The decimal type name</summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.IDbContext.QueryCompiler">
+            <summary>SqlKata compiler for this database provider (SqlServer or MySql)</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.BuildAttributeQuery(System.String,System.String)">
+            <summary>Build SQL fragment to extract a named attribute value from a JSON column</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IDbContext.StoredProcedureReturnValue">
+            <summary>Whether stored procedures support RETURN values (true for SqlServer, false for MySql)</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IDbContext.CaseValueExtendedParameters">
+            <summary>Whether CaseValue pivot SPs accept EmployeeId and Culture parameters (MySql only)</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IDbContext.QuoteIdentifier(System.String)">
+            <summary>Quote a database identifier (table or column name) for this provider</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.IDbContext.LastInsertIdSql">
+            <summary>SQL expression that returns the last inserted identity value</summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.IDbContext.TestVersionAsync">
             <summary>Test the required database version</summary>
         </member>

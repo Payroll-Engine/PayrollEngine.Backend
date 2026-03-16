@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -48,31 +50,21 @@ internal sealed class PayrollRepositoryCaseFieldCommand : PayrollRepositoryCaseF
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedCaseFields.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (clusterSet != null)
-        {
-            if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedCaseFields.IncludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.IncludeClusters));
-            }
-            if (clusterSet.ExcludeClusters != null && clusterSet.ExcludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedCaseFields.ExcludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.ExcludeClusters));
-            }
-        }
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedCaseFields.CaseFieldNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
+        parameters.Add(ParameterGetDerivedCaseFields.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedCaseFields.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedCaseFields.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedCaseFields.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedCaseFields.IncludeClusters,
+            clusterSet?.IncludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.IncludeClusters) : null);
+        parameters.Add(ParameterGetDerivedCaseFields.ExcludeClusters,
+            clusterSet?.ExcludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.ExcludeClusters) : null);
+        parameters.Add(ParameterGetDerivedCaseFields.CaseFieldNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
 
         // retrieve derived case fields (stored procedure)
-        var caseFields = (await DbContext.QueryAsync<DerivedCaseField>(DbSchema.Procedures.GetDerivedCaseFields,
+        var caseFields = (await DbContext.QueryAsync<DerivedCaseField>(Procedures.GetDerivedCaseFields,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedCaseFields(caseFields, overrideType);

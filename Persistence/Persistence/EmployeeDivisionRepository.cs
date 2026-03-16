@@ -2,13 +2,14 @@
 using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 /// <summary>Repository for <see cref="EmployeeDivision"/> persistence (table: EmployeeDivision).</summary>
 public class EmployeeDivisionRepository(IDivisionRepository divisionRepository) :
-    ChildDomainRepository<EmployeeDivision>(DbSchema.Tables.EmployeeDivision,
-        DbSchema.EmployeeDivisionColumn.EmployeeId), IEmployeeDivisionRepository
+    ChildDomainRepository<EmployeeDivision>(Tables.EmployeeDivision,
+        EmployeeDivisionColumn.EmployeeId), IEmployeeDivisionRepository
 {
     public IDivisionRepository DivisionRepository { get; } = divisionRepository ?? throw new ArgumentNullException(nameof(divisionRepository));
 

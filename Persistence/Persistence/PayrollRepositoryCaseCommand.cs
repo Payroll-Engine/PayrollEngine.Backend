@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -52,39 +54,25 @@ internal sealed class PayrollRepositoryCaseCommand : PayrollRepositoryCommandBas
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedCases.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedCases.PayrollId, query.PayrollId, DbType.Int32);
-        if (caseType.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedCases.CaseType, caseType.Value, DbType.Int32);
-        }
-        if (clusterSet != null)
-        {
-            if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedCases.IncludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.IncludeClusters));
-            }
-            if (clusterSet.ExcludeClusters != null && clusterSet.ExcludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedCases.ExcludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.ExcludeClusters));
-            }
-        }
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedCases.CaseNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
-        if (hidden.HasValue)
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedCases.Hidden, hidden.Value, DbType.Boolean);
-        }
-        parameters.Add(DbSchema.ParameterGetDerivedCases.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedCases.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedCases.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedCases.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedCases.CaseType,
+            caseType, DbType.Int32);
+        parameters.Add(ParameterGetDerivedCases.IncludeClusters,
+            clusterSet?.IncludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.IncludeClusters) : null);
+        parameters.Add(ParameterGetDerivedCases.ExcludeClusters,
+            clusterSet?.ExcludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.ExcludeClusters) : null);
+        parameters.Add(ParameterGetDerivedCases.CaseNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
+        parameters.Add(ParameterGetDerivedCases.Hidden,
+            hidden, DbType.Boolean);
+        parameters.Add(ParameterGetDerivedCases.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedCases.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
 
         // retrieve all derived cases (stored procedure)
-        var cases = (await DbContext.QueryAsync<DerivedCase>(DbSchema.Procedures.GetDerivedCases,
+        var cases = (await DbContext.QueryAsync<DerivedCase>(Procedures.GetDerivedCases,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedCases(cases, overrideType);

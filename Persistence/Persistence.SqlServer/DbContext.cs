@@ -75,6 +75,31 @@ public class DbContext : IDbContext
     #region Control
 
     /// <inheritdoc />
+    public SqlKata.Compilers.Compiler QueryCompiler { get; } =
+        new SqlKata.Compilers.SqlServerCompiler { UseLegacyPagination = false };
+
+    /// <inheritdoc />
+    public string BuildAttributeQuery(string column, string valueAlias = null)
+    {
+        var attribute = column.RemoveAttributePrefix();
+        return string.IsNullOrWhiteSpace(valueAlias)
+            ? $"(SELECT value FROM OPENJSON(Attributes) WHERE [key] = '{attribute}') AS {column}"
+            : $"(SELECT CAST(value AS {valueAlias}) FROM OPENJSON(Attributes) WHERE [key] = '{attribute}') AS {column}";
+    }
+
+    /// <inheritdoc />
+    public bool StoredProcedureReturnValue => true;
+
+    /// <inheritdoc />
+    public bool CaseValueExtendedParameters => false;
+
+    /// <inheritdoc />
+    public string QuoteIdentifier(string name) => $"[{name}]";
+
+    /// <inheritdoc />
+    public string LastInsertIdSql => "SELECT CAST(SCOPE_IDENTITY() as int);";
+
+    /// <inheritdoc />
     public string DateTimeType =>
         $"DATETIME2({SystemSpecification.DateTimeFractionalSecondsPrecision})";
 
@@ -177,6 +202,7 @@ public class DbContext : IDbContext
     {
         var builder = new SqlConnectionStringBuilder(ConnectionString);
         var version = await ExecuteScalarAsync<string>(
+            // ReSharper disable once StringLiteralTypo
             "SELECT CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(50))");
         return new DatabaseInformation
         {

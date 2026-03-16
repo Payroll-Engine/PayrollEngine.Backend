@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using PayrollEngine.Persistence.DbSchema;
 using SqlKata;
+
 // ReSharper disable UnusedMethodReturnValue.Global
 
 namespace PayrollEngine.Persistence;
@@ -85,7 +87,7 @@ public static class SqlQueryExtensions
         /// Execute left join, using the object id as relation source
         /// </summary>
         public SqlKata.Query LeftObjectJoin(string sourceTable, string targetTable, string targetColumn) => 
-            query.LeftObjectJoin(sourceTable, DbSchema.ObjectColumn.Id, targetTable, targetColumn);
+            query.LeftObjectJoin(sourceTable, ObjectColumn.Id, targetTable, targetColumn);
 
         /// <summary>
         /// Execute left join
@@ -111,20 +113,20 @@ public static class SqlQueryExtensions
             {
                 case DivisionScope.Local:
                     // ReSharper disable once PossibleInvalidOperationException
-                    query.Where(DbSchema.CaseValueColumn.DivisionId, divisionId.Value);
+                    query.Where(CaseValueColumn.DivisionId, divisionId.Value);
                     break;
                 case DivisionScope.Global:
-                    query.WhereNull(DbSchema.CaseValueColumn.DivisionId);
+                    query.WhereNull(CaseValueColumn.DivisionId);
                     break;
                 case DivisionScope.GlobalAndLocal:
                     // db condition: ([DivisionId] IS NULL OR [DivisionId] = divisionId)
                     // ReSharper disable once PossibleInvalidOperationException
-                    query.WhereNullOrValue(DbSchema.CaseValueColumn.DivisionId, divisionId.Value);
+                    query.WhereNullOrValue(CaseValueColumn.DivisionId, divisionId.Value);
                     break;
                 default:
                     if (divisionId.HasValue)
                     {
-                        query.Where(DbSchema.CaseValueColumn.DivisionId, divisionId.Value);
+                        query.Where(CaseValueColumn.DivisionId, divisionId.Value);
                     }
                     break;
             }

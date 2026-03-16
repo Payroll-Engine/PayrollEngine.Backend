@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -51,40 +52,40 @@ internal sealed class PayrunResultConsolidateCommand : ResultCommandBase
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetPayrunResults.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetPayrunResults.EmployeeId, query.EmployeeId, DbType.Int32);
+        parameters.Add(ParameterGetPayrunResults.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetPayrunResults.EmployeeId, query.EmployeeId, DbType.Int32);
         if (query.DivisionId.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.DivisionId, query.DivisionId.Value, DbType.Int32);
+            parameters.Add(ParameterGetPayrunResults.DivisionId, query.DivisionId.Value, DbType.Int32);
         }
         if (names != null && names.Any())
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.Names,
+            parameters.Add(ParameterGetPayrunResults.Names,
                 JsonSerializer.Serialize(names));
         }
         if (query.PeriodStarts != null && query.PeriodStarts.Any())
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.PeriodStartHashes,
+            parameters.Add(ParameterGetPayrunResults.PeriodStartHashes,
                 JsonSerializer.Serialize(query.PeriodStarts.Select(x => x.GetPastDaysCount())));
         }
         if (!string.IsNullOrWhiteSpace(query.Forecast))
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.Forecast, query.Forecast);
+            parameters.Add(ParameterGetPayrunResults.Forecast, query.Forecast);
         }
         if (query.JobStatus != null)
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.JobStatus, query.JobStatus, DbType.Int32);
+            parameters.Add(ParameterGetPayrunResults.JobStatus, query.JobStatus, DbType.Int32);
         }
         if (query.EvaluationDate.HasValue)
         {
-            parameters.Add(DbSchema.ParameterGetPayrunResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
+            parameters.Add(ParameterGetPayrunResults.EvaluationDate, query.EvaluationDate.Value, DbType.DateTime2);
         }
 
         // query pre action
         QueryBegin();
 
         // retrieve consolidated payrun results (stored procedure)
-        var values = await DbContext.QueryAsync<PayrunResult>(DbSchema.Procedures.GetConsolidatedPayrunResults,
+        var values = await DbContext.QueryAsync<PayrunResult>(Procedures.GetConsolidatedPayrunResults,
             parameters, commandType: CommandType.StoredProcedure);
 
         // query post action

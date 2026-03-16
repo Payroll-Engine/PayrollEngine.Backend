@@ -1,24 +1,25 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.Persistence;
 
 public class LookupValueRepository(IRegulationRepository regulationRepository,
     ILookupValueAuditRepository auditRepository, bool auditEnabled) :
-    TrackChildDomainRepository<LookupValue, LookupValueAudit>(regulationRepository, DbSchema.Tables.LookupValue,
-        DbSchema.LookupValueColumn.LookupId, auditRepository, auditEnabled), ILookupValueRepository
+    TrackChildDomainRepository<LookupValue, LookupValueAudit>(regulationRepository, Tables.LookupValue,
+        LookupValueColumn.LookupId, auditRepository, auditEnabled), ILookupValueRepository
 {
     public async Task<bool> ExistsAsync(IDbContext context, int lookupId, string key, decimal? rangeValue = null)
     {
         var conditions = new Dictionary<string, object>
         {
-            { DbSchema.LookupValueColumn.LookupId, lookupId },
-            { DbSchema.LookupValueColumn.LookupHash, key.ToPayrollHash(rangeValue) }
+            { LookupValueColumn.LookupId, lookupId },
+            { LookupValueColumn.LookupHash, key.ToPayrollHash(rangeValue) }
         };
         return (await SelectAsync<LookupValue>(context, TableName, conditions)).Any();
     }
@@ -26,7 +27,7 @@ public class LookupValueRepository(IRegulationRepository regulationRepository,
     public async Task<int> DeleteAll(IDbContext context, int lookupId)
     {
         var query = DbQueryFactory.NewDeleteQuery(TableName, ParentFieldName, lookupId);
-        var compileQuery = CompileQuery(query);
+        var compileQuery = CompileQuery(query, context);
         var deleted = await ExecuteAsync(context, compileQuery);
         return deleted;
     }

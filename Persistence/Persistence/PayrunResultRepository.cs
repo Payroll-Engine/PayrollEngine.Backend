@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Data;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class PayrunResultRepository() : ChildDomainRepository<PayrunResult>(DbSchema.Tables.PayrunResult,
-    DbSchema.PayrunResultColumn.PayrollResultId), IPayrunResultRepository
+public class PayrunResultRepository() : ChildDomainRepository<PayrunResult>(Tables.PayrunResult,
+    PayrunResultColumn.PayrollResultId), IPayrunResultRepository
 {
     protected override void GetObjectCreateData(PayrunResult result, DbParameterCollection parameters)
     {

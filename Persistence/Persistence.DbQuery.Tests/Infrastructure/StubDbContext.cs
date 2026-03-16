@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Model;
+using SqlKata.Compilers;
 using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence.DbQuery.Tests.Infrastructure;
@@ -19,6 +20,14 @@ public sealed class StubDbContext : IDbContext
     /// <inheritdoc/>
     public string DecimalType => "DECIMAL(28, 6)";
 
+    public Compiler QueryCompiler => throw new NotSupportedException();
+
+    public bool StoredProcedureReturnValue => throw new NotSupportedException();
+    public bool CaseValueExtendedParameters => throw new NotSupportedException();
+    public string LastInsertIdSql => throw new NotSupportedException();
+
+    public string BuildAttributeQuery(string column, string valueAlias = null) => throw new NotSupportedException();
+    public string QuoteIdentifier(string name) => throw new NotSupportedException();
     public Task<Exception> TestVersionAsync() => throw new NotSupportedException();
     public Task<Tenant> GetTenantAsync(int tenantId, string tenantIdentifier = null) => throw new NotSupportedException();
     public Exception TransformException(Exception exception) => throw new NotSupportedException();

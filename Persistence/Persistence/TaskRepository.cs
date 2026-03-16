@@ -1,11 +1,12 @@
 ﻿using System.Data;
-using Task = PayrollEngine.Domain.Model.Task;
-using PayrollEngine.Serialization;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = PayrollEngine.Domain.Model.Task;
 
 namespace PayrollEngine.Persistence;
 
-public class TaskRepository() : ChildDomainRepository<Task>(DbSchema.Tables.Task, DbSchema.TaskColumn.TenantId),
+public class TaskRepository() : ChildDomainRepository<Task>(Tables.Task, TaskColumn.TenantId),
     ITaskRepository
 {
     protected override void GetObjectData(Task task, DbParameterCollection parameters)

@@ -1,12 +1,13 @@
 ﻿using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
 public class GlobalCaseValueSetupRepository(ICaseFieldRepository caseFieldRepository,
         IGlobalCaseDocumentRepository caseDocumentRepository)
-    : CaseValueSetupRepository(DbSchema.Tables.GlobalCaseValue, DbSchema.GlobalCaseValueColumn.TenantId,
+    : CaseValueSetupRepository(Tables.GlobalCaseValue, GlobalCaseValueColumn.TenantId,
         caseFieldRepository, caseDocumentRepository), IGlobalCaseValueSetupRepository
 {
-    protected override string CaseValueTableName => DbSchema.Tables.GlobalCaseValuePivot;
-    protected override string CaseValueQueryProcedure => DbSchema.Procedures.GetGlobalCaseValues;
+    protected override string CaseValueTableName => Tables.GlobalCaseValuePivot;
+    protected override string CaseValueQueryProcedure => Procedures.GetGlobalCaseValues;
 }

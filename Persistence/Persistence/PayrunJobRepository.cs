@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Serialization;
-using PayrollEngine.Persistence.DbQuery;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbQuery;
+using PayrollEngine.Persistence.DbSchema;
+using PayrollEngine.Serialization;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeRepository) : ChildDomainRepository<PayrunJob>(
-    DbSchema.Tables.PayrunJob, DbSchema.PayrunJobColumn.TenantId), IPayrunJobRepository
+    Tables.PayrunJob, PayrunJobColumn.TenantId), IPayrunJobRepository
 {
     private IPayrunJobEmployeeRepository JobEmployeeRepository { get; } = jobEmployeeRepository ?? throw new ArgumentNullException(nameof(jobEmployeeRepository));
 
@@ -75,13 +76,13 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
         // join payrun job to job employee
         dbQuery
             .Select($"{TableName}.*")
-            .Join(DbSchema.Tables.PayrunJobEmployee,
+            .Join(Tables.PayrunJobEmployee,
                 GetIdColumnName(),
-                GetColumnName(DbSchema.Tables.PayrunJobEmployee, DbSchema.PayrunJobEmployeeColumn.PayrunJobId))
-            .Where(DbSchema.PayrunJobEmployeeColumn.EmployeeId, employeeId);
+                GetColumnName(Tables.PayrunJobEmployee, PayrunJobEmployeeColumn.PayrunJobId))
+            .Where(PayrunJobEmployeeColumn.EmployeeId, employeeId);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var items = (await QueryAsync<PayrunJob>(context, compileQuery)).ToList();
@@ -100,13 +101,13 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
 
         // join payrun job to job employee
         dbQuery
-            .Join(DbSchema.Tables.PayrunJobEmployee,
+            .Join(Tables.PayrunJobEmployee,
                 GetIdColumnName(),
-                GetColumnName(DbSchema.Tables.PayrunJobEmployee, DbSchema.PayrunJobEmployeeColumn.PayrunJobId))
-            .Where(DbSchema.PayrunJobEmployeeColumn.EmployeeId, employeeId);
+                GetColumnName(Tables.PayrunJobEmployee, PayrunJobEmployeeColumn.PayrunJobId))
+            .Where(PayrunJobEmployeeColumn.EmployeeId, employeeId);
 
         // query compilation
-        var compileQuery = CompileQuery(dbQuery);
+        var compileQuery = CompileQuery(dbQuery, context);
 
         // SELECT execution
         var count = await QuerySingleAsync<long>(context, compileQuery);
@@ -209,16 +210,23 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
     {
         // delete all related objects
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterDeletePayrunJob.TenantId, tenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterDeletePayrunJob.PayrunJobId, payrunJobId, DbType.Int32);
-        parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+        parameters.Add(ParameterDeletePayrunJob.TenantId, tenantId, DbType.Int32);
+        parameters.Add(ParameterDeletePayrunJob.PayrunJobId, payrunJobId, DbType.Int32);
+        if (context.StoredProcedureReturnValue)
+        {
+            parameters.Add("@sp_return", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+        }
 
         // delete the payrun job (stored procedure)
-        await QueryAsync(context, DbSchema.Procedures.DeletePayrunJob,
+        await QueryAsync(context, Procedures.DeletePayrunJob,
                          parameters, commandType: CommandType.StoredProcedure);
 
         // stored procedure return value
-        var result = parameters.Get<int>("@sp_return");
-        return result == 1;
+        if (context.StoredProcedureReturnValue)
+        {
+            var result = parameters.Get<int>("@sp_return");
+            return result == 1;
+        }
+        return true;
     }
 }

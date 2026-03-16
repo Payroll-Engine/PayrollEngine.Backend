@@ -41,9 +41,9 @@ The Backend is the ASP.NET Core REST API server at the core of the Payroll Engin
 | Requirement | Minimum |
 |:--|:--|
 | [.NET](https://dotnet.microsoft.com/download) | 10.0 |
-| [SQL Server](https://www.microsoft.com/sql-server) | 2019 (or Azure SQL) |
-| Database collation | `SQL_Latin1_General_CP1_CS_AS` |
-| Database isolation | `READ_COMMITTED_SNAPSHOT ON` |
+| [SQL Server](https://www.microsoft.com/sql-server) | 2019 (or Azure SQL) — or MySQL 8.4 LTS |
+| Database collation | `SQL_Latin1_General_CP1_CS_AS` (SQL Server) · `utf8mb4_unicode_ci` (MySQL) |
+| Database isolation | `READ_COMMITTED_SNAPSHOT ON` (SQL Server only) |
 
 ---
 
@@ -51,7 +51,7 @@ The Backend is the ASP.NET Core REST API server at the core of the Payroll Engin
 
 ### 1. Create the database
 
-Run the provided script to create the database schema:
+**SQL Server** — run the provided script:
 
 ```cmd
 Commands\Db.ModelCreate.cmd
@@ -67,9 +67,22 @@ SELECT name, collation_name, is_read_committed_snapshot_on AS rcsi
 FROM sys.databases WHERE name = 'PayrollEngine';
 ```
 
+**MySQL 8.4 LTS** — run the MySQL scripts in order:
+
+```powershell
+$mysql = 'mysql -uroot -p --port=3306 PayrollEngine'
+cmd /c "$mysql < Database\Create-Model.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\Functions.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetDerived.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetCaseValues.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetLookupRangeValue.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetResults.mysql.sql"
+cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\Remaining.mysql.sql"
+```
+
 ### 2. Configure the connection string
 
-Set the connection string via environment variable (recommended):
+**SQL Server** — set the connection string via environment variable (recommended):
 
 ```bash
 # Windows
@@ -79,7 +92,14 @@ set PayrollDatabaseConnection=Server=localhost;Database=PayrollEngine;Integrated
 export PayrollDatabaseConnection="Server=localhost;Database=PayrollEngine;User Id=sa;Password=...;TrustServerCertificate=True;"
 ```
 
-Or add it to `appsettings.json` (for local development only):
+**MySQL** — set connection string and provider:
+
+```bash
+set PayrollDatabaseConnection=Server=localhost;Port=3306;Database=PayrollEngine;User=root;Password=...;CharSet=utf8mb4;
+set PayrollServerConfiguration__DbProvider=MySql
+```
+
+Or add to `appsettings.json` (for local development only):
 
 ```json
 {
@@ -395,7 +415,8 @@ Helper scripts in the `Commands` folder:
 | `PayrollEngine.Domain.Scripting`      | Library    | Scripting services                                |
 | `PayrollEngine.Domain.Application`    | Library    | Application service                               |
 | `PayrollEngine.Persistence`           | Library    | Repository implementations                        |
-| `PayrollEngine.Persistence.SqlServer` | Library    | SQL Server implementation                         |
+| `PayrollEngine.Persistence.SqlServer` | Library    | SQL Server persistence implementation             |
+| `PayrollEngine.Persistence.MySql`     | Library    | MySQL 8.4 LTS persistence implementation (preview) |
 | `PayrollEngine.Api.Model`             | Library    | REST API data transfer objects                    |
 | `PayrollEngine.Api.Core`              | Library    | REST core services (query, filter, serialization) |
 | `PayrollEngine.Api.Map`               | Library    | Mapping between REST and domain objects           |

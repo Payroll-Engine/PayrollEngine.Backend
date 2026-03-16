@@ -1,11 +1,12 @@
 ﻿using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
-public class ScriptAuditRepository() : AuditChildDomainRepository<ScriptAudit>(DbSchema.Tables.ScriptAudit,
-    DbSchema.ScriptAuditColumn.ScriptId), IScriptAuditRepository
+public class ScriptAuditRepository() : AuditChildDomainRepository<ScriptAudit>(Tables.ScriptAudit,
+    ScriptAuditColumn.ScriptId), IScriptAuditRepository
 {
     protected override void GetObjectCreateData(ScriptAudit audit, DbParameterCollection parameters)
     {

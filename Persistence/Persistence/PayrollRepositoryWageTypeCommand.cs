@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -50,31 +52,21 @@ internal sealed class PayrollRepositoryWageTypeCommand : PayrollRepositoryComman
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedWageTypes.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (numbers != null && numbers.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedWageTypes.WageTypeNumbers,
-                System.Text.Json.JsonSerializer.Serialize(numbers));
-        }
-        if (clusterSet != null)
-        {
-            if (clusterSet.IncludeClusters != null && clusterSet.IncludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedWageTypes.IncludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.IncludeClusters));
-            }
-            if (clusterSet.ExcludeClusters != null && clusterSet.ExcludeClusters.Any())
-            {
-                parameters.Add(DbSchema.ParameterGetDerivedWageTypes.ExcludeClusters,
-                    System.Text.Json.JsonSerializer.Serialize(clusterSet.ExcludeClusters));
-            }
-        }
+        parameters.Add(ParameterGetDerivedWageTypes.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedWageTypes.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedWageTypes.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedWageTypes.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedWageTypes.WageTypeNumbers,
+            numbers?.Any() == true ? JsonSerializer.Serialize(numbers) : null);
+        parameters.Add(ParameterGetDerivedWageTypes.IncludeClusters,
+            clusterSet?.IncludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.IncludeClusters) : null);
+        parameters.Add(ParameterGetDerivedWageTypes.ExcludeClusters,
+            clusterSet?.ExcludeClusters?.Any() == true
+                ? JsonSerializer.Serialize(clusterSet.ExcludeClusters) : null);
 
         // retrieve all wage types (stored procedure)
-        var wageTypes = (await DbContext.QueryAsync<DerivedWageType>(DbSchema.Procedures.GetDerivedWageTypes,
+        var wageTypes = (await DbContext.QueryAsync<DerivedWageType>(Procedures.GetDerivedWageTypes,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedWageTypes(wageTypes, overrideType);

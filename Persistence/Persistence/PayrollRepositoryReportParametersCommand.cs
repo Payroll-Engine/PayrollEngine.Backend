@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence;
 
@@ -48,18 +50,15 @@ internal sealed class PayrollRepositoryReportParametersCommand : PayrollReposito
 
         // parameters
         var parameters = new DbParameterCollection();
-        parameters.Add(DbSchema.ParameterGetDerivedReportParameters.TenantId, query.TenantId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedReportParameters.PayrollId, query.PayrollId, DbType.Int32);
-        parameters.Add(DbSchema.ParameterGetDerivedReportParameters.RegulationDate, query.RegulationDate, DbType.DateTime2);
-        parameters.Add(DbSchema.ParameterGetDerivedReportParameters.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
-        if (names != null && names.Any())
-        {
-            parameters.Add(DbSchema.ParameterGetDerivedReportParameters.ReportNames,
-                System.Text.Json.JsonSerializer.Serialize(names));
-        }
+        parameters.Add(ParameterGetDerivedReportParameters.TenantId, query.TenantId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedReportParameters.PayrollId, query.PayrollId, DbType.Int32);
+        parameters.Add(ParameterGetDerivedReportParameters.RegulationDate, query.RegulationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedReportParameters.CreatedBefore, query.EvaluationDate, DbType.DateTime2);
+        parameters.Add(ParameterGetDerivedReportParameters.ReportNames,
+            names?.Any() == true ? JsonSerializer.Serialize(names) : null);
 
         // retrieve all derived report parameters (stored procedure)
-        var reportParameters = (await DbContext.QueryAsync<DerivedReportParameter>(DbSchema.Procedures.GetDerivedReportParameters,
+        var reportParameters = (await DbContext.QueryAsync<DerivedReportParameter>(Procedures.GetDerivedReportParameters,
             parameters, commandType: CommandType.StoredProcedure)).ToList();
 
         BuildDerivedReportParameters(reportParameters, overrideType);

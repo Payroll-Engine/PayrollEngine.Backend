@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
-using PayrollEngine.Domain.Scripting;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Domain.Scripting;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 

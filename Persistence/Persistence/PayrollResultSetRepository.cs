@@ -2,16 +2,17 @@
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
+using PayrollEngine.Persistence.DbSchema;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Persistence;
 
 public class PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeResultSetRepository,
         ICollectorResultSetRepository collectorResultSetRepository,
         IPayrunResultRepository payrunResultRepository, bool bulkInsert)
-    : ChildDomainRepository<PayrollResultSet>(DbSchema.Tables.PayrollResult, DbSchema.PayrollResultColumn.TenantId),
+    : ChildDomainRepository<PayrollResultSet>(Tables.PayrollResult, PayrollResultColumn.TenantId),
         IPayrollResultSetRepository
 {
     private IWageTypeResultSetRepository WageTypeResultSetRepository { get; } = wageTypeResultSetRepository ?? throw new ArgumentNullException(nameof(wageTypeResultSetRepository));
