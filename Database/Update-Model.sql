@@ -1,7 +1,6 @@
 USE [PayrollEngine];
 GO
 
--- #region VERSION_CHECK
 SET XACT_ABORT ON
 GO
 
@@ -22,202 +21,308 @@ IF @MajorVersion <> 0 OR @MinorVersion <> 9 OR @SubVersion <> 5 BEGIN
     SET NOEXEC ON   -- suppress all subsequent batches incl. BEGIN TRANSACTION
 END
 GO
--- #endregion VERSION_CHECK
-
 BEGIN TRANSACTION
 GO
 
--- #region DB_SCRIPTS
 USE [PayrollEngine];
 GO
+
 -- ============================================================
 -- Delta Update Script
 -- Baseline : Baseline.Formatted.sql
 -- Current  : Current.Formatted.sql
--- Generated: 2026-03-07 20:55
--- Changes  : +1 added / -0 removed / ~33 modified
+-- Generated: 2026-03-17 16:16
+-- Changes  : +19 added / -13 removed / ~37 modified
 -- ============================================================
 GO
 
 -- ------------------------------------------------------------
--- Modified objects -- drop before re-create (33)
+-- Removed objects (13)
 -- ------------------------------------------------------------
 
--- WageTypeResult: add denormalized columns (TenantId, EmployeeId, DivisionId, PayrunJobId, Forecast, ParentJobId)
-IF COL_LENGTH('dbo.WageTypeResult', 'TenantId') IS NULL
-    ALTER TABLE dbo.[WageTypeResult]
-        ADD [TenantId]    INT          NOT NULL DEFAULT 0,
-            [EmployeeId]  INT          NOT NULL DEFAULT 0,
-            [DivisionId]  INT          NULL,
-            [PayrunJobId] INT          NOT NULL DEFAULT 0,
-            [Forecast]    NVARCHAR(128) NULL,
-            [ParentJobId] INT          NULL;
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_WageTypeCustomResult.StartHash' AND object_id = OBJECT_ID('[dbo].[WageTypeCustomResult]'))
+    DROP INDEX [IX_WageTypeCustomResult.StartHash] ON [dbo].[WageTypeCustomResult];
 GO
 
--- PayrunTrace: add denormalized columns (TenantId, EmployeeId, DivisionId, PayrunJobId, Forecast, ParentJobId)
-IF COL_LENGTH('dbo.PayrunTrace', 'TenantId') IS NULL
-    ALTER TABLE dbo.[PayrunTrace]
-        ADD [TenantId]    INT          NOT NULL DEFAULT 0,
-            [EmployeeId]  INT          NOT NULL DEFAULT 0,
-            [DivisionId]  INT          NULL,
-            [PayrunJobId] INT          NOT NULL DEFAULT 0,
-            [Forecast]    NVARCHAR(128) NULL,
-            [ParentJobId] INT          NULL;
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_WageType.WageTypeNumber' AND object_id = OBJECT_ID('[dbo].[WageType]'))
+    DROP INDEX [IX_WageType.WageTypeNumber] ON [dbo].[WageType];
 GO
 
--- PayrunResult: add denormalized columns (TenantId, EmployeeId, DivisionId, PayrunJobId, Forecast, ParentJobId)
-IF COL_LENGTH('dbo.PayrunResult', 'TenantId') IS NULL
-    ALTER TABLE dbo.[PayrunResult]
-        ADD [TenantId]    INT          NOT NULL DEFAULT 0,
-            [EmployeeId]  INT          NOT NULL DEFAULT 0,
-            [DivisionId]  INT          NULL,
-            [PayrunJobId] INT          NOT NULL DEFAULT 0,
-            [Forecast]    NVARCHAR(128) NULL,
-            [ParentJobId] INT          NULL;
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Script.FunctionType' AND object_id = OBJECT_ID('[dbo].[Script]'))
+    DROP INDEX [IX_Script.FunctionType] ON [dbo].[Script];
 GO
 
--- CollectorResult: add denormalized columns (TenantId, EmployeeId, DivisionId, PayrunJobId, Forecast, ParentJobId)
-IF COL_LENGTH('dbo.CollectorResult', 'TenantId') IS NULL
-    ALTER TABLE dbo.[CollectorResult]
-        ADD [TenantId]    INT          NOT NULL DEFAULT 0,
-            [EmployeeId]  INT          NOT NULL DEFAULT 0,
-            [DivisionId]  INT          NULL,
-            [PayrunJobId] INT          NOT NULL DEFAULT 0,
-            [Forecast]    NVARCHAR(128) NULL,
-            [ParentJobId] INT          NULL;
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_WageTypeResult.WageTypeNumber' AND object_id = OBJECT_ID('[dbo].[WageTypeResult]'))
+    DROP INDEX [IX_WageTypeResult.WageTypeNumber] ON [dbo].[WageTypeResult];
 GO
 
--- CollectorCustomResult: add denormalized columns (TenantId, EmployeeId, DivisionId, PayrunJobId, Forecast, ParentJobId)
-IF COL_LENGTH('dbo.CollectorCustomResult', 'TenantId') IS NULL
-    ALTER TABLE dbo.[CollectorCustomResult]
-        ADD [TenantId]    INT          NOT NULL DEFAULT 0,
-            [EmployeeId]  INT          NOT NULL DEFAULT 0,
-            [DivisionId]  INT          NULL,
-            [PayrunJobId] INT          NOT NULL DEFAULT 0,
-            [Forecast]    NVARCHAR(128) NULL,
-            [ParentJobId] INT          NULL;
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_WageTypeResult.StartHash' AND object_id = OBJECT_ID('[dbo].[WageTypeResult]'))
+    DROP INDEX [IX_WageTypeResult.StartHash] ON [dbo].[WageTypeResult];
 GO
 
--- WageTypeCustomResult: add denormalized columns (TenantId, EmployeeId, DivisionId, PayrunJobId, Forecast, ParentJobId)
-IF COL_LENGTH('dbo.WageTypeCustomResult', 'TenantId') IS NULL
-    ALTER TABLE dbo.[WageTypeCustomResult]
-        ADD [TenantId]    INT          NOT NULL DEFAULT 0,
-            [EmployeeId]  INT          NOT NULL DEFAULT 0,
-            [DivisionId]  INT          NULL,
-            [PayrunJobId] INT          NOT NULL DEFAULT 0,
-            [Forecast]    NVARCHAR(128) NULL,
-            [ParentJobId] INT          NULL;
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_WageTypeCustomResult.WageTypeNumber' AND object_id = OBJECT_ID('[dbo].[WageTypeCustomResult]'))
+    DROP INDEX [IX_WageTypeCustomResult.WageTypeNumber] ON [dbo].[WageTypeCustomResult];
 GO
 
-IF OBJECT_ID('dbo.GetConsolidatedWageTypeResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetConsolidatedWageTypeResults];
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PayrunResult.StartHash' AND object_id = OBJECT_ID('[dbo].[PayrunResult]'))
+    DROP INDEX [IX_PayrunResult.StartHash] ON [dbo].[PayrunResult];
 GO
 
-
-IF OBJECT_ID('dbo.GetWageTypeResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetWageTypeResults];
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CollectorResult.CollectorNameHash' AND object_id = OBJECT_ID('[dbo].[CollectorResult]'))
+    DROP INDEX [IX_CollectorResult.CollectorNameHash] ON [dbo].[CollectorResult];
 GO
 
-
-IF OBJECT_ID('dbo.GetDerivedRegulations') IS NOT NULL DROP FUNCTION dbo.[GetDerivedRegulations];
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CollectorCustomResult.StartHash' AND object_id = OBJECT_ID('[dbo].[CollectorCustomResult]'))
+    DROP INDEX [IX_CollectorCustomResult.StartHash] ON [dbo].[CollectorCustomResult];
 GO
 
-IF OBJECT_ID('dbo.GetConsolidatedPayrunResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetConsolidatedPayrunResults];
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CollectorCustomResult.CollectorNameHash' AND object_id = OBJECT_ID('[dbo].[CollectorCustomResult]'))
+    DROP INDEX [IX_CollectorCustomResult.CollectorNameHash] ON [dbo].[CollectorCustomResult];
 GO
 
-
-IF OBJECT_ID('dbo.GetCollectorResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetCollectorResults];
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PayrunResult.Name' AND object_id = OBJECT_ID('[dbo].[PayrunResult]'))
+    DROP INDEX [IX_PayrunResult.Name] ON [dbo].[PayrunResult];
 GO
 
-
-IF OBJECT_ID('dbo.GetConsolidatedCollectorResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetConsolidatedCollectorResults];
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_PayrunJob.JobStatus' AND object_id = OBJECT_ID('[dbo].[PayrunJob]'))
+    DROP INDEX [IX_PayrunJob.JobStatus] ON [dbo].[PayrunJob];
 GO
 
-
-IF OBJECT_ID('dbo.GetCollectorCustomResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetCollectorCustomResults];
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CollectorResult.StartHash' AND object_id = OBJECT_ID('[dbo].[CollectorResult]'))
+    DROP INDEX [IX_CollectorResult.StartHash] ON [dbo].[CollectorResult];
 GO
-
-
-IF OBJECT_ID('dbo.GetConsolidatedCollectorCustomResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetConsolidatedCollectorCustomResults];
-GO
-
-
-IF OBJECT_ID('dbo.DeletePayrunJob', 'P') IS NOT NULL DROP PROCEDURE dbo.[DeletePayrunJob];
-GO
-
-
-IF OBJECT_ID('dbo.GetConsolidatedWageTypeCustomResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetConsolidatedWageTypeCustomResults];
-GO
-
-
-IF OBJECT_ID('dbo.GetWageTypeCustomResults', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetWageTypeCustomResults];
-GO
-
-
-IF OBJECT_ID('dbo.DeleteEmployee', 'P') IS NOT NULL DROP PROCEDURE dbo.[DeleteEmployee];
-GO
-
-
--- WebhookMessage: no column changes detected (modification is index/constraint only, handled separately).
-GO
-
-IF OBJECT_ID('dbo.DeleteLookup', 'P') IS NOT NULL DROP PROCEDURE dbo.[DeleteLookup];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedCaseFields', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedCaseFields];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedCaseFieldsOfCase', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedCaseFieldsOfCase];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedCaseRelations', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedCaseRelations];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedCases', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedCases];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedCollectors', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedCollectors];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedLookups', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedLookups];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedLookupValues', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedLookupValues];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedReportParameters', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedReportParameters];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedReports', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedReports];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedReportTemplates', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedReportTemplates];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedScripts', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedScripts];
-GO
-
-
-IF OBJECT_ID('dbo.GetDerivedWageTypes', 'P') IS NOT NULL DROP PROCEDURE dbo.[GetDerivedWageTypes];
-GO
-
-
-IF OBJECT_ID('dbo.DeleteTenant', 'P') IS NOT NULL DROP PROCEDURE dbo.[DeleteTenant];
-GO
-
 
 -- ------------------------------------------------------------
--- Added objects (1)
+-- Modified objects -- drop before re-create (37)
 -- ------------------------------------------------------------
+
+ALTER TABLE [dbo].[WageTypeResult] ADD [TenantId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[WageTypeResult] ADD [EmployeeId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[WageTypeResult] ADD [DivisionId] [int] NULL;
+GO
+ALTER TABLE [dbo].[WageTypeResult] ADD [PayrunJobId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[WageTypeResult] ADD [Forecast] [nvarchar](128) NULL;
+GO
+ALTER TABLE [dbo].[WageTypeResult] ADD [ParentJobId] [int] NULL;
+GO
+
+ALTER TABLE [dbo].[PayrunTrace] ADD [TenantId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[PayrunTrace] ADD [EmployeeId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[PayrunTrace] ADD [DivisionId] [int] NULL;
+GO
+ALTER TABLE [dbo].[PayrunTrace] ADD [PayrunJobId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[PayrunTrace] ADD [Forecast] [nvarchar](128) NULL;
+GO
+ALTER TABLE [dbo].[PayrunTrace] ADD [ParentJobId] [int] NULL;
+GO
+
+ALTER TABLE [dbo].[PayrunResult] ADD [TenantId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[PayrunResult] ADD [EmployeeId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[PayrunResult] ADD [DivisionId] [int] NULL;
+GO
+ALTER TABLE [dbo].[PayrunResult] ADD [PayrunJobId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[PayrunResult] ADD [Forecast] [nvarchar](128) NULL;
+GO
+ALTER TABLE [dbo].[PayrunResult] ADD [ParentJobId] [int] NULL;
+GO
+
+ALTER TABLE [dbo].[Report] ADD [ReportIsolation] [int] NOT NULL;
+GO
+
+ALTER TABLE [dbo].[CollectorResult] ADD [TenantId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[CollectorResult] ADD [EmployeeId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[CollectorResult] ADD [DivisionId] [int] NULL;
+GO
+ALTER TABLE [dbo].[CollectorResult] ADD [PayrunJobId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[CollectorResult] ADD [Forecast] [nvarchar](128) NULL;
+GO
+ALTER TABLE [dbo].[CollectorResult] ADD [ParentJobId] [int] NULL;
+GO
+
+ALTER TABLE [dbo].[ReportAudit] ADD [ReportIsolation] [int] NOT NULL;
+GO
+
+ALTER TABLE [dbo].[CollectorCustomResult] ADD [TenantId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[CollectorCustomResult] ADD [EmployeeId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[CollectorCustomResult] ADD [DivisionId] [int] NULL;
+GO
+ALTER TABLE [dbo].[CollectorCustomResult] ADD [PayrunJobId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[CollectorCustomResult] ADD [Forecast] [nvarchar](128) NULL;
+GO
+ALTER TABLE [dbo].[CollectorCustomResult] ADD [ParentJobId] [int] NULL;
+GO
+
+ALTER TABLE [dbo].[WageTypeCustomResult] ADD [TenantId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[WageTypeCustomResult] ADD [EmployeeId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[WageTypeCustomResult] ADD [DivisionId] [int] NULL;
+GO
+ALTER TABLE [dbo].[WageTypeCustomResult] ADD [PayrunJobId] [int] NOT NULL;
+GO
+ALTER TABLE [dbo].[WageTypeCustomResult] ADD [Forecast] [nvarchar](128) NULL;
+GO
+ALTER TABLE [dbo].[WageTypeCustomResult] ADD [ParentJobId] [int] NULL;
+GO
+
+IF OBJECT_ID('[dbo].[GetConsolidatedWageTypeResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetConsolidatedWageTypeResults];
+GO
+
+IF OBJECT_ID('[dbo].[GetWageTypeResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetWageTypeResults];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedRegulations]') IS NOT NULL
+    DROP FUNCTION [dbo].[GetDerivedRegulations];
+GO
+
+IF OBJECT_ID('[dbo].[GetConsolidatedPayrunResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetConsolidatedPayrunResults];
+GO
+
+IF OBJECT_ID('[dbo].[GetCollectorResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetCollectorResults];
+GO
+
+IF OBJECT_ID('[dbo].[GetConsolidatedCollectorResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetConsolidatedCollectorResults];
+GO
+
+IF OBJECT_ID('[dbo].[GetCollectorCustomResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetCollectorCustomResults];
+GO
+
+IF OBJECT_ID('[dbo].[GetConsolidatedCollectorCustomResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetConsolidatedCollectorCustomResults];
+GO
+
+IF OBJECT_ID('[dbo].[DeletePayrunJob]') IS NOT NULL
+    DROP PROCEDURE [dbo].[DeletePayrunJob];
+GO
+
+IF OBJECT_ID('[dbo].[GetConsolidatedWageTypeCustomResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetConsolidatedWageTypeCustomResults];
+GO
+
+IF OBJECT_ID('[dbo].[GetWageTypeCustomResults]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetWageTypeCustomResults];
+GO
+
+IF OBJECT_ID('[dbo].[DeleteEmployee]') IS NOT NULL
+    DROP PROCEDURE [dbo].[DeleteEmployee];
+GO
+
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CaseRelation.SourceCaseName' AND object_id = OBJECT_ID('[dbo].[CaseRelation]'))
+    DROP INDEX [IX_CaseRelation.SourceCaseName] ON [dbo].[CaseRelation];
+GO
+
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CaseRelation.TargetCaseName' AND object_id = OBJECT_ID('[dbo].[CaseRelation]'))
+    DROP INDEX [IX_CaseRelation.TargetCaseName] ON [dbo].[CaseRelation];
+GO
+
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CaseRelation.TargetSlot' AND object_id = OBJECT_ID('[dbo].[CaseRelation]'))
+    DROP INDEX [IX_CaseRelation.TargetSlot] ON [dbo].[CaseRelation];
+GO
+
+IF OBJECT_ID('[dbo].[DeleteLookup]') IS NOT NULL
+    DROP PROCEDURE [dbo].[DeleteLookup];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedCaseFields]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedCaseFields];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedCaseFieldsOfCase]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedCaseFieldsOfCase];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedCaseRelations]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedCaseRelations];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedCases]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedCases];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedCollectors]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedCollectors];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedLookups]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedLookups];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedLookupValues]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedLookupValues];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedReportParameters]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedReportParameters];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedReports]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedReports];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedReportTemplates]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedReportTemplates];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedScripts]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedScripts];
+GO
+
+IF OBJECT_ID('[dbo].[GetDerivedWageTypes]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetDerivedWageTypes];
+GO
+
+IF OBJECT_ID('[dbo].[DeleteTenant]') IS NOT NULL
+    DROP PROCEDURE [dbo].[DeleteTenant];
+GO
+
+-- ------------------------------------------------------------
+-- Added objects (19)
+-- ------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[UpdateStatistics]    Script Date: 01.03.2026 22:35:19 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Update database statistics (tipping point)
+-- see https://www.sqlskills.com/blogs/kimberly/the-tipping-point-query-answers/
+-- see https://www.brentozar.com/archive/2019/10/how-to-think-like-the-sql-server-engine-whats-the-tipping-point/
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateStatistics]
+AS
+BEGIN
+  DECLARE @sql NVARCHAR(MAX) = N'';
+
+  SELECT @sql += N'UPDATE STATISTICS ' + QUOTENAME(s.name) + N'.' + QUOTENAME(t.name) + N' WITH FULLSCAN; '
+  FROM sys.tables t
+  INNER JOIN sys.schemas s
+    ON t.schema_id = s.schema_id;
+
+  EXEC sp_executesql @sql;
+END
+GO
 
 CREATE PROCEDURE dbo.[UpdateStatisticsTargeted]
 AS
@@ -240,8 +345,277 @@ UPDATE STATISTICS dbo.[EmployeeCaseValue]     WITH FULLSCAN;
 END
 GO
 
+CREATE PROCEDURE dbo.[GetEmployeeCaseValuesByTenant]
+  -- the tenant id
+  @tenantId       AS INT,
+  -- the value date: only values active at this date are returned (Start <= valueDate < End)
+  @valueDate      AS DATETIME2(7) = NULL,
+  -- the evaluation date: only values created on or before this date are returned
+  @evaluationDate AS DATETIME2(7) = NULL,
+  -- the case field names filter: JSON array of NVARCHAR(128), NULL = all fields
+  @fieldNames     AS NVARCHAR(MAX) = NULL,
+  -- the forecast name: NULL = real values only, name = real + forecast values
+  @forecast       AS NVARCHAR(128) = NULL
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    ecv.[Id],
+    ecv.[Status],
+    ecv.[Created],
+    ecv.[Updated],
+    ecv.[EmployeeId],
+    ecv.[DivisionId],
+    ecv.[CaseName],
+    ecv.[CaseNameLocalizations],
+    ecv.[CaseFieldName],
+    ecv.[CaseFieldNameLocalizations],
+    ecv.[CaseSlot],
+    ecv.[CaseSlotLocalizations],
+    ecv.[ValueType],
+    ecv.[Value],
+    ecv.[NumericValue],
+    ecv.[Culture],
+    ecv.[CaseRelation],
+    ecv.[CancellationDate],
+    ecv.[Start],
+    ecv.[End],
+    ecv.[Forecast],
+    ecv.[Tags],
+    ecv.[Attributes]
+  FROM dbo.[EmployeeCaseValue] ecv
+  INNER JOIN dbo.[Employee] e
+    ON e.[Id] = ecv.[EmployeeId]
+  WHERE
+    e.[TenantId] = @tenantId
+    AND e.[Status] = 0
+    AND ecv.[CancellationDate] IS NULL
+    AND (@evaluationDate IS NULL OR ecv.[Created] <= @evaluationDate)
+    AND (@valueDate IS NULL OR ecv.[Start] IS NULL OR ecv.[Start] <= @valueDate)
+    AND (@valueDate IS NULL OR ecv.[End]   IS NULL OR ecv.[End]   >  @valueDate)
+    AND (
+      (@forecast IS NULL     AND ecv.[Forecast] IS NULL)
+      OR (@forecast IS NOT NULL AND (ecv.[Forecast] IS NULL OR ecv.[Forecast] = @forecast))
+    )
+    AND (
+      @fieldNames IS NULL
+      OR ecv.[CaseFieldName] IN (SELECT [value] FROM OPENJSON(@fieldNames))
+    )
+  ORDER BY
+    ecv.[EmployeeId] ASC,
+    ecv.[CaseFieldName] ASC,
+    ecv.[Created] DESC
+END
+GO
+
+/****** Object:  Index [IX_CollectorCustomResult.CollectorResultId]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_CollectorCustomResult.CollectorResultId] ON [dbo].[CollectorCustomResult] ([CollectorResultId] ASC)
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IX_CollectorCustomResult.Employee_Collector]
+ON dbo.[CollectorCustomResult] ([TenantId], [EmployeeId], [StartHash], [CollectorNameHash])
+INCLUDE ([Start], [Created], [DivisionId], [Forecast], [ParentJobId], [PayrunJobId]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_CollectorResult.Employee_Collector]
+ON dbo.[CollectorResult] ([TenantId], [EmployeeId], [StartHash], [CollectorNameHash])
+INCLUDE ([Start], [Created], [DivisionId], [Forecast], [ParentJobId], [PayrunJobId]);
+GO
+
+/****** Object:  Index [IX_CollectorResult.PayrollResultId]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_CollectorResult.PayrollResultId] ON [dbo].[CollectorResult] ([PayrollResultId] ASC)
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_CompanyCaseValue.TenantId_Cover]
+-- Covering index for per-tenant company case value queries.
+-- Lead key: TenantId (matches the Unique constraint lead key and SP WHERE filter).
+-- INCLUDE eliminates Key Lookups on Value/Start/End/CancellationDate/Forecast/Created.
+******/
+CREATE NONCLUSTERED INDEX [IX_CompanyCaseValue.TenantId_Cover]
+  ON [dbo].[CompanyCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_Employee.TenantId]
+-- Supports tenant-wide employee queries (GetEmployeeCaseValuesByTenant).
+-- Lead key: TenantId enables Index Seek when filtering all active employees per tenant.
+******/
+CREATE NONCLUSTERED INDEX [IX_Employee.TenantId]
+  ON [dbo].[Employee] ([TenantId] ASC, [Status] ASC)
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_EmployeeCaseValue.EmployeeId_Cover]
+-- Covering index for per-employee and tenant-wide case value queries.
+-- Lead key: EmployeeId for the per-employee SP filter (WHERE EmployeeId = @parentId).
+-- INCLUDE covers Start/End/Value/CancellationDate/Forecast/Created to avoid Key Lookups
+-- on the GetEmployeeCaseValues and GetEmployeeCaseValuesByTenant hot paths.
+******/
+CREATE NONCLUSTERED INDEX [IX_EmployeeCaseValue.EmployeeId_Cover]
+  ON [dbo].[EmployeeCaseValue] ([EmployeeId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_GlobalCaseValue.TenantId_Cover]
+-- Covering index for per-tenant global case value queries.
+-- Lead key: TenantId (matches the Unique constraint lead key and SP WHERE filter).
+-- INCLUDE eliminates Key Lookups on Value/Start/End/CancellationDate/Forecast/Created.
+******/
+CREATE NONCLUSTERED INDEX [IX_GlobalCaseValue.TenantId_Cover]
+  ON [dbo].[GlobalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_NationalCaseValue.TenantId_Cover]
+-- Covering index for per-tenant national case value queries.
+-- Lead key: TenantId (matches the Unique constraint lead key and SP WHERE filter).
+-- INCLUDE eliminates Key Lookups on Value/Start/End/CancellationDate/Forecast/Created.
+******/
+CREATE NONCLUSTERED INDEX [IX_NationalCaseValue.TenantId_Cover]
+  ON [dbo].[NationalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
+  INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue], [CancellationDate], [Forecast], [Created], [Status])
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_PayrollResult.EmployeeId_Cover]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_PayrollResult.EmployeeId_Cover] ON [dbo].[PayrollResult] ([EmployeeId] ASC) INCLUDE (
+  [PayrunJobId],
+  [DivisionId],
+  [PayrunId]
+  )
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IX_PayrunResult.Employee_Name]
+ON dbo.[PayrunResult] ([TenantId], [EmployeeId], [StartHash], [Name])
+INCLUDE ([Start], [Created], [DivisionId], [Forecast], [ParentJobId], [PayrunJobId]);
+GO
+
+/****** Object:  Index [IX_PayrunResult.PayrollResultId]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_PayrunResult.PayrollResultId] ON [dbo].[PayrunResult] ([PayrollResultId] ASC)
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IX_PayrunTrace.Employee]
+ON dbo.[PayrunTrace] ([TenantId], [EmployeeId])
+INCLUDE ([Created], [DivisionId], [Forecast], [ParentJobId], [PayrunJobId]);
+
+/****** Object:  Index [IX_PayrunTrace.PayrollResultId]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_PayrunTrace.PayrollResultId] ON [dbo].[PayrunTrace] ([PayrollResultId] ASC)
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [IX_WageTypeCustomResult.Employee_WageType]
+ON dbo.[WageTypeCustomResult] ([TenantId], [EmployeeId], [StartHash], [WageTypeNumber])
+INCLUDE ([Start], [Created], [DivisionId], [Forecast], [ParentJobId], [PayrunJobId]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_WageTypeResult.Employee_WageType]
+ON dbo.[WageTypeResult] ([TenantId], [EmployeeId], [StartHash], [WageTypeNumber])
+INCLUDE ([Start], [Created], [DivisionId], [Forecast], [ParentJobId], [PayrunJobId]);
+GO
+
+/****** Object:  Index [IX_WageTypeResult.PayrollResultId]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_WageTypeResult.PayrollResultId] ON [dbo].[WageTypeResult] ([PayrollResultId] ASC)
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
 -- ------------------------------------------------------------
--- Modified objects -- re-create (26)
+-- Modified objects -- re-create (29)
 -- ------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeResults]    Script Date: 01.03.2026 22:35:19 ******/
@@ -519,7 +893,7 @@ RETURN (
           AND [Regulation].[Created] <= @createdBefore
           AND (
             [Regulation].[ValidFrom] IS NULL
-            OR [Regulation].[ValidFrom] < @regulationDate
+            OR [Regulation].[ValidFrom] <= @regulationDate
             )
           AND [PayrollLayer].[Status] = 0
           AND [PayrollLayer].[PayrollId] = @payrollId
@@ -1492,6 +1866,54 @@ BEGIN
 END
 GO
 
+/****** Object:  Index [IX_CaseRelation.SourceCaseName]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_CaseRelation.SourceCaseName] ON [dbo].[CaseRelation] (
+  [RegulationId] ASC,
+  [SourceCaseName] ASC
+  )
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_CaseRelation.TargetCaseName]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetCaseName] ON [dbo].[CaseRelation] (
+  [RegulationId] ASC,
+  [TargetCaseName] ASC
+  )
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
+/****** Object:  Index [IX_CaseRelation.TargetSlot]    Script Date: 01.03.2026 22:35:19 ******/
+CREATE NONCLUSTERED INDEX [IX_CaseRelation.TargetSlot] ON [dbo].[CaseRelation] (
+  [RegulationId] ASC,
+  [TargetCaseSlot] ASC
+  )
+  WITH (
+      PAD_INDEX = OFF,
+      STATISTICS_NORECOMPUTE = OFF,
+      SORT_IN_TEMPDB = OFF,
+      DROP_EXISTING = OFF,
+      ONLINE = OFF,
+      ALLOW_ROW_LOCKS = ON,
+      ALLOW_PAGE_LOCKS = ON
+      ) ON [PRIMARY]
+GO
+
 /****** Object:  StoredProcedure [dbo].[DeleteLookup]    Script Date: 01.03.2026 22:35:19 ******/
 SET ANSI_NULLS ON
 GO
@@ -2178,6 +2600,7 @@ BEGIN
     dbo.[Report].[Relations],
     dbo.[Report].[AttributeMode],
     dbo.[Report].[UserType],
+    dbo.[Report].[ReportIsolation],
     dbo.[Report].[BuildExpression],
     dbo.[Report].[StartExpression],
     dbo.[Report].[EndExpression],
@@ -2836,162 +3259,8 @@ BEGIN
   WHERE [Id] = @tenantId
 END
 GO
--- #endregion DB_SCRIPTS
 
--- #region AI_INDEX_MIGRATION
--- New indexes and SP for tenant-wide employee case value queries (AI/MCP support)
--- Adds: IX_Employee.TenantId, IX_EmployeeCaseValue.EmployeeId_Cover,
---       IX_GlobalCaseValue.TenantId_Cover, IX_NationalCaseValue.TenantId_Cover,
---       IX_CompanyCaseValue.TenantId_Cover, SP GetEmployeeCaseValuesByTenant
--- Safe to run on existing databases: DROP_EXISTING = OFF / IF NOT EXISTS guards
 
--- Index: IX_Employee.TenantId
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_Employee.TenantId'
-      AND object_id = OBJECT_ID('dbo.Employee')
-)
-BEGIN
-  CREATE NONCLUSTERED INDEX [IX_Employee.TenantId]
-    ON [dbo].[Employee] ([TenantId] ASC, [Status] ASC)
-    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
-          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
-  PRINT '[OK] Index IX_Employee.TenantId created';
-END
-ELSE
-  PRINT '[SKIP] Index IX_Employee.TenantId already exists';
-GO
-
--- Index: IX_EmployeeCaseValue.EmployeeId_Cover
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_EmployeeCaseValue.EmployeeId_Cover'
-      AND object_id = OBJECT_ID('dbo.EmployeeCaseValue')
-)
-BEGIN
-  CREATE NONCLUSTERED INDEX [IX_EmployeeCaseValue.EmployeeId_Cover]
-    ON [dbo].[EmployeeCaseValue] ([EmployeeId] ASC, [CaseFieldName] ASC)
-    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
-             [CancellationDate], [Forecast], [Created], [Status])
-    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
-          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
-  PRINT '[OK] Index IX_EmployeeCaseValue.EmployeeId_Cover created';
-END
-ELSE
-  PRINT '[SKIP] Index IX_EmployeeCaseValue.EmployeeId_Cover already exists';
-GO
-
--- Index: IX_GlobalCaseValue.TenantId_Cover
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_GlobalCaseValue.TenantId_Cover'
-      AND object_id = OBJECT_ID('dbo.GlobalCaseValue')
-)
-BEGIN
-  CREATE NONCLUSTERED INDEX [IX_GlobalCaseValue.TenantId_Cover]
-    ON [dbo].[GlobalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
-    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
-             [CancellationDate], [Forecast], [Created], [Status])
-    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
-          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
-  PRINT '[OK] Index IX_GlobalCaseValue.TenantId_Cover created';
-END
-ELSE
-  PRINT '[SKIP] Index IX_GlobalCaseValue.TenantId_Cover already exists';
-GO
-
--- Index: IX_NationalCaseValue.TenantId_Cover
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_NationalCaseValue.TenantId_Cover'
-      AND object_id = OBJECT_ID('dbo.NationalCaseValue')
-)
-BEGIN
-  CREATE NONCLUSTERED INDEX [IX_NationalCaseValue.TenantId_Cover]
-    ON [dbo].[NationalCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
-    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
-             [CancellationDate], [Forecast], [Created], [Status])
-    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
-          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
-  PRINT '[OK] Index IX_NationalCaseValue.TenantId_Cover created';
-END
-ELSE
-  PRINT '[SKIP] Index IX_NationalCaseValue.TenantId_Cover already exists';
-GO
-
--- Index: IX_CompanyCaseValue.TenantId_Cover
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_CompanyCaseValue.TenantId_Cover'
-      AND object_id = OBJECT_ID('dbo.CompanyCaseValue')
-)
-BEGIN
-  CREATE NONCLUSTERED INDEX [IX_CompanyCaseValue.TenantId_Cover]
-    ON [dbo].[CompanyCaseValue] ([TenantId] ASC, [CaseFieldName] ASC)
-    INCLUDE ([DivisionId], [Start], [End], [Value], [NumericValue],
-             [CancellationDate], [Forecast], [Created], [Status])
-    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF,
-          ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
-  PRINT '[OK] Index IX_CompanyCaseValue.TenantId_Cover created';
-END
-ELSE
-  PRINT '[SKIP] Index IX_CompanyCaseValue.TenantId_Cover already exists';
-GO
-
--- SP: GetEmployeeCaseValuesByTenant
-IF EXISTS (
-    SELECT * FROM sysobjects
-    WHERE id = object_id(N'[dbo].[GetEmployeeCaseValuesByTenant]')
-      AND OBJECTPROPERTY(id, N'IsProcedure') = 1
-)
-BEGIN
-  DROP PROCEDURE dbo.[GetEmployeeCaseValuesByTenant];
-END
-GO
-
-CREATE PROCEDURE dbo.[GetEmployeeCaseValuesByTenant]
-  @tenantId       AS INT,
-  @valueDate      AS DATETIME2(7) = NULL,
-  @evaluationDate AS DATETIME2(7) = NULL,
-  @fieldNames     AS NVARCHAR(MAX) = NULL,
-  @forecast       AS NVARCHAR(128) = NULL
-AS
-BEGIN
-  SET NOCOUNT ON;
-  SELECT
-    ecv.[Id], ecv.[Status], ecv.[Created], ecv.[Updated],
-    ecv.[EmployeeId], ecv.[DivisionId],
-    ecv.[CaseName], ecv.[CaseNameLocalizations],
-    ecv.[CaseFieldName], ecv.[CaseFieldNameLocalizations],
-    ecv.[CaseSlot], ecv.[CaseSlotLocalizations],
-    ecv.[ValueType], ecv.[Value], ecv.[NumericValue], ecv.[Culture],
-    ecv.[CaseRelation], ecv.[CancellationDate], ecv.[Start], ecv.[End],
-    ecv.[Forecast], ecv.[Tags], ecv.[Attributes]
-  FROM dbo.[EmployeeCaseValue] ecv
-  INNER JOIN dbo.[Employee] e ON e.[Id] = ecv.[EmployeeId]
-  WHERE
-    e.[TenantId] = @tenantId
-    AND e.[Status] = 0
-    AND ecv.[CancellationDate] IS NULL
-    AND (@evaluationDate IS NULL OR ecv.[Created] <= @evaluationDate)
-    AND (@valueDate IS NULL OR ecv.[Start] IS NULL OR ecv.[Start] <= @valueDate)
-    AND (@valueDate IS NULL OR ecv.[End]   IS NULL OR ecv.[End]   >  @valueDate)
-    AND (
-      (@forecast IS NULL     AND ecv.[Forecast] IS NULL)
-      OR (@forecast IS NOT NULL AND (ecv.[Forecast] IS NULL OR ecv.[Forecast] = @forecast))
-    )
-    AND (
-      @fieldNames IS NULL
-      OR ecv.[CaseFieldName] IN (SELECT [value] FROM OPENJSON(@fieldNames))
-    )
-  ORDER BY ecv.[EmployeeId] ASC, ecv.[CaseFieldName] ASC, ecv.[Created] DESC
-END
-GO
-PRINT '[OK] Stored procedure GetEmployeeCaseValuesByTenant created';
-GO
--- #endregion AI_INDEX_MIGRATION
-
--- #region VERSION_SET
 DECLARE @errorID int
 INSERT INTO dbo.[Version] (
     MajorVersion,
@@ -3019,4 +3288,3 @@ GO
 
 SET NOEXEC OFF   -- re-enable execution (in case VERSION_CHECK set it ON)
 GO
--- #endregion VERSION_SET

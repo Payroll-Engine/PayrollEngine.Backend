@@ -193,11 +193,13 @@ public class DbContext : IDbContext
     {
         var builder = new MySqlConnectionStringBuilder(ConnectionString);
         var version = await ExecuteScalarAsync<string>("SELECT VERSION()");
+        var edition = await ExecuteScalarAsync<string>("SELECT @@version_comment");
         return new DatabaseInformation
         {
             Type = "MySql",
             Name = builder.Database,
-            Version = version
+            Version = version,
+            Edition = edition
         };
     }
 

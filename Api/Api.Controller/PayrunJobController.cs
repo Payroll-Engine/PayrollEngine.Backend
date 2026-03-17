@@ -180,9 +180,10 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
                 payrollId: payrollId,
                 payrollCalculator: calculator);
 
-            // Set initial status for async processing
+            // Initial status is always Draft. CompletedJobStatus (set by TestRunner)
+            // is honoured later by the worker after calculation.
             payrunJob.JobStart = Date.Now;
-            payrunJob.JobStatus = PayrunJobStatus.Process;
+            payrunJob.JobStatus = PayrunJobStatus.Draft;
             payrunJob.Message = "Payrun job queued for background processing";
 
             // Persist the job to database

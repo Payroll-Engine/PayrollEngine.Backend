@@ -32,14 +32,16 @@ internal sealed class PayrunEmployeeProcessor
     private bool IsPreview { get; }
     private bool LogWatch { get; }
 
-    /// <summary>Serializes the result persistence phase across parallel employee threads.
-    /// During bulk inserts, SQL Server acquires page-level X locks on multiple indexes
-    /// of result tables (e.g. WageTypeCustomResult). These locks are held until the
-    /// ambient TransactionScope commits. Without serialization, threads deadlock when
+    /// <summary>Serializes (or limits parallelism of) the result persistence phase across
+    /// parallel employee threads. During bulk inserts, SQL Server acquires page-level X locks
+    /// on multiple indexes of result tables (e.g. WageTypeCustomResult). These locks are held
+    /// until the ambient TransactionScope commits. Without serialization, threads deadlock when
     /// they hold X locks on different pages/indexes and wait for each other.
     /// The semaphore must wrap the entire persist call (not individual bulk inserts)
-    /// because the TransactionScope spans all child bulk inserts.</summary>
-    private static readonly SemaphoreSlim PersistSemaphore = new(1, 1);
+    /// because the TransactionScope spans all child bulk inserts.
+    /// Configurable via <see cref="PayrunProcessorSettings.MaxParallelPersist"/>:
+    /// 1 = fully serialized (default), N = limited parallelism (deadlock risk increases with N).</summary>
+    private readonly SemaphoreSlim PersistSemaphore;
 
     /// <summary>
     /// Initializes a new <see cref="PayrunEmployeeProcessor"/>.
@@ -62,6 +64,8 @@ internal sealed class PayrunEmployeeProcessor
         Payrun = payrun ?? throw new ArgumentNullException(nameof(payrun));
         IsPreview = isPreview;
         LogWatch = logWatch;
+        var maxParallelPersist = Math.Max(1, settings.MaxParallelPersist);
+        PersistSemaphore = new SemaphoreSlim(maxParallelPersist, maxParallelPersist);
     }
 
     /// <summary>

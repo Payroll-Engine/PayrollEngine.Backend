@@ -74,6 +74,13 @@ public class PayrunJobInvocation : ApiObjectBase
     public PayrunJobStatus JobStatus { get; set; }
 
     /// <summary>
+    /// The completed payrun job status, used by test runner to bypass the manual workflow.
+    /// If set, the background processor finalizes the job with this status instead of leaving it in Draft.
+    /// Null (default) means the job stays in Draft after calculation, following the normal workflow.
+    /// </summary>
+    public PayrunJobStatus? CompletedJobStatus { get; set; }
+
+    /// <summary>
     /// The period start date (immutable)
     /// </summary>
     [Required]

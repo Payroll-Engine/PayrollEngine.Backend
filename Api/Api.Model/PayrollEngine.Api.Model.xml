@@ -150,6 +150,9 @@
         <member name="P:PayrollEngine.Api.Model.BackendDatabaseInformation.Version">
             <summary>Database server version (e.g. "16.0.4175.1")</summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.BackendDatabaseInformation.Edition">
+            <summary>Database server edition (e.g. "Developer Edition (64-bit)")</summary>
+        </member>
         <member name="T:PayrollEngine.Api.Model.BackendInformation">
             <summary>Backend server information for client diagnostics and compatibility checks</summary>
         </member>
@@ -3264,6 +3267,13 @@
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.JobStatus">
             <summary>
             The payrun job status
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.CompletedJobStatus">
+            <summary>
+            The completed payrun job status, used by test runner to bypass the manual workflow.
+            If set, the background processor finalizes the job with this status instead of leaving it in Draft.
+            Null (default) means the job stays in Draft after calculation, following the normal workflow.
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PeriodStart">

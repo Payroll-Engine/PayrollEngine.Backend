@@ -236,6 +236,7 @@ The server configuration file `appsettings.json` contains the following settings
 | Setting                    | Description                                                 | Type       | Default        |
 |:--|:--|:--|:--|
 | `MaxParallelEmployees`     | Parallelism for employee processing <sup>6)</sup>           | string     | `0` (auto, ProcessorCount) |
+| `MaxParallelPersist`       | Parallelism for result persistence (SemaphoreSlim) <sup>12)</sup> | int   | `2`            |
 | `MaxRetroPayrunPeriods`    | Maximum retro payrun periods per employee <sup>7)</sup>     | int        | 0 (unlimited)  |
 | `LogEmployeeTiming`        | Log employee processing timing                              | bool       | false          |
 
@@ -268,7 +269,8 @@ The server configuration file `appsettings.json` contains the following settings
 <sup>8)</sup> When enabled, scripts are checked for banned API usage (`System.IO`, `System.Net`, `System.Diagnostics`, `System.Reflection`, etc.) before the assembly is emitted. Adds ~300 ms per compilation. Enable to harden script execution against unauthorized BCL access.<br />
 <sup>9)</sup> Used exclusively by Swagger UI to obtain tokens for the interactive API explorer. Not required for production API authentication.<br />
 <sup>10)</sup> Verified on startup before the schema version check. Prevents silent data integrity issues from mismatched collation.<br />
-<sup>11)</sup> When set, functions exceeding this duration are logged at Warning level. Useful for identifying slow scripts or database operations.
+<sup>11)</sup> When set, functions exceeding this duration are logged at Warning level. Useful for identifying slow scripts or database operations.<br />
+<sup>12)</sup> Controls how many employees can persist their results concurrently. `1` = fully serialized (no deadlocks), `2` = default (load-tested best balance), `4+` = no measurable gain over `2`. Failed persists are retried up to 3 times with backoff; a job abort occurs only if all retries are exhausted.
 
 > It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 

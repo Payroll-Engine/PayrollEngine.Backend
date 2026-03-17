@@ -62,7 +62,9 @@ public static class PayrunJobFactory
             CreatedReason = jobInvocation.Reason,
             // runtime
             Employees = [],
-            JobStatus = string.IsNullOrWhiteSpace(jobInvocation.Forecast) ? jobInvocation.JobStatus : PayrunJobStatus.Forecast
+            // Initial status is always Draft for legal jobs; Forecast for forecast jobs.
+            // CompletedJobStatus (set by TestRunner) is honoured later by the worker after calculation.
+            JobStatus = string.IsNullOrWhiteSpace(jobInvocation.Forecast) ? PayrunJobStatus.Draft : PayrunJobStatus.Forecast
         };
 
         return payrunJob;

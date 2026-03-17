@@ -32,6 +32,11 @@ public static class LogExtensions
             {
                 Log.Information($"MaxParallelEmployees: {serverConfiguration.MaxParallelEmployees} (resolved: {maxParallel})");
             }
+
+            // persist parallelism
+            var maxParallelPersist = Math.Max(1, serverConfiguration.MaxParallelPersist);
+            var persistMode = maxParallelPersist > 1 ? $"parallel ({maxParallelPersist})" : "serialized";
+            Log.Information($"MaxParallelPersist: {maxParallelPersist} ({persistMode})");
         });
         // stopping
         appLifetime.ApplicationStopping.Register(() =>

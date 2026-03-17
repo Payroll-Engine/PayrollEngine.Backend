@@ -202,13 +202,15 @@ public class DbContext : IDbContext
     {
         var builder = new SqlConnectionStringBuilder(ConnectionString);
         var version = await ExecuteScalarAsync<string>(
-            // ReSharper disable once StringLiteralTypo
             "SELECT CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(50))");
+        var edition = await ExecuteScalarAsync<string>(
+            "SELECT CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128))");
         return new DatabaseInformation
         {
             Type = "SqlServer",
             Name = builder.InitialCatalog,
-            Version = version
+            Version = version,
+            Edition = edition
         };
     }
 

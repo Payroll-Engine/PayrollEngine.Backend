@@ -12,4 +12,7 @@ public class BackendDatabaseInformation
 
     /// <summary>Database server version (e.g. "16.0.4175.1")</summary>
     public string Version { get; init; }
+
+    /// <summary>Database server edition (e.g. "Developer Edition (64-bit)")</summary>
+    public string Edition { get; init; }
 }

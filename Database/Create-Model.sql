@@ -9646,5 +9646,11 @@ ELSE BEGIN
     PRINT 'Payroll Engine database version successfully updated to release 0.9.6'
 END
 GO
+
+COMMIT TRANSACTION
+GO
+
+SET NOEXEC OFF   -- re-enable execution (in case VERSION_CHECK set it ON)
+GO
 -- #endregion VERSION_SET
 

@@ -185,6 +185,7 @@ public class PayrunJobWorkerService : BackgroundService
             LogEmployeeTiming = serverConfiguration.LogEmployeeTiming,
             AssemblyCacheTimeout = serverConfiguration.AssemblyCacheTimeout,
             MaxParallelEmployees = serverConfiguration.GetMaxParallelEmployees(),
+            MaxParallelPersist = serverConfiguration.MaxParallelPersist,
             MaxRetroPayrunPeriods = serverConfiguration.MaxRetroPayrunPeriods,
             ScriptProvider = scriptProvider
         };
@@ -253,14 +254,22 @@ public class PayrunJobWorkerService : BackgroundService
 
             if (job != null && job.JobEnd == null)
             {
-                job.JobStatus = PayrunJobStatus.Complete;
-                job.JobEnd = Date.Now;
-
-                var duration = job.JobEnd.Value - job.JobStart;
+                var duration = Date.Now - job.JobStart;
                 var durationText = duration < TimeSpan.FromSeconds(1)
                     ? $"{duration.TotalMilliseconds:F2} ms"
                     : duration.ToReadableString();
-                job.Message = $"Completed payrun calculation successfully in {durationText}.";
+
+                // JobEnd always marks the calculation as finished (not the workflow).
+                // The status determines what happens next:
+                // - Draft (default): calculation done, user advances the workflow manually.
+                // - CompletedJobStatus set (e.g. TestRunner): finalize with the requested status.
+                var completedStatus = queueItem.JobInvocation.CompletedJobStatus;
+                job.JobStatus = completedStatus ?? PayrunJobStatus.Draft;
+                job.JobEnd = Date.Now;
+                job.Message = completedStatus.HasValue
+                    ? $"Calculation finalized as {completedStatus.Value} in {durationText}."
+                    : $"Calculation completed in {durationText}. Awaiting workflow release.";
+                Log.Debug($"Payrun job {queueItem.PayrunJobId} finalized as {job.JobStatus} in {durationText}.");
 
                 await payrunJobRepository.UpdateAsync(dbContext, queueItem.TenantId, job);
 
@@ -268,9 +277,6 @@ public class PayrunJobWorkerService : BackgroundService
                 payrunJob.JobStatus = job.JobStatus;
                 payrunJob.JobEnd = job.JobEnd;
                 payrunJob.Message = job.Message;
-
-                Log.Debug(
-                    $"Marked payrun job {queueItem.PayrunJobId} as completed in {durationText}.");
             }
         }
         catch (Exception ex)

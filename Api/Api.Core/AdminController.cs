@@ -86,7 +86,8 @@ public abstract class AdminController(IControllerRuntime runtime, IHostApplicati
             {
                 Type = dbInfo.Type,
                 Name = dbInfo.Name,
-                Version = dbInfo.Version
+                Version = dbInfo.Version,
+                Edition = dbInfo.Edition
             },
             Runtime = new BackendRuntimeInformation
             {

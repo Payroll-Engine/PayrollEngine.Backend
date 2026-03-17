@@ -33,6 +33,13 @@ public class PayrunProcessorSettings : FunctionToolSettings
     public bool LogEmployeeTiming { get; init; }
 
     /// <summary>
+    /// Maximum degree of parallelism for result persistence (SemaphoreSlim count).
+    /// 1 = fully serialized (default, safest, no deadlocks)
+    /// 2 to N = parallel persist threads; higher values reduce semWait but increase deadlock risk.
+    /// </summary>
+    public int MaxParallelPersist { get; init; } = 2;
+
+    /// <summary>
     /// Maximum degree of parallelism for employee processing.
     /// 0 = sequential (default, no parallelism),
     /// -1 = automatic (based on Environment.ProcessorCount),

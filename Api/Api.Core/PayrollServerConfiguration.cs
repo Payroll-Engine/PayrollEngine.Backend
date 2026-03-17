@@ -68,6 +68,14 @@ public class PayrollServerConfiguration
     /// <summary>Log employee processing timing (started, per-employee duration, completed summary). Default: false</summary>
     public bool LogEmployeeTiming { get; set; }
 
+    /// <summary>
+    /// Maximum degree of parallelism for result persistence (SemaphoreSlim count).
+    /// 1 = fully serialized (default, safest, no deadlocks)
+    /// 2 to N = parallel persist threads; higher values reduce semWait but increase deadlock risk.
+    /// Monitor DB load and test for deadlocks before increasing beyond 2.
+    /// </summary>
+    public int MaxParallelPersist { get; set; } = 2;
+
     /// <summary>Assembly cache timeout (default: 30 minutes)</summary>
     public TimeSpan AssemblyCacheTimeout { get; set; } = TimeSpan.FromMinutes(30);
 
