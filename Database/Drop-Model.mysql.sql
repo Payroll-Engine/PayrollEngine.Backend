@@ -76,4 +76,54 @@ DROP TABLE IF EXISTS `Version`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+-- Drop stored procedures
+DROP PROCEDURE IF EXISTS DeleteEmployee;
+DROP PROCEDURE IF EXISTS DeleteLookup;
+DROP PROCEDURE IF EXISTS DeletePayrunJob;
+DROP PROCEDURE IF EXISTS DeleteTenant;
+DROP PROCEDURE IF EXISTS GetCollectorCustomResults;
+DROP PROCEDURE IF EXISTS GetCollectorResults;
+DROP PROCEDURE IF EXISTS GetCompanyCaseChangeValues;
+DROP PROCEDURE IF EXISTS GetCompanyCaseValues;
+DROP PROCEDURE IF EXISTS GetConsolidatedCollectorCustomResults;
+DROP PROCEDURE IF EXISTS GetConsolidatedCollectorResults;
+DROP PROCEDURE IF EXISTS GetConsolidatedPayrunResults;
+DROP PROCEDURE IF EXISTS GetConsolidatedWageTypeCustomResults;
+DROP PROCEDURE IF EXISTS GetConsolidatedWageTypeResults;
+DROP PROCEDURE IF EXISTS GetDerivedCaseFields;
+DROP PROCEDURE IF EXISTS GetDerivedCaseFieldsOfCase;
+DROP PROCEDURE IF EXISTS GetDerivedCaseRelations;
+DROP PROCEDURE IF EXISTS GetDerivedCases;
+DROP PROCEDURE IF EXISTS GetDerivedCollectors;
+DROP PROCEDURE IF EXISTS GetDerivedLookups;
+DROP PROCEDURE IF EXISTS GetDerivedLookupValues;
+DROP PROCEDURE IF EXISTS GetDerivedPayrollRegulations;
+DROP PROCEDURE IF EXISTS GetDerivedReportParameters;
+DROP PROCEDURE IF EXISTS GetDerivedReports;
+DROP PROCEDURE IF EXISTS GetDerivedReportTemplates;
+DROP PROCEDURE IF EXISTS GetDerivedScripts;
+DROP PROCEDURE IF EXISTS GetDerivedWageTypes;
+DROP PROCEDURE IF EXISTS GetEmployeeCaseChangeValues;
+DROP PROCEDURE IF EXISTS GetEmployeeCaseValues;
+DROP PROCEDURE IF EXISTS GetEmployeeCaseValuesByTenant;
+DROP PROCEDURE IF EXISTS GetGlobalCaseChangeValues;
+DROP PROCEDURE IF EXISTS GetGlobalCaseValues;
+DROP PROCEDURE IF EXISTS GetLookupRangeValue;
+DROP PROCEDURE IF EXISTS GetNationalCaseChangeValues;
+DROP PROCEDURE IF EXISTS GetNationalCaseValues;
+DROP PROCEDURE IF EXISTS GetPayrollResultValues;
+DROP PROCEDURE IF EXISTS GetWageTypeCustomResults;
+DROP PROCEDURE IF EXISTS GetWageTypeResults;
+DROP PROCEDURE IF EXISTS UpdateStatistics;
+DROP PROCEDURE IF EXISTS UpdateStatisticsTargeted;
+
+-- Drop functions
+DROP FUNCTION IF EXISTS BuildAttributeQuery;
+DROP FUNCTION IF EXISTS GetAttributeNames;
+DROP FUNCTION IF EXISTS GetDateAttributeValue;
+DROP FUNCTION IF EXISTS GetLocalizedValue;
+DROP FUNCTION IF EXISTS GetNumericAttributeValue;
+DROP FUNCTION IF EXISTS GetTextAttributeValue;
+DROP FUNCTION IF EXISTS IsMatchingCluster;
+
 SELECT 'PayrollEngine MySQL schema dropped.' AS Result;

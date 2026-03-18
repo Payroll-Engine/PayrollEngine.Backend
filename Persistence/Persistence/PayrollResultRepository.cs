@@ -16,7 +16,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Ta
 
     /// <inheritdoc />
     public async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context,
-        int tenantId, int? employeeId = null, Query query = null)
+        int tenantId, int? employeeId = null, int? divisionId = null, Query query = null)
     {
         if (tenantId <= 0)
         {
@@ -27,7 +27,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Ta
         var dbQuery = DbQueryFactory.NewTypeQuery<PayrollResultValue>(
             Tables.PayrollResultPivot, query);
 
-        // employee
+        // tenant
         dbQuery.Item1.Where(PayrollResultColumn.TenantId, tenantId);
 
         // query compilation
@@ -39,6 +39,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Ta
             {
                 ParentId = tenantId,
                 EmployeeId = employeeId,
+                DivisionId = divisionId,
                 StoredProcedure = Procedures.GetPayrollResultValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2
@@ -47,7 +48,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Ta
     }
 
     /// <inheritdoc />
-    public async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, Query query = null)
+    public async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, int? divisionId = null, Query query = null)
     {
         if (tenantId <= 0)
         {
@@ -58,7 +59,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Ta
         var dbQuery = DbQueryFactory.NewTypeQuery<PayrollResultValue>(
             Tables.PayrollResultPivot, query, QueryMode.ItemCount);
 
-        // employee
+        // tenant
         dbQuery.Item1.Where(PayrollResultColumn.TenantId, tenantId);
 
         // query compilation
@@ -70,6 +71,7 @@ public class PayrollResultRepository() : ChildDomainRepository<PayrollResult>(Ta
             {
                 ParentId = tenantId,
                 EmployeeId = employeeId,
+                DivisionId = divisionId,
                 StoredProcedure = Procedures.GetPayrollResultValues,
                 Query = compileQuery,
                 QueryAttributes = dbQuery.Item2

@@ -4,6 +4,13 @@ GO
 SET XACT_ABORT ON
 GO
 
+-- Guard: abort immediately if the schema is not present at all
+IF OBJECT_ID('dbo.Version') IS NULL BEGIN
+    RAISERROR('Schema not found: dbo.Version does not exist. Run Create-Model.sql first.', 16, 1)
+    SET NOEXEC ON   -- suppress all subsequent batches
+END
+GO
+
 DECLARE @MajorVersion int, @MinorVersion int, @SubVersion int
 SELECT TOP 1
     @MajorVersion = MajorVersion,
@@ -31,8 +38,8 @@ GO
 -- Delta Update Script
 -- Baseline : Baseline.Formatted.sql
 -- Current  : Current.Formatted.sql
--- Generated: 2026-03-17 16:16
--- Changes  : +19 added / -13 removed / ~37 modified
+-- Generated: 2026-03-18 07:42
+-- Changes  : +19 added / -13 removed / ~38 modified
 -- ============================================================
 GO
 
@@ -93,7 +100,7 @@ IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_CollectorResult.StartHash'
 GO
 
 -- ------------------------------------------------------------
--- Modified objects -- drop before re-create (37)
+-- Modified objects -- drop before re-create (38)
 -- ------------------------------------------------------------
 
 ALTER TABLE [dbo].[WageTypeResult] ADD [TenantId] [int] NOT NULL;
@@ -294,6 +301,10 @@ GO
 
 IF OBJECT_ID('[dbo].[DeleteTenant]') IS NOT NULL
     DROP PROCEDURE [dbo].[DeleteTenant];
+GO
+
+IF OBJECT_ID('[dbo].[GetPayrollResultValues]') IS NOT NULL
+    DROP PROCEDURE [dbo].[GetPayrollResultValues];
 GO
 
 -- ------------------------------------------------------------
@@ -615,7 +626,7 @@ CREATE NONCLUSTERED INDEX [IX_WageTypeResult.PayrollResultId] ON [dbo].[WageType
 GO
 
 -- ------------------------------------------------------------
--- Modified objects -- re-create (29)
+-- Modified objects -- re-create (30)
 -- ------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[GetConsolidatedWageTypeResults]    Script Date: 01.03.2026 22:35:19 ******/
@@ -3257,6 +3268,297 @@ BEGIN
   DELETE
   FROM [dbo].[Tenant]
   WHERE [Id] = @tenantId
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[GetPayrollResultValues]    Script Date: 01.03.2026 22:35:19 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Payroll result values
+-- =============================================
+CREATE PROCEDURE [dbo].[GetPayrollResultValues]
+  -- the parent id (unused, required from case value query)
+  @parentId AS INT,
+  -- the query sql
+  @sql AS NVARCHAR(MAX),
+  -- the employee id
+  @employeeId AS INT = NULL,
+  -- the division id
+  @divisionId AS INT = NULL,
+  -- the attribute names: JSON array of VARCHAR(128)
+  @attributes AS NVARCHAR(MAX) = NULL
+AS
+BEGIN
+  -- SET NOCOUNT ON added to prevent extra result sets from
+  -- interfering with SELECT statements
+  SET NOCOUNT ON;
+
+  -- pivot select
+  DECLARE @pivotSql AS NVARCHAR(MAX);
+  DECLARE @attributeSql AS NVARCHAR(MAX);
+
+  -- pivot sql begin part
+  -- pivot sql part 1
+  SET @pivotSql = N'SELECT *
+    INTO ##PayrollResultPivot
+    FROM (
+'
+  SET @pivotSql = @pivotSql +
+    N'
+  SELECT
+  -- tenant
+  [PayrollResult].[TenantId],
+  -- payroll result
+  [PayrollResult].[Id] AS [PayrollResultId],
+  [PayrollResult].[Created],
+  -- payroll value
+  [PayrollValue].[ResultKind],
+  [PayrollValue].[ResultId],
+  [PayrollValue].[ResultParentId],
+  [PayrollValue].[ResultNumber],
+  [PayrollValue].[KindName],
+  [PayrollValue].[ResultCreated],
+  [PayrollValue].[ResultStart],
+  [PayrollValue].[ResultEnd],
+  [PayrollValue].[ResultType],
+  [PayrollValue].[ResultValue],
+  [PayrollValue].[ResultNumericValue],
+  [PayrollValue].[ResultCulture],
+  [PayrollValue].[ResultTags],
+  [PayrollValue].[Attributes],
+  -- payrun job
+  [PayrunJob].[Id] AS [JobId],
+  [PayrunJob].[Name] AS [JobName],
+  [PayrunJob].[CreatedReason] AS [JobReason],
+  [PayrunJob].[Forecast],
+  [PayrunJob].[JobStatus],
+  [PayrunJob].[CycleName],
+  [PayrunJob].[PeriodName],
+  [PayrunJob].[PeriodStart],
+  [PayrunJob].[PeriodEnd],
+  -- payrun
+  [Payrun].[Id] AS [PayrunId],
+  [Payrun].[Name] AS [PayrunName],
+  -- payroll
+  [Payroll].[Id] AS [PayrollId],
+  [Payroll].[Name] AS [PayrollName],
+  -- division
+  [Division].[Id] AS [DivisionId],
+  [Division].[Name] AS [DivisionName],
+  [Division].[Culture],
+  -- user
+  [User].[Id] AS [UserId],
+  [User].[Identifier] AS [UserIdentifier],
+  -- employee
+  [Employee].[Id] AS [EmployeeId],
+  [Employee].[Identifier] AS [EmployeeIdentifier]'
+  SET @attributeSql = dbo.GetAttributeNames(@attributes);
+  SET @pivotSql = @pivotSql + @attributeSql;
+  SET @pivotSql = @pivotSql + '
+FROM (
+'
+  -- pivot sql collector result
+  SET @pivotSql = @pivotSql + N'
+    -- collector results
+  SELECT 10 AS [ResultKind], -- 10: collector
+    [PayrollResultId],
+    [CollectorResult].[Id] AS [ResultId],
+    [PayrollResultId] AS [ResultParentId],
+    [CollectorName] AS [KindName],
+    0 AS [ResultNumber], -- no custom result
+    [CollectorResult].[Created] AS [ResultCreated],
+    [CollectorResult].[Start] AS [ResultStart],
+    [CollectorResult].[End] AS [ResultEnd],
+    [CollectorResult].[Tags] AS [ResultTags],
+    [CollectorResult].[Attributes],
+    [CollectorResult].[ValueType] AS [ResultType],
+    FORMAT([CollectorResult].[Value], ''N2'') AS [ResultValue],
+    [CollectorResult].[Value] AS [ResultNumericValue],
+    [CollectorResult].[Culture] AS [ResultCulture]';
+  SET @attributeSql = dbo.BuildAttributeQuery('[CollectorResult].[Attributes]', @attributes);
+  SET @pivotSql = @pivotSql + @attributeSql;
+  SET @pivotSql = @pivotSql + N'
+    FROM [dbo].[CollectorResult]
+
+    UNION ALL
+
+'
+  -- pivot sql collector custom result
+  SET @pivotSql = @pivotSql + N'
+    -- collector custom results
+  SELECT 11 AS [ResultKind], -- 11: collector custom
+    [PayrollResultId],
+    [CollectorCustomResult].[Id] AS [ResultId],
+    [CollectorResult].[Id] AS [ResultParentId],
+    [CollectorCustomResult].[Source] AS [KindName],
+    0 AS [ResultNumber], -- no custom result
+    [CollectorCustomResult].[Created] AS [ResultCreated],
+    [CollectorCustomResult].[Start] AS [ResultStart],
+    [CollectorCustomResult].[End] AS [ResultEnd],
+    [CollectorCustomResult].[Tags] AS [ResultTags],
+    [CollectorCustomResult].[Attributes],
+    [CollectorCustomResult].[ValueType] AS [ResultType],
+    FORMAT([CollectorCustomResult].[Value], ''N2'') AS [ResultValue],
+    [CollectorCustomResult].[Value] AS [ResultNumericValue],
+    [CollectorCustomResult].[Culture] AS [ResultCulture]';
+  SET @attributeSql = dbo.BuildAttributeQuery('[CollectorCustomResult].[Attributes]', @attributes);
+  SET @pivotSql = @pivotSql + @attributeSql;
+  SET @pivotSql = @pivotSql + N'
+    FROM [dbo].[CollectorResult]
+  INNER JOIN [dbo].[CollectorCustomResult]
+    ON [CollectorResult].[Id] = [CollectorCustomResult].[CollectorResultId]
+
+  UNION ALL
+
+'
+  -- pivot sql wage type result
+  SET @pivotSql = @pivotSql + N'
+    -- wage type results
+  SELECT 20 AS [ResultKind], -- 20: wage type
+    [PayrollResultId],
+    [WageTypeResult].[Id] AS [ResultId],
+    [PayrollResultId] AS [ResultParentId],
+    [WageTypeName] AS [KindName],
+    [WageTypeNumber] AS [ResultNumber],
+    [WageTypeResult].[Created] AS [ResultCreated],
+    [WageTypeResult].[Start] AS [ResultStart],
+    [WageTypeResult].[End] AS [ResultEnd],
+    [WageTypeResult].[Tags] AS [ResultTags],
+    [WageTypeResult].[Attributes],
+    [WageTypeResult].[ValueType] AS [ResultType],
+    FORMAT([WageTypeResult].[Value], ''N2'') AS [ResultValue],
+    [WageTypeResult].[Value] AS [ResultNumericValue],
+    [WageTypeResult].[Culture] AS [ResultCulture]';
+  SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeResult].[Attributes]', @attributes);
+  SET @pivotSql = @pivotSql + @attributeSql;
+  SET @pivotSql = @pivotSql + N'
+    FROM [dbo].[WageTypeResult]
+
+  UNION ALL
+
+'
+  -- pivot sql wage type custom result
+  SET @pivotSql = @pivotSql + N'
+    -- wage type custom results
+  SELECT 21 AS [ResultKind], -- 21: wage type custom
+    [PayrollResultId],
+    [WageTypeCustomResult].[Id] AS [ResultId],
+    [WageTypeResult].[Id] AS [ResultParentId],
+    [WageTypeCustomResult].[Source] AS [KindName],
+    0 AS [ResultNumber], -- no custom result
+    [WageTypeCustomResult].[Created] AS [ResultCreated],
+    [WageTypeCustomResult].[Start] AS [ResultStart],
+    [WageTypeCustomResult].[End] AS [ResultEnd],
+    [WageTypeCustomResult].[Tags] AS [ResultTags],
+    [WageTypeCustomResult].[Attributes],
+    [WageTypeCustomResult].[ValueType] AS [ResultType],
+    FORMAT([WageTypeCustomResult].[Value], ''N2'') AS [ResultValue],
+    [WageTypeCustomResult].[Value] AS [ResultNumericValue],
+    [WageTypeCustomResult].[Culture] AS [ResultCulture]';
+  SET @attributeSql = dbo.BuildAttributeQuery('[WageTypeCustomResult].[Attributes]', @attributes);
+  SET @pivotSql = @pivotSql + @attributeSql;
+  SET @pivotSql = @pivotSql + N'
+    FROM [dbo].[WageTypeResult]
+  INNER JOIN [dbo].[WageTypeCustomResult]
+    ON [WageTypeResult].[Id] = [WageTypeCustomResult].[WageTypeResultId]
+
+  UNION ALL
+
+'
+  -- pivot sql payrun result
+  SET @pivotSql = @pivotSql + N'
+    -- payrun results
+  SELECT 30 AS [ResultKind], -- 30: payrun
+    [PayrollResultId],
+    [PayrunResult].[Id] AS [ResultId],
+    [PayrollResultId] AS [ResultParentId],
+    [PayrunResult].[Name] AS [KindName],
+    0 AS [ResultNumber], -- no custom results
+    [PayrunResult].[Created] AS [ResultCreated],
+    [PayrunResult].[Start] AS [ResultStart],
+    [PayrunResult].[End] AS [ResultEnd],
+    [PayrunResult].[Tags] AS [ResultTags],
+    [PayrunResult].[Attributes],
+    [PayrunResult].[ValueType] AS [ResultType],
+    LTRIM([PayrunResult].[Value]) AS [ResultValue],
+    [PayrunResult].[NumericValue] AS [ResultNumericValue],
+    [PayrunResult].[Culture] AS [ResultCulture]';
+  SET @attributeSql = dbo.BuildAttributeQuery(NULL, @attributes);
+  SET @pivotSql = @pivotSql + @attributeSql;
+  SET @pivotSql = @pivotSql + N'
+    FROM [dbo].[PayrunResult]
+'
+  -- pivot sql end part
+  SET @pivotSql = @pivotSql + N'
+  ) PayrollValue
+LEFT JOIN
+  -- payroll result
+  [dbo].[PayrollResult]
+  ON [PayrollResult].[Id] = [PayrollValue].[PayrollResultId]
+LEFT JOIN
+  -- parun job
+  [dbo].[PayrunJob]
+  ON [PayrollResult].[PayrunJobId] = [PayrunJob].[Id]
+LEFT JOIN
+  -- payrun
+  [dbo].[Payrun]
+  ON [PayrunJob].[PayrunId] = [Payrun].[Id]
+LEFT JOIN
+  -- employee
+  [dbo].[Employee]
+  ON [PayrollResult].[EmployeeId] = [Employee].[Id]
+LEFT JOIN
+  -- payroll
+  [dbo].[Payroll]
+  ON [PayrollResult].[PayrollId] = [Payroll].[Id]
+LEFT JOIN
+  -- division
+  [dbo].[Division]
+  ON [Payroll].[DivisionId] = [Division].[Id]
+LEFT JOIN
+  -- user
+  [dbo].[User]
+  ON [PayrunJob].[CreatedUserId] = [User].Id '
+  + IIF(@employeeId IS NULL AND @divisionId IS NULL,
+      N'',
+      N'WHERE '
+      + IIF(@employeeId IS NULL, N'', N'[dbo].[Employee].[Id] = ' + CAST(@employeeId AS VARCHAR(10)))
+      + IIF(@employeeId IS NOT NULL AND @divisionId IS NOT NULL, N' AND ', N'')
+      + IIF(@divisionId IS NULL, N'', N'[dbo].[Division].[Id] = ' + CAST(@divisionId AS VARCHAR(10)))
+    )
+  + N') AS PCV';
+
+  -- debug help
+  --PRINT CAST(@pivotSql AS NTEXT);
+  BEGIN TRY
+    -- transaction start
+    BEGIN TRANSACTION;
+
+    -- cleanup
+    DROP TABLE
+
+    IF EXISTS ##PayrollResultPivot;
+      -- build pivot table
+      EXECUTE dbo.sp_executesql @pivotSql;
+
+    -- apply query to pivot table
+    EXECUTE dbo.sp_executesql @sql;
+
+    -- cleanup
+    DROP TABLE
+
+    IF EXISTS ##PayrollResultPivot;
+      -- transaction end
+      COMMIT TRANSACTION;
+  END TRY
+
+  BEGIN CATCH
+    IF @@TRANCOUNT > 0
+      ROLLBACK TRANSACTION;
+  END CATCH;
 END
 GO
 

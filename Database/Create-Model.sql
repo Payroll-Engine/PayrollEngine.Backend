@@ -8996,12 +8996,14 @@ GO
 -- Payroll result values
 -- =============================================
 CREATE PROCEDURE [dbo].[GetPayrollResultValues]
-  -- the parent id (unsuses, required from case value query)
+  -- the parent id (unused, required from case value query)
   @parentId AS INT,
   -- the query sql
   @sql AS NVARCHAR(MAX),
   -- the employee id
   @employeeId AS INT = NULL,
+  -- the division id
+  @divisionId AS INT = NULL,
   -- the attribute names: JSON array of VARCHAR(128)
   @attributes AS NVARCHAR(MAX) = NULL
 AS
@@ -9235,7 +9237,15 @@ LEFT JOIN
 LEFT JOIN
   -- user
   [dbo].[User]
-  ON [PayrunJob].[CreatedUserId] = [User].Id ' + IIF(@employeeId IS NULL, N'', N'WHERE [dbo].[Employee].[Id] = ' + cast(@employeeId AS VARCHAR(10))) + N') AS PCV';
+  ON [PayrunJob].[CreatedUserId] = [User].Id '
+  + IIF(@employeeId IS NULL AND @divisionId IS NULL,
+      N'',
+      N'WHERE '
+      + IIF(@employeeId IS NULL, N'', N'[dbo].[Employee].[Id] = ' + CAST(@employeeId AS VARCHAR(10)))
+      + IIF(@employeeId IS NOT NULL AND @divisionId IS NOT NULL, N' AND ', N'')
+      + IIF(@divisionId IS NULL, N'', N'[dbo].[Division].[Id] = ' + CAST(@divisionId AS VARCHAR(10)))
+    )
+  + N') AS PCV';
 
   -- debug help
   --PRINT CAST(@pivotSql AS NTEXT);
@@ -9647,10 +9657,5 @@ ELSE BEGIN
 END
 GO
 
-COMMIT TRANSACTION
-GO
-
-SET NOEXEC OFF   -- re-enable execution (in case VERSION_CHECK set it ON)
-GO
 -- #endregion VERSION_SET
 

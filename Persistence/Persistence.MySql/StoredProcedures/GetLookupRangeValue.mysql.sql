@@ -1,7 +1,7 @@
 -- =============================================================================
--- PayrollEngine MySQL -- GetLookupRangeValue Fix
--- Replaces the broken entry in Remaining.mysql.sql
--- Run this AFTER Remaining.mysql.sql if GetLookupRangeValue failed.
+-- GetLookupRangeValue
+-- T-SQL: SELECT TOP 1 * -> MySQL: SELECT * ... LIMIT 1
+-- T-SQL: RETURN NULL   -> MySQL: returns empty result set
 -- =============================================================================
 
 USE PayrollEngine;
@@ -45,5 +45,3 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-SELECT 'GetLookupRangeValue created.' AS Result;

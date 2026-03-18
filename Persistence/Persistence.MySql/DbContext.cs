@@ -331,13 +331,18 @@ public class DbContext : IDbContext
         foreach (var name in dbParams.ParameterNames)
         {
             // skip return-value / output placeholders (e.g. "@sp_return")
-            if (name.StartsWith("@", StringComparison.Ordinal))
+            // but allow input parameters that start with "@" (e.g. "@tenantId" from SQL Server conventions)
+            var isReturnValue = name.StartsWith("@", StringComparison.Ordinal) &&
+                                name.Contains("return", StringComparison.OrdinalIgnoreCase);
+            if (isReturnValue)
             {
                 continue;
             }
 
-            // convert PascalCase → p_camelCase: "TenantId" → "p_tenantId"
-            var mysqlName = "p_" + char.ToLowerInvariant(name[0]) + name[1..];
+            // strip leading "@" if present (SQL Server convention), then convert to p_camelCase
+            var cleanName = name.TrimStart('@');
+            // convert PascalCase or camelCase → p_camelCase: "TenantId" → "p_tenantId", "tenantId" → "p_tenantId"
+            var mysqlName = "p_" + char.ToLowerInvariant(cleanName[0]) + cleanName[1..];
 
             // use Get<object> — safe for both null and boxed value types
             object value;

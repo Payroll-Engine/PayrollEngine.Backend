@@ -167,10 +167,11 @@ public abstract class PayrollResultController(ITenantService tenantService, IPay
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id</param>
+    /// <param name="divisionId">The division id</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The payroll result values, count or both</returns>
     public virtual async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId, int? employeeId,
-        Query query)
+        int? divisionId, Query query)
     {
         try
         {
@@ -185,14 +186,14 @@ public abstract class PayrollResultController(ITenantService tenantService, IPay
             switch (query.Result)
             {
                 case QueryResultType.Items:
-                    var items = await QueryResultValuesAsync(tenantId, employeeId, query);
+                    var items = await QueryResultValuesAsync(tenantId, employeeId, divisionId, query);
                     return items.IsValidResult() ? Ok(items.Value) : items.Result;
                 case QueryResultType.Count:
-                    var count = await QueryResultValueCountAsync(tenantId, employeeId, query);
+                    var count = await QueryResultValueCountAsync(tenantId, employeeId, divisionId, query);
                     return count.IsValidResult() ? Ok(count.Value) : count.Result;
                 case QueryResultType.ItemsWithCount:
-                    items = await QueryResultValuesAsync(tenantId, employeeId, query);
-                    count = await QueryResultValueCountAsync(tenantId, employeeId, query);
+                    items = await QueryResultValuesAsync(tenantId, employeeId, divisionId, query);
+                    count = await QueryResultValueCountAsync(tenantId, employeeId, divisionId, query);
                     return items.IsValidResult() && count.IsValidResult() ?
                         Ok(new QueryResult<ApiObject.PayrollResultValue>(items.Value, count.Value)) : items.Result;
                 default:
@@ -264,12 +265,12 @@ public abstract class PayrollResultController(ITenantService tenantService, IPay
     /// <summary>
     /// Query payroll result values
     /// </summary>
-    private async Task<ActionResult<ApiObject.PayrollResultValue[]>> QueryResultValuesAsync(int tenantId, int? employeeId = null, Query query = null)
+    private async Task<ActionResult<ApiObject.PayrollResultValue[]>> QueryResultValuesAsync(int tenantId, int? employeeId = null, int? divisionId = null, Query query = null)
     {
         try
         {
             var apiObjects = new List<ApiObject.PayrollResultValue>();
-            var items = (await ChildService.QueryResultValuesAsync(Runtime.DbContext, tenantId, employeeId, query)).ToList();
+            var items = (await ChildService.QueryResultValuesAsync(Runtime.DbContext, tenantId, employeeId, divisionId, query)).ToList();
 
             var map = new PayrollResultValueMap();
             foreach (var item in items)
@@ -291,11 +292,11 @@ public abstract class PayrollResultController(ITenantService tenantService, IPay
     /// <summary>
     /// Count of payroll result values
     /// </summary>
-    private async Task<ActionResult<long>> QueryResultValueCountAsync(int tenantId, int? employeeId = null, Query query = null)
+    private async Task<ActionResult<long>> QueryResultValueCountAsync(int tenantId, int? employeeId = null, int? divisionId = null, Query query = null)
     {
         try
         {
-            return await Service.QueryResultValueCountAsync(Runtime.DbContext, tenantId, employeeId, query);
+            return await Service.QueryResultValueCountAsync(Runtime.DbContext, tenantId, employeeId, divisionId, query);
         }
         catch (QueryException exception)
         {

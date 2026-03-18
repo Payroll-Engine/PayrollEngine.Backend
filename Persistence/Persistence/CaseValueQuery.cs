@@ -6,6 +6,7 @@ internal sealed class CaseValueQuery
 {
     internal int ParentId { get; init; }
     internal int? EmployeeId { get; init; }
+    internal int? DivisionId { get; init; }
     internal string StoredProcedure { get; init; }
     internal string Query { get; init; }
     internal ICollection<string> QueryAttributes { get; init; }

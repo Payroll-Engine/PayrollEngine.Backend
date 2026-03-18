@@ -69,9 +69,10 @@ public interface IPayrollResultService : IChildApplicationService<IPayrollResult
     /// <param name="context">The database context</param>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id</param>
+    /// <param name="divisionId">The division id</param>
     /// <param name="query">The query parameters</param>
     /// <returns>A list of the domain objects, matching the parameters and conditions</returns>
-    Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context, int tenantId, int? employeeId = null, Query query = null);
+    Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context, int tenantId, int? employeeId = null, int? divisionId = null, Query query = null);
 
     /// <summary>
     /// Count query payroll result values
@@ -79,9 +80,10 @@ public interface IPayrollResultService : IChildApplicationService<IPayrollResult
     /// <param name="context">The database context</param>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id</param>
+    /// <param name="divisionId">The division id</param>
     /// <param name="query">The query parameters</param>
     /// <returns>A list of the domain objects, matching the parameters and conditions</returns>
-    Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, Query query = null);
+    Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, int? divisionId = null, Query query = null);
 
     /// <summary>
     /// Query payroll result sets

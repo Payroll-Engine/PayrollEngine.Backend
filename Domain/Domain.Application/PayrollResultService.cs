@@ -44,11 +44,11 @@ public class PayrollResultService(IPayrollResultContextService context) :
         int? payrunJobId = null, int? parentPayrunJobId = null) =>
         await Repository.GetCollectorCustomResultsAsync(context, query, payrunJobId, parentPayrunJobId);
 
-    public async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context,int tenantId, int? employeeId = null, Query query = null) =>
-        await Repository.QueryResultValuesAsync(context, tenantId, employeeId, query);
+    public async Task<IEnumerable<PayrollResultValue>> QueryResultValuesAsync(IDbContext context, int tenantId, int? employeeId = null, int? divisionId = null, Query query = null) =>
+        await Repository.QueryResultValuesAsync(context, tenantId, employeeId, divisionId, query);
 
-    public async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, Query query = null) =>
-        await Repository.QueryResultValueCountAsync(context, tenantId, employeeId, query);
+    public async Task<long> QueryResultValueCountAsync(IDbContext context, int tenantId, int? employeeId = null, int? divisionId = null, Query query = null) =>
+        await Repository.QueryResultValueCountAsync(context, tenantId, employeeId, divisionId, query);
 
     public async Task<IEnumerable<PayrollResultSet>> QueryResultSetsAsync(IDbContext context, int tenantId, Query query = null) =>
         await ResultSetRepository.QueryAsync(context, tenantId, query);

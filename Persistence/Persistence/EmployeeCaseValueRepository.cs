@@ -33,16 +33,18 @@ public class EmployeeCaseValueRepository(ICaseFieldRepository caseFieldRepositor
             fieldNamesJson = JsonSerializer.SerializeList(new List<string>(caseFieldNames));
         }
 
+        // Use DbParameterCollection so MySQL DbContext.MapSpParameters
+        // can convert PascalCase names to p_camelCase for MySQL SPs.
+        var parameters = new DbParameterCollection();
+        parameters.Add(nameof(tenantId), tenantId, DbType.Int32);
+        parameters.Add(nameof(valueDate), valueDate?.ToUtc(), DbType.DateTime2);
+        parameters.Add(nameof(evaluationDate), evaluationDate?.ToUtc(), DbType.DateTime2);
+        parameters.Add("fieldNames", fieldNamesJson, DbType.String);
+        parameters.Add(nameof(forecast), forecast, DbType.String);
+
         return await QueryAsync<CaseValue>(context,
             Procedures.GetEmployeeCaseValuesByTenant,
-            new
-            {
-                tenantId,
-                valueDate = valueDate?.ToUtc(),
-                evaluationDate = evaluationDate?.ToUtc(),
-                fieldNames = fieldNamesJson,
-                forecast
-            },
+            parameters,
             commandType: CommandType.StoredProcedure);
     }
 }

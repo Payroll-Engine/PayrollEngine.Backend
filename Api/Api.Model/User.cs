@@ -17,9 +17,10 @@ public class User : ApiObjectBase
     public string Identifier { get; set; }
 
     /// <summary>
-    /// The user password
+    /// The user password (write-only, never serialized in API responses)
     /// </summary>
     [StringLength(128)]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string Password { get; set; }
 
     /// <summary>

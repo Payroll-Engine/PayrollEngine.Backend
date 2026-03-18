@@ -34,11 +34,15 @@ internal sealed class CaseValueResultCountCommand : DomainRepositoryCommandBase
         // attributes requested, use the slow query
         var parameters = new DbParameterCollection();
         parameters.Add(ParameterCaseValueQuery.ParentId, query.ParentId, DbType.Int32);
-        // EmployeeId and Culture are only supported by MySql CaseValue pivot SPs
-        if (context.CaseValueExtendedParameters)
+        // EmployeeId / DivisionId: always sent by MySQL (CaseValueExtendedParameters) for all pivot SPs.
+        // On SQL Server only accepted by GetPayrollResultValues; pass when explicitly set.
+        if (context.CaseValueExtendedParameters || query.EmployeeId.HasValue)
         {
-            parameters.Add(ParameterCaseValueQuery.EmployeeId,
-                query.EmployeeId.HasValue ? (object)query.EmployeeId.Value : null, DbType.Int32);
+            parameters.Add(ParameterCaseValueQuery.EmployeeId, query.EmployeeId, DbType.Int32);
+        }
+        if (context.CaseValueExtendedParameters || query.DivisionId.HasValue)
+        {
+            parameters.Add(ParameterCaseValueQuery.DivisionId, query.DivisionId, DbType.Int32);
         }
         parameters.Add(ParameterCaseValueQuery.Sql, query.Query);
         parameters.Add(ParameterCaseValueQuery.Attributes,

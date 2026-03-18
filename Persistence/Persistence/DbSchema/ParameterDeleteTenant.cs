@@ -1,4 +1,4 @@
-﻿namespace PayrollEngine.Persistence.DbSchema;
+namespace PayrollEngine.Persistence.DbSchema;
 
 public static class ParameterDeleteTenant
 {

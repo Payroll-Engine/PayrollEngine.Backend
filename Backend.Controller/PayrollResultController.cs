@@ -149,6 +149,7 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id (default: all)</param>
+    /// <param name="divisionId">The division id (default: all)</param>
     /// <param name="query">Query parameters</param>
     /// <returns>The payroll result values</returns>
     [HttpGet("values")]
@@ -156,8 +157,8 @@ public class PayrollResultController : Api.Controller.PayrollResultController
     [NotFoundResponse]
     [ApiOperationId("QueryPayrollResultValues")]
     public override async Task<ActionResult> QueryPayrollResultValuesAsync(int tenantId,
-        [FromQuery] int? employeeId, [FromQuery] Query query) =>
-        await base.QueryPayrollResultValuesAsync(tenantId, employeeId, query);
+        [FromQuery] int? employeeId, [FromQuery] int? divisionId, [FromQuery] Query query) =>
+        await base.QueryPayrollResultValuesAsync(tenantId, employeeId, divisionId, query);
 
     #endregion
 
