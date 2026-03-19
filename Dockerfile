@@ -18,6 +18,8 @@ COPY ["Domain/Domain.Model/PayrollEngine.Domain.Model.csproj", "Domain/Domain.Mo
 COPY ["Domain/Domain.Model.Tests/PayrollEngine.Domain.Model.Tests.csproj", "Domain/Domain.Model.Tests/"]
 COPY ["Domain/Domain.Scripting/PayrollEngine.Domain.Scripting.csproj", "Domain/Domain.Scripting/"]
 COPY ["Persistence/Persistence/PayrollEngine.Persistence.csproj", "Persistence/Persistence/"]
+COPY ["Persistence/Persistence.DbQuery.Tests/PayrollEngine.Persistence.DbQuery.Tests.csproj", "Persistence/Persistence.DbQuery.Tests/"]
+COPY ["Persistence/Persistence.MySql/PayrollEngine.Persistence.MySql.csproj", "Persistence/Persistence.MySql/"]
 COPY ["Persistence/Persistence.SqlServer/PayrollEngine.Persistence.SqlServer.csproj", "Persistence/Persistence.SqlServer/"]
 
 # copy Directory.Build.props files
