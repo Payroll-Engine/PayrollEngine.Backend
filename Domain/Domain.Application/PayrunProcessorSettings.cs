@@ -40,10 +40,9 @@ public class PayrunProcessorSettings : FunctionToolSettings
     public int MaxParallelPersist { get; init; } = 2;
 
     /// <summary>
-    /// Maximum degree of parallelism for employee processing.
-    /// 0 = sequential (default, no parallelism),
-    /// -1 = automatic (based on Environment.ProcessorCount),
-    /// 1 to N = explicit maximum thread count.
+    /// Maximum degree of parallelism for employee processing (resolved integer value).
+    /// 0 = sequential (no parallelism)
+    /// 1 to N = explicit thread count (Environment.ProcessorCount for auto modes)
     /// </summary>
     public int MaxParallelEmployees { get; init; }
 

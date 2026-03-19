@@ -28,10 +28,10 @@ public static class LogExtensions
 
             // parallel employee processing
             var maxParallel = serverConfiguration.GetMaxParallelEmployees();
-            if (maxParallel != 0)
-            {
-                Log.Information($"MaxParallelEmployees: {serverConfiguration.MaxParallelEmployees} (resolved: {maxParallel})");
-            }
+            var parallelMode = maxParallel == 0
+                ? "sequential"
+                : $"parallel (resolved: {maxParallel})";
+            Log.Information($"MaxParallelEmployees: {serverConfiguration.MaxParallelEmployees ?? "(default)"} ({parallelMode})");
 
             // persist parallelism
             var maxParallelPersist = Math.Max(1, serverConfiguration.MaxParallelPersist);
@@ -99,6 +99,7 @@ public static class LogExtensions
                 database = value;
             }
         }
+
 
         return (server, database);
     }
