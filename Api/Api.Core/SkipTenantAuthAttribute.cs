@@ -7,4 +7,4 @@ namespace PayrollEngine.Api.Core;
 /// is decorated with <see cref="TenantAuthorizeAttribute"/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
-public class SkipTenantAuthAttribute : Attribute;
+public sealed class SkipTenantAuthAttribute : Attribute;

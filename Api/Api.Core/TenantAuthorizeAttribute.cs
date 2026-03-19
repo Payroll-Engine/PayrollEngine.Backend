@@ -10,7 +10,7 @@ namespace PayrollEngine.Api.Core;
 /// Use <see cref="SkipTenantAuthAttribute"/> to opt-out individual actions.</para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class TenantAuthorizeAttribute : TypeFilterAttribute
+public sealed class TenantAuthorizeAttribute : TypeFilterAttribute
 {
     /// <inheritdoc />
     public TenantAuthorizeAttribute() : base(typeof(TenantAuthorizationFilter))
