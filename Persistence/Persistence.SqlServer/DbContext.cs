@@ -352,7 +352,7 @@ public class DbContext : IDbContext
             var connection = GetOrCreateScopedConnection(transaction);
 
             using var bulkCopy = new SqlBulkCopy(connection,
-                copyOptions: SqlBulkCopyOptions.Default,
+                copyOptions: SqlBulkCopyOptions.TableLock,
                 externalTransaction: null);
             bulkCopy.DestinationTableName = dataTable.TableName;
 
@@ -371,7 +371,7 @@ public class DbContext : IDbContext
             await using var dbTransaction = connection.BeginTransaction();
 
             using var bulkCopy = new SqlBulkCopy(connection,
-                copyOptions: SqlBulkCopyOptions.Default,
+                copyOptions: SqlBulkCopyOptions.TableLock,
                 externalTransaction: dbTransaction);
             bulkCopy.DestinationTableName = dataTable.TableName;
 
