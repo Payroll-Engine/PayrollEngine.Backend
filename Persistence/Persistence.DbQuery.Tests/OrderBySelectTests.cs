@@ -1,7 +1,7 @@
 using System;
-using System.Linq;
 using Xunit;
 using PayrollEngine.Persistence.DbQuery.Tests.Infrastructure;
+using System.Linq;
 
 namespace PayrollEngine.Persistence.DbQuery.Tests;
 

@@ -23,9 +23,9 @@ public abstract class QueryTestBase
     protected const string TableName = "TestTable";
 
     protected static readonly SqlServerCompiler Compiler = new();
-    protected static readonly MySqlCompiler MySqlCompiler = new();
+    private static readonly MySqlCompiler MySqlCompiler = new();
 
-    protected static readonly MySqlStubDbContext MySqlDbCtx = new();
+    private static readonly MySqlStubDbContext MySqlDbCtx = new();
 
     // -------------------------------------------------------------------------
     // SQL Server helpers (default — dbContext null → FilterClauseBuilder fallback)

@@ -206,14 +206,14 @@ internal sealed class FilterClauseBuilder : QueryNodeVisitor<SqlKata.Query>
         var body = nodeIn.Body as BinaryOperatorNode
             ?? throw new QueryException("The any() lambda body must be a comparison expression (BinaryOperatorNode)");
 
-        var conditions = CollectAnyConditions(body, nodeIn.CurrentRangeVariable.Name);
+        var conditions = CollectAnyConditions(body);
 
         // Scalar: single condition whose column is "value" → no property schema needed
         var isScalar = conditions.Count == 1 &&
                        string.Equals(conditions[0].Column, "value", StringComparison.OrdinalIgnoreCase);
 
         var propertyNames = isScalar
-            ? Array.Empty<string>()
+            ? []
             : conditions.Select(c => c.Column).ToArray();
 
         var fromRaw = BuildCollectionFromRaw(columnName, isScalar, propertyNames);
@@ -300,17 +300,19 @@ internal sealed class FilterClauseBuilder : QueryNodeVisitor<SqlKata.Query>
     /// The OData parser may wrap the range-variable reference in a ConvertNode
     /// (e.g. d eq 'HR' → Left.Kind == Convert → Source.Kind == NonResourceRangeVariableReference).
     /// We always unwrap Convert before inspecting the node kind.
+    /// Range variable identity is determined by node kind, not by name — the name parameter
+    /// is therefore not needed and intentionally omitted.
     /// </summary>
     private static IReadOnlyList<(string Column, string Op, object Value)> CollectAnyConditions(
-        BinaryOperatorNode node, string rangeVariableName)
+        BinaryOperatorNode node)
     {
         var result = new List<(string, string, object)>();
 
         // Recurse into and-chain
         if (node.OperatorKind == BinaryOperatorKind.And)
         {
-            result.AddRange(CollectAnyConditions((BinaryOperatorNode)node.Left, rangeVariableName));
-            result.AddRange(CollectAnyConditions((BinaryOperatorNode)node.Right, rangeVariableName));
+            result.AddRange(CollectAnyConditions((BinaryOperatorNode)node.Left));
+            result.AddRange(CollectAnyConditions((BinaryOperatorNode)node.Right));
             return result;
         }
 

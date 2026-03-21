@@ -44,6 +44,7 @@ BEGIN
         FROM OPENJSON(@names);
     END;
 
+    -- single-hash fast path: equality seek on StartHash
     DECLARE @startHash INT;
     DECLARE @startHashCount INT;
     SELECT @startHashCount = COUNT(*) FROM OPENJSON(@periodStartHashes);
@@ -54,6 +55,9 @@ BEGIN
         FROM OPENJSON(@periodStartHashes);
     END;
 
+    -- Phase 1: select winning IDs via index-only scan
+    -- Index key order: (TenantId, EmployeeId, StartHash, Name)
+    -- → seeks directly to the period, constant cost regardless of history
     ;WITH Winners AS (
         SELECT
             r.[Id],
@@ -64,6 +68,7 @@ BEGIN
         FROM dbo.[PayrunResult] r
         WHERE r.[TenantId] = @tenantId
           AND r.[EmployeeId] = @employeeId
+          -- period filter: single hash → equality seek; multiple → IN list
           AND (
               (@startHashCount = 1 AND r.[StartHash] = @startHash)
               OR (@startHashCount > 1 AND r.[StartHash] IN (
@@ -84,6 +89,7 @@ BEGIN
           AND (@excludeParentJobId IS NULL OR r.[ParentJobId] IS NULL
                OR r.[ParentJobId] <> @excludeParentJobId)
     )
+    -- Phase 2: key lookup only for winning rows
     SELECT r.*
     FROM dbo.[PayrunResult] r
     INNER JOIN Winners w ON w.[Id] = r.[Id]
