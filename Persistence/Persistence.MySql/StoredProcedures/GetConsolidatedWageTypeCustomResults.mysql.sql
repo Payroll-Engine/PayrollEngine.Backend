@@ -33,11 +33,15 @@ BEGIN
         FROM JSON_TABLE(p_wageTypeNumbers, '$[*]' COLUMNS (val VARCHAR(50) PATH '$')) AS jt LIMIT 1;
     END IF;
 
+    -- single-hash fast path: equality seek on StartHash
     IF v_startHashCount = 1 THEN
         SELECT CAST(jt.val AS SIGNED) INTO v_startHash
         FROM JSON_TABLE(p_periodStartHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
+    -- Phase 1: select winning IDs via index-only scan
+    -- Index key order: (TenantId, EmployeeId, StartHash, WageTypeNumber)
+    -- → seeks directly to the period, constant cost regardless of history
     WITH Winners AS (
         SELECT r.Id,
             ROW_NUMBER() OVER (
@@ -47,6 +51,7 @@ BEGIN
         FROM WageTypeCustomResult r
         WHERE r.TenantId = p_tenantId
           AND r.EmployeeId = p_employeeId
+          -- period filter: single hash → equality seek; multiple → IN list
           AND (v_startHashCount = 0 OR
                (v_startHashCount = 1 AND r.StartHash = v_startHash) OR
                (v_startHashCount > 1 AND r.StartHash IN (
@@ -66,6 +71,7 @@ BEGIN
           AND (p_excludeParentJobId IS NULL OR r.ParentJobId IS NULL
                OR r.ParentJobId <> p_excludeParentJobId)
     )
+    -- Phase 2: key lookup only for winning rows
     SELECT r.*
     FROM WageTypeCustomResult r
     INNER JOIN Winners w ON w.Id = r.Id
