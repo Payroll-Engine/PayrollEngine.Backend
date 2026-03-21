@@ -60,39 +60,39 @@ BEGIN
     -- → seeks directly to the period, constant cost regardless of history
     ;WITH Winners AS (
         SELECT
-            wtr.[Id],
+            r.[Id],
             ROW_NUMBER() OVER (
-                PARTITION BY wtr.[WageTypeNumber], wtr.[Start]
-                ORDER BY wtr.[Created] DESC, wtr.[Id] DESC
+                PARTITION BY r.[WageTypeNumber], r.[Start]
+                ORDER BY r.[Created] DESC, r.[Id] DESC
             ) AS RowNumber
-        FROM dbo.[WageTypeResult] wtr
-        WHERE wtr.[TenantId] = @tenantId
-          AND wtr.[EmployeeId] = @employeeId
+        FROM dbo.[WageTypeResult] r
+        WHERE r.[TenantId] = @tenantId
+          AND r.[EmployeeId] = @employeeId
           -- period filter: single hash → equality seek; multiple → IN list
           AND (
-              (@startHashCount = 1 AND wtr.[StartHash] = @startHash)
-              OR (@startHashCount > 1 AND wtr.[StartHash] IN (
+              (@startHashCount = 1 AND r.[StartHash] = @startHash)
+              OR (@startHashCount > 1 AND r.[StartHash] IN (
                   SELECT CAST(value AS INT) FROM OPENJSON(@periodStartHashes)))
           )
-          AND (@divisionId IS NULL OR wtr.[DivisionId] = @divisionId)
+          AND (@divisionId IS NULL OR r.[DivisionId] = @divisionId)
           AND (@wageTypeNumbers IS NULL OR @wageTypeCount = 0
-               OR (@wageTypeCount = 1 AND wtr.[WageTypeNumber] = @wageTypeNumber)
-               OR (@wageTypeCount > 1 AND wtr.[WageTypeNumber] IN (
+               OR (@wageTypeCount = 1 AND r.[WageTypeNumber] = @wageTypeNumber)
+               OR (@wageTypeCount > 1 AND r.[WageTypeNumber] IN (
                    SELECT CAST(value AS DECIMAL(28, 6)) FROM OPENJSON(@wageTypeNumbers))))
-          AND (@evaluationDate IS NULL OR wtr.[Created] <= @evaluationDate)
+          AND (@evaluationDate IS NULL OR r.[Created] <= @evaluationDate)
           AND (@jobStatus IS NULL
-               OR wtr.[PayrunJobId] IN (
+               OR r.[PayrunJobId] IN (
                    SELECT pj.[Id] FROM dbo.[PayrunJob] pj
                    WHERE pj.[JobStatus] & @jobStatus = pj.[JobStatus]))
-          AND (wtr.[Forecast] IS NULL OR wtr.[Forecast] = @forecast)
-          AND (@noRetro = 0 OR wtr.[ParentJobId] IS NULL)
-          AND (@excludeParentJobId IS NULL OR wtr.[ParentJobId] IS NULL
-               OR wtr.[ParentJobId] <> @excludeParentJobId)
+          AND (r.[Forecast] IS NULL OR r.[Forecast] = @forecast)
+          AND (@noRetro = 0 OR r.[ParentJobId] IS NULL)
+          AND (@excludeParentJobId IS NULL OR r.[ParentJobId] IS NULL
+               OR r.[ParentJobId] <> @excludeParentJobId)
     )
     -- Phase 2: key lookup only for winning rows
-    SELECT wtr.*
-    FROM dbo.[WageTypeResult] wtr
-    INNER JOIN Winners w ON w.[Id] = wtr.[Id]
+    SELECT r.*
+    FROM dbo.[WageTypeResult] r
+    INNER JOIN Winners w ON w.[Id] = r.[Id]
     WHERE w.RowNumber = 1
     OPTION (RECOMPILE);
 END
