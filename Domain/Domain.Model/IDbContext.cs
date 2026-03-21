@@ -42,6 +42,20 @@ public interface IDbContext
     /// <returns>Raw FROM fragment, e.g. <c>OPENJSON([col])</c> or <c>JSON_TABLE(`col`, …) jt</c></returns>
     string BuildCollectionFromRaw(string columnName, bool isScalar, IReadOnlyList<string> propertyNames);
 
+    /// <summary>
+    /// Build a WHERE expression for OData any() on a flat key-value JSON object column
+    /// (e.g. <c>Attributes = {"Department":"HR"}</c>).
+    /// Returns <c>null</c> when the default SQL Server OPENJSON EXISTS pattern should be used.
+    /// MySQL implementations return a <c>(rawSql, bindings)</c> tuple for use with <c>WhereRaw</c>:
+    /// key-only → <c>JSON_CONTAINS_PATH</c>; key+value → <c>JSON_UNQUOTE(JSON_EXTRACT(…))</c>.
+    /// </summary>
+    /// <param name="columnName">The flat-object JSON column name (unquoted)</param>
+    /// <param name="conditions">Lambda conditions extracted from the any() body (Column, Op, Value)</param>
+    /// <returns>Null for SQL Server OPENJSON EXISTS, or (rawSql, bindings) for MySQL direct WHERE</returns>
+    (string RawSql, object[] Bindings)? BuildFlatObjectAnyWhere(
+        string columnName,
+        IReadOnlyList<(string Column, string Op, object Value)> conditions);
+
     /// <summary>Whether stored procedures support RETURN values (true for SqlServer, false for MySql)</summary>
     bool StoredProcedureReturnValue { get; }
 

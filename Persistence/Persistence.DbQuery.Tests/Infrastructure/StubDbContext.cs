@@ -47,6 +47,12 @@ public sealed class StubDbContext : IDbContext
         return $"OPENJSON([{columnName}]) WITH ({string.Join(", ", withParts)})";
     }
 
+    /// <inheritdoc />
+    /// <remarks>SQL Server uses OPENJSON EXISTS — returns null to signal the default path.</remarks>
+    public (string RawSql, object[] Bindings)? BuildFlatObjectAnyWhere(
+        string columnName,
+        IReadOnlyList<(string Column, string Op, object Value)> conditions) => null;
+
     public Compiler QueryCompiler => throw new NotSupportedException();
     public bool StoredProcedureReturnValue => throw new NotSupportedException();
     public bool CaseValueExtendedParameters => throw new NotSupportedException();

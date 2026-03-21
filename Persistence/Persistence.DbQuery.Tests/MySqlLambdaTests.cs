@@ -227,6 +227,77 @@ public class MySqlLambdaTests : QueryTestBase
     }
 
     // =========================================================================
+    // any() — key/value Dictionary (Attributes) — MySQL
+    // =========================================================================
+
+    // =========================================================================
+    // any() — key/value Dictionary (Attributes) — MySQL
+    // MySQL uses JSON_CONTAINS_PATH / JSON_UNQUOTE(JSON_EXTRACT(...)) directly
+    // rather than an EXISTS subquery — no JSON_TABLE involved.
+    // =========================================================================
+
+    [Fact]
+    public void MySql_Any_Attributes_SingleKey_UsesJsonContainsPath()
+    {
+        // Key-only: JSON_CONTAINS_PATH(`Attributes`, 'one', CONCAT('$.', ?))
+        var sql = SqlMySql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.Contains("JSON_CONTAINS_PATH", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Attributes_SingleKey_ReferencesColumn()
+    {
+        var sql = SqlMySql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.Contains("`Attributes`", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Attributes_SingleKey_DoesNotUseExists()
+    {
+        // Flat object path uses WhereRaw — not a correlated EXISTS subquery
+        var sql = SqlMySql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.DoesNotContain("EXISTS", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Attributes_SingleKey_DoesNotUseJsonTable()
+    {
+        var sql = SqlMySql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.DoesNotContain("JSON_TABLE", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Attributes_SingleKey_ValueInBindings()
+    {
+        var result = ResultMySql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.Contains("Department", result.Bindings);
+    }
+
+    [Fact]
+    public void MySql_Any_Attributes_KeyAndValue_UsesJsonExtract()
+    {
+        // Key+Value: JSON_UNQUOTE(JSON_EXTRACT(`Attributes`, CONCAT('$.', ?))) = ?
+        var sql = SqlMySql(filter: "Attributes/any(a: a/Key eq 'Department' and a/Value eq 'HR')");
+        Assert.Contains("JSON_UNQUOTE", sql);
+        Assert.Contains("JSON_EXTRACT", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Attributes_KeyAndValue_BothValuesInBindings()
+    {
+        var result = ResultMySql(filter: "Attributes/any(a: a/Key eq 'Department' and a/Value eq 'HR')");
+        Assert.Contains("Department", result.Bindings);
+        Assert.Contains("HR", result.Bindings);
+    }
+
+    [Fact]
+    public void MySql_Any_Attributes_DoesNotUseOpenjson()
+    {
+        var sql = SqlMySql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.DoesNotContain("OPENJSON", sql.ToUpperInvariant());
+    }
+
+    // =========================================================================
     // error cases — same behaviour on both backends
     // =========================================================================
 

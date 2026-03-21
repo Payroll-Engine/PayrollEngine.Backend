@@ -88,6 +88,69 @@ public class LambdaAndInTests : QueryTestBase
     // any() — error cases
     // =========================================================================
 
+    // =========================================================================
+    // any() — key/value Dictionary (Attributes)
+    // =========================================================================
+
+    [Fact]
+    public void Any_Attributes_SingleKey_ProducesExists()
+    {
+        var sql = Sql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.Contains("EXISTS", sql);
+    }
+
+    [Fact]
+    public void Any_Attributes_SingleKey_ReferencesColumn()
+    {
+        var sql = Sql(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.Contains("[Attributes]", sql);
+    }
+
+    [Fact]
+    public void Any_Attributes_SingleKey_ValueInBindings()
+    {
+        var result = Result(filter: "Attributes/any(a: a/Key eq 'Department')");
+        Assert.Contains("Department", result.Bindings);
+    }
+
+    [Fact]
+    public void Any_Attributes_KeyAndValue_ProducesExists()
+    {
+        var sql = Sql(filter: "Attributes/any(a: a/Key eq 'Department' and a/Value eq 'HR')");
+        Assert.Contains("EXISTS", sql);
+        Assert.Contains("[Attributes]", sql);
+    }
+
+    [Fact]
+    public void Any_Attributes_KeyAndValue_BothValuesInBindings()
+    {
+        var result = Result(filter: "Attributes/any(a: a/Key eq 'Department' and a/Value eq 'HR')");
+        Assert.Contains("Department", result.Bindings);
+        Assert.Contains("HR", result.Bindings);
+    }
+
+    [Fact]
+    public void Any_Attributes_CombinedWithScalarFilter_BothInSql()
+    {
+        var sql = Sql(filter: "Status eq 1 and Attributes/any(a: a/Key eq 'Level')");
+        Assert.Contains("[Status]", sql);
+        Assert.Contains("EXISTS", sql);
+        Assert.Contains("[Attributes]", sql);
+    }
+
+    [Fact]
+    public void Any_Attributes_CombinedWithScalarFilter_ValuesInBindings()
+    {
+        var result = Result(filter: "Status eq 1 and Attributes/any(a: a/Key eq 'Level' and a/Value eq 'Senior')");
+        Assert.Contains(1, result.Bindings);
+        Assert.Contains("Level", result.Bindings);
+        Assert.Contains("Senior", result.Bindings);
+    }
+
+    // =========================================================================
+    // any() — error cases
+    // =========================================================================
+
     [Fact]
     public void Any_OnNonCollectionColumn_ThrowsQueryException()
     {

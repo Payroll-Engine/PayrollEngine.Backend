@@ -106,6 +106,64 @@ public class DbContext : IDbContext
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// MySQL cannot use EXISTS + JSON_TABLE for flat JSON objects; it uses direct JSON functions instead.
+    ///
+    /// Key-only  (a/Key eq 'Dept'):
+    ///   JSON_CONTAINS_PATH(`col`, 'one', CONCAT('$.', ?))
+    ///   Checks whether the key exists in the flat JSON object.
+    ///
+    /// Key+Value (a/Key eq 'Dept' and a/Value eq 'HR'):
+    ///   JSON_UNQUOTE(JSON_EXTRACT(`col`, CONCAT('$.', ?))) = ?
+    ///   Reads the value at the given key and compares it.
+    ///
+    /// Value-only (a/Value eq 'HR'):
+    ///   JSON_SEARCH(`col`, 'one', ?) IS NOT NULL
+    ///   Returns the path of the first occurrence of the value.
+    /// </remarks>
+    public (string RawSql, object[] Bindings)? BuildFlatObjectAnyWhere(
+        string columnName,
+        IReadOnlyList<(string Column, string Op, object Value)> conditions)
+    {
+        var col = $"`{columnName}`";
+
+        string keyVal = null;
+        string valueVal = null;
+
+        foreach (var (column, _, value) in conditions)
+        {
+            if (string.Equals(column, "Key", StringComparison.OrdinalIgnoreCase))
+            {
+                keyVal = value?.ToString();
+            }
+            else if (string.Equals(column, "Value", StringComparison.OrdinalIgnoreCase))
+            {
+                valueVal = value?.ToString();
+            }
+        }
+
+        if (keyVal != null && valueVal != null)
+        {
+            return ($"JSON_UNQUOTE(JSON_EXTRACT({col}, CONCAT('$.', ?))) = ?",
+                [keyVal, valueVal]);
+        }
+
+        if (keyVal != null)
+        {
+            return ($"JSON_CONTAINS_PATH({col}, 'one', CONCAT('$.', ?))",
+                [keyVal]);
+        }
+
+        if (valueVal != null)
+        {
+            return ($"JSON_SEARCH({col}, 'one', ?) IS NOT NULL",
+                [valueVal]);
+        }
+
+        return null;
+    }
+
+    /// <inheritdoc />
     public bool StoredProcedureReturnValue => false;
 
     /// <inheritdoc />

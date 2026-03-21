@@ -40,4 +40,13 @@ public class TestEntity
 
     /// <summary>String tag collection — e.g. ["payroll","active"]</summary>
     public List<string> Tags { get; set; }
+
+    // -------------------------------------------------------------------------
+    // JSON key/value column — eligible for OData any() lambda with property access.
+    // Stored as a JSON object array, e.g. [{"key":"Dept","value":"HR"}].
+    // TypeQueryBuilder recognises Dictionary<string, object> as a collection column.
+    // -------------------------------------------------------------------------
+
+    /// <summary>Key/value attribute map — e.g. {"Department":"HR","Level":"Senior"}</summary>
+    public Dictionary<string, object> Attributes { get; set; }
 }

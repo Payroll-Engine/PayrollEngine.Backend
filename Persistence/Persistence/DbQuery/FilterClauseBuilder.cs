@@ -208,7 +208,37 @@ internal sealed class FilterClauseBuilder : QueryNodeVisitor<SqlKata.Query>
 
         var conditions = CollectAnyConditions(body);
 
-        // Scalar: single condition whose column is "value" → no property schema needed
+        // Key-value flat object (Dictionary<string, object>): route to db-specific flat-object handler.
+        // SQL Server: EXISTS (SELECT 1 FROM OPENJSON([col]) WHERE [Key]=@p0 [AND [Value]=@p1])
+        // MySQL:      direct WHERE via JSON_CONTAINS_PATH / JSON_UNQUOTE(JSON_EXTRACT(...))
+        if (QueryContext.IsKeyValueColumn(columnName))
+        {
+            var rawWhere = DbContext?.BuildFlatObjectAnyWhere(columnName, conditions);
+            if (rawWhere.HasValue)
+            {
+                // MySQL: direct WHERE expression — no EXISTS subquery
+                query = query.WhereRaw(rawWhere.Value.RawSql, rawWhere.Value.Bindings);
+            }
+            else
+            {
+                // SQL Server: EXISTS (SELECT 1 FROM OPENJSON([col]) WHERE [Key]=@p0 ...)
+                // OPENJSON without WITH exposes built-in [key] / [value] / [type] columns.
+                // SQL Server is case-insensitive so [Key] matches [key] from OPENJSON output.
+                var fromRaw = $"OPENJSON([{columnName}])";
+                query = query.WhereExists(q =>
+                {
+                    q = q.FromRaw(fromRaw);
+                    foreach (var (col, op, val) in conditions)
+                    {
+                        q = q.Where(col, op, val);
+                    }
+                    return q;
+                });
+            }
+            return query;
+        }
+
+        // Scalar array (List<T>): single condition whose column is "value" → no property schema needed
         var isScalar = conditions.Count == 1 &&
                        string.Equals(conditions[0].Column, "value", StringComparison.OrdinalIgnoreCase);
 
@@ -216,11 +246,11 @@ internal sealed class FilterClauseBuilder : QueryNodeVisitor<SqlKata.Query>
             ? []
             : conditions.Select(c => c.Column).ToArray();
 
-        var fromRaw = BuildCollectionFromRaw(columnName, isScalar, propertyNames);
+        var fromRaw2 = BuildCollectionFromRaw(columnName, isScalar, propertyNames);
 
         query = query.WhereExists(q =>
         {
-            q = q.FromRaw(fromRaw);
+            q = q.FromRaw(fromRaw2);
             foreach (var (col, op, val) in conditions)
             {
                 q = q.Where(col, op, val);

@@ -29,14 +29,24 @@ internal class TypeQueryBuilder<T> : QueryBuilderBase, IQueryContext
         {
             if (property.Value.IsClass)
             {
-                // scalar string and localization dictionary → regular columns
-                if (property.Value == typeof(string) ||
-                    property.Value == typeof(Dictionary<string, string>))
+                // scalar string → regular column
+                if (property.Value == typeof(string))
                 {
                     typeColumns.Add(property.Key, property.Value);
                 }
-                // List<primitive|string|decimal|DateTime|Guid> → JSON collection column
+                // List<primitive|string|decimal|DateTime|Guid> → JSON array collection column
                 else if (IsJsonCollectionType(property.Value))
+                {
+                    collectionColumns.Add(property.Key, property.Value);
+                }
+                // Dictionary<string, object> → flat JSON key/value object (Attributes)
+                else if (property.Value == typeof(Dictionary<string, object>))
+                {
+                    collectionColumns.Add(property.Key, property.Value);
+                }
+                // Dictionary<string, string> → flat JSON localization object (e.g. NameLocalizations)
+                // Key = culture code (e.g. "de-CH"), Value = localized string
+                else if (property.Value == typeof(Dictionary<string, string>))
                 {
                     collectionColumns.Add(property.Key, property.Value);
                 }
@@ -168,6 +178,21 @@ internal class TypeQueryBuilder<T> : QueryBuilderBase, IQueryContext
             return false;
         }
         return FindCollectionColumn(name) != null;
+    }
+
+    bool IQueryContext.IsKeyValueColumn(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return false;
+        }
+        var colName = FindCollectionColumn(name);
+        if (colName == null)
+        {
+            return false;
+        }
+        return CollectionColumns.TryGetValue(colName, out var type) &&
+               type == typeof(Dictionary<string, object>);
     }
 
     #endregion

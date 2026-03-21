@@ -108,6 +108,16 @@ public class DbContext : IDbContext
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// SQL Server uses OPENJSON([col]) without a WITH clause for flat JSON objects.
+    /// The built-in [key] and [value] columns are available directly — no custom schema needed.
+    /// Returns null to instruct FilterClauseBuilder to use the default OPENJSON EXISTS pattern.
+    /// </remarks>
+    public (string RawSql, object[] Bindings)? BuildFlatObjectAnyWhere(
+        string columnName,
+        IReadOnlyList<(string Column, string Op, object Value)> conditions) => null;
+
+    /// <inheritdoc />
     public bool StoredProcedureReturnValue => true;
 
     /// <inheritdoc />

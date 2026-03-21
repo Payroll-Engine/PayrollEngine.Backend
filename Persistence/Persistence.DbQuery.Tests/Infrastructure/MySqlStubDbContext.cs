@@ -52,6 +52,50 @@ public sealed class MySqlStubDbContext : IDbContext
         return $"JSON_TABLE(`{columnName}`, '$[*]' COLUMNS ({string.Join(", ", cols)})) jt";
     }
 
+    /// <inheritdoc />
+    /// <remarks>Mirrors Persistence.MySql.DbContext.BuildFlatObjectAnyWhere.</remarks>
+    public (string RawSql, object[] Bindings)? BuildFlatObjectAnyWhere(
+        string columnName,
+        IReadOnlyList<(string Column, string Op, object Value)> conditions)
+    {
+        var col = $"`{columnName}`";
+
+        string keyVal = null;
+        string valueVal = null;
+
+        foreach (var (column, _, value) in conditions)
+        {
+            if (string.Equals(column, "Key", StringComparison.OrdinalIgnoreCase))
+            {
+                keyVal = value?.ToString();
+            }
+            else if (string.Equals(column, "Value", StringComparison.OrdinalIgnoreCase))
+            {
+                valueVal = value?.ToString();
+            }
+        }
+
+        if (keyVal != null && valueVal != null)
+        {
+            return ($"JSON_UNQUOTE(JSON_EXTRACT({col}, CONCAT('$.', ?))) = ?",
+                [keyVal, valueVal]);
+        }
+
+        if (keyVal != null)
+        {
+            return ($"JSON_CONTAINS_PATH({col}, 'one', CONCAT('$.', ?))",
+                [keyVal]);
+        }
+
+        if (valueVal != null)
+        {
+            return ($"JSON_SEARCH({col}, 'one', ?) IS NOT NULL",
+                [valueVal]);
+        }
+
+        return null;
+    }
+
     public Compiler QueryCompiler => throw new NotSupportedException();
     public bool StoredProcedureReturnValue => throw new NotSupportedException();
     public bool CaseValueExtendedParameters => throw new NotSupportedException();
