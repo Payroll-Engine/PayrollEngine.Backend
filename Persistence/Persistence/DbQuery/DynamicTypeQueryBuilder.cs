@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -46,14 +46,21 @@ internal sealed class DynamicTypeQueryBuilder<T> : TypeQueryBuilder<T>
     /// <remarks>Do not call the base class method</remarks>
     protected override string ValidateColumn(string name)
     {
-        // type column
+        // scalar type column
         var validName = FindTypeColumn(name);
         if (validName != null)
         {
             return validName;
         }
 
-        // dynamic column
+        // JSON collection column (any() source) — delegate to base implementation
+        var collectionName = FindCollectionColumn(name);
+        if (collectionName != null)
+        {
+            return collectionName;
+        }
+
+        // dynamic attribute column
         if (ContainerNames.Any())
         {
             var valid = false;

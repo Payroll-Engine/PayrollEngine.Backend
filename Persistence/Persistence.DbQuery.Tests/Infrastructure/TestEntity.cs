@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace PayrollEngine.Persistence.DbQuery.Tests.Infrastructure;
 
@@ -6,7 +7,7 @@ namespace PayrollEngine.Persistence.DbQuery.Tests.Infrastructure;
 /// Simple typed test entity — all value-type and string properties are included as
 /// valid OData columns by TypeQueryBuilder via reflection (GetPropertyTypes).
 /// Deliberately does NOT implement IDomainAttributeObject; stays on the
-/// TypeQueryBuilder path (no OPENJSON).
+/// TypeQueryBuilder path (no OPENJSON attribute expansion).
 /// </summary>
 public class TestEntity
 {
@@ -27,4 +28,16 @@ public class TestEntity
 
     /// <summary>Boolean column</summary>
     public bool Active { get; set; }
+
+    // -------------------------------------------------------------------------
+    // JSON collection columns — eligible for OData any() lambda expressions.
+    // Stored as JSON arrays in the database, e.g. ["HR","Finance"].
+    // TypeQueryBuilder recognises List<string> as IsJsonCollectionType → CollectionColumns.
+    // -------------------------------------------------------------------------
+
+    /// <summary>String collection stored as a JSON array — e.g. ["HR","Finance"]</summary>
+    public List<string> Divisions { get; set; }
+
+    /// <summary>String tag collection — e.g. ["payroll","active"]</summary>
+    public List<string> Tags { get; set; }
 }

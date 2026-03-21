@@ -1,10 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Task = System.Threading.Tasks.Task;
 using MySqlConnector;
@@ -80,6 +80,29 @@ public class DbContext : IDbContext
         return string.IsNullOrWhiteSpace(valueAlias)
             ? $"JSON_UNQUOTE(JSON_EXTRACT(Attributes, '$.{attribute}')) AS {column}"
             : $"CAST(JSON_UNQUOTE(JSON_EXTRACT(Attributes, '$.{attribute}')) AS {valueAlias}) AS {column}";
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Scalar array — e.g. Divisions/any(d: d eq 'HR'):
+    ///   JSON_TABLE(`Divisions`, '$[*]' COLUMNS (value VARCHAR(255) PATH '$')) jt
+    ///   → exposes a single [value] column per array element; matches SQL Server OPENJSON column name.
+    ///
+    /// Key/value object array — e.g. Attributes/any(a: a/Key eq 'K' and a/Value eq 'V'):
+    ///   JSON_TABLE(`Attributes`, '$[*]' COLUMNS (`Key` VARCHAR(255) PATH '$.key', `Value` VARCHAR(255) PATH '$.value')) jt
+    ///   → exposes named columns matching the lambda property names.
+    ///
+    /// The alias <c>jt</c> is required by MySQL's JSON_TABLE syntax and is consistent across all usages.
+    /// VARCHAR(255) covers the typical JSON string values stored in PE collections.
+    /// </remarks>
+    public string BuildCollectionFromRaw(string columnName, bool isScalar, IReadOnlyList<string> propertyNames)
+    {
+        if (isScalar)
+        {
+            return $"JSON_TABLE(`{columnName}`, '$[*]' COLUMNS (value VARCHAR(255) PATH '$')) jt";
+        }
+        var cols = propertyNames.Select(p => $"`{p}` VARCHAR(255) PATH '$.{p.ToLowerInvariant()}'");
+        return $"JSON_TABLE(`{columnName}`, '$[*]' COLUMNS ({string.Join(", ", cols)})) jt";
     }
 
     /// <inheritdoc />

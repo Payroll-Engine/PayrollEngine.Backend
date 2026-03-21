@@ -1,10 +1,10 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Task = System.Threading.Tasks.Task;
 using Microsoft.Data.SqlClient;
@@ -85,6 +85,26 @@ public class DbContext : IDbContext
         return string.IsNullOrWhiteSpace(valueAlias)
             ? $"(SELECT value FROM OPENJSON(Attributes) WHERE [key] = '{attribute}') AS {column}"
             : $"(SELECT CAST(value AS {valueAlias}) FROM OPENJSON(Attributes) WHERE [key] = '{attribute}') AS {column}";
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Scalar array — e.g. Divisions/any(d: d eq 'HR'):
+    ///   OPENJSON([Divisions])
+    ///   → exposes a built-in [value] column; no WITH clause required.
+    ///
+    /// Key/value object array — e.g. Attributes/any(a: a/Key eq 'K' and a/Value eq 'V'):
+    ///   OPENJSON([Attributes]) WITH ([Key] NVARCHAR(MAX) '$.key', [Value] NVARCHAR(MAX) '$.value')
+    ///   → exposes named typed columns matching the lambda property names.
+    /// </remarks>
+    public string BuildCollectionFromRaw(string columnName, bool isScalar, IReadOnlyList<string> propertyNames)
+    {
+        if (isScalar)
+        {
+            return $"OPENJSON([{columnName}])";
+        }
+        var withParts = propertyNames.Select(p => $"[{p}] NVARCHAR(MAX) '$.{p.ToLowerInvariant()}'");
+        return $"OPENJSON([{columnName}]) WITH ({string.Join(", ", withParts)})";
     }
 
     /// <inheritdoc />

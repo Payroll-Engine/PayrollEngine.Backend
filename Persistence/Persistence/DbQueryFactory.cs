@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PayrollEngine.Domain.Model;
@@ -27,13 +27,21 @@ public static class DbQueryFactory
         return new(tableName);
     }
 
-    private static SqlKata.Query BuildQuery(QueryBuilderBase queryBuilder, string tableName, Query query = null,
-        QueryMode queryMode = QueryMode.Item)
+    /// <summary>
+    /// Builds a SQL query via the given query builder.
+    /// The optional <paramref name="dbContext"/> is forwarded to the builder so that
+    /// <see cref="FilterClauseBuilder"/> can generate db-specific FROM fragments for any() sub-queries.
+    /// </summary>
+    private static SqlKata.Query BuildQuery(QueryBuilderBase queryBuilder, string tableName,
+        Query query = null, QueryMode queryMode = QueryMode.Item, IDbContext dbContext = null)
     {
         if (string.IsNullOrWhiteSpace(tableName))
         {
             throw new ArgumentException(nameof(tableName));
         }
+
+        // provide the db context so FilterClauseBuilder can emit backend-specific SQL for any()
+        queryBuilder.DbContext = dbContext;
 
         // build query including OData support
         var dbQuery = queryBuilder.BuildQuery(tableName, query, queryMode);
@@ -98,7 +106,7 @@ public static class DbQueryFactory
         if (typeof(T).GetInterface(nameof(IDomainAttributeObject)) != null)
         {
             var dynamicQueryBuilder = new DynamicTypeQueryBuilder<T>(Prefixes.AttributePrefixes);
-            var dbQuery = BuildQuery(dynamicQueryBuilder, tableName, query, queryMode);
+            var dbQuery = BuildQuery(dynamicQueryBuilder, tableName, query, queryMode, dbContext);
 
             // no attribute query
             if (!dynamicQueryBuilder.DynamicColumns.Any())
@@ -186,7 +194,7 @@ public static class DbQueryFactory
         }
 
         var queryBuilder = new TypeQueryBuilder<T>();
-        return BuildQuery(queryBuilder, tableName, query, queryMode);
+        return BuildQuery(queryBuilder, tableName, query, queryMode, dbContext);
     }
 
     /// <summary>

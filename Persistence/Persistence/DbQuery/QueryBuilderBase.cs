@@ -4,6 +4,7 @@ using Microsoft.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.UriParser;
 using Microsoft.OData.UriParser.Aggregation;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Persistence.DbSchema;
 
 namespace PayrollEngine.Persistence.DbQuery;
@@ -17,6 +18,14 @@ internal abstract class QueryBuilderBase
     /// The query context
     /// </summary>
     protected abstract IQueryContext QueryContext { get; }
+
+    /// <summary>
+    /// The database context — used by <see cref="FilterClauseBuilder"/> to generate
+    /// db-specific FROM fragments for OData any() EXISTS sub-queries.
+    /// Set by <see cref="DbQueryFactory"/> before calling <see cref="BuildQuery(string,Query,QueryMode)"/>.
+    /// Null is accepted: <see cref="FilterClauseBuilder"/> falls back to SQL Server syntax.
+    /// </summary>
+    internal IDbContext DbContext { get; set; }
 
     /// <summary>
     /// Builds a SQL query from a domain query
@@ -224,7 +233,7 @@ internal abstract class QueryBuilderBase
         {
             try
             {
-                query = filterClause.Expression.Accept(new FilterClauseBuilder(query, QueryContext));
+                query = filterClause.Expression.Accept(new FilterClauseBuilder(query, QueryContext, DbContext));
             }
             catch (QueryException)
             {

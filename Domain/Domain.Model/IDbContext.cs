@@ -1,7 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using SqlKata.Compilers;
 
 namespace PayrollEngine.Domain.Model;
@@ -23,6 +23,24 @@ public interface IDbContext
 
     /// <summary>Build SQL fragment to extract a named attribute value from a JSON column</summary>
     string BuildAttributeQuery(string column, string valueAlias = null);
+
+    /// <summary>
+    /// Build the db-specific FROM fragment for an OData any() correlated EXISTS sub-query.
+    /// The fragment is passed directly to SqlKata <c>FromRaw()</c>.
+    /// </summary>
+    /// <param name="columnName">The JSON collection column name (unquoted)</param>
+    /// <param name="isScalar">
+    /// True for a scalar JSON array (e.g. <c>["HR","Finance"]</c>) —
+    /// the sub-query exposes a single <c>value</c> column.
+    /// False for a JSON object array (e.g. <c>[{"key":"K","value":"V"}]</c>) —
+    /// the sub-query exposes named columns defined by <paramref name="propertyNames"/>.
+    /// </param>
+    /// <param name="propertyNames">
+    /// The property names extracted from the lambda body (e.g. <c>["Key","Value"]</c>).
+    /// Ignored when <paramref name="isScalar"/> is true.
+    /// </param>
+    /// <returns>Raw FROM fragment, e.g. <c>OPENJSON([col])</c> or <c>JSON_TABLE(`col`, …) jt</c></returns>
+    string BuildCollectionFromRaw(string columnName, bool isScalar, IReadOnlyList<string> propertyNames);
 
     /// <summary>Whether stored procedures support RETURN values (true for SqlServer, false for MySql)</summary>
     bool StoredProcedureReturnValue { get; }

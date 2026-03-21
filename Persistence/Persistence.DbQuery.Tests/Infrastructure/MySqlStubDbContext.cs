@@ -10,16 +10,16 @@ using Task = System.Threading.Tasks.Task;
 namespace PayrollEngine.Persistence.DbQuery.Tests.Infrastructure;
 
 /// <summary>
-/// Minimal IDbContext stub for tests using SQL Server syntax.
+/// Minimal IDbContext stub using MySQL syntax.
 /// BuildAttributeQuery and BuildCollectionFromRaw return real SQL fragments
-/// matching the Persistence.SqlServer implementation so that
-/// AttributeQueryTests and LambdaAndInTests can assert on generated SQL.
+/// matching the Persistence.MySql implementation.
+/// Used by MySqlLambdaTests to verify JSON_TABLE output.
 /// All other members throw NotSupportedException.
 /// </summary>
-public sealed class StubDbContext : IDbContext
+public sealed class MySqlStubDbContext : IDbContext
 {
     /// <inheritdoc/>
-    public string DateTimeType => "DATETIME2(7)";
+    public string DateTimeType => "DATETIME(7)";
 
     /// <inheritdoc/>
     public string DecimalType => "DECIMAL(28, 6)";
@@ -31,27 +31,32 @@ public sealed class StubDbContext : IDbContext
         var attribute = dotIndex >= 0 ? column[(dotIndex + 1)..] : column;
 
         return string.IsNullOrWhiteSpace(valueAlias)
-            ? $"(SELECT value FROM OPENJSON(Attributes) WHERE [key] = '{attribute}') AS {column}"
-            : $"(SELECT CAST(value AS {valueAlias}) FROM OPENJSON(Attributes) WHERE [key] = '{attribute}') AS {column}";
+            ? $"JSON_UNQUOTE(JSON_EXTRACT(Attributes, '$.{attribute}')) AS {column}"
+            : $"CAST(JSON_UNQUOTE(JSON_EXTRACT(Attributes, '$.{attribute}')) AS {valueAlias}) AS {column}";
     }
 
     /// <inheritdoc/>
-    /// <remarks>Mirrors Persistence.SqlServer.DbContext.BuildCollectionFromRaw.</remarks>
+    /// <remarks>
+    /// Mirrors Persistence.MySql.DbContext.BuildCollectionFromRaw.
+    ///
+    /// Scalar: JSON_TABLE(`col`, '$[*]' COLUMNS (value VARCHAR(255) PATH '$')) jt
+    /// Key/value: JSON_TABLE(`col`, '$[*]' COLUMNS (`Key` VARCHAR(255) PATH '$.key', ...)) jt
+    /// </remarks>
     public string BuildCollectionFromRaw(string columnName, bool isScalar, IReadOnlyList<string> propertyNames)
     {
         if (isScalar)
         {
-            return $"OPENJSON([{columnName}])";
+            return $"JSON_TABLE(`{columnName}`, '$[*]' COLUMNS (value VARCHAR(255) PATH '$')) jt";
         }
-        var withParts = propertyNames.Select(p => $"[{p}] NVARCHAR(MAX) '$.{p.ToLowerInvariant()}'");
-        return $"OPENJSON([{columnName}]) WITH ({string.Join(", ", withParts)})";
+        var cols = propertyNames.Select(p => $"`{p}` VARCHAR(255) PATH '$.{p.ToLowerInvariant()}'");
+        return $"JSON_TABLE(`{columnName}`, '$[*]' COLUMNS ({string.Join(", ", cols)})) jt";
     }
 
     public Compiler QueryCompiler => throw new NotSupportedException();
     public bool StoredProcedureReturnValue => throw new NotSupportedException();
     public bool CaseValueExtendedParameters => throw new NotSupportedException();
     public string LastInsertIdSql => throw new NotSupportedException();
-    public string QuoteIdentifier(string name) => throw new NotSupportedException();
+    public string QuoteIdentifier(string name) => $"`{name}`";
     public Task<Exception> TestVersionAsync() => throw new NotSupportedException();
     public Task<Tenant> GetTenantAsync(int tenantId, string tenantIdentifier = null) => throw new NotSupportedException();
     public Exception TransformException(Exception exception) => throw new NotSupportedException();
