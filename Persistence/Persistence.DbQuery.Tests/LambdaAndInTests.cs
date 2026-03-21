@@ -148,6 +148,58 @@ public class LambdaAndInTests : QueryTestBase
     }
 
     // =========================================================================
+    // any() — localization Dictionary<string, string> (NameLocalizations)
+    // Pattern: <PropertyName>Localizations, Key = culture code, Value = localized string
+    // Same flat JSON object structure as Attributes — uses OPENJSON([col]) EXISTS on SQL Server
+    // =========================================================================
+
+    [Fact]
+    public void Any_Localizations_ByCultureKey_ProducesExists()
+    {
+        var sql = Sql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH')");
+        Assert.Contains("EXISTS", sql);
+    }
+
+    [Fact]
+    public void Any_Localizations_ByCultureKey_ReferencesColumn()
+    {
+        var sql = Sql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH')");
+        Assert.Contains("[NameLocalizations]", sql);
+    }
+
+    [Fact]
+    public void Any_Localizations_ByCultureKey_ValueInBindings()
+    {
+        var result = Result(filter: "NameLocalizations/any(n: n/Key eq 'de-CH')");
+        Assert.Contains("de-CH", result.Bindings);
+    }
+
+    [Fact]
+    public void Any_Localizations_ByCultureKeyAndValue_ProducesExists()
+    {
+        var sql = Sql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH' and n/Value eq 'Lohnart')");
+        Assert.Contains("EXISTS", sql);
+        Assert.Contains("[NameLocalizations]", sql);
+    }
+
+    [Fact]
+    public void Any_Localizations_ByCultureKeyAndValue_BothValuesInBindings()
+    {
+        var result = Result(filter: "NameLocalizations/any(n: n/Key eq 'de-CH' and n/Value eq 'Lohnart')");
+        Assert.Contains("de-CH", result.Bindings);
+        Assert.Contains("Lohnart", result.Bindings);
+    }
+
+    [Fact]
+    public void Any_Localizations_CombinedWithScalarFilter_BothInSql()
+    {
+        var sql = Sql(filter: "Status eq 1 and NameLocalizations/any(n: n/Key eq 'en-US')");
+        Assert.Contains("[Status]", sql);
+        Assert.Contains("EXISTS", sql);
+        Assert.Contains("[NameLocalizations]", sql);
+    }
+
+    // =========================================================================
     // any() — error cases
     // =========================================================================
 

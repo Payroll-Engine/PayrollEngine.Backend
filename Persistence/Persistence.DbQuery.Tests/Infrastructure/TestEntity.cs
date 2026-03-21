@@ -49,4 +49,13 @@ public class TestEntity
 
     /// <summary>Key/value attribute map — e.g. {"Department":"HR","Level":"Senior"}</summary>
     public Dictionary<string, object> Attributes { get; set; }
+
+    // -------------------------------------------------------------------------
+    // Localization column — eligible for OData any() with culture-code key lookup.
+    // Stored as a flat JSON object, e.g. {"de-CH":"Lohnart","en-US":"Wage Type"}.
+    // TypeQueryBuilder recognises Dictionary<string, string> as a key-value collection column.
+    // -------------------------------------------------------------------------
+
+    /// <summary>Localized name map — e.g. {"de-CH":"Lohnart","en-US":"Wage Type"}</summary>
+    public Dictionary<string, string> NameLocalizations { get; set; }
 }

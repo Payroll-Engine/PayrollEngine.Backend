@@ -192,7 +192,8 @@ internal class TypeQueryBuilder<T> : QueryBuilderBase, IQueryContext
             return false;
         }
         return CollectionColumns.TryGetValue(colName, out var type) &&
-               type == typeof(Dictionary<string, object>);
+               (type == typeof(Dictionary<string, object>) ||
+                type == typeof(Dictionary<string, string>));
     }
 
     #endregion

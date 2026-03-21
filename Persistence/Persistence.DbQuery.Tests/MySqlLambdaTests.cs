@@ -298,6 +298,55 @@ public class MySqlLambdaTests : QueryTestBase
     }
 
     // =========================================================================
+    // any() — localization Dictionary<string, string> (NameLocalizations) — MySQL
+    // Same flat-object path as Attributes: JSON_CONTAINS_PATH / JSON_UNQUOTE(JSON_EXTRACT(...))
+    // =========================================================================
+
+    [Fact]
+    public void MySql_Any_Localizations_ByCultureKey_UsesJsonContainsPath()
+    {
+        var sql = SqlMySql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH')");
+        Assert.Contains("JSON_CONTAINS_PATH", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Localizations_ByCultureKey_ReferencesColumn()
+    {
+        var sql = SqlMySql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH')");
+        Assert.Contains("`NameLocalizations`", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Localizations_ByCultureKey_ValueInBindings()
+    {
+        var result = ResultMySql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH')");
+        Assert.Contains("de-CH", result.Bindings);
+    }
+
+    [Fact]
+    public void MySql_Any_Localizations_ByCultureKeyAndValue_UsesJsonExtract()
+    {
+        var sql = SqlMySql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH' and n/Value eq 'Lohnart')");
+        Assert.Contains("JSON_UNQUOTE", sql);
+        Assert.Contains("JSON_EXTRACT", sql);
+    }
+
+    [Fact]
+    public void MySql_Any_Localizations_ByCultureKeyAndValue_BothValuesInBindings()
+    {
+        var result = ResultMySql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH' and n/Value eq 'Lohnart')");
+        Assert.Contains("de-CH", result.Bindings);
+        Assert.Contains("Lohnart", result.Bindings);
+    }
+
+    [Fact]
+    public void MySql_Any_Localizations_DoesNotUseExists()
+    {
+        var sql = SqlMySql(filter: "NameLocalizations/any(n: n/Key eq 'de-CH')");
+        Assert.DoesNotContain("EXISTS", sql);
+    }
+
+    // =========================================================================
     // error cases — same behaviour on both backends
     // =========================================================================
 
