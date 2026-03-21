@@ -221,16 +221,17 @@ internal sealed class FilterClauseBuilder : QueryNodeVisitor<SqlKata.Query>
             }
             else
             {
-                // SQL Server: EXISTS (SELECT 1 FROM OPENJSON([col]) WHERE [Key]=@p0 ...)
-                // OPENJSON without WITH exposes built-in [key] / [value] / [type] columns.
-                // SQL Server is case-insensitive so [Key] matches [key] from OPENJSON output.
+                // SQL Server: EXISTS (SELECT 1 FROM OPENJSON([col]) WHERE [key]=@p0 ...)
+                // OPENJSON without WITH exposes built-in [key] / [value] / [type] columns — always lowercase.
+                // PE uses a case-sensitive collation (SQL_Latin1_General_CP1_CS_AS), so column names
                 var fromRaw = $"OPENJSON([{columnName}])";
+                // must be lowercased to match the OPENJSON output ([key], not [Key]).
                 query = query.WhereExists(q =>
                 {
                     q = q.FromRaw(fromRaw);
                     foreach (var (col, op, val) in conditions)
                     {
-                        q = q.Where(col, op, val);
+                        q = q.Where(col.ToLowerInvariant(), op, val);
                     }
                     return q;
                 });
