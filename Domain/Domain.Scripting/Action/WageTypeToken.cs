@@ -63,8 +63,8 @@ internal sealed class WageTypeToken : TokenBase
                         provider: CultureInfo.InvariantCulture,
                         result: out _))
                 {
-                    // wage type value by number
-                    return new(parseData, $"{nameof(WageTypeFunction.GetWageTypeValueByNumber)}({wageTypeName})");
+                    // wage type value by number - numeric references never use namespace prefix
+                    return new(parseData, $"{nameof(WageTypeFunction.GetWageTypeValueByNumber)}({parseData.Text})");
                 }
                 // wage type value by name
                 return new(parseData, $"{nameof(WageTypeFunction.GetWageTypeValueByName)}(\"{wageTypeName}\")");

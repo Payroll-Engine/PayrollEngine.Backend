@@ -33,6 +33,7 @@ public abstract class LookupController(IRegulationService regulationService, ILo
         {
             return BadRequest($"Lookup {lookup.Id} without name");
         }
+
         // unique lookup name per tenant
         if (await ChildService.ExistsAnyAsync(Runtime.DbContext, regulationId, [lookup.Name]))
         {
