@@ -33,4 +33,7 @@ public class BackendRuntimeInformation
 
     /// <summary>Rate limiting configuration</summary>
     public BackendRateLimitingInformation RateLimiting { get; init; }
+
+    /// <summary>Server-wide cross-tenant isolation level</summary>
+    public TenantIsolationLevel TenantIsolationLevel { get; init; }
 }

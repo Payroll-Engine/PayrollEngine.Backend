@@ -158,6 +158,7 @@ public class TenantController : Api.Controller.TenantController
     [NotFoundResponse]
     [ApiOperationId("ExecuteReportQuery")]
     [QueryIgnore]
+    [ReadSemantic]
     public override async Task<ActionResult<DataTable>> ExecuteReportQueryAsync(int tenantId,
         [FromQuery] string methodName, [FromQuery] string culture,
         [FromBody] Dictionary<string, string> parameters = null) =>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using PayrollEngine.Action;
 using PayrollEngine.Client.Scripting.Function;
@@ -15,8 +15,16 @@ internal sealed class WageTypeToken : TokenBase
     {
         /// <summary>Wage type period value (default)</summary>
         Period,
+        /// <summary>Wage type value of the previous period</summary>
+        PrevPeriod,
+        /// <summary>Wage type value of the next period</summary>
+        NextPeriod,
         /// <summary>Wage type cycle value, the year-to-date value</summary>
         Cycle,
+        /// <summary>Wage type total value of the previous cycle</summary>
+        PrevCycle,
+        /// <summary>Wage type total value of the next cycle</summary>
+        NextCycle,
         /// <summary>Sum of retro corrections for the wage type within the current cycle</summary>
         RetroSum
     }
@@ -49,7 +57,11 @@ internal sealed class WageTypeToken : TokenBase
         var scope = parseData.GetProperty<ValueScope>() switch
         {
             ValueScope.Period => ValueScope.Period,
+            ValueScope.PrevPeriod => ValueScope.PrevPeriod,
+            ValueScope.NextPeriod => ValueScope.NextPeriod,
             ValueScope.Cycle => ValueScope.Cycle,
+            ValueScope.PrevCycle => ValueScope.PrevCycle,
+            ValueScope.NextCycle => ValueScope.NextCycle,
             ValueScope.RetroSum => ValueScope.RetroSum,
             _ => ValueScope.Period
         };
@@ -68,12 +80,55 @@ internal sealed class WageTypeToken : TokenBase
                 }
                 // wage type value by name
                 return new(parseData, $"{nameof(WageTypeFunction.GetWageTypeValueByName)}(\"{wageTypeName}\")");
+
+            case ValueScope.PrevPeriod:
+                if (decimal.TryParse(parseData.Text,
+                        style: NumberStyles.Any,
+                        provider: CultureInfo.InvariantCulture,
+                        result: out _))
+                {
+                    return new(parseData, $"{nameof(PayrunFunction.GetPrevPeriodWageTypeValue)}({parseData.Text})");
+                }
+                return new(parseData, $"{nameof(PayrunFunction.GetPrevPeriodWageTypeValue)}(\"{wageTypeName}\")");
+
+            case ValueScope.NextPeriod:
+                if (decimal.TryParse(parseData.Text,
+                        style: NumberStyles.Any,
+                        provider: CultureInfo.InvariantCulture,
+                        result: out _))
+                {
+                    return new(parseData, $"{nameof(PayrunFunction.GetNextPeriodWageTypeValue)}({parseData.Text})");
+                }
+                return new(parseData, $"{nameof(PayrunFunction.GetNextPeriodWageTypeValue)}(\"{wageTypeName}\")");
+
             case ValueScope.Cycle:
-                // wage type cycle value
-                return new(parseData, $"{nameof(WageTypeFunction.GetCycleWageTypeValue)}(\"{wageTypeName}\")");
+                // wage type cycle value — always by name (numeric resolved via GetWageTypeNumber in action method)
+                return new(parseData, $"{nameof(PayrunFunction.GetCycleWageTypeValue)}(\"{wageTypeName}\")");
+
+            case ValueScope.PrevCycle:
+                if (decimal.TryParse(parseData.Text,
+                        style: NumberStyles.Any,
+                        provider: CultureInfo.InvariantCulture,
+                        result: out _))
+                {
+                    return new(parseData, $"{nameof(PayrunFunction.GetPrevCycleWageTypeValue)}({parseData.Text})");
+                }
+                return new(parseData, $"{nameof(PayrunFunction.GetPrevCycleWageTypeValue)}(\"{wageTypeName}\")");
+
+            case ValueScope.NextCycle:
+                if (decimal.TryParse(parseData.Text,
+                        style: NumberStyles.Any,
+                        provider: CultureInfo.InvariantCulture,
+                        result: out _))
+                {
+                    return new(parseData, $"{nameof(PayrunFunction.GetNextCycleWageTypeValue)}({parseData.Text})");
+                }
+                return new(parseData, $"{nameof(PayrunFunction.GetNextCycleWageTypeValue)}(\"{wageTypeName}\")");
+
             case ValueScope.RetroSum:
                 // sum of retro corrections for the wage type within the current cycle
                 return new(parseData, $"{nameof(WageTypeFunction.GetRetroWageTypeValueSum)}(\"{wageTypeName}\")");
+
             default:
                 throw new ArgumentOutOfRangeException();
         }

@@ -58,4 +58,11 @@ public class ReportRuntimeSettings : RuntimeSettings
 
     /// <summary>The report request</summary>
     public ReportRequest ReportRequest { get; init; }
+
+    /// <summary>The regulation share repository — used by ExecuteConsolidatedQuery in report scripts</summary>
+    public IRegulationShareRepository RegulationShareRepository { get; init; }
+
+    /// <summary>Server-wide tenant isolation level — enforced in ExecuteConsolidatedQuery.
+    /// Injected from PayrollServerConfiguration at runtime construction time.</summary>
+    public TenantIsolationLevel TenantIsolationLevel { get; init; } = TenantIsolationLevel.None;
 }

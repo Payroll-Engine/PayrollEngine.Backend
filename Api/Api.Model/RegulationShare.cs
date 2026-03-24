@@ -24,9 +24,12 @@ public class RegulationShare : ApiObjectBase
     /// <summary>The consumer division id</summary>
     public int? ConsumerDivisionId { get; set; }
 
-    /// <summary>
-    /// Custom attributes
-    /// </summary>
+    /// <summary>The isolation level granted to the consumer tenant.
+    /// Consolidation: cross-tenant result access for report scripts — regulation not added as payroll layer.
+    /// Write: regulation available as full payroll layer (default).</summary>
+    public TenantIsolationLevel IsolationLevel { get; set; } = TenantIsolationLevel.Write;
+
+    /// <summary>Custom attributes</summary>
     public Dictionary<string, object> Attributes { get; set; }
 
     /// <inheritdoc/>

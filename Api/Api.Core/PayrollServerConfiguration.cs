@@ -127,6 +127,14 @@ public class PayrollServerConfiguration
     /// </summary>
     public int MaxRetroPayrunPeriods { get; set; }
 
+    /// <summary>Server-wide cross-tenant isolation policy (default: None).
+    /// Controls which cross-tenant HTTP requests are permitted on this backend instance.
+    /// None: all requests must be scoped to a single tenant via Auth-Tenant header.
+    /// Consolidation: enables ExecuteConsolidatedQuery in report scripts.
+    /// Read: cross-tenant GET requests permitted without Auth-Tenant header.
+    /// Write: full cross-tenant access — Auth-Tenant header must NOT be sent.</summary>
+    public TenantIsolationLevel TenantIsolationLevel { get; set; } = TenantIsolationLevel.None;
+
     /// <summary>
     /// CORS configuration (default: inactive).
     /// When no allowed origins are specified, only same-origin requests are accepted.

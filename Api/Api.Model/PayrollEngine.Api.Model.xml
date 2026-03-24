@@ -228,6 +228,9 @@
         <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.RateLimiting">
             <summary>Rate limiting configuration</summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.BackendRuntimeInformation.TenantIsolationLevel">
+            <summary>Server-wide cross-tenant isolation level</summary>
+        </member>
         <member name="T:PayrollEngine.Api.Model.Calendar">
             <summary>
             The division API object
@@ -3542,10 +3545,13 @@
         <member name="P:PayrollEngine.Api.Model.RegulationShare.ConsumerDivisionId">
             <summary>The consumer division id</summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.RegulationShare.IsolationLevel">
+            <summary>The isolation level granted to the consumer tenant.
+            Consolidation: cross-tenant result access for report scripts — regulation not added as payroll layer.
+            Write: regulation available as full payroll layer (default).</summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.RegulationShare.Attributes">
-            <summary>
-            Custom attributes
-            </summary>
+            <summary>Custom attributes</summary>
         </member>
         <member name="M:PayrollEngine.Api.Model.RegulationShare.ToString">
             <inheritdoc/>

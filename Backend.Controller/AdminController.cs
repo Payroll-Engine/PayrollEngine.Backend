@@ -65,6 +65,7 @@ public class AdminController : PayrollEngine.Api.Core.AdminController
     [OkResponse]
     [ApiOperationId("GetBackendInformation")]
     [QueryIgnore]
+    [SkipTenantAuth]
     public override async Task<ActionResult<BackendInformation>> GetBackendInformationAsync() =>
         await base.GetBackendInformationAsync();
 }

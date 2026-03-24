@@ -56,6 +56,12 @@ public class ControllerVisibility : IControllerVisibility
             }
         }
 
+        // hide RegulationShare controller when cross-tenant access is not enabled
+        if (config.TenantIsolationLevel == TenantIsolationLevel.None)
+        {
+            controllers.Add(nameof(RegulationShareController).RemoveFromEnd(nameof(Controller)));
+        }
+
         // audit trails
         AddControllers(!config.AuditTrail.Script, controllers, ScriptAuditControllers);
         AddControllers(!config.AuditTrail.Lookup, controllers, LookupAuditControllers);

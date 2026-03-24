@@ -6630,34 +6630,27 @@
             <returns>True if the regulation reference matches the test regulation</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.RegulationShare">
-            <summary>
-            A regulation division
-            </summary>
+            <summary>A regulation share — grants a consumer tenant access to a shared regulation</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.RegulationShare.ProviderTenantId">
-            <summary>
-            The provider tenant id
-            </summary>
+            <summary>The provider tenant id</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.RegulationShare.ProviderRegulationId">
-            <summary>
-            The provider regulation id
-            </summary>
+            <summary>The provider regulation id</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.RegulationShare.ConsumerTenantId">
-            <summary>
-            The consumer tenant id
-            </summary>
+            <summary>The consumer tenant id</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.RegulationShare.ConsumerDivisionId">
-            <summary>
-            The consumer division id
-            </summary>
+            <summary>The consumer division id</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.RegulationShare.IsolationLevel">
+            <summary>The isolation level granted to the consumer tenant.
+            Consolidation: cross-tenant result access for report scripts — regulation not added as payroll layer.
+            Write: regulation available as full payroll layer (default).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.RegulationShare.Attributes">
-            <summary>
-            Custom attributes
-            </summary>
+            <summary>Custom attributes</summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.RegulationShare.#ctor">
             <inheritdoc/>
@@ -6667,8 +6660,6 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.RegulationShare.Equals(PayrollEngine.Domain.Model.RegulationShare)">
             <summary>Compare two objects</summary>
-            <param name="compare">The object to compare with this</param>
-            <returns>True for objects with the same data</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.RegulationShare.ToString">
             <inheritdoc/>
@@ -8574,15 +8565,25 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Repository.IRegulationShareRepository.GetAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
-            <summary>
-            Test for permission
-            </summary>
+            <summary>Test for permission</summary>
             <param name="context">The database context</param>
             <param name="providerTenantId">The tenant id</param>
             <param name="providerRegulationId">The regulation id</param>
             <param name="consumerTenantId">The permission tenant id</param>
             <param name="consumerDivisionId">The permission division id</param>
-            <returns>True any collector exists</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRegulationShareRepository.GetConsumerSharesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.TenantIsolationLevel)">
+            <summary>Query all regulation shares for a consumer tenant with at least the specified isolation level</summary>
+            <param name="context">The database context</param>
+            <param name="consumerTenantId">The consumer tenant id</param>
+            <param name="minLevel">The minimum required isolation level</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.IRegulationShareRepository.GetConsumerDivisionSharesAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.TenantIsolationLevel)">
+            <summary>Query regulation shares for a specific division of a consumer tenant with at least the specified isolation level</summary>
+            <param name="context">The database context</param>
+            <param name="consumerTenantId">The consumer tenant id</param>
+            <param name="divisionId">The consumer division id</param>
+            <param name="minLevel">The minimum required isolation level</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.IReportAuditRepository">
             <summary>

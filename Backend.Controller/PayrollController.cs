@@ -174,6 +174,7 @@ public class PayrollController : Api.Controller.PayrollController
     [NotFoundResponse]
     [ApiOperationId("BuildPayrollCase")]
     [QueryIgnore]
+    [ReadSemantic]
     public override async Task<ActionResult<ApiObject.CaseSet>> BuildPayrollCaseAsync(int tenantId, int payrollId,
         string caseName, [FromQuery][Required] ApiObject.CaseBuildQuery query,
         [FromBody, ModelBinder(BinderType = typeof(OptionalModelBinder<ApiObject.CaseChangeSetup>))] ApiObject.CaseChangeSetup caseChangeSetup = null) =>

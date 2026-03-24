@@ -17,7 +17,7 @@ namespace PayrollEngine.Persistence.MySql;
 public class DbContext : IDbContext
 {
     /// <summary>The current database version</summary>
-    private static Version MinVersion => new(0, 9, 6);
+    private static Version MinVersion => new(0, 9, 7);
 
     // minimum command timeout is 30 seconds
     private const int MinCommandTimeout = 30;

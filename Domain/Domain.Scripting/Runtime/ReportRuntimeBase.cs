@@ -894,4 +894,99 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
 
     #endregion
 
+    #region Consolidation
+
+    /// <inheritdoc />
+    public DataTable ExecuteConsolidatedQuery(string tableName, string methodName, string culture,
+        string mergeColumn, Dictionary<string, string> parameters)
+    {
+        if (string.IsNullOrWhiteSpace(tableName))
+        {
+            throw new ArgumentException(nameof(tableName));
+        }
+        if (string.IsNullOrWhiteSpace(methodName))
+        {
+            throw new ArgumentException(nameof(methodName));
+        }
+
+        if (Settings.RegulationShareRepository == null)
+        {
+            Log.Warning($"ExecuteConsolidatedQuery: RegulationShareRepository not configured — returning empty table.");
+            return new DataTable(tableName);
+        }
+
+        // server-level gate: instance must be configured for at least Consolidation access
+        // this check runs in the scripting runtime, not in the HTTP pipeline
+        if (Settings.TenantIsolationLevel < TenantIsolationLevel.Consolidation)
+        {
+            Log.Warning($"ExecuteConsolidatedQuery blocked: server TenantIsolationLevel is {Settings.TenantIsolationLevel} (minimum required: Consolidation).");
+            return new DataTable(tableName);
+        }
+
+        // resolve all Consolidation shares for the current consumer tenant
+        var shares = Settings.RegulationShareRepository
+            .GetConsumerSharesAsync(Settings.DbContext, TenantId, TenantIsolationLevel.Consolidation)
+            .GetAwaiter().GetResult()
+            .ToList();
+
+        if (shares.Count == 0)
+        {
+            Log.Information($"ExecuteConsolidatedQuery: no Consolidation shares found for tenant {TenantId}.");
+            return new DataTable(tableName);
+        }
+
+        DataTable merged = null;
+        var tempName = $"{tableName}_share";
+
+        foreach (var share in shares)
+        {
+            // override TenantId with provider tenant — cross-tenant read authorized by Consolidation share
+            var shareParams = parameters != null
+                ? new Dictionary<string, string>(parameters)
+                : new Dictionary<string, string>();
+            shareParams["TenantId"] = share.ProviderTenantId.ToString();
+
+            DataTable shareTable;
+            try
+            {
+                shareTable = QueryService.ExecuteQuery(
+                    share.ProviderTenantId, methodName, culture ?? UserCulture, shareParams, ControllerContext);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"ExecuteConsolidatedQuery: provider tenant {share.ProviderTenantId} query failed — {ex.GetBaseException().Message}");
+                continue;
+            }
+
+            if (shareTable == null || shareTable.Rows.Count == 0)
+            {
+                continue;
+            }
+
+            shareTable.TableName = tempName;
+
+            if (merged == null)
+            {
+                merged = shareTable.Copy();
+                merged.TableName = tableName;
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(mergeColumn) && merged.Columns.Contains(mergeColumn))
+                {
+                    merged.PrimaryKey = [merged.Columns[mergeColumn]];
+                }
+                merged.Merge(shareTable, preserveChanges: false, MissingSchemaAction.Add);
+                merged.PrimaryKey = [];
+            }
+        }
+
+        var result = merged ?? new DataTable(tableName);
+        result.TableName = tableName;
+        result.AcceptChanges();
+        return result;
+    }
+
+    #endregion
+
 }

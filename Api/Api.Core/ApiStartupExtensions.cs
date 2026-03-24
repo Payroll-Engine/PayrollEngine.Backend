@@ -124,12 +124,20 @@ public static class ApiStartupExtensions
         // API services
         ApiFactory.SetupApiServices(services, configuration, dbContext);
 
+        // register PayrollServerConfiguration as IOptions for TenantIsolationFilter
+        services.Configure<PayrollServerConfiguration>(configuration.GetSection(
+            nameof(PayrollServerConfiguration)));
+
         // controllers
         services.AddControllers(setupAction =>
         {
             setupAction.Conventions.Add(new ControllerVisibilityConvention(
                 controllerVisibility.GetVisibleControllers(serverConfiguration),
                 controllerVisibility.GetHiddenControllers(serverConfiguration)));
+
+            // global tenant isolation filter — runs before TenantAuthorizationFilter
+            // enforces TenantIsolationLevel policy for every request
+            setupAction.Filters.Add<TenantIsolationFilter>();
         });
 
         // authentication services

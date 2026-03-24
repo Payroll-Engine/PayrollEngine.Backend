@@ -21,6 +21,7 @@ The Backend is the ASP.NET Core REST API server at the core of the Payroll Engin
   - [Scripting & Compilation](#scripting--compilation)
   - [Database & Timeouts](#database--timeouts)
   - [Payrun Processing](#payrun-processing)
+  - [Tenant Isolation](#tenant-isolation)
   - [CORS](#cors)
   - [Rate Limiting](#rate-limiting)
   - [Configuration Examples](#configuration-examples)
@@ -67,18 +68,13 @@ SELECT name, collation_name, is_read_committed_snapshot_on AS rcsi
 FROM sys.databases WHERE name = 'PayrollEngine';
 ```
 
-**MySQL 8.4 LTS** — run the MySQL scripts in order:
+**MySQL 8.4 LTS** — run the provided script:
 
-```powershell
-$mysql = 'mysql -uroot -p --port=3306 PayrollEngine'
-cmd /c "$mysql < Database\Create-Model.mysql.sql"
-cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\Functions.mysql.sql"
-cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetDerived.mysql.sql"
-cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetCaseValues.mysql.sql"
-cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetLookupRangeValue.mysql.sql"
-cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\GetResults.mysql.sql"
-cmd /c "$mysql < Persistence\Persistence.MySql\StoredProcedures\Remaining.mysql.sql"
+```cmd
+Database\CreateModel.MySql.cmd
 ```
+
+This executes `Create-Model.mysql.sql`, which contains tables, indexes, functions, and stored procedures in the correct dependency order.
 
 ### 2. Configure the connection string
 
@@ -240,6 +236,25 @@ The server configuration file `appsettings.json` contains the following settings
 | `MaxRetroPayrunPeriods`    | Maximum retro payrun periods per employee <sup>7)</sup>     | int        | 0 (unlimited)  |
 | `LogEmployeeTiming`        | Log employee processing timing                              | bool       | false          |
 
+### Tenant Isolation
+
+> ⚠️ **Regulation Sharing is disabled by default.** The `RegulationShare` controller is hidden and cross-tenant access is blocked until `TenantIsolationLevel` is explicitly set to `Consolidation` or higher.
+
+| Setting | Description | Type | Default |
+|:--|:--|:--|:--|
+| `TenantIsolationLevel` | Server-wide cross-tenant access policy <sup>13)</sup> | enum | `None` |
+
+Allowed values:
+
+| Value | Description |
+|:--|:--|
+| `None` | Default. Single-tenant mode. Filter fully transparent — all requests permitted. `RegulationShare` controller hidden. |
+| <nobr>`Consolidation`</nobr> | Single-tenant HTTP mode. Filter fully transparent. Enables `ExecuteConsolidatedQuery` in report scripts only (not HTTP cross-tenant access). |
+| `Read` | Cross-tenant read access via HTTP (GET and read-only POST without `Auth-Tenant`). |
+| `Write` | Full cross-tenant HTTP access. `Auth-Tenant` header must **not** be sent (returns `400` if present). |
+
+> At `None` and `Consolidation` the filter is fully transparent — all requests pass through regardless of headers. The level check only activates at `Read` and `Write`. Standard clients that do not send `Auth-Tenant` (e.g. PE Console) are never blocked in single-tenant deployments.
+
 ### CORS
 
 | Setting                              | Description                                       | Type       | Default                         |
@@ -270,7 +285,8 @@ The server configuration file `appsettings.json` contains the following settings
 <sup>9)</sup> Used exclusively by Swagger UI to obtain tokens for the interactive API explorer. Not required for production API authentication.<br />
 <sup>10)</sup> Verified on startup before the schema version check. Prevents silent data integrity issues from mismatched collation.<br />
 <sup>11)</sup> When set, functions exceeding this duration are logged at Warning level. Useful for identifying slow scripts or database operations.<br />
-<sup>12)</sup> Controls how many employees can persist their results concurrently. `1` = fully serialized (no deadlocks), `2` = default (load-tested best balance), `4+` = no measurable gain over `2`. Failed persists are retried up to 3 times with backoff; a job abort occurs only if all retries are exhausted.
+<sup>12)</sup> Controls how many employees can persist their results concurrently. `1` = fully serialized (no deadlocks), `2` = default (load-tested best balance), `4+` = no measurable gain over `2`. Failed persists are retried up to 3 times with backoff; a job abort occurs only if all retries are exhausted.<br />
+<sup>13)</sup> Controls whether cross-tenant access is permitted. Must be set to `Consolidation` or higher to activate Regulation Sharing. Only elevate above `None` when the deployment explicitly requires cross-tenant access — a consolidation-only setup does **not** require `Read` or `Write`.
 
 > It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 

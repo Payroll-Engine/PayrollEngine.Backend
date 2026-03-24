@@ -84,6 +84,7 @@ public class ReportController : Api.Controller.ReportController
     [NotFoundResponse]
     [ApiOperationId("ExecuteReport")]
     [QueryIgnore]
+    [ReadSemantic]
     public override async Task<ActionResult<ApiObject.ReportResponse>> ExecuteReportAsync(
         int tenantId, int regulationId, int reportId, [FromBody][Required] ApiObject.ReportRequest request)
     {
@@ -181,6 +182,7 @@ public class ReportController : Api.Controller.ReportController
     [OkResponse]
     [NotFoundResponse]
     [ApiOperationId("GetReportSet")]
+    [ReadSemantic]
     public override async Task<ActionResult<ApiObject.ReportSet>> GetReportSetAsync(
         int tenantId, int regulationId, int reportId, [FromBody] ApiObject.ReportRequest reportRequest)
     {

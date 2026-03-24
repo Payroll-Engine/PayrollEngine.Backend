@@ -22,7 +22,7 @@ public class EmployeeCaseChangeController : Api.Controller.EmployeeCaseChangeCon
 
     /// <summary>
     /// Query employee case changes
-    /// </summary>
+    /// </summary>  
     /// <param name="tenantId">The tenant id</param>
     /// <param name="employeeId">The employee id</param>
     /// <param name="query">Query parameters</param>

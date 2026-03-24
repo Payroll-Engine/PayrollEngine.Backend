@@ -632,7 +632,7 @@
         <member name="M:PayrollEngine.Backend.Controller.EmployeeCaseChangeController.QueryEmployeeCaseChangesAsync(System.Int32,System.Int32,PayrollEngine.Domain.Model.CaseChangeQuery)">
             <summary>
             Query employee case changes
-            </summary>
+            </summary>  
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The employee id</param>
             <param name="query">Query parameters</param>

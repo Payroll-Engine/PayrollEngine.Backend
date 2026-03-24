@@ -118,7 +118,8 @@ public abstract class AdminController(IControllerRuntime runtime, IHostApplicati
                     GlobalWindowSeconds = serverConfig.RateLimiting.Global.WindowSeconds,
                     PayrunJobStartPermitLimit = serverConfig.RateLimiting.PayrunJobStart.PermitLimit,
                     PayrunJobStartWindowSeconds = serverConfig.RateLimiting.PayrunJobStart.WindowSeconds
-                }
+                },
+                TenantIsolationLevel = serverConfig.TenantIsolationLevel
             }
         });
     }
