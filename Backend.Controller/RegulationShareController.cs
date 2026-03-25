@@ -10,6 +10,7 @@ namespace PayrollEngine.Backend.Controller;
 /// <inheritdoc/>
 [ApiControllerName("Regulation shares")]
 [Route("api/shares/regulations")]
+[CrossTenantEndpoint]
 public class RegulationShareController : Api.Controller.RegulationShareController
 {
     /// <summary>

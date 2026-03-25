@@ -48,9 +48,12 @@ public class TenantIsolationFilter(IOptions<PayrollServerConfiguration> config) 
             return;
         }
 
-        // rule 2: single-tenant HTTP mode → filter is transparent
-        // None and Consolidation do not enable cross-tenant HTTP access; all requests are allowed.
-        if (configuredLevel < TenantIsolationLevel.Read)
+        // rule 2: single-tenant HTTP mode → filter is transparent, UNLESS the endpoint is
+        // explicitly marked as cross-tenant. Cross-tenant endpoints (e.g. /api/shares/regulations)
+        // operate outside any single tenant scope and therefore always require at least Read level.
+        var isCrossTenantEndpoint = context.ActionDescriptor.EndpointMetadata
+            .OfType<CrossTenantEndpointAttribute>().Any();
+        if (configuredLevel < TenantIsolationLevel.Read && !isCrossTenantEndpoint)
         {
             await next();
             return;
