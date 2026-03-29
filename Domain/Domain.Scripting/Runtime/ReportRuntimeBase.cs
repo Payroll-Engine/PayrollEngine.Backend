@@ -911,7 +911,7 @@ public abstract class ReportRuntimeBase : RuntimeBase, IReportRuntime
 
         if (Settings.RegulationShareRepository == null)
         {
-            Log.Warning($"ExecuteConsolidatedQuery: RegulationShareRepository not configured — returning empty table.");
+            Log.Warning("ExecuteConsolidatedQuery: RegulationShareRepository not configured — returning empty table.");
             return new DataTable(tableName);
         }
 

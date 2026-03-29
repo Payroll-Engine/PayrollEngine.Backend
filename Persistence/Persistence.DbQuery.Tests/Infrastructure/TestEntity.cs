@@ -52,10 +52,10 @@ public class TestEntity
 
     // -------------------------------------------------------------------------
     // Localization column — eligible for OData any() with culture-code key lookup.
-    // Stored as a flat JSON object, e.g. {"de-CH":"Lohnart","en-US":"Wage Type"}.
+    // Stored as a flat JSON object.
     // TypeQueryBuilder recognises Dictionary<string, string> as a key-value collection column.
     // -------------------------------------------------------------------------
 
-    /// <summary>Localized name map — e.g. {"de-CH":"Lohnart","en-US":"Wage Type"}</summary>
+    /// <summary>Localized name map</summary>
     public Dictionary<string, string> NameLocalizations { get; set; }
 }

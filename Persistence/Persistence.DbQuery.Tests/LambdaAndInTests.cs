@@ -1,5 +1,6 @@
 using Xunit;
 using PayrollEngine.Persistence.DbQuery.Tests.Infrastructure;
+// ReSharper disable StringLiteralTypo
 
 namespace PayrollEngine.Persistence.DbQuery.Tests;
 

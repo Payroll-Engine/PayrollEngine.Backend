@@ -11,7 +11,7 @@ public class LookupRepository(IRegulationRepository regulationRepository,
 {
     /// <inheritdoc />
     /// <remarks>Applies the regulation namespace to the lookup name before persisting,
-    /// consistent with the bulk-create path in <see cref="LookupSetRepository.CreateAsync"/>.</remarks>
+    /// consistent with the bulk-create path in LookupSetRepository CreateAsync.</remarks>
     public override async Task<Lookup> CreateAsync(IDbContext context, int regulationId, Lookup item)
     {
         await ApplyNamespaceAsync(context, regulationId, item);

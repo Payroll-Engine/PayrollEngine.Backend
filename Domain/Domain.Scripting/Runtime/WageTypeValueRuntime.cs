@@ -30,6 +30,7 @@ public class WageTypeValueRuntime : WageTypeRuntimeBase, IWageTypeValueRuntime
 
     // execution abort
     internal bool AbortExecutionRequest { get; private set; }
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     internal string AbortExecutionReason { get; private set; }
 
     /// <inheritdoc />
