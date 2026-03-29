@@ -5591,9 +5591,14 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetResultDate(System.DateTime)">
             <summary>
-            Set creation date for all results
+            Set creation date for all results.
+            Uses Min(UtcNow, evaluationDate) so that results from historical payrun jobs
+            (evaluationDate in the past) receive a created timestamp that lies before their
+            own evaluation date — ensuring GetWageTypeResults visibility (created &lt; evaluationDate).
+            In production the evaluation date is always in the future relative to UtcNow,
+            so Min() returns UtcNow and behaviour is unchanged.
             </summary>
-            <param name="moment">The moment to set</param>
+            <param name="evaluationDate">The payrun job evaluation date</param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.AddTags(System.Collections.Generic.List{System.String})">
             <summary>

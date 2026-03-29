@@ -1,4 +1,4 @@
-﻿//#define SCRIPT_PERFORMANCE
+//#define SCRIPT_PERFORMANCE
 #if SCRIPT_PERFORMANCE
 #define LOG_STOPWATCH
 #endif
@@ -17,7 +17,7 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>
 
     #region Value
 
-    public Tuple<decimal?, List<RetroPayrunJob>, bool> GetValue(WageTypeRuntimeSettings settings, bool autoPeriodResults)
+    public Tuple<decimal?, List<RetroPayrunJob>, bool, bool> GetValue(WageTypeRuntimeSettings settings, bool autoPeriodResults)
     {
         LogStopwatch.Start(nameof(WageTypeValueRuntime));
 
@@ -34,6 +34,12 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>
 
         // payrun results
         settings.CurrentPayrollResult.PayrunResults.AddRange(runtime.PayrunResults);
+
+        // abort execution request — propagate immediately regardless of wageTypeValue
+        if (runtime.AbortExecutionRequest)
+        {
+            return new(null, [], false, true);
+        }
 
         // empty result
         if (wageTypeValue == null)
@@ -75,7 +81,8 @@ public class WageTypeScriptController : ScriptControllerBase<WageType>
             }
         }
 
-        return new(wageTypeValue, runtime.RetroJobs, runtime.ExecutionRestartRequest);
+        // Item1=value, Item2=retroJobs, Item3=restartRequest, Item4=abortRequest
+        return new(wageTypeValue, runtime.RetroJobs, runtime.ExecutionRestartRequest, false);
     }
 
     #endregion

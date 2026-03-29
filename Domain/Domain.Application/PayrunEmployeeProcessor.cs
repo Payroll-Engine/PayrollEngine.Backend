@@ -1,4 +1,4 @@
-﻿//#define EMPLOYEE_PERFORMANCE
+//#define EMPLOYEE_PERFORMANCE
 
 using System;
 using System.Linq;
@@ -18,7 +18,8 @@ namespace PayrollEngine.Domain.Application;
 /// <para>
 /// The wage type loop supports execution restarts when a wage type script sets the
 /// restart flag, bounded by <see cref="SystemSpecification.PayrunMaxExecutionCount"/>
-/// to prevent infinite loops.
+/// to prevent infinite loops. If a Guard wage type calls AbortExecution(), the loop
+/// stops immediately for this employee; CollectorEnd and PayrunEmployeeEnd still run.
 /// </para>
 /// </summary>
 internal sealed class PayrunEmployeeProcessor
@@ -320,6 +321,8 @@ internal sealed class PayrunEmployeeProcessor
     /// Calculates all wage types and collectors for a single employee within the current
     /// payrun period. Supports execution restarts when a wage type script sets the restart
     /// flag, bounded by <see cref="SystemSpecification.PayrunMaxExecutionCount"/>.
+    /// If a Guard wage type calls AbortExecution(), the loop stops immediately;
+    /// CollectorEnd and PayrunEmployeeEnd continue normally.
     /// </summary>
     private async Task<CalculationResult> CalculateAsync(PayrunProcessorRegulation processorRegulation,
         Employee employee, ICaseValueProvider caseValueProvider, PayrunEmployeeScope scope,
@@ -411,6 +414,7 @@ internal sealed class PayrunEmployeeProcessor
         // executions (limited by system spec)
         var executionCount = 0;
         bool executionRestart;
+        var abortRequested = false;
         do
         {
             // next execution
@@ -460,6 +464,14 @@ internal sealed class PayrunEmployeeProcessor
                         // restart the wage type calculation
                         executionRestart = true;
                         // exit wage type loop
+                        break;
+                    }
+
+                    // abort execution — Guard called AbortExecution()
+                    // CollectorEnd and PayrunEmployeeEnd continue normally
+                    if (valueResult != null && valueResult.Item5)
+                    {
+                        abortRequested = true;
                         break;
                     }
 
@@ -533,7 +545,7 @@ internal sealed class PayrunEmployeeProcessor
                     perfCalcMaxWageTypeMs = perfCalcSingleWtWatch.ElapsedMilliseconds;
 #endif
             }
-        } while (executionRestart && executionCount < SystemSpecification.PayrunMaxExecutionCount);
+        } while (executionRestart && !abortRequested && executionCount < SystemSpecification.PayrunMaxExecutionCount);
 
         if (stopwatch != null)
         {

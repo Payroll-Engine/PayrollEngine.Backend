@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Task = System.Threading.Tasks.Task;
@@ -27,6 +27,21 @@ public class WageTypeValueRuntime : WageTypeRuntimeBase, IWageTypeValueRuntime
 
     /// <inheritdoc />
     public void RestartExecution() => ExecutionRestartRequest = true;
+
+    // execution abort
+    internal bool AbortExecutionRequest { get; private set; }
+    internal string AbortExecutionReason { get; private set; }
+
+    /// <inheritdoc />
+    public void AbortExecution(string reason = null)
+    {
+        AbortExecutionRequest = true;
+        AbortExecutionReason = reason;
+        if (!string.IsNullOrWhiteSpace(reason))
+        {
+            Log.Warning(reason);
+        }
+    }
 
     /// <summary>The log owner type</summary>
     protected override string LogOwnerType => nameof(WageTypeValueFunction);

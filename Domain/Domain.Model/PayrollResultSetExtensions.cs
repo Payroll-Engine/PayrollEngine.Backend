@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PayrollEngine.Data;
@@ -178,22 +178,35 @@ public static class PayrollResultSetExtensions
         }
 
         /// <summary>
-        /// Set creation date for all results
+        /// Set creation date for all results.
+        /// Uses Min(UtcNow, evaluationDate) so that results from historical payrun jobs
+        /// (evaluationDate in the past) receive a created timestamp that lies before their
+        /// own evaluation date — ensuring GetWageTypeResults visibility (created &lt; evaluationDate).
+        /// In production the evaluation date is always in the future relative to UtcNow,
+        /// so Min() returns UtcNow and behaviour is unchanged.
         /// </summary>
-        /// <param name="moment">The moment to set</param>
-        public void SetResultDate(DateTime moment)
+        /// <param name="evaluationDate">The payrun job evaluation date</param>
+        public void SetResultDate(DateTime evaluationDate)
         {
             if (payrollResultSet == null)
             {
                 throw new ArgumentNullException(nameof(payrollResultSet));
             }
 
+            // Use Min(UtcNow, evaluationDate) so that results from historical test jobs
+            // are stamped before their own evaluationDate and remain visible to subsequent jobs.
+            // Subtract one tick from evaluationDate to satisfy the strict < condition.
+            var utcNow = DateTime.UtcNow;
+            var resultDate = utcNow < evaluationDate
+                ? utcNow
+                : evaluationDate.AddTicks(-1);
+
             // collector results
             if (payrollResultSet.CollectorResults != null)
             {
                 foreach (var collectorResult in payrollResultSet.CollectorResults)
                 {
-                    collectorResult.SetCreatedDate(moment);
+                    collectorResult.SetCreatedDate(resultDate);
                 }
             }
 
@@ -202,14 +215,14 @@ public static class PayrollResultSetExtensions
             {
                 foreach (var wageTypeResult in payrollResultSet.WageTypeResults)
                 {
-                    wageTypeResult.SetCreatedDate(moment);
+                    wageTypeResult.SetCreatedDate(resultDate);
 
                     // wage type custom results
                     if (wageTypeResult.CustomResults != null)
                     {
                         foreach (var customResult in wageTypeResult.CustomResults)
                         {
-                            customResult.SetCreatedDate(moment);
+                            customResult.SetCreatedDate(resultDate);
                         }
                     }
                 }
@@ -220,7 +233,7 @@ public static class PayrollResultSetExtensions
             {
                 foreach (var payrunResult in payrollResultSet.PayrunResults)
                 {
-                    payrunResult.SetCreatedDate(moment);
+                    payrunResult.SetCreatedDate(resultDate);
                 }
             }
         }

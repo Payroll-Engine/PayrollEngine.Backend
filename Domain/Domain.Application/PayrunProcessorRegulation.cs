@@ -1,4 +1,4 @@
-﻿//#define VALUE_CALC_PERFORMANCE
+//#define VALUE_CALC_PERFORMANCE
 //#define CASE_VALUE_RESULT_PERFORMANCE
 
 using System;
@@ -115,8 +115,14 @@ internal sealed class PayrunProcessorRegulation
         return isAvailable ?? true;
     }
 
-    internal Tuple<WageTypeResultSet, List<RetroPayrunJob>, List<string>, bool> CalculateWageTypeValue(PayrunEmployeeScope scope, 
-        IGrouping<decimal, DerivedWageType> derivedWageType, PayrollResultSet currentPayrollResult, 
+    // Tuple elements:
+    //   Item1 = WageTypeResultSet  (null when restart or abort requested)
+    //   Item2 = List<RetroPayrunJob>
+    //   Item3 = List<string>       disabled collectors
+    //   Item4 = bool               restart requested
+    //   Item5 = bool               abort requested
+    internal Tuple<WageTypeResultSet, List<RetroPayrunJob>, List<string>, bool, bool> CalculateWageTypeValue(PayrunEmployeeScope scope,
+        IGrouping<decimal, DerivedWageType> derivedWageType, PayrollResultSet currentPayrollResult,
         ICaseValueProvider caseValueProvider, int executionCount)
     {
         var retroPayrunJobs = new List<RetroPayrunJob>();
@@ -200,7 +206,13 @@ internal sealed class PayrunProcessorRegulation
             // execution restart
             if (result != null && result.Item3)
             {
-                return new(new(), [], [], true);
+                return new(new(), [], [], true, false);
+            }
+
+            // execution abort — guard called AbortExecution()
+            if (result != null && result.Item4)
+            {
+                return new(null, [], [], false, true);
             }
 
             // wage type value
@@ -286,7 +298,7 @@ internal sealed class PayrunProcessorRegulation
             Log.Information($"Calculate wage type {wageType.WageTypeNumber}: {stopwatch.ElapsedMilliseconds} ms");
 #endif
 
-        return new(resultSet, retroPayrunJobs, disabledCollectors, false);
+        return new(resultSet, retroPayrunJobs, disabledCollectors, false, false);
     }
     #endregion
 
