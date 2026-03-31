@@ -102,4 +102,5 @@ public interface IPayrollResultService : IChildApplicationService<IPayrollResult
     /// <param name="resultId">The result identifier</param>
     /// <returns>The payroll result set</returns>
     Task<PayrollResultSet> GetResultSetAsync(IDbContext context, int tenantId, int resultId);
+
 }

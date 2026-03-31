@@ -182,7 +182,7 @@ internal sealed class PayrunEmployeeProcessor
                 }
 
                 var effectiveRetroDate = RetroProcessor.ResolveEffectiveRetroDate(
-                    retroDate, payrunRetroJobs, scope.PayrunJob);
+                    retroDate, payrunRetroJobs, scope.PayrunJob, scope.Calculator);
 
                 if (effectiveRetroDate.HasValue)
                 {
@@ -363,10 +363,15 @@ internal sealed class PayrunEmployeeProcessor
         var payrollResult = new PayrollResultSet
         {
             PayrollId = scope.PayrunJob.PayrollId,
+            PayrollName = scope.Payroll.Name,
             PayrunId = Payrun.Id,
+            PayrunName = Payrun.Name,
             PayrunJobId = scope.PayrunJob.Id,
+            PayrunJobName = scope.PayrunJob.Name,
             EmployeeId = employee.Id,
+            EmployeeIdentifier = employee.Identifier,
             DivisionId = scope.Division.Id,
+            DivisionName = scope.Division.Name,
             CycleName = scope.PayrunJob.CycleName,
             CycleStart = scope.PayrunJob.CycleStart,
             CycleEnd = scope.PayrunJob.CycleEnd,

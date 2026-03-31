@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;
@@ -17,7 +18,6 @@ public class PayrollResultService(IPayrollResultContextService context) :
     private IPayrunResultRepository PayrunResultRepository { get; } = context.PayrunResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.PayrunResultRepository));
     private IPayrollResultSetRepository ResultSetRepository { get; } = context.ResultSetRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.ResultSetRepository));
     private IPayrollConsolidatedResultRepository ConsolidatedResultRepository { get; } = context.ConsolidatedResultRepository ?? throw new ArgumentNullException(nameof(IPayrollResultContextService.ConsolidatedResultRepository));
-
     public async Task<PayrollResultSet> GetResultSetAsync(IDbContext context,int tenantId, int resultId) =>
         await ResultSetRepository.GetAsync(context, tenantId, resultId);
 

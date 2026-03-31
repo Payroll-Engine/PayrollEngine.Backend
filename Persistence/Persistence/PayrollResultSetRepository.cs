@@ -23,10 +23,15 @@ public class PayrollResultSetRepository(IWageTypeResultSetRepository wageTypeRes
     protected override void GetObjectCreateData(PayrollResultSet resultSet, DbParameterCollection parameters)
     {
         parameters.Add(nameof(resultSet.PayrollId), resultSet.PayrollId, DbType.Int32);
+        parameters.Add(nameof(resultSet.PayrollName), resultSet.PayrollName);
         parameters.Add(nameof(resultSet.PayrunId), resultSet.PayrunId, DbType.Int32);
+        parameters.Add(nameof(resultSet.PayrunName), resultSet.PayrunName);
         parameters.Add(nameof(resultSet.PayrunJobId), resultSet.PayrunJobId, DbType.Int32);
+        parameters.Add(nameof(resultSet.PayrunJobName), resultSet.PayrunJobName);
         parameters.Add(nameof(resultSet.EmployeeId), resultSet.EmployeeId, DbType.Int32);
+        parameters.Add(nameof(resultSet.EmployeeIdentifier), resultSet.EmployeeIdentifier);
         parameters.Add(nameof(resultSet.DivisionId), resultSet.DivisionId, DbType.Int32);
+        parameters.Add(nameof(resultSet.DivisionName), resultSet.DivisionName);
         parameters.Add(nameof(resultSet.CycleName), resultSet.CycleName);
         parameters.Add(nameof(resultSet.CycleStart), resultSet.CycleStart, DbType.DateTime2);
         parameters.Add(nameof(resultSet.CycleEnd), resultSet.CycleEnd, DbType.DateTime2);

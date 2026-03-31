@@ -4,7 +4,7 @@
 --
 -- Schema version: 0.9.6
 --
--- Includes: CREATE DATABASE, all tables, 37 indexes, 7 functions, 44 stored procedures
+-- Includes: CREATE DATABASE, all tables, indexes, 7 functions, 44 stored procedures
 --
 -- Type mapping from T-SQL:
 --   [nvarchar](N)   -> VARCHAR(N)
@@ -31,7 +31,6 @@ SET GLOBAL log_bin_trust_function_creators = 1;
 -- =============================================================================
 -- TABLES (alphabetical order, dependencies first)
 -- =============================================================================
--- NOTE: Indexes are defined after all tables in the INDEXES section below.
 
 CREATE TABLE IF NOT EXISTS Calendar (
     Id                  INT           NOT NULL AUTO_INCREMENT,
@@ -807,22 +806,17 @@ CREATE TABLE IF NOT EXISTS PayrollLayer (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS PayrollResult (
-    Id                   INT          NOT NULL AUTO_INCREMENT,
-    Status               INT          NOT NULL,
-    Created              DATETIME(6)  NOT NULL,
-    Updated              DATETIME(6)  NOT NULL,
-    TenantId             INT          NOT NULL,
-    PayrollId            INT          NOT NULL,
-    PayrollName          VARCHAR(128) NULL,
-    PayrunId             INT          NOT NULL,
-    PayrunName           VARCHAR(128) NULL,
-    PayrunJobId          INT          NOT NULL,
-    PayrunJobName        VARCHAR(128) NULL,
-    EmployeeId           INT          NOT NULL,
-    EmployeeIdentifier   VARCHAR(128) NULL,
-    DivisionId           INT          NOT NULL,
-    DivisionName         VARCHAR(128) NULL,
-    CycleName            VARCHAR(128) NOT NULL,
+    Id          INT          NOT NULL AUTO_INCREMENT,
+    Status      INT          NOT NULL,
+    Created     DATETIME(6)  NOT NULL,
+    Updated     DATETIME(6)  NOT NULL,
+    TenantId    INT          NOT NULL,
+    PayrollId   INT          NOT NULL,
+    PayrunId    INT          NOT NULL,
+    PayrunJobId INT          NOT NULL,
+    EmployeeId  INT          NOT NULL,
+    DivisionId  INT          NOT NULL,
+    CycleName   VARCHAR(128) NOT NULL,
     CycleStart  DATETIME(6)  NOT NULL,
     CycleEnd    DATETIME(6)  NOT NULL,
     PeriodName  VARCHAR(128) NOT NULL,
@@ -848,7 +842,7 @@ CREATE TABLE IF NOT EXISTS Payrun (
     EmployeeEndExpression           LONGTEXT     NULL,
     WageTypeAvailableExpression     LONGTEXT     NULL,
     EndExpression                   LONGTEXT     NULL,
-    RetroBackCycles                 INT          NOT NULL,
+    RetroTimeType                   INT          NOT NULL,
     Script                          LONGTEXT     NULL,
     ScriptVersion                   VARCHAR(128) NULL,
     `Binary`                        LONGBLOB     NULL,
@@ -1002,10 +996,8 @@ CREATE TABLE IF NOT EXISTS RegulationShare (
     ProviderRegulationId  INT         NOT NULL,
     ConsumerTenantId      INT         NOT NULL,
     ConsumerDivisionId    INT         NULL,
-    IsolationLevel        INT         NOT NULL DEFAULT 3,
     Attributes            LONGTEXT    NULL,
-    PRIMARY KEY (Id),
-    CONSTRAINT CK_RegulationShare_IsolationLevel CHECK (IsolationLevel IN (0, 1, 2, 3))
+    PRIMARY KEY (Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS Report (
@@ -1483,36 +1475,6 @@ USE PayrollEngine;
 
 SET GLOBAL log_bin_trust_function_creators = 1;
 
--- =============================================================================
--- FUNCTIONS (7)
--- DELIMITER $$ avoids conflicts with $ in JSON PATH expressions
--- =============================================================================
-
--- BuildAttributeQuery.mysql.sql
--- =============================================================================
--- BuildAttributeQuery
--- Builds a SQL fragment for dynamic attribute column projection.
--- Used by CaseValue pivot SPs and GetPayrollResultValues.
---
--- T-SQL: imperative WHILE + OPENJSON + string concatenation
--- MySQL: JSON_TABLE with FOR ORDINALITY + GROUP_CONCAT (order preserved)
---
--- Output: '' if empty, ',' + fragment + newline if attributes present
---
--- Attribute prefix convention:
---   TA_ -> GetTextAttributeValue(field, 'name') AS TA_xxx
---   NA_ -> GetNumericAttributeValue(field, 'name') AS NA_xxx
---   DA_ -> GetDateAttributeValue(field, 'name') AS DA_xxx
---   NULL field -> NULL AS xxx  (PayrunResult has no attribute field)
---
--- NOTE: Attribute JSON keys are plain names ("City"), not prefixed ("TA_City").
--- The TA_/NA_/DA_ prefix is the output column alias only.
--- =============================================================================
-
-USE PayrollEngine;
-
-SET GLOBAL log_bin_trust_function_creators = 1;
-
 DELIMITER $$
 
 DROP FUNCTION IF EXISTS BuildAttributeQuery$$
@@ -1868,10 +1830,30 @@ END$$
 
 DELIMITER ;
 
-
 -- =============================================================================
 -- STORED PROCEDURES (44)
 -- =============================================================================
+
+-- DeleteAllCaseValues.mysql.sql
+-- =============================================================================
+-- DeleteAllCaseValues
+-- Delegates to the four scope-specific procedures.
+-- =============================================================================
+
+USE PayrollEngine;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS DeleteAllCaseValues$$
+CREATE PROCEDURE DeleteAllCaseValues()
+BEGIN
+    CALL DeleteAllGlobalCaseValues();
+    CALL DeleteAllNationalCaseValues();
+    CALL DeleteAllCompanyCaseValues();
+    CALL DeleteAllEmployeeCaseValues();
+END$$
+
+DELIMITER ;
 
 -- DeleteAllCompanyCaseValues.mysql.sql
 -- =============================================================================
@@ -1949,27 +1931,6 @@ BEGIN
     DELETE FROM NationalCaseDocument;
     DELETE FROM NationalCaseValue;
     DELETE FROM NationalCaseChange;
-END$$
-
-DELIMITER ;
-
--- DeleteAllCaseValues.mysql.sql
--- =============================================================================
--- DeleteAllCaseValues
--- Delegates to the four scope-specific procedures.
--- =============================================================================
-
-USE PayrollEngine;
-
-DELIMITER $$
-
-DROP PROCEDURE IF EXISTS DeleteAllCaseValues$$
-CREATE PROCEDURE DeleteAllCaseValues()
-BEGIN
-    CALL DeleteAllGlobalCaseValues();
-    CALL DeleteAllNationalCaseValues();
-    CALL DeleteAllCompanyCaseValues();
-    CALL DeleteAllEmployeeCaseValues();
 END$$
 
 DELIMITER ;
@@ -2674,15 +2635,11 @@ BEGIN
         FROM JSON_TABLE(p_collectorNameHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- single-hash fast path: equality seek on StartHash
     IF v_startHashCount = 1 THEN
         SELECT CAST(jt.val AS SIGNED) INTO v_startHash
         FROM JSON_TABLE(p_periodStartHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- Phase 1: select winning IDs via index-only scan
-    -- Index key order: (TenantId, EmployeeId, StartHash, CollectorNameHash)
-    -- → seeks directly to the period, constant cost regardless of history
     WITH Winners AS (
         SELECT r.Id,
             ROW_NUMBER() OVER (
@@ -2692,7 +2649,6 @@ BEGIN
         FROM CollectorCustomResult r
         WHERE r.TenantId = p_tenantId
           AND r.EmployeeId = p_employeeId
-          -- period filter: single hash → equality seek; multiple → IN list
           AND (v_startHashCount = 0 OR
                (v_startHashCount = 1 AND r.StartHash = v_startHash) OR
                (v_startHashCount > 1 AND r.StartHash IN (
@@ -2712,7 +2668,6 @@ BEGIN
           AND (p_excludeParentJobId IS NULL OR r.ParentJobId IS NULL
                OR r.ParentJobId <> p_excludeParentJobId)
     )
-    -- Phase 2: key lookup only for winning rows
     SELECT r.*
     FROM CollectorCustomResult r
     INNER JOIN Winners w ON w.Id = r.Id
@@ -2757,15 +2712,11 @@ BEGIN
         FROM JSON_TABLE(p_collectorNameHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- single-hash fast path: equality seek on StartHash
     IF v_startHashCount = 1 THEN
         SELECT CAST(jt.val AS SIGNED) INTO v_startHash
         FROM JSON_TABLE(p_periodStartHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- Phase 1: select winning IDs via index-only scan
-    -- Index key order: (TenantId, EmployeeId, StartHash, CollectorNameHash)
-    -- → seeks directly to the period, constant cost regardless of history
     WITH Winners AS (
         SELECT r.Id,
             ROW_NUMBER() OVER (
@@ -2775,7 +2726,6 @@ BEGIN
         FROM CollectorResult r
         WHERE r.TenantId = p_tenantId
           AND r.EmployeeId = p_employeeId
-          -- period filter: single hash → equality seek; multiple → IN list
           AND (v_startHashCount = 0 OR
                (v_startHashCount = 1 AND r.StartHash = v_startHash) OR
                (v_startHashCount > 1 AND r.StartHash IN (
@@ -2795,7 +2745,6 @@ BEGIN
           AND (p_excludeParentJobId IS NULL OR r.ParentJobId IS NULL
                OR r.ParentJobId <> p_excludeParentJobId)
     )
-    -- Phase 2: key lookup only for winning rows
     SELECT r.*
     FROM CollectorResult r
     INNER JOIN Winners w ON w.Id = r.Id
@@ -2840,15 +2789,11 @@ BEGIN
         FROM JSON_TABLE(p_names, '$[*]' COLUMNS (val VARCHAR(128) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- single-hash fast path: equality seek on StartHash
     IF v_startHashCount = 1 THEN
         SELECT CAST(jt.val AS SIGNED) INTO v_startHash
         FROM JSON_TABLE(p_periodStartHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- Phase 1: select winning IDs via index-only scan
-    -- Index key order: (TenantId, EmployeeId, StartHash, Name)
-    -- → seeks directly to the period, constant cost regardless of history
     WITH Winners AS (
         SELECT r.Id,
             ROW_NUMBER() OVER (
@@ -2858,7 +2803,6 @@ BEGIN
         FROM PayrunResult r
         WHERE r.TenantId = p_tenantId
           AND r.EmployeeId = p_employeeId
-          -- period filter: single hash → equality seek; multiple → IN list
           AND (v_startHashCount = 0 OR
                (v_startHashCount = 1 AND r.StartHash = v_startHash) OR
                (v_startHashCount > 1 AND r.StartHash IN (
@@ -2878,7 +2822,6 @@ BEGIN
           AND (p_excludeParentJobId IS NULL OR r.ParentJobId IS NULL
                OR r.ParentJobId <> p_excludeParentJobId)
     )
-    -- Phase 2: key lookup only for winning rows
     SELECT r.*
     FROM PayrunResult r
     INNER JOIN Winners w ON w.Id = r.Id
@@ -2923,15 +2866,11 @@ BEGIN
         FROM JSON_TABLE(p_wageTypeNumbers, '$[*]' COLUMNS (val VARCHAR(50) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- single-hash fast path: equality seek on StartHash
     IF v_startHashCount = 1 THEN
         SELECT CAST(jt.val AS SIGNED) INTO v_startHash
         FROM JSON_TABLE(p_periodStartHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- Phase 1: select winning IDs via index-only scan
-    -- Index key order: (TenantId, EmployeeId, StartHash, WageTypeNumber)
-    -- → seeks directly to the period, constant cost regardless of history
     WITH Winners AS (
         SELECT r.Id,
             ROW_NUMBER() OVER (
@@ -2941,7 +2880,6 @@ BEGIN
         FROM WageTypeCustomResult r
         WHERE r.TenantId = p_tenantId
           AND r.EmployeeId = p_employeeId
-          -- period filter: single hash → equality seek; multiple → IN list
           AND (v_startHashCount = 0 OR
                (v_startHashCount = 1 AND r.StartHash = v_startHash) OR
                (v_startHashCount > 1 AND r.StartHash IN (
@@ -2961,7 +2899,6 @@ BEGIN
           AND (p_excludeParentJobId IS NULL OR r.ParentJobId IS NULL
                OR r.ParentJobId <> p_excludeParentJobId)
     )
-    -- Phase 2: key lookup only for winning rows
     SELECT r.*
     FROM WageTypeCustomResult r
     INNER JOIN Winners w ON w.Id = r.Id
@@ -3008,48 +2945,42 @@ BEGIN
         FROM JSON_TABLE(p_wageTypeNumbers, '$[*]' COLUMNS (val VARCHAR(50) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- single-hash fast path: equality seek on StartHash
     IF v_startHashCount = 1 THEN
         SELECT CAST(jt.val AS SIGNED) INTO v_startHash
         FROM JSON_TABLE(p_periodStartHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt LIMIT 1;
     END IF;
 
-    -- Phase 1: select winning IDs via index-only scan
-    -- Index key order: (TenantId, EmployeeId, StartHash, WageTypeNumber)
-    -- → seeks directly to the period, constant cost regardless of history
     WITH Winners AS (
-        SELECT r.Id,
+        SELECT wtr.Id,
             ROW_NUMBER() OVER (
-                PARTITION BY r.WageTypeNumber, r.Start
-                ORDER BY r.Created DESC, r.Id DESC
+                PARTITION BY wtr.WageTypeNumber, wtr.Start
+                ORDER BY wtr.Created DESC, wtr.Id DESC
             ) AS RowNumber
-        FROM WageTypeResult r
-        WHERE r.TenantId = p_tenantId
-          AND r.EmployeeId = p_employeeId
-          -- period filter: single hash → equality seek; multiple → IN list
+        FROM WageTypeResult wtr
+        WHERE wtr.TenantId = p_tenantId
+          AND wtr.EmployeeId = p_employeeId
           AND (v_startHashCount = 0 OR
-               (v_startHashCount = 1 AND r.StartHash = v_startHash) OR
-               (v_startHashCount > 1 AND r.StartHash IN (
+               (v_startHashCount = 1 AND wtr.StartHash = v_startHash) OR
+               (v_startHashCount > 1 AND wtr.StartHash IN (
                    SELECT CAST(jt.val AS SIGNED)
                    FROM JSON_TABLE(p_periodStartHashes, '$[*]' COLUMNS (val VARCHAR(20) PATH '$')) AS jt)))
-          AND (p_divisionId IS NULL OR r.DivisionId = p_divisionId)
+          AND (p_divisionId IS NULL OR wtr.DivisionId = p_divisionId)
           AND (p_wageTypeNumbers IS NULL OR v_wageTypeCount = 0
-               OR (v_wageTypeCount = 1 AND r.WageTypeNumber = v_wageTypeNumber)
-               OR (v_wageTypeCount > 1 AND r.WageTypeNumber IN (
+               OR (v_wageTypeCount = 1 AND wtr.WageTypeNumber = v_wageTypeNumber)
+               OR (v_wageTypeCount > 1 AND wtr.WageTypeNumber IN (
                    SELECT CAST(jt.val AS DECIMAL(28,6))
                    FROM JSON_TABLE(p_wageTypeNumbers, '$[*]' COLUMNS (val VARCHAR(50) PATH '$')) AS jt)))
-          AND (p_evaluationDate IS NULL OR r.Created <= p_evaluationDate)
-          AND (p_jobStatus IS NULL OR r.PayrunJobId IN (
+          AND (p_evaluationDate IS NULL OR wtr.Created <= p_evaluationDate)
+          AND (p_jobStatus IS NULL OR wtr.PayrunJobId IN (
                    SELECT pj.Id FROM PayrunJob pj WHERE (pj.JobStatus & p_jobStatus) = pj.JobStatus))
-          AND (r.Forecast IS NULL OR r.Forecast = p_forecast)
-          AND (p_noRetro = 0 OR r.ParentJobId IS NULL)
-          AND (p_excludeParentJobId IS NULL OR r.ParentJobId IS NULL
-               OR r.ParentJobId <> p_excludeParentJobId)
+          AND (wtr.Forecast IS NULL OR wtr.Forecast = p_forecast)
+          AND (p_noRetro = 0 OR wtr.ParentJobId IS NULL)
+          AND (p_excludeParentJobId IS NULL OR wtr.ParentJobId IS NULL
+               OR wtr.ParentJobId <> p_excludeParentJobId)
     )
-    -- Phase 2: key lookup only for winning rows
-    SELECT r.*
-    FROM WageTypeResult r
-    INNER JOIN Winners w ON w.Id = r.Id
+    SELECT wtr.*
+    FROM WageTypeResult wtr
+    INNER JOIN Winners w ON w.Id = wtr.Id
     WHERE w.RowNumber = 1;
 END$$
 
@@ -3470,8 +3401,6 @@ DELIMITER ;
 -- GetDerivedPayrollRegulations
 -- T-SQL: SELECT * FROM dbo.GetDerivedRegulations(...)
 -- MySQL: GetDerivedRegulations eliminated -- inlined as CTE
--- IsolationLevel >= 3 (Write) required for shared regulations as payroll layers;
--- Consolidation (1) and Read (2) shares are excluded from layer resolution.
 -- =============================================================================
 
 USE PayrollEngine;
@@ -3495,23 +3424,7 @@ BEGIN
         FROM PayrollLayer pl
         INNER JOIN Regulation r ON pl.RegulationName = r.Name
         WHERE r.Status = 0
-          AND (
-            r.TenantId = p_tenantId
-            -- shared regulation: IsolationLevel must be >= Write to act as payroll layer.
-            -- Write = 3 (TenantIsolationLevel enum, PayrollEngine.Core).
-            -- IMPORTANT: if TenantIsolationLevel enum values change, this literal must
-            -- be updated in sync. The CK_RegulationShare_IsolationLevel check constraint
-            -- enforces the allowed set and will fail on INSERT if the enum is extended.
-            OR (
-              r.SharedRegulation = 1
-              AND EXISTS (
-                SELECT 1 FROM RegulationShare rs
-                WHERE rs.ProviderRegulationId = r.Id
-                  AND rs.ConsumerTenantId     = p_tenantId
-                  AND rs.IsolationLevel       >= 3  -- TenantIsolationLevel.Write
-              )
-            )
-          )
+          AND (r.TenantId = p_tenantId OR r.SharedRegulation = 1)
           AND r.Created <= p_createdBefore
           AND (r.ValidFrom IS NULL OR r.ValidFrom <= p_regulationDate)
           AND pl.Status = 0 AND pl.PayrollId = p_payrollId
@@ -4733,10 +4646,11 @@ END$$
 
 DELIMITER ;
 
-
+-- =============================================================================
+-- VERSION RECORD
 -- =============================================================================
 
 INSERT INTO `Version` (Created, MajorVersion, MinorVersion, SubVersion, Owner, Description)
-VALUES (NOW(6), 0, 9, 7, CURRENT_USER(), 'Payroll Engine: Full setup v0.9.7 (MySQL)');
+VALUES (NOW(6), 0, 9, 6, CURRENT_USER(), 'Payroll Engine: Full setup v0.9.6 (MySQL)');
 
-SELECT 'PayrollEngine MySQL schema v0.9.7 created successfully.' AS Result;
+SELECT 'PayrollEngine MySQL schema v0.9.6 created successfully.' AS Result;

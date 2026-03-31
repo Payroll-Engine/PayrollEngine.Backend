@@ -66,7 +66,7 @@ public class PayrunRepository(IScriptRepository scriptRepository) : ScriptChildD
         parameters.Add(nameof(payrun.EmployeeEndExpression), payrun.EmployeeEndExpression);
         parameters.Add(nameof(payrun.WageTypeAvailableExpression), payrun.WageTypeAvailableExpression);
         parameters.Add(nameof(payrun.EndExpression), payrun.EndExpression);
-        parameters.Add(nameof(payrun.RetroTimeType), payrun.RetroTimeType, DbType.Int32);
+        parameters.Add(nameof(payrun.RetroBackCycles), payrun.RetroBackCycles, DbType.Int32);
         parameters.Add(nameof(payrun.Script), payrun.Script);
         parameters.Add(nameof(payrun.ScriptVersion), payrun.ScriptVersion);
         parameters.Add(nameof(payrun.Binary), payrun.Binary, DbType.Binary);

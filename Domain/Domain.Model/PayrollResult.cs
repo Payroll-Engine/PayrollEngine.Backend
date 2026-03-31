@@ -14,9 +14,19 @@ public class PayrollResult : DomainObjectBase, IEquatable<PayrollResult>
     public int PayrollId { get; set; }
 
     /// <summary>
+    /// The payroll name (immutable, denormalized)
+    /// </summary>
+    public string PayrollName { get; set; }
+
+    /// <summary>
     /// The payrun id (immutable)
     /// </summary>
     public int PayrunId { get; set; }
+
+    /// <summary>
+    /// The payrun name (immutable, denormalized)
+    /// </summary>
+    public string PayrunName { get; set; }
 
     /// <summary>
     /// The payrun job id (immutable)
@@ -24,14 +34,29 @@ public class PayrollResult : DomainObjectBase, IEquatable<PayrollResult>
     public int PayrunJobId { get; set; }
 
     /// <summary>
+    /// The payrun job name (immutable, denormalized)
+    /// </summary>
+    public string PayrunJobName { get; set; }
+
+    /// <summary>
     /// The employee id (immutable)
     /// </summary>
     public int EmployeeId { get; set; }
 
     /// <summary>
+    /// The employee identifier (immutable, denormalized)
+    /// </summary>
+    public string EmployeeIdentifier { get; set; }
+
+    /// <summary>
     /// The division id (immutable)
     /// </summary>
     public int DivisionId { get; set; }
+
+    /// <summary>
+    /// The division name (immutable, denormalized)
+    /// </summary>
+    public string DivisionName { get; set; }
 
     /// <summary>
     /// The cycle name (immutable)

@@ -308,6 +308,42 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
     /// <param name="tenantId">The tenant id</param>
     /// <param name="payrunJobId">The payrun job id</param>
     /// <returns>The payrun job status</returns>
+    /// <summary>
+    /// Import payrun job sets from an external source (archive restore, migration).
+    /// Creates the PayrunJob first, then the PayrollResultSets with the new job id.
+    /// </summary>
+    public virtual async Task<ActionResult<int>> ImportPayrunJobSetsAsync(
+        int tenantId, IEnumerable<ApiObject.PayrunJobSet> jobSets)
+    {
+        // authorization
+        var authResult = await TenantRequestAsync(tenantId);
+        if (authResult != null)
+        {
+            return authResult;
+        }
+
+        try
+        {
+            var map = new PayrunJobSetMap();
+            var domainJobSets = jobSets.Select(map.ToDomain);
+            var count = await Service.ImportPayrunJobSetsAsync(Runtime.DbContext, tenantId, domainJobSets);
+            return Ok(count);
+        }
+        catch (PayrollException exception) when (exception.GetBaseMessage().StartsWith("Import aborted:") &&
+                                                  exception.GetBaseMessage().Contains("not found"))
+        {
+            return UnprocessableEntity(exception.GetBaseMessage());
+        }
+        catch (PayrollException exception)
+        {
+            return Conflict(exception.GetBaseMessage());
+        }
+        catch (Exception exception)
+        {
+            return InternalServerError(exception);
+        }
+    }
+
     public virtual async Task<ActionResult<string>> GetPayrunJobStatusAsync(int tenantId, int payrunJobId)
     {
         // tenant

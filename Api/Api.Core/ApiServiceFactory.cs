@@ -361,6 +361,8 @@ internal static class ApiServiceFactory
                 PayrunRepository = serviceProvider.GetRequiredService<IPayrunRepository>(),
                 PayrunJobRepository = serviceProvider.GetRequiredService<IPayrunJobRepository>(),
                 PayrollRepository = serviceProvider.GetRequiredService<IPayrollRepository>(),
+                PayrollResultSetRepository = serviceProvider.GetRequiredService<IPayrollResultSetRepository>(),
+                EmployeeRepository = serviceProvider.GetRequiredService<IEmployeeRepository>(),
                 PayrollCalculatorProvider = serviceProvider.GetRequiredService<IPayrollCalculatorProvider>()
             });
 

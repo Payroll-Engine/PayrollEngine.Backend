@@ -1936,6 +1936,14 @@
             <param name="payrunJobId">The id of the payrun job</param>
             <returns>The payrun job</returns>
         </member>
+        <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.ImportPayrunJobSetsAsync(System.Int32,System.Collections.Generic.IEnumerable{PayrollEngine.Api.Model.PayrunJobSet})">
+            <summary>
+            Import payrun job sets from an external source (archive restore, migration)
+            </summary>
+            <param name="tenantId">The tenant id</param>
+            <param name="jobSets">The payrun job sets to import</param>
+            <returns>The number of imported job sets</returns>
+        </member>
         <member name="M:PayrollEngine.Backend.Controller.PayrunJobController.StartPayrunJobAsync(System.Int32,PayrollEngine.Api.Model.PayrunJobInvocation)">
             <summary>
             Start a new payrun job (asynchronously).

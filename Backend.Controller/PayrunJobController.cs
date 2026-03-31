@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,22 @@ public class PayrunJobController : Api.Controller.PayrunJobController
     public async Task<ActionResult<ApiObject.PayrunJob>> GetPayrunJobAsync(
         int tenantId, int payrunJobId) =>
         await GetAsync(tenantId, payrunJobId);
+
+    /// <summary>
+    /// Import payrun job sets from an external source (archive restore, migration)
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="jobSets">The payrun job sets to import</param>
+    /// <returns>The number of imported job sets</returns>
+    [HttpPost("import")]
+    [OkResponse]
+    [NotFoundResponse]
+    [UnprocessableEntityResponse]
+    [ConflictResponse]
+    [ApiOperationId("ImportPayrunJobSets")]
+    public override async Task<ActionResult<int>> ImportPayrunJobSetsAsync(
+        int tenantId, [FromBody] IEnumerable<ApiObject.PayrunJobSet> jobSets) =>
+        await base.ImportPayrunJobSetsAsync(tenantId, jobSets);
 
     /// <summary>
     /// Start a new payrun job (asynchronously).

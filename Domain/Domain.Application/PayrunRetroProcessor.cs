@@ -102,17 +102,19 @@ internal sealed class PayrunRetroProcessor
 
     /// <summary>
     /// Resolves the effective retro date from case value retro dates and
-    /// script-triggered retro jobs, applying <see cref="RetroTimeType"/> restrictions.
+    /// script-triggered retro jobs, applying <see cref="Payrun.RetroBackCycles"/> restrictions.
     /// Returns <c>null</c> if no retro processing is needed.
     /// </summary>
     /// <param name="caseValueRetroDate">The retro date from case values; <c>null</c> if none.</param>
     /// <param name="scriptRetroJobs">Retro jobs triggered by collector/wage type scripts.</param>
-    /// <param name="currentJob">The current payrun job for cycle boundary checks.</param>
+    /// <param name="currentJob">The current payrun job providing the current cycle boundary.</param>
+    /// <param name="calculator">The payroll calculator used to navigate cycle boundaries.</param>
     /// <returns>The effective retro date after applying restrictions, or <c>null</c>.</returns>
     internal DateTime? ResolveEffectiveRetroDate(
         DateTime? caseValueRetroDate,
         List<RetroPayrunJob> scriptRetroJobs,
-        PayrunJob currentJob)
+        PayrunJob currentJob,
+        IPayrollCalculator calculator)
     {
         var retroDate = caseValueRetroDate;
 
@@ -129,22 +131,22 @@ internal sealed class PayrunRetroProcessor
             }
         }
 
-        // retro job restrictions
-        if (retroDate.HasValue)
+        // retro cycle boundary restriction
+        // -1 = unlimited: no clamping needed
+        if (retroDate.HasValue && Payrun.RetroBackCycles >= 0)
         {
-            switch (Payrun.RetroTimeType)
+            // walk back RetroBackCycles cycles from the current cycle start
+            var cycleStart = currentJob.CycleStart;
+            for (var i = 0; i < Payrun.RetroBackCycles; i++)
             {
-                case RetroTimeType.Anytime:
-                    // unlimited retro calculation
-                    break;
-                case RetroTimeType.Cycle:
-                    // retro jobs limited to the payrun cycle:
-                    // clamp retroDate so it never reaches before the cycle boundary
-                    if (retroDate < currentJob.CycleStart)
-                    {
-                        retroDate = currentJob.CycleStart;
-                    }
-                    break;
+                // one day before this cycle's start lands inside the previous cycle
+                cycleStart = calculator.GetPayrunCycle(cycleStart.AddDays(-1)).Start;
+            }
+
+            // clamp: retro must not reach before the earliest allowed cycle start
+            if (retroDate < cycleStart)
+            {
+                retroDate = cycleStart;
             }
         }
 

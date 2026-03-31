@@ -11,5 +11,7 @@ public class PayrunJobServiceSettings
     public IPayrunRepository PayrunRepository { get; init; }
     public IPayrunJobRepository PayrunJobRepository { get; init; }
     public IPayrollRepository PayrollRepository { get; init; }
+    public IPayrollResultSetRepository PayrollResultSetRepository { get; init; }
+    public IEmployeeRepository EmployeeRepository { get; init; }
     public IPayrollCalculatorProvider PayrollCalculatorProvider { get; init; }
 }

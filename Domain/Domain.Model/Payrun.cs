@@ -75,9 +75,12 @@ public class Payrun : ScriptDomainObject, INamedObject, IEquatable<Payrun>
     public string EndExpression { get; set; }
 
     /// <summary>
-    /// The payrun retro time type
+    /// The number of previous cycles allowed for retro calculation.
+    /// 0  = current cycle only (no back cycles).
+    /// n  = retro may reach back n complete cycles before the current one.
+    /// -1 = unlimited (no cycle boundary) — default.
     /// </summary>
-    public RetroTimeType RetroTimeType { get; set; }
+    public int RetroBackCycles { get; set; } = -1;
 
     /// <inheritdoc/>
     public Payrun()

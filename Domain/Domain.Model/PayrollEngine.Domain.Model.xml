@@ -5403,9 +5403,19 @@
             The payroll id (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollResult.PayrollName">
+            <summary>
+            The payroll name (immutable, denormalized)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResult.PayrunId">
             <summary>
             The payrun id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollResult.PayrunName">
+            <summary>
+            The payrun name (immutable, denormalized)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResult.PayrunJobId">
@@ -5413,14 +5423,29 @@
             The payrun job id (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollResult.PayrunJobName">
+            <summary>
+            The payrun job name (immutable, denormalized)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResult.EmployeeId">
             <summary>
             The employee id (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollResult.EmployeeIdentifier">
+            <summary>
+            The employee identifier (immutable, denormalized)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResult.DivisionId">
             <summary>
             The division id (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollResult.DivisionName">
+            <summary>
+            The division name (immutable, denormalized)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollResult.CycleName">
@@ -5866,9 +5891,12 @@
             The payrun end expression
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Payrun.RetroTimeType">
+        <member name="P:PayrollEngine.Domain.Model.Payrun.RetroBackCycles">
             <summary>
-            The payrun retro time type
+            The number of previous cycles allowed for retro calculation.
+            0  = current cycle only (no back cycles).
+            n  = retro may reach back n complete cycles before the current one.
+            -1 = unlimited (no cycle boundary) — default.
             </summary>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Payrun.#ctor">
@@ -6287,6 +6315,26 @@
             <summary>Compare two objects</summary>
             <param name="compare">The object to compare with this</param>
             <returns>True for objects with the same data</returns>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.PayrunJobSet">
+            <summary>
+            A payrun job with its payroll result sets — used for archive restore and migration.
+            Carries denormalized name fields so all FK ids can be resolved
+            in the target system independently of the source system's ids.
+            Only jobs with <see cref="F:PayrollEngine.PayrunJobStatus.Complete"/> or <see cref="F:PayrollEngine.PayrunJobStatus.Forecast"/> are accepted on import.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobSet.PayrunName">
+            <summary>The payrun name (denormalized, used for import id resolution)</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobSet.DivisionName">
+            <summary>The division name (denormalized, used for import id resolution)</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobSet.UserIdentifier">
+            <summary>The creating user identifier (denormalized, used for import id resolution)</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobSet.ResultSets">
+            <summary>The payroll result sets belonging to this job</summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrunParameter">
             <summary>
