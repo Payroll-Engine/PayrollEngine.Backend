@@ -49,7 +49,6 @@ public class PayrunProcessorSettings : FunctionToolSettings
     /// <summary>
     /// Maximum number of retro payrun periods per employee.
     /// 0 = unlimited (no guard). Acts as a defense-in-depth limit
-    /// independent of <see cref="PayrollEngine.RetroTimeType"/>.
     /// </summary>
     public int MaxRetroPayrunPeriods { get; init; }
 

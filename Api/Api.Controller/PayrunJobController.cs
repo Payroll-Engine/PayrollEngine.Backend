@@ -306,7 +306,7 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
     /// Get status of a payrun job
     /// </summary>
     /// <param name="tenantId">The tenant id</param>
-    /// <param name="payrunJobId">The payrun job id</param>
+    /// <param name="jobSets">The payrun jobs</param>
     /// <returns>The payrun job status</returns>
     /// <summary>
     /// Import payrun job sets from an external source (archive restore, migration).

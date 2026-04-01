@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
 using PayrollEngine.Domain.Model;

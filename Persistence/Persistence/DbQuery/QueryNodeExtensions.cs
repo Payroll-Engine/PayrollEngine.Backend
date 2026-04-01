@@ -5,6 +5,7 @@ using Microsoft.OData.UriParser;
 
 namespace PayrollEngine.Persistence.DbQuery;
 
+// ReSharper disable once UnusedType.Global
 internal static class QueryNodeExtensions
 {
     /// <param name="node">The query node</param>
