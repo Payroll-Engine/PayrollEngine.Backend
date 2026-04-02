@@ -59,6 +59,14 @@ internal sealed class PayrunEmployeeScope : IRegulationProvider
     internal IRuntimeValueProvider RuntimeValueProvider { get; } = new RuntimeValueProvider();
 
     /// <summary>
+    /// Pre-loaded consolidated WageType results (with retro-merge) for all WageTypes
+    /// tagged via <c>Payroll.ClusterSet.ClusterSetWageTypeCons</c>.
+    /// <c>null</c> when no Cons-clustered WageTypes exist, or in the first period of a cycle.
+    /// Populated at PayrunEmployeeStart; reset and reloaded before retro reevaluation.
+    /// </summary>
+    internal WageTypeConsCache WageTypeConsCache { get; set; }
+
+    /// <summary>
     /// Pre-loaded YTD WageType results for all WageTypes tagged with the "Ytd" cluster.
     /// <c>null</c> when no Ytd-clustered WageTypes exist, or in the first period of a cycle
     /// (no prior results to load). Populated at PayrunEmployeeStart; reset and reloaded

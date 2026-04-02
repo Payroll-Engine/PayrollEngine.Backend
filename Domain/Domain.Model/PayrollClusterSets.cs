@@ -40,4 +40,12 @@ public class PayrollClusterSets
     /// PayrunEmployeeStart, eliminating repeated DB round-trips for YTD queries.
     /// </summary>
     public string ClusterSetWageTypeYtd { get; set; }
+
+    /// <summary>
+    /// The wage type consolidated cache cluster set name (undefined: no Cons pre-loading).
+    /// WageTypes matching this cluster set are bulk-loaded once per employee at
+    /// PayrunEmployeeStart via a single <c>GetConsolidatedWageTypeResults</c> call,
+    /// eliminating repeated DB round-trips for consolidated (retro-merged) YTD queries.
+    /// </summary>
+    public string ClusterSetWageTypeCons { get; set; }
 }

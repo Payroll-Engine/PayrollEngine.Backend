@@ -5079,6 +5079,9 @@
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageTypePeriod">
             <summary>The wage type period result cluster set name (undefined: none).</summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageTypeCons">
+            <summary>The wage type consolidated cache cluster set name (undefined: no Cons pre-loading).</summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSets">
             <summary>
             Cluster sets
@@ -5312,6 +5315,14 @@
             The wage type YTD cache cluster set name (undefined: no YTD pre-loading).
             WageTypes matching this cluster set are bulk-loaded once per employee at
             PayrunEmployeeStart, eliminating repeated DB round-trips for YTD queries.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypeCons">
+            <summary>
+            The wage type consolidated cache cluster set name (undefined: no Cons pre-loading).
+            WageTypes matching this cluster set are bulk-loaded once per employee at
+            PayrunEmployeeStart via a single <c>GetConsolidatedWageTypeResults</c> call,
+            eliminating repeated DB round-trips for consolidated (retro-merged) YTD queries.
             </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrollLayer">
@@ -8971,6 +8982,52 @@
             <param name="payroll">The payroll to validate</param>
             <param name="regulationDate">The regulation date</param>
             <param name="evaluationDate">The evaluation date</param>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.WageTypeConsCache">
+             <summary>
+             Per-employee in-memory cache for consolidated WageType results (with retro-merge).
+             Pre-loaded once at PayrunEmployeeStart for all WageTypes tagged via the payroll
+             ClusterSet referenced by <c>Payroll.ClusterSet.ClusterSetWageTypeCons</c>.
+             Serves <c>GetConsolidatedWageTypeResults(periodMoment, ...)</c> calls from memory,
+             eliminating one DB round-trip per Cons-dependent WageType per employee.
+            
+             The retro-merge is applied by the existing <c>GetConsolidatedWageTypeResults</c>
+             stored procedure at pre-load time — the cache stores the already-consolidated values.
+             Queries with <c>noRetro = true</c> always bypass the cache.
+             </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.PeriodMoment">
+            <summary>
+            The period moment used for the pre-load query (typically <c>PayrunJob.CycleStart</c>).
+            Used in <see cref="M:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.Boolean)"/> to verify the query covers the same period range.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.WageTypeNumbers">
+            <summary>The WageType numbers pre-loaded into this cache.</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.#ctor(System.DateTime,System.Collections.Generic.IEnumerable{System.Decimal},System.Collections.Generic.IEnumerable{PayrollEngine.Domain.Model.WageTypeResult})">
+            <summary>
+            Initialises the cache from the bulk-loaded consolidated results.
+            </summary>
+            <param name="periodMoment">The period moment used for the pre-load query.</param>
+            <param name="wageTypeNumbers">The WageType numbers that were pre-loaded.</param>
+            <param name="results">The already-consolidated DB results to populate the cache from.</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.Boolean)">
+            <summary>
+            Returns <c>true</c> when this cache can fully serve the given query without a DB call.
+            <list type="bullet">
+              <item><paramref name="noRetro"/> must be <c>false</c> — the cache always stores retro-merged values.</item>
+              <item><paramref name="periodMoment"/> must match the cache's <see cref="P:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.PeriodMoment"/> exactly.</item>
+              <item>All <paramref name="numbers"/> must be among the pre-loaded WageType numbers.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.Get(System.Collections.Generic.IList{System.Decimal})">
+            <summary>
+            Returns the cached consolidated results for the given WageType numbers.
+            Only call after <see cref="M:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.Boolean)"/> returns <c>true</c>.
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache">
             <summary>

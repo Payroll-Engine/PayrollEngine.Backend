@@ -2552,32 +2552,7 @@
         <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSet">
             <summary>
             Typed cluster set name references for this payroll.
-            Use this instead of the individual ClusterSetXxx properties.
             </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCase">
-            <summary>The case cluster set name (undefined: all).</summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCaseField">
-            <summary>The case field cluster set name (undefined: all).</summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCollector">
-            <summary>The collector cluster set name (undefined: all).</summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCollectorRetro">
-            <summary>The collector cluster set name for retro payrun jobs (undefined: all).</summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetWageType">
-            <summary>The wage type cluster set name (undefined: all).</summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetWageTypeRetro">
-            <summary>The wage type cluster set name for retro payrun jobs (undefined: all).</summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetCaseValue">
-            <summary>The case value cluster set name (undefined: none, *: all).</summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSetWageTypePeriod">
-            <summary>The wage type period result cluster set name (undefined: none).</summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.Payroll.ClusterSets">
             <summary>
