@@ -5049,45 +5049,35 @@
             The division id (immutable)
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetCase">
+        <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSet">
             <summary>
-            The case cluster set (undefined: all)
+            Typed cluster set name references for this payroll.
+            Persisted as a single JSON column; replaces the individual ClusterSetXxx string columns.
             </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetCase">
+            <summary>The case cluster set name (undefined: all).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetCaseField">
-            <summary>
-            The case field cluster set (undefined: all)
-            </summary>
+            <summary>The case field cluster set name (undefined: all).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetCollector">
-            <summary>
-            The collector cluster set (undefined: all)
-            </summary>
+            <summary>The collector cluster set name (undefined: all).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetCollectorRetro">
-            <summary>
-            The collector cluster set for retro payrun jobs (undefined: all)
-            </summary>
+            <summary>The collector cluster set name for retro payrun jobs (undefined: all).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageType">
-            <summary>
-            The wage type cluster set (undefined: all)
-            </summary>
+            <summary>The wage type cluster set name (undefined: all).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageTypeRetro">
-            <summary>
-            The wage type cluster set for retro payrun jobs (undefined: all)
-            </summary>
+            <summary>The wage type cluster set name for retro payrun jobs (undefined: all).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetCaseValue">
-            <summary>
-            The case value cluster set (undefined: none, *: all)
-            </summary>
+            <summary>The case value cluster set name (undefined: none, *: all).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageTypePeriod">
-            <summary>
-            The wage type period result cluster set (undefined: none)
-            </summary>
+            <summary>The wage type period result cluster set name (undefined: none).</summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSets">
             <summary>
@@ -5112,10 +5102,10 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.Payroll.GetClusterSet(System.String)">
             <summary>
-            Get cluster set
+            Get cluster set by name
             </summary>
             <param name="clusterSetName">The cluster set name</param>
-            <returns>The cluster set</returns>
+            <returns>The cluster set, or null when not found</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.Payroll.ClusterSetExists(System.String)">
             <summary>
@@ -5283,6 +5273,45 @@
         <member name="P:PayrollEngine.Domain.Model.PayrollCaseChangeQuery.EvaluationDate">
             <summary>
             The evaluation date
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.PayrollClusterSets">
+            <summary>
+            Cluster set name references for a payroll.
+            Each property holds the name of a <see cref="T:PayrollEngine.Domain.Model.ClusterSet"/> entry defined in
+            <see cref="P:PayrollEngine.Domain.Model.Payroll.ClusterSets"/>. An empty or null value means no cluster filtering
+            is applied for that context. Persisted as a single JSON column on the Payroll table.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetCase">
+            <summary>The case cluster set name (undefined: all).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetCaseField">
+            <summary>The case field cluster set name (undefined: all).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetCollector">
+            <summary>The collector cluster set name (undefined: all).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetCollectorRetro">
+            <summary>The collector cluster set name for retro payrun jobs (undefined: all).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageType">
+            <summary>The wage type cluster set name (undefined: all).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypeRetro">
+            <summary>The wage type cluster set name for retro payrun jobs (undefined: all).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetCaseValue">
+            <summary>The case value cluster set name (undefined: none, *: all).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypePeriod">
+            <summary>The wage type period result cluster set name (undefined: none).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypeYtd">
+            <summary>
+            The wage type YTD cache cluster set name (undefined: no YTD pre-loading).
+            WageTypes matching this cluster set are bulk-loaded once per employee at
+            PayrunEmployeeStart, eliminating repeated DB round-trips for YTD queries.
             </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrollLayer">
@@ -8942,6 +8971,48 @@
             <param name="payroll">The payroll to validate</param>
             <param name="regulationDate">The regulation date</param>
             <param name="evaluationDate">The evaluation date</param>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache">
+            <summary>
+            Per-employee in-memory cache for WageType YTD results.
+            Preloaded once at PayrunEmployeeStart for all WageTypes tagged with the "Ytd" cluster.
+            Serves <c>GetWageTypeResults(cycleStart, previousPeriodEnd)</c> calls from memory,
+            eliminating one DB round-trip per YTD-dependent WageType per employee.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.CycleStart">
+            <summary>The cycle start date this cache covers (inclusive lower bound).</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.PreviousPeriodEnd">
+            <summary>
+            The inclusive upper bound of the preloaded date range.
+            Equals the last day of the previous period (<c>PayrunJob.PeriodStart.AddDays(-1)</c>).
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.WageTypeNumbers">
+            <summary>The WageType numbers preloaded into this cache.</summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.#ctor(System.DateTime,System.DateTime,System.Collections.Generic.IEnumerable{System.Decimal},System.Collections.Generic.IEnumerable{PayrollEngine.Domain.Model.WageTypeResult})">
+            <summary>
+            Initialises the cache from the bulk-loaded results.
+            </summary>
+            <param name="cycleStart">Inclusive lower bound of the covered date range.</param>
+            <param name="previousPeriodEnd">Inclusive upper bound (<c>PeriodStart - 1 day</c>).</param>
+            <param name="wageTypeNumbers">The WageType numbers that were preloaded.</param>
+            <param name="results">The raw DB results to populate the cache from.</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.DateTime)">
+            <summary>
+            Returns <c>true</c> when this cache can fully serve the given query without a DB call.
+            The <paramref name="start"/>/<paramref name="end"/> range must match exactly and all
+            requested numbers must be among the preloaded WageType numbers.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.Get(System.Collections.Generic.IList{System.Decimal})">
+            <summary>
+            Returns the cached results for the given WageType numbers.
+            Only call after <see cref="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.DateTime)"/> returns <c>true</c>.
+            </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.RetroPayrunJob">
             <summary>

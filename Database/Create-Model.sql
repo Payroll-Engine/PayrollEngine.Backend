@@ -1388,36 +1388,24 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Payroll] (
-  [Id] [int] IDENTITY(1, 1) NOT NULL,
-  [Status] [int] NOT NULL,
-  [Created] [datetime2](7) NOT NULL,
-  [Updated] [datetime2](7) NOT NULL,
-  [TenantId] [int] NOT NULL,
-  [DivisionId] [int] NOT NULL,
-  [Name] [nvarchar](128) NOT NULL,
-  [NameLocalizations] [nvarchar](max) NULL,
-  [Description] [nvarchar](max) NULL,
-  [DescriptionLocalizations] [nvarchar](max) NULL,
-  [ClusterSetCase] [nvarchar](128) NULL,
-  [ClusterSetCaseField] [nvarchar](128) NULL,
-  [ClusterSetCollector] [nvarchar](128) NULL,
-  [ClusterSetCollectorRetro] [nvarchar](128) NULL,
-  [ClusterSetWageType] [nvarchar](128) NULL,
-  [ClusterSetWageTypeRetro] [nvarchar](128) NULL,
-  [ClusterSetCaseValue] [nvarchar](128) NULL,
-  [ClusterSetWageTypePeriod] [nvarchar](128) NULL,
-  [ClusterSetWageTypeLookup] [nvarchar](128) NULL,
-  [ClusterSets] [nvarchar](max) NULL,
-  [Attributes] [nvarchar](max) NULL,
+  [Id]                       [int]            IDENTITY(1, 1) NOT NULL,
+  [Status]                   [int]            NOT NULL,
+  [Created]                  [datetime2](7)   NOT NULL,
+  [Updated]                  [datetime2](7)   NOT NULL,
+  [TenantId]                 [int]            NOT NULL,
+  [DivisionId]               [int]            NOT NULL,
+  [Name]                     [nvarchar](128)  NOT NULL,
+  [NameLocalizations]        [nvarchar](max)  NULL,
+  [Description]              [nvarchar](max)  NULL,
+  [DescriptionLocalizations] [nvarchar](max)  NULL,
+  [ClusterSet]               [nvarchar](max)  NULL,
+  [ClusterSets]              [nvarchar](max)  NULL,
+  [Attributes]               [nvarchar](max)  NULL,
   CONSTRAINT [PK_Payroll] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (
-    PAD_INDEX = OFF,
-    STATISTICS_NORECOMPUTE = OFF,
-    IGNORE_DUP_KEY = OFF,
-    ALLOW_ROW_LOCKS = ON,
-    ALLOW_PAGE_LOCKS = ON
-    )
-  ON [PRIMARY]
-  ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+    PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF,
+    IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON
+  ) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
 /****** Object:  Table [dbo].[PayrollResult]    Script Date: 01.03.2026 22:35:18 ******/

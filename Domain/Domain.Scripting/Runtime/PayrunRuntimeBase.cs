@@ -571,7 +571,8 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     }
 
     /// <summary>
-    /// Get employee wage type results by date range
+    /// Get employee wage type results by date range.
+    /// Serves from the pre-loaded YTD cache when the query matches the cache's range and numbers.
     /// </summary>
     private IList<WageTypeResult> GetWageTypeResultsInternal(IList<decimal> wageTypeNumbers, DateTime start, DateTime end,
         string forecast = null, int? jobStatus = null, IList<string> tags = null)
@@ -596,6 +597,14 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         {
             return new List<WageTypeResult>();
         }
+
+        // serve from pre-loaded YTD cache when available and range matches
+        var ytdCache = Settings.WageTypeYtdCache;
+        if (ytdCache != null && ytdCache.CanServe(wageTypeNumbers, start, end))
+        {
+            return ytdCache.Get(wageTypeNumbers);
+        }
+
         return ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,
             new()
             {

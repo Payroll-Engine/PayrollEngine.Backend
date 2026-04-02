@@ -1,4 +1,5 @@
 ﻿using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Model.Repository;
 
 namespace PayrollEngine.Domain.Scripting.Runtime;
 
@@ -33,4 +34,12 @@ public class PayrunRuntimeSettings : PayrollRuntimeSettings
 
     /// <summary>The parent payrun job, usually the payrun retro source payrun job</summary>
     public PayrunExecutionPhase ExecutionPhase { get; init; }
+
+    /// <summary>
+    /// Optional pre-loaded YTD cache for this employee.
+    /// When non-null, <see cref="PayrunRuntimeBase"/> serves matching
+    /// <c>GetWageTypeResults(cycleStart, previousPeriodEnd)</c> calls from memory
+    /// instead of issuing a DB query.
+    /// </summary>
+    public WageTypeYtdCache WageTypeYtdCache { get; init; }
 }

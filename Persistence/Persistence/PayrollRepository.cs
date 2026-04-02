@@ -33,14 +33,7 @@ public class PayrollRepository(IPayrollLayerRepository payrollLayerRepository,
         parameters.Add(nameof(payroll.NameLocalizations), JsonSerializer.SerializeNamedDictionary(payroll.NameLocalizations));
         parameters.Add(nameof(payroll.Description), payroll.Description);
         parameters.Add(nameof(payroll.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(payroll.DescriptionLocalizations));
-        parameters.Add(nameof(payroll.ClusterSetCase), payroll.ClusterSetCase);
-        parameters.Add(nameof(payroll.ClusterSetCaseField), payroll.ClusterSetCaseField);
-        parameters.Add(nameof(payroll.ClusterSetCollector), payroll.ClusterSetCollector);
-        parameters.Add(nameof(payroll.ClusterSetCollectorRetro), payroll.ClusterSetCollectorRetro);
-        parameters.Add(nameof(payroll.ClusterSetWageType), payroll.ClusterSetWageType);
-        parameters.Add(nameof(payroll.ClusterSetWageTypeRetro), payroll.ClusterSetWageTypeRetro);
-        parameters.Add(nameof(payroll.ClusterSetCaseValue), payroll.ClusterSetCaseValue);
-        parameters.Add(nameof(payroll.ClusterSetWageTypePeriod), payroll.ClusterSetWageTypePeriod);
+        parameters.Add(nameof(payroll.ClusterSet), DefaultJsonSerializer.Serialize(payroll.ClusterSet));
         parameters.Add(nameof(payroll.ClusterSets), DefaultJsonSerializer.Serialize(payroll.ClusterSets));
         parameters.Add(nameof(payroll.Attributes), JsonSerializer.SerializeNamedDictionary(payroll.Attributes));
         base.GetObjectData(payroll, parameters);

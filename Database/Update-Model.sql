@@ -39,6 +39,45 @@ GO
 -- TABLE CHANGES
 -- =============================================================================
 
+-- Payroll: consolidate individual ClusterSetXxx columns into single ClusterSet JSON column
+ALTER TABLE [dbo].[Payroll] ADD [ClusterSet] [nvarchar](max) NULL;
+GO
+
+-- migrate existing data into the new JSON column
+UPDATE [dbo].[Payroll]
+SET [ClusterSet] = (
+    SELECT
+        [ClusterSetCase]            AS ClusterSetCase,
+        [ClusterSetCaseField]       AS ClusterSetCaseField,
+        [ClusterSetCollector]       AS ClusterSetCollector,
+        [ClusterSetCollectorRetro]  AS ClusterSetCollectorRetro,
+        [ClusterSetWageType]        AS ClusterSetWageType,
+        [ClusterSetWageTypeRetro]   AS ClusterSetWageTypeRetro,
+        [ClusterSetCaseValue]       AS ClusterSetCaseValue,
+        [ClusterSetWageTypePeriod]  AS ClusterSetWageTypePeriod
+    FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+)
+WHERE [ClusterSetCase]           IS NOT NULL
+   OR [ClusterSetCaseField]      IS NOT NULL
+   OR [ClusterSetCollector]      IS NOT NULL
+   OR [ClusterSetCollectorRetro] IS NOT NULL
+   OR [ClusterSetWageType]       IS NOT NULL
+   OR [ClusterSetWageTypeRetro]  IS NOT NULL
+   OR [ClusterSetCaseValue]      IS NOT NULL
+   OR [ClusterSetWageTypePeriod] IS NOT NULL;
+GO
+
+-- drop individual columns (now superseded by ClusterSet JSON)
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetCase];
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetCaseField];
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetCollector];
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetCollectorRetro];
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetWageType];
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetWageTypeRetro];
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetCaseValue];
+ALTER TABLE [dbo].[Payroll] DROP COLUMN [ClusterSetWageTypePeriod];
+GO
+
 -- Payrun: RetroTimeType (enum) → RetroBackCycles (int)
 -- -1 = unlimited (was: Anytime = 0), 0 = current cycle (was: Cycle = 1)
 EXEC sp_rename 'dbo.Payrun.RetroTimeType', 'RetroBackCycles', 'COLUMN';

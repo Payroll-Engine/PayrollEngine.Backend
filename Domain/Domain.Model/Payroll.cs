@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,44 +35,72 @@ public class Payroll : DomainObjectBase, INamedObject, IDomainAttributeObject, I
     public int DivisionId { get; set; }
 
     /// <summary>
-    /// The case cluster set (undefined: all)
+    /// Typed cluster set name references for this payroll.
+    /// Persisted as a single JSON column; replaces the individual ClusterSetXxx string columns.
     /// </summary>
-    public string ClusterSetCase { get; set; }
+    public PayrollClusterSets ClusterSet { get; set; }
 
-    /// <summary>
-    /// The case field cluster set (undefined: all)
-    /// </summary>
-    public string ClusterSetCaseField { get; set; }
+    // -------------------------------------------------------------------------
+    // Read-only delegates — forward to ClusterSet for backward compatibility.
+    // These properties are kept so that existing internal call sites continue to
+    // compile unchanged. New code should access payroll.ClusterSet.ClusterSetXxx.
+    // -------------------------------------------------------------------------
 
-    /// <summary>
-    /// The collector cluster set (undefined: all)
-    /// </summary>
-    public string ClusterSetCollector { get; set; }
+    /// <summary>The case cluster set name (undefined: all).</summary>
+    public string ClusterSetCase
+    {
+        get => ClusterSet?.ClusterSetCase;
+        set => (ClusterSet ??= new()).ClusterSetCase = value;
+    }
 
-    /// <summary>
-    /// The collector cluster set for retro payrun jobs (undefined: all)
-    /// </summary>
-    public string ClusterSetCollectorRetro { get; set; }
+    /// <summary>The case field cluster set name (undefined: all).</summary>
+    public string ClusterSetCaseField
+    {
+        get => ClusterSet?.ClusterSetCaseField;
+        set => (ClusterSet ??= new()).ClusterSetCaseField = value;
+    }
 
-    /// <summary>
-    /// The wage type cluster set (undefined: all)
-    /// </summary>
-    public string ClusterSetWageType { get; set; }
+    /// <summary>The collector cluster set name (undefined: all).</summary>
+    public string ClusterSetCollector
+    {
+        get => ClusterSet?.ClusterSetCollector;
+        set => (ClusterSet ??= new()).ClusterSetCollector = value;
+    }
 
-    /// <summary>
-    /// The wage type cluster set for retro payrun jobs (undefined: all)
-    /// </summary>
-    public string ClusterSetWageTypeRetro { get; set; }
+    /// <summary>The collector cluster set name for retro payrun jobs (undefined: all).</summary>
+    public string ClusterSetCollectorRetro
+    {
+        get => ClusterSet?.ClusterSetCollectorRetro;
+        set => (ClusterSet ??= new()).ClusterSetCollectorRetro = value;
+    }
 
-    /// <summary>
-    /// The case value cluster set (undefined: none, *: all)
-    /// </summary>
-    public string ClusterSetCaseValue { get; set; }
+    /// <summary>The wage type cluster set name (undefined: all).</summary>
+    public string ClusterSetWageType
+    {
+        get => ClusterSet?.ClusterSetWageType;
+        set => (ClusterSet ??= new()).ClusterSetWageType = value;
+    }
 
-    /// <summary>
-    /// The wage type period result cluster set (undefined: none)
-    /// </summary>
-    public string ClusterSetWageTypePeriod { get; set; }
+    /// <summary>The wage type cluster set name for retro payrun jobs (undefined: all).</summary>
+    public string ClusterSetWageTypeRetro
+    {
+        get => ClusterSet?.ClusterSetWageTypeRetro;
+        set => (ClusterSet ??= new()).ClusterSetWageTypeRetro = value;
+    }
+
+    /// <summary>The case value cluster set name (undefined: none, *: all).</summary>
+    public string ClusterSetCaseValue
+    {
+        get => ClusterSet?.ClusterSetCaseValue;
+        set => (ClusterSet ??= new()).ClusterSetCaseValue = value;
+    }
+
+    /// <summary>The wage type period result cluster set name (undefined: none).</summary>
+    public string ClusterSetWageTypePeriod
+    {
+        get => ClusterSet?.ClusterSetWageTypePeriod;
+        set => (ClusterSet ??= new()).ClusterSetWageTypePeriod = value;
+    }
 
     /// <summary>
     /// Cluster sets
@@ -103,17 +131,17 @@ public class Payroll : DomainObjectBase, INamedObject, IDomainAttributeObject, I
         CompareTool.EqualProperties(this, compare);
 
     /// <summary>
-    /// Get cluster set
+    /// Get cluster set by name
     /// </summary>
     /// <param name="clusterSetName">The cluster set name</param>
-    /// <returns>The cluster set</returns>
+    /// <returns>The cluster set, or null when not found</returns>
     public ClusterSet GetClusterSet(string clusterSetName)
     {
         if (string.IsNullOrWhiteSpace(clusterSetName))
         {
             throw new ArgumentException(nameof(clusterSetName));
         }
-        return ClusterSets.FirstOrDefault(x => string.Equals(clusterSetName, x.Name));
+        return ClusterSets?.FirstOrDefault(x => string.Equals(clusterSetName, x.Name));
     }
 
     /// <summary>

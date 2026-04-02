@@ -49,6 +49,41 @@ DROP PROCEDURE IF EXISTS _PE_VersionCheck;
 -- TABLE CHANGES
 -- =============================================================================
 
+-- Payroll: consolidate individual ClusterSetXxx columns into single ClusterSet JSON column
+ALTER TABLE Payroll ADD COLUMN ClusterSet JSON NULL;
+
+-- migrate existing data into the new JSON column
+UPDATE Payroll
+SET ClusterSet = JSON_OBJECT(
+    'ClusterSetCase',           ClusterSetCase,
+    'ClusterSetCaseField',      ClusterSetCaseField,
+    'ClusterSetCollector',      ClusterSetCollector,
+    'ClusterSetCollectorRetro', ClusterSetCollectorRetro,
+    'ClusterSetWageType',       ClusterSetWageType,
+    'ClusterSetWageTypeRetro',  ClusterSetWageTypeRetro,
+    'ClusterSetCaseValue',      ClusterSetCaseValue,
+    'ClusterSetWageTypePeriod', ClusterSetWageTypePeriod
+)
+WHERE ClusterSetCase           IS NOT NULL
+   OR ClusterSetCaseField      IS NOT NULL
+   OR ClusterSetCollector      IS NOT NULL
+   OR ClusterSetCollectorRetro IS NOT NULL
+   OR ClusterSetWageType       IS NOT NULL
+   OR ClusterSetWageTypeRetro  IS NOT NULL
+   OR ClusterSetCaseValue      IS NOT NULL
+   OR ClusterSetWageTypePeriod IS NOT NULL;
+
+-- drop individual columns (now superseded by ClusterSet JSON)
+ALTER TABLE Payroll
+    DROP COLUMN ClusterSetCase,
+    DROP COLUMN ClusterSetCaseField,
+    DROP COLUMN ClusterSetCollector,
+    DROP COLUMN ClusterSetCollectorRetro,
+    DROP COLUMN ClusterSetWageType,
+    DROP COLUMN ClusterSetWageTypeRetro,
+    DROP COLUMN ClusterSetCaseValue,
+    DROP COLUMN ClusterSetWageTypePeriod;
+
 -- Payrun: RetroTimeType (enum) → RetroBackCycles (int)
 -- -1 = unlimited (was: Anytime = 0), 0 = current cycle (was: Cycle = 1)
 ALTER TABLE Payrun RENAME COLUMN RetroTimeType TO RetroBackCycles;

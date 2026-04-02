@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Globalization;
 using PayrollEngine.Domain.Model;
+using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Domain.Scripting;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.Domain.Application;
 
@@ -113,6 +115,18 @@ internal sealed class PayrunEmployeeProcessor
             perfWatch.Restart();
 #endif
 
+            // resolve the YTD cluster set and collect matching WageType numbers for pre-loading
+            var ytdClusterSet = string.IsNullOrWhiteSpace(scope.Payroll.ClusterSet?.ClusterSetWageTypeYtd)
+                ? null
+                : scope.Payroll.GetClusterSet(scope.Payroll.ClusterSet.ClusterSetWageTypeYtd);
+            var ytdNumbers = ytdClusterSet == null
+                ? []
+                : scope.DerivedWageTypes
+                    .Where(g => g.AvailableCluster(ytdClusterSet))
+                    .Select(g => g.Key)
+                    .ToList<decimal>();
+            await LoadWageTypeYtdCacheAsync(scope, employee, ytdNumbers);
+
             // value provider
             var caseValueProvider = new CaseValueProvider(
                 settings: new()
@@ -204,6 +218,10 @@ internal sealed class PayrunEmployeeProcessor
                 {
                     // reset employee runtime values
                     scope.RuntimeValueProvider.EmployeeValues.Clear();
+
+                    // retro jobs may have changed prior-period results: invalidate and reload YTD cache
+                    scope.WageTypeYtdCache = null;
+                    await LoadWageTypeYtdCacheAsync(scope, employee, ytdNumbers);
 
 #if EMPLOYEE_PERFORMANCE
                     perfWatch.Restart();
@@ -306,6 +324,48 @@ internal sealed class PayrunEmployeeProcessor
         }
 
         return previewResult;
+    }
+
+    /// <summary>
+    /// Bulk-loads YTD results for all WageTypes tagged with the "Ytd" cluster and stores
+    /// them in <paramref name="scope"/>.<see cref="PayrunEmployeeScope.WageTypeYtdCache"/>.
+    /// No-op when <paramref name="ytdNumbers"/> is empty or in the first period of the cycle
+    /// (cycle start equals period start — no prior periods to load).
+    /// </summary>
+    private async Task LoadWageTypeYtdCacheAsync(
+        PayrunEmployeeScope scope, Employee employee, IList<decimal> ytdNumbers)
+    {
+        if (ytdNumbers.Count == 0)
+        {
+            return;
+        }
+
+        // first period of cycle: no prior results exist
+        if (scope.PayrunJob.CycleStart >= scope.PayrunJob.PeriodStart)
+        {
+            scope.WageTypeYtdCache = null;
+            return;
+        }
+
+        var previousPeriodEnd = scope.PayrunJob.PeriodStart.AddDays(-1);
+        var results = await Settings.PayrollResultRepository.GetWageTypeResultsAsync(
+            Settings.DbContext,
+            new WageTypeResultQuery
+            {
+                TenantId = Tenant.Id,
+                EmployeeId = employee.Id,
+                Period = new DatePeriod(scope.PayrunJob.CycleStart, previousPeriodEnd),
+                WageTypeNumbers = ytdNumbers,
+                JobStatus = PayrunJobStatus.Complete,
+                Forecast = scope.PayrunJob.Forecast,
+                EvaluationDate = scope.EvaluationDate
+            });
+
+        scope.WageTypeYtdCache = new WageTypeYtdCache(
+            cycleStart: scope.PayrunJob.CycleStart,
+            previousPeriodEnd: previousPeriodEnd,
+            wageTypeNumbers: ytdNumbers,
+            results: results);
     }
 
     /// <summary>

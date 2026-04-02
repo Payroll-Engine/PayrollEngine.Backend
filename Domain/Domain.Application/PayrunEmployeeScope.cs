@@ -58,6 +58,14 @@ internal sealed class PayrunEmployeeScope : IRegulationProvider
     /// <summary>Runtime values scoped to this employee.</summary>
     internal IRuntimeValueProvider RuntimeValueProvider { get; } = new RuntimeValueProvider();
 
+    /// <summary>
+    /// Pre-loaded YTD WageType results for all WageTypes tagged with the "Ytd" cluster.
+    /// <c>null</c> when no Ytd-clustered WageTypes exist, or in the first period of a cycle
+    /// (no prior results to load). Populated at PayrunEmployeeStart; reset and reloaded
+    /// before retro reevaluation to reflect any results changed by retro jobs.
+    /// </summary>
+    internal WageTypeYtdCache WageTypeYtdCache { get; set; }
+
     // -------------------------------------------------------------------------
     // Culture stack (per-employee, not shared)
     // -------------------------------------------------------------------------
