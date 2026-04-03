@@ -127,17 +127,17 @@ internal sealed class PayrunEmployeeProcessor
                     .ToList();
             await LoadWageTypeCycleCacheAsync(scope, employee, cycleNumbers);
 
-            // resolve the Cons cluster set and collect matching WageType numbers for pre-loading
-            var consClusterSet = string.IsNullOrWhiteSpace(scope.Payroll.ClusterSet?.ClusterSetWageTypeCons)
+            // resolve the consolidated cycle cache cluster set and collect matching WageType numbers
+            var consolidatedClusterSet = string.IsNullOrWhiteSpace(scope.Payroll.ClusterSet?.ClusterSetWageTypeConsolidated)
                 ? null
-                : scope.Payroll.GetClusterSet(scope.Payroll.ClusterSet.ClusterSetWageTypeCons);
-            var consNumbers = consClusterSet == null
+                : scope.Payroll.GetClusterSet(scope.Payroll.ClusterSet.ClusterSetWageTypeConsolidated);
+            var consolidatedNumbers = consolidatedClusterSet == null
                 ? []
                 : scope.DerivedWageTypes
-                    .Where(g => g.AvailableCluster(consClusterSet))
+                    .Where(g => g.AvailableCluster(consolidatedClusterSet))
                     .Select(g => g.Key)
                     .ToList();
-            await LoadWageTypeConsCacheAsync(scope, employee, consNumbers);
+            await LoadWageTypeConsolidatedCycleCacheAsync(scope, employee, consolidatedNumbers);
 
             // value provider
             var caseValueProvider = new CaseValueProvider(
@@ -235,9 +235,9 @@ internal sealed class PayrunEmployeeProcessor
                     scope.WageTypeCycleCache = null;
                     await LoadWageTypeCycleCacheAsync(scope, employee, cycleNumbers);
 
-                    // retro jobs may have changed consolidated results: invalidate and reload Cons cache
-                    scope.WageTypeConsCache = null;
-                    await LoadWageTypeConsCacheAsync(scope, employee, consNumbers);
+                    // retro jobs may have changed consolidated results: invalidate and reload consolidated cycle cache
+                    scope.WageTypeConsolidatedCycleCache = null;
+                    await LoadWageTypeConsolidatedCycleCacheAsync(scope, employee, consolidatedNumbers);
 
 #if EMPLOYEE_PERFORMANCE
                     perfWatch.Restart();
@@ -344,16 +344,16 @@ internal sealed class PayrunEmployeeProcessor
 
     /// <summary>
     /// Bulk-loads consolidated results (with retro-merge) for all WageTypes tagged via
-    /// <c>Payroll.ClusterSet.ClusterSetWageTypeCons</c> and stores them in
-    /// <paramref name="scope"/>.<see cref="PayrunEmployeeScope.WageTypeConsCache"/>.
-    /// No-op when <paramref name="consNumbers"/> is empty or in the first period of the cycle.
+    /// <c>Payroll.ClusterSet.ClusterSetWageTypeConsolidated</c> and stores them in
+    /// <paramref name="scope"/>.<see cref="PayrunEmployeeScope.WageTypeConsolidatedCycleCache"/>.
+    /// No-op when <paramref name="consolidatedNumbers"/> is empty or in the first period of the cycle.
     /// Uses the existing <c>GetConsolidatedWageTypeResults</c> SP with all WageType numbers
     /// and all completed period-start hashes in a single round-trip.
     /// </summary>
-    private async Task LoadWageTypeConsCacheAsync(
-        PayrunEmployeeScope scope, Employee employee, IList<decimal> consNumbers)
+    private async Task LoadWageTypeConsolidatedCycleCacheAsync(
+        PayrunEmployeeScope scope, Employee employee, IList<decimal> consolidatedNumbers)
     {
-        if (consNumbers.Count == 0)
+        if (consolidatedNumbers.Count == 0)
         {
             return;
         }
@@ -361,7 +361,7 @@ internal sealed class PayrunEmployeeProcessor
         // first period of cycle: no prior results exist
         if (scope.PayrunJob.CycleStart >= scope.PayrunJob.PeriodStart)
         {
-            scope.WageTypeConsCache = null;
+            scope.WageTypeConsolidatedCycleCache = null;
             return;
         }
 
@@ -377,7 +377,7 @@ internal sealed class PayrunEmployeeProcessor
 
         if (completedPeriodStarts.Count == 0)
         {
-            scope.WageTypeConsCache = null;
+            scope.WageTypeConsolidatedCycleCache = null;
             return;
         }
 
@@ -388,7 +388,7 @@ internal sealed class PayrunEmployeeProcessor
                 TenantId           = Tenant.Id,
                 EmployeeId         = employee.Id,
                 PeriodStarts       = completedPeriodStarts,
-                WageTypeNumbers    = consNumbers,
+                WageTypeNumbers    = consolidatedNumbers,
                 JobStatus          = PayrunJobStatus.Complete,
                 Forecast           = scope.PayrunJob.Forecast,
                 EvaluationDate     = scope.EvaluationDate,
@@ -396,9 +396,9 @@ internal sealed class PayrunEmployeeProcessor
                 ExcludeParentJobId = scope.ParentPayrunJob?.Id
             });
 
-        scope.WageTypeConsCache = new WageTypeConsCache(
+        scope.WageTypeConsolidatedCycleCache = new WageTypeConsolidatedCycleCache(
             periodMoment:    scope.PayrunJob.CycleStart,
-            wageTypeNumbers: consNumbers,
+            wageTypeNumbers: consolidatedNumbers,
             results:         results);
     }
 

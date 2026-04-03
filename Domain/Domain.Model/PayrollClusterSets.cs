@@ -43,10 +43,10 @@ public class PayrollClusterSets
     public string ClusterSetWageTypeCycle { get; set; }
 
     /// <summary>
-    /// The wage type consolidated cache cluster set name (undefined: no Cons pre-loading).
+    /// The wage type consolidated cycle cache cluster set name (undefined: no pre-loading).
     /// WageTypes matching this cluster set are bulk-loaded once per employee at
     /// PayrunEmployeeStart via a single <c>GetConsolidatedWageTypeResults</c> call,
-    /// eliminating repeated DB round-trips for consolidated (retro-merged) YTD queries.
+    /// eliminating repeated DB round-trips for consolidated (retro-merged) cycle queries.
     /// </summary>
-    public string ClusterSetWageTypeCons { get; set; }
+    public string ClusterSetWageTypeConsolidated { get; set; }
 }

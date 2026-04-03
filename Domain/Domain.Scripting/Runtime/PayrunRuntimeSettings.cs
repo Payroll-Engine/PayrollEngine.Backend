@@ -44,10 +44,10 @@ public class PayrunRuntimeSettings : PayrollRuntimeSettings
     public WageTypeCycleCache WageTypeYtdCache { get; init; }
 
     /// <summary>
-    /// Optional pre-loaded consolidated cache for this employee.
+    /// Optional pre-loaded consolidated cycle cache for this employee.
     /// When non-null, <see cref="PayrunRuntimeBase"/> serves matching
     /// <c>GetConsolidatedWageTypeResults(cycleStart, ...)</c> calls from memory
     /// instead of issuing a DB query.
     /// </summary>
-    public WageTypeConsCache WageTypeConsCache { get; init; }
+    public WageTypeConsolidatedCycleCache WageTypeConsCache { get; init; }
 }

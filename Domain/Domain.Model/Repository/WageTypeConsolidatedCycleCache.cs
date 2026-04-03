@@ -7,15 +7,15 @@ namespace PayrollEngine.Domain.Model.Repository;
 /// <summary>
 /// Per-employee in-memory cache for consolidated WageType results (with retro-merge).
 /// Pre-loaded once at PayrunEmployeeStart for all WageTypes tagged via the payroll
-/// ClusterSet referenced by <c>Payroll.ClusterSet.ClusterSetWageTypeCons</c>.
+/// ClusterSet referenced by <c>Payroll.ClusterSet.ClusterSetWageTypeConsolidated</c>.
 /// Serves <c>GetConsolidatedWageTypeResults(periodMoment, ...)</c> calls from memory,
-/// eliminating one DB round-trip per Cons-dependent WageType per employee.
+/// eliminating one DB round-trip per qualifying WageType per employee.
 ///
 /// The retro-merge is applied by the existing <c>GetConsolidatedWageTypeResults</c>
 /// stored procedure at pre-load time — the cache stores the already-consolidated values.
 /// Queries with <c>noRetro = true</c> always bypass the cache.
 /// </summary>
-public sealed class WageTypeConsCache
+public sealed class WageTypeConsolidatedCycleCache
 {
     // (wageTypeNumber, periodStart) → consolidated WageTypeResult
     private readonly Dictionary<(decimal Number, DateTime PeriodStart), WageTypeResult> cache = new();
@@ -35,7 +35,7 @@ public sealed class WageTypeConsCache
     /// <param name="periodMoment">The period moment used for the pre-load query.</param>
     /// <param name="wageTypeNumbers">The WageType numbers that were pre-loaded.</param>
     /// <param name="results">The already-consolidated DB results to populate the cache from.</param>
-    public WageTypeConsCache(DateTime periodMoment,
+    public WageTypeConsolidatedCycleCache(DateTime periodMoment,
         IEnumerable<decimal> wageTypeNumbers, IEnumerable<WageTypeResult> results)
     {
         PeriodMoment = periodMoment;

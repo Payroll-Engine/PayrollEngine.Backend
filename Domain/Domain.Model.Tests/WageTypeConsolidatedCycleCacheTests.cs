@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using Xunit;
 
 namespace PayrollEngine.Domain.Model.Tests;
 
-public class WageTypeConsCacheTests
+public class WageTypeConsolidatedCycleCacheTests
 {
     // -------------------------------------------------------------------------
     // Test data helpers
@@ -24,7 +25,7 @@ public class WageTypeConsCacheTests
             Value          = value
         };
 
-    private static WageTypeConsCache BuildCache(
+    private static WageTypeConsolidatedCycleCache BuildCache(
         IEnumerable<decimal> numbers, IEnumerable<WageTypeResult> results,
         DateTime? periodMoment = null) =>
         new(periodMoment ?? CycleStart, numbers, results);
@@ -128,7 +129,6 @@ public class WageTypeConsCacheTests
     [Fact]
     public void Get_ReturnsEmpty_WhenNoPriorPeriodResults()
     {
-        // cache pre-loaded with numbers but no DB rows (first payrun of year)
         var cache = BuildCache([5001m], []);
 
         var results = cache.Get([5001m]);
@@ -153,7 +153,6 @@ public class WageTypeConsCacheTests
     [Fact]
     public void Get_ReturnsAllPeriodResults_ForMultiplePeriods()
     {
-        // consolidated results across Jan + Feb (March payrun)
         var jan = MakeResult(5001m, new DateTime(2026, 1, 1), 2500m);
         var feb = MakeResult(5001m, new DateTime(2026, 2, 1), 2600m);
         var cache = BuildCache([5001m], [jan, feb]);
@@ -166,7 +165,6 @@ public class WageTypeConsCacheTests
     [Fact]
     public void Get_ReturnsResultsForAllRequestedWageTypes()
     {
-        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5001m, CycleStart, 100m);
         var r2 = MakeResult(5002m, CycleStart, 200m);
         var r3 = MakeResult(5004m, CycleStart, 300m);
@@ -180,7 +178,6 @@ public class WageTypeConsCacheTests
     [Fact]
     public void Get_ReturnsOnlyRequestedSubset()
     {
-        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5001m, CycleStart, 100m);
         var r2 = MakeResult(5002m, CycleStart, 200m);
         var cache = BuildCache([5001m, 5002m], [r1, r2]);
@@ -194,7 +191,6 @@ public class WageTypeConsCacheTests
     [Fact]
     public void Get_PreservesOriginalResultObject()
     {
-        // ReSharper disable once StringLiteralTypo
         var original = MakeResult(5001m, CycleStart, 999.99m, "CH.WageTypeOasi");
         original.Tags = ["retro", "legal"];
         var cache = BuildCache([5001m], [original]);

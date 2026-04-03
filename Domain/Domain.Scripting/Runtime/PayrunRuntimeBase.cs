@@ -382,11 +382,11 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
         var consolidatedResults = new List<Tuple<decimal, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>>();
         if (EmployeeId != null)
         {
-            // serve from pre-loaded consolidated cache when available and query matches
-            var consCache = Settings.WageTypeConsCache;
-            if (consCache != null && consCache.CanServe(wageTypeNumbers, periodMoment, noRetro))
+            // serve from pre-loaded consolidated cycle cache when available and query matches
+            var consolidatedCache = Settings.WageTypeConsCache;
+            if (consolidatedCache != null && consolidatedCache.CanServe(wageTypeNumbers, periodMoment, noRetro))
             {
-                return consCache.Get(wageTypeNumbers)
+                return consolidatedCache.Get(wageTypeNumbers)
                     .Select(x => new Tuple<decimal, string, Tuple<DateTime, DateTime>, decimal, List<string>, Dictionary<string, object>>(
                         x.WageTypeNumber, x.WageTypeName, new(x.Start, x.End), x.Value, x.Tags, x.Attributes))
                     .ToList();

@@ -60,11 +60,11 @@ internal sealed class PayrunEmployeeScope : IRegulationProvider
 
     /// <summary>
     /// Pre-loaded consolidated WageType results (with retro-merge) for all WageTypes
-    /// tagged via <c>Payroll.ClusterSet.ClusterSetWageTypeCons</c>.
-    /// <c>null</c> when no Cons-clustered WageTypes exist, or in the first period of a cycle.
+    /// tagged via <c>Payroll.ClusterSet.ClusterSetWageTypeConsolidated</c>.
+    /// <c>null</c> when no consolidated-clustered WageTypes exist, or in the first period of a cycle.
     /// Populated at PayrunEmployeeStart; reset and reloaded before retro reevaluation.
     /// </summary>
-    internal WageTypeConsCache WageTypeConsCache { get; set; }
+    internal WageTypeConsolidatedCycleCache WageTypeConsolidatedCycleCache { get; set; }
 
     /// <summary>
     /// Pre-loaded WageType results for all WageTypes tagged via
