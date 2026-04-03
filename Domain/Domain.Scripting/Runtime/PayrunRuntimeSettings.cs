@@ -36,12 +36,12 @@ public class PayrunRuntimeSettings : PayrollRuntimeSettings
     public PayrunExecutionPhase ExecutionPhase { get; init; }
 
     /// <summary>
-    /// Optional pre-loaded YTD cache for this employee.
+    /// Optional pre-loaded cycle cache for this employee.
     /// When non-null, <see cref="PayrunRuntimeBase"/> serves matching
     /// <c>GetWageTypeResults(cycleStart, previousPeriodEnd)</c> calls from memory
-    /// instead of issuing a DB query.
+    /// instead of issuing a DB query. Works for any calendar cycle type.
     /// </summary>
-    public WageTypeYtdCache WageTypeYtdCache { get; init; }
+    public WageTypeCycleCache WageTypeYtdCache { get; init; }
 
     /// <summary>
     /// Optional pre-loaded consolidated cache for this employee.

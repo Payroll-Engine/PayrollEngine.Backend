@@ -102,6 +102,13 @@ public class Payroll : DomainObjectBase, INamedObject, IDomainAttributeObject, I
         set => (ClusterSet ??= new()).ClusterSetWageTypePeriod = value;
     }
 
+    /// <summary>The wage type cycle cache cluster set name (undefined: no cycle cache pre-loading).</summary>
+    public string ClusterSetWageTypeCycle
+    {
+        get => ClusterSet?.ClusterSetWageTypeCycle;
+        set => (ClusterSet ??= new()).ClusterSetWageTypeCycle = value;
+    }
+
     /// <summary>The wage type consolidated cache cluster set name (undefined: no Cons pre-loading).</summary>
     public string ClusterSetWageTypeCons
     {

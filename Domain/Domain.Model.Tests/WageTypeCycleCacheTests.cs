@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using Xunit;
 
 namespace PayrollEngine.Domain.Model.Tests;
 
-public class WageTypeYtdCacheTests
+public class WageTypeCycleCacheTests
 {
     // -------------------------------------------------------------------------
     // Test data helpers
@@ -24,7 +25,7 @@ public class WageTypeYtdCacheTests
             Value = value
         };
 
-    private static WageTypeYtdCache BuildCache(
+    private static WageTypeCycleCache BuildCache(
         IEnumerable<decimal> numbers, IEnumerable<WageTypeResult> results) =>
         new(CycleStart, PreviousPeriodEnd, numbers, results);
 
@@ -59,7 +60,6 @@ public class WageTypeYtdCacheTests
     {
         var cache = BuildCache([5150m], [MakeResult(5150m, CycleStart)]);
 
-        // 8100m was never loaded into this cache
         var result = cache.CanServe([8100m], CycleStart, PreviousPeriodEnd);
 
         Assert.False(result);
@@ -74,7 +74,6 @@ public class WageTypeYtdCacheTests
             MakeResult(8100m, CycleStart)
         ]);
 
-        // 9999m was never loaded
         var result = cache.CanServe([5150m, 8100m, 9999m], CycleStart, PreviousPeriodEnd);
 
         Assert.False(result);
@@ -97,7 +96,6 @@ public class WageTypeYtdCacheTests
     [Fact]
     public void CanServe_ReturnsTrue_WhenRequestedNumbersAreSubsetOfPreloaded()
     {
-        // cache has three WTs; query only asks for two — still a cache hit
         var cache = BuildCache([5150m, 8100m, 5100m],
         [
             MakeResult(5150m, CycleStart),
@@ -117,7 +115,6 @@ public class WageTypeYtdCacheTests
     [Fact]
     public void Get_ReturnsEmpty_WhenNoResultsStoredForNumber()
     {
-        // cache was built with the number but no DB rows exist (e.g. first payrun of the year)
         var cache = BuildCache([5150m], []);
 
         var results = cache.Get([5150m]);
@@ -142,7 +139,6 @@ public class WageTypeYtdCacheTests
     [Fact]
     public void Get_ReturnsAllPeriodResults_ForSingleWageType()
     {
-        // two prior periods (Jan + Feb results for a March payrun)
         var jan = MakeResult(5150m, new DateTime(2026, 1, 1), 500m);
         var feb = MakeResult(5150m, new DateTime(2026, 2, 1), 600m);
         var cache = BuildCache([5150m], [jan, feb]);
@@ -155,7 +151,6 @@ public class WageTypeYtdCacheTests
     [Fact]
     public void Get_ReturnsResultsForAllRequestedWageTypes()
     {
-        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5150m, CycleStart, 100m);
         var r2 = MakeResult(8100m, CycleStart, 200m);
         var r3 = MakeResult(5100m, CycleStart, 300m);
@@ -169,7 +164,6 @@ public class WageTypeYtdCacheTests
     [Fact]
     public void Get_ReturnsOnlyRequestedWageTypes_WhenSubsetRequested()
     {
-        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5150m, CycleStart, 100m);
         var r2 = MakeResult(8100m, CycleStart, 200m);
         var cache = BuildCache([5150m, 8100m], [r1, r2]);
@@ -189,7 +183,6 @@ public class WageTypeYtdCacheTests
 
         var results = cache.Get([5150m]);
 
-        // must be the exact same object — no copying
         Assert.Same(original, results[0]);
     }
 

@@ -5079,6 +5079,9 @@
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageTypePeriod">
             <summary>The wage type period result cluster set name (undefined: none).</summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageTypeCycle">
+            <summary>The wage type cycle cache cluster set name (undefined: no cycle cache pre-loading).</summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Payroll.ClusterSetWageTypeCons">
             <summary>The wage type consolidated cache cluster set name (undefined: no Cons pre-loading).</summary>
         </member>
@@ -5310,11 +5313,12 @@
         <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypePeriod">
             <summary>The wage type period result cluster set name (undefined: none).</summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypeYtd">
+        <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypeCycle">
             <summary>
-            The wage type YTD cache cluster set name (undefined: no YTD pre-loading).
+            The wage type cycle cache cluster set name (undefined: no cycle cache pre-loading).
             WageTypes matching this cluster set are bulk-loaded once per employee at
-            PayrunEmployeeStart, eliminating repeated DB round-trips for YTD queries.
+            PayrunEmployeeStart, eliminating repeated DB round-trips for cycle-range queries.
+            Works for any calendar cycle type (annual, quarterly, monthly, etc.).
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollClusterSets.ClusterSetWageTypeCons">
@@ -9029,46 +9033,48 @@
             Only call after <see cref="M:PayrollEngine.Domain.Model.Repository.WageTypeConsCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.Boolean)"/> returns <c>true</c>.
             </summary>
         </member>
-        <member name="T:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache">
+        <member name="T:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache">
             <summary>
-            Per-employee in-memory cache for WageType YTD results.
-            Preloaded once at PayrunEmployeeStart for all WageTypes tagged with the "Ytd" cluster.
+            Per-employee in-memory cache for WageType cycle results.
+            Pre-loaded once at PayrunEmployeeStart for all WageTypes tagged via the payroll
+            ClusterSet referenced by <c>Payroll.ClusterSet.ClusterSetWageTypeCycle</c>.
             Serves <c>GetWageTypeResults(cycleStart, previousPeriodEnd)</c> calls from memory,
-            eliminating one DB round-trip per YTD-dependent WageType per employee.
+            eliminating one DB round-trip per qualifying WageType per employee.
+            Works for any calendar cycle type (annual, quarterly, monthly, etc.).
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.CycleStart">
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache.CycleStart">
             <summary>The cycle start date this cache covers (inclusive lower bound).</summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.PreviousPeriodEnd">
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache.PreviousPeriodEnd">
             <summary>
-            The inclusive upper bound of the preloaded date range.
+            The inclusive upper bound of the pre-loaded date range.
             Equals the last day of the previous period (<c>PayrunJob.PeriodStart.AddDays(-1)</c>).
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.WageTypeNumbers">
-            <summary>The WageType numbers preloaded into this cache.</summary>
+        <member name="P:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache.WageTypeNumbers">
+            <summary>The WageType numbers pre-loaded into this cache.</summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.#ctor(System.DateTime,System.DateTime,System.Collections.Generic.IEnumerable{System.Decimal},System.Collections.Generic.IEnumerable{PayrollEngine.Domain.Model.WageTypeResult})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache.#ctor(System.DateTime,System.DateTime,System.Collections.Generic.IEnumerable{System.Decimal},System.Collections.Generic.IEnumerable{PayrollEngine.Domain.Model.WageTypeResult})">
             <summary>
             Initialises the cache from the bulk-loaded results.
             </summary>
             <param name="cycleStart">Inclusive lower bound of the covered date range.</param>
             <param name="previousPeriodEnd">Inclusive upper bound (<c>PeriodStart - 1 day</c>).</param>
-            <param name="wageTypeNumbers">The WageType numbers that were preloaded.</param>
+            <param name="wageTypeNumbers">The WageType numbers that were pre-loaded.</param>
             <param name="results">The raw DB results to populate the cache from.</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.DateTime)">
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.DateTime)">
             <summary>
             Returns <c>true</c> when this cache can fully serve the given query without a DB call.
             The <paramref name="start"/>/<paramref name="end"/> range must match exactly and all
-            requested numbers must be among the preloaded WageType numbers.
+            requested numbers must be among the pre-loaded WageType numbers.
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.Get(System.Collections.Generic.IList{System.Decimal})">
+        <member name="M:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache.Get(System.Collections.Generic.IList{System.Decimal})">
             <summary>
             Returns the cached results for the given WageType numbers.
-            Only call after <see cref="M:PayrollEngine.Domain.Model.Repository.WageTypeYtdCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.DateTime)"/> returns <c>true</c>.
+            Only call after <see cref="M:PayrollEngine.Domain.Model.Repository.WageTypeCycleCache.CanServe(System.Collections.Generic.IList{System.Decimal},System.DateTime,System.DateTime)"/> returns <c>true</c>.
             </summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.RetroPayrunJob">

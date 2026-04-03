@@ -115,17 +115,17 @@ internal sealed class PayrunEmployeeProcessor
             perfWatch.Restart();
 #endif
 
-            // resolve the YTD cluster set and collect matching WageType numbers for pre-loading
-            var ytdClusterSet = string.IsNullOrWhiteSpace(scope.Payroll.ClusterSet?.ClusterSetWageTypeYtd)
+            // resolve the cycle cache cluster set and collect matching WageType numbers for pre-loading
+            var cycleClusterSet = string.IsNullOrWhiteSpace(scope.Payroll.ClusterSet?.ClusterSetWageTypeCycle)
                 ? null
-                : scope.Payroll.GetClusterSet(scope.Payroll.ClusterSet.ClusterSetWageTypeYtd);
-            var ytdNumbers = ytdClusterSet == null
+                : scope.Payroll.GetClusterSet(scope.Payroll.ClusterSet.ClusterSetWageTypeCycle);
+            var cycleNumbers = cycleClusterSet == null
                 ? []
                 : scope.DerivedWageTypes
-                    .Where(g => g.AvailableCluster(ytdClusterSet))
+                    .Where(g => g.AvailableCluster(cycleClusterSet))
                     .Select(g => g.Key)
                     .ToList();
-            await LoadWageTypeYtdCacheAsync(scope, employee, ytdNumbers);
+            await LoadWageTypeCycleCacheAsync(scope, employee, cycleNumbers);
 
             // resolve the Cons cluster set and collect matching WageType numbers for pre-loading
             var consClusterSet = string.IsNullOrWhiteSpace(scope.Payroll.ClusterSet?.ClusterSetWageTypeCons)
@@ -231,9 +231,9 @@ internal sealed class PayrunEmployeeProcessor
                     // reset employee runtime values
                     scope.RuntimeValueProvider.EmployeeValues.Clear();
 
-                    // retro jobs may have changed prior-period results: invalidate and reload YTD cache
-                    scope.WageTypeYtdCache = null;
-                    await LoadWageTypeYtdCacheAsync(scope, employee, ytdNumbers);
+                    // retro jobs may have changed prior-period results: invalidate and reload cycle cache
+                    scope.WageTypeCycleCache = null;
+                    await LoadWageTypeCycleCacheAsync(scope, employee, cycleNumbers);
 
                     // retro jobs may have changed consolidated results: invalidate and reload Cons cache
                     scope.WageTypeConsCache = null;
@@ -403,15 +403,16 @@ internal sealed class PayrunEmployeeProcessor
     }
 
     /// <summary>
-    /// Bulk-loads YTD results for all WageTypes tagged with the "Ytd" cluster and stores
-    /// them in <paramref name="scope"/>.<see cref="PayrunEmployeeScope.WageTypeYtdCache"/>.
-    /// No-op when <paramref name="ytdNumbers"/> is empty or in the first period of the cycle
-    /// (cycle start equals period start — no prior periods to load).
+    /// Bulk-loads WageType results for the current cycle for all WageTypes tagged via
+    /// <c>Payroll.ClusterSet.ClusterSetWageTypeCycle</c> and stores them in
+    /// <paramref name="scope"/>.<see cref="PayrunEmployeeScope.WageTypeCycleCache"/>.
+    /// No-op when <paramref name="cycleNumbers"/> is empty or in the first period of the cycle.
+    /// Works for any calendar cycle type (annual, quarterly, monthly, etc.).
     /// </summary>
-    private async Task LoadWageTypeYtdCacheAsync(
-        PayrunEmployeeScope scope, Employee employee, IList<decimal> ytdNumbers)
+    private async Task LoadWageTypeCycleCacheAsync(
+        PayrunEmployeeScope scope, Employee employee, IList<decimal> cycleNumbers)
     {
-        if (ytdNumbers.Count == 0)
+        if (cycleNumbers.Count == 0)
         {
             return;
         }
@@ -419,7 +420,7 @@ internal sealed class PayrunEmployeeProcessor
         // first period of cycle: no prior results exist
         if (scope.PayrunJob.CycleStart >= scope.PayrunJob.PeriodStart)
         {
-            scope.WageTypeYtdCache = null;
+            scope.WageTypeCycleCache = null;
             return;
         }
 
@@ -431,16 +432,16 @@ internal sealed class PayrunEmployeeProcessor
                 TenantId = Tenant.Id,
                 EmployeeId = employee.Id,
                 Period = new DatePeriod(scope.PayrunJob.CycleStart, previousPeriodEnd),
-                WageTypeNumbers = ytdNumbers,
+                WageTypeNumbers = cycleNumbers,
                 JobStatus = PayrunJobStatus.Complete,
                 Forecast = scope.PayrunJob.Forecast,
                 EvaluationDate = scope.EvaluationDate
             });
 
-        scope.WageTypeYtdCache = new WageTypeYtdCache(
+        scope.WageTypeCycleCache = new WageTypeCycleCache(
             cycleStart: scope.PayrunJob.CycleStart,
             previousPeriodEnd: previousPeriodEnd,
-            wageTypeNumbers: ytdNumbers,
+            wageTypeNumbers: cycleNumbers,
             results: results);
     }
 

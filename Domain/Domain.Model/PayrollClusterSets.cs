@@ -35,11 +35,12 @@ public class PayrollClusterSets
     public string ClusterSetWageTypePeriod { get; set; }
 
     /// <summary>
-    /// The wage type YTD cache cluster set name (undefined: no YTD pre-loading).
+    /// The wage type cycle cache cluster set name (undefined: no cycle cache pre-loading).
     /// WageTypes matching this cluster set are bulk-loaded once per employee at
-    /// PayrunEmployeeStart, eliminating repeated DB round-trips for YTD queries.
+    /// PayrunEmployeeStart, eliminating repeated DB round-trips for cycle-range queries.
+    /// Works for any calendar cycle type (annual, quarterly, monthly, etc.).
     /// </summary>
-    public string ClusterSetWageTypeYtd { get; set; }
+    public string ClusterSetWageTypeCycle { get; set; }
 
     /// <summary>
     /// The wage type consolidated cache cluster set name (undefined: no Cons pre-loading).

@@ -608,11 +608,11 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             return new List<WageTypeResult>();
         }
 
-        // serve from pre-loaded YTD cache when available and range matches
-        var ytdCache = Settings.WageTypeYtdCache;
-        if (ytdCache != null && ytdCache.CanServe(wageTypeNumbers, start, end))
+        // serve from pre-loaded cycle cache when available and range matches
+        var cycleCache = Settings.WageTypeYtdCache;
+        if (cycleCache != null && cycleCache.CanServe(wageTypeNumbers, start, end))
         {
-            return ytdCache.Get(wageTypeNumbers);
+            return cycleCache.Get(wageTypeNumbers);
         }
 
         return ResultProvider.GetWageTypeResultsAsync(Settings.DbContext,

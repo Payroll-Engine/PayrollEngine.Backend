@@ -67,12 +67,13 @@ internal sealed class PayrunEmployeeScope : IRegulationProvider
     internal WageTypeConsCache WageTypeConsCache { get; set; }
 
     /// <summary>
-    /// Pre-loaded YTD WageType results for all WageTypes tagged with the "Ytd" cluster.
-    /// <c>null</c> when no Ytd-clustered WageTypes exist, or in the first period of a cycle
-    /// (no prior results to load). Populated at PayrunEmployeeStart; reset and reloaded
-    /// before retro reevaluation to reflect any results changed by retro jobs.
+    /// Pre-loaded WageType results for all WageTypes tagged via
+    /// <c>Payroll.ClusterSet.ClusterSetWageTypeCycle</c>.
+    /// Covers the range <c>(CycleStart, PreviousPeriodEnd)</c> for any calendar cycle type.
+    /// <c>null</c> when no cycle-clustered WageTypes exist, or in the first period of a cycle.
+    /// Populated at PayrunEmployeeStart; reset and reloaded before retro reevaluation.
     /// </summary>
-    internal WageTypeYtdCache WageTypeYtdCache { get; set; }
+    internal WageTypeCycleCache WageTypeCycleCache { get; set; }
 
     // -------------------------------------------------------------------------
     // Culture stack (per-employee, not shared)
