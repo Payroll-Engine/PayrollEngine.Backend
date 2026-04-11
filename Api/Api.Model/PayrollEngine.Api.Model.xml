@@ -990,16 +990,6 @@
             The case field clusters
             </summary>
         </member>
-        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.BuildActions">
-            <summary>
-            The case field build actions
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.ValidateActions">
-            <summary>
-            The case field validate actions
-            </summary>
-        </member>
         <member name="P:PayrollEngine.Api.Model.CaseFieldAudit.Attributes">
             <summary>
             Custom attributes
