@@ -33,8 +33,13 @@ public class PayrollRepository(IPayrollLayerRepository payrollLayerRepository,
         parameters.Add(nameof(payroll.NameLocalizations), JsonSerializer.SerializeNamedDictionary(payroll.NameLocalizations));
         parameters.Add(nameof(payroll.Description), payroll.Description);
         parameters.Add(nameof(payroll.DescriptionLocalizations), JsonSerializer.SerializeNamedDictionary(payroll.DescriptionLocalizations));
-        parameters.Add(nameof(payroll.ClusterSet), DefaultJsonSerializer.Serialize(payroll.ClusterSet));
-        parameters.Add(nameof(payroll.ClusterSets), DefaultJsonSerializer.Serialize(payroll.ClusterSets));
+        // ClusterSet: pre-serialize with bare JsonSerializer (PascalCase) so the value is stored as
+        // nvarchar(max) — consistent with JsonObjectTypeHandler<T>.Parse() which also uses PascalCase.
+        // Passing the object directly bypasses TypeHandler.SetValue in this repository pattern.
+        parameters.Add(nameof(payroll.ClusterSet),
+            payroll.ClusterSet != null ? System.Text.Json.JsonSerializer.Serialize(payroll.ClusterSet) : null);
+        // ClusterSets: ListTypeHandler uses DefaultJsonSerializer (camelCase) for both write and read.
+        parameters.Add(nameof(payroll.ClusterSets), JsonSerializer.SerializeList(payroll.ClusterSets));
         parameters.Add(nameof(payroll.Attributes), JsonSerializer.SerializeNamedDictionary(payroll.Attributes));
         base.GetObjectData(payroll, parameters);
     }

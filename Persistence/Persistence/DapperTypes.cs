@@ -24,6 +24,8 @@ public static class DapperTypes
         SqlMapper.AddTypeHandler(new ListTypeHandler<CaseSlot>());
         // Report data relation
         SqlMapper.AddTypeHandler(new ListTypeHandler<DataRelation>());
+        // payroll cluster sets (routing config — stored as JSON object)
+        SqlMapper.AddTypeHandler(new JsonObjectTypeHandler<PayrollClusterSets>());
         // payroll cluster set list
         SqlMapper.AddTypeHandler(new ListTypeHandler<ClusterSet>());
         // payroll case field reference

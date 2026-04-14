@@ -263,7 +263,11 @@ public class PayrunJobWorkerService : BackgroundService
                 // The status determines what happens next:
                 // - Draft (default): calculation done, user advances the workflow manually.
                 // - CompletedJobStatus set (e.g. TestRunner): finalize with the requested status.
-                var completedStatus = queueItem.JobInvocation.CompletedJobStatus;
+                // Abort is excluded: it can only happen via AbortJobAsync (processor failure path).
+                // A test may send CompletedJobStatus=Abort as an expectation signal; ignore it here.
+                var completedStatus = queueItem.JobInvocation.CompletedJobStatus is PayrunJobStatus.Abort
+                    ? null
+                    : queueItem.JobInvocation.CompletedJobStatus;
                 job.JobStatus = completedStatus ?? PayrunJobStatus.Draft;
                 job.JobEnd = Date.Now;
                 job.Message = completedStatus.HasValue
