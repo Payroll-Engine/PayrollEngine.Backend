@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using Xunit;
 
@@ -165,6 +164,7 @@ public class WageTypeConsolidatedCycleCacheTests
     [Fact]
     public void Get_ReturnsResultsForAllRequestedWageTypes()
     {
+        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5001m, CycleStart, 100m);
         var r2 = MakeResult(5002m, CycleStart, 200m);
         var r3 = MakeResult(5004m, CycleStart, 300m);
@@ -178,6 +178,7 @@ public class WageTypeConsolidatedCycleCacheTests
     [Fact]
     public void Get_ReturnsOnlyRequestedSubset()
     {
+        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5001m, CycleStart, 100m);
         var r2 = MakeResult(5002m, CycleStart, 200m);
         var cache = BuildCache([5001m, 5002m], [r1, r2]);
@@ -191,7 +192,7 @@ public class WageTypeConsolidatedCycleCacheTests
     [Fact]
     public void Get_PreservesOriginalResultObject()
     {
-        var original = MakeResult(5001m, CycleStart, 999.99m, "CH.WageTypeOasi");
+        var original = MakeResult(5001m, CycleStart, 999.99m, "MyWageType");
         original.Tags = ["retro", "legal"];
         var cache = BuildCache([5001m], [original]);
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using Xunit;
 
@@ -151,6 +150,7 @@ public class WageTypeCycleCacheTests
     [Fact]
     public void Get_ReturnsResultsForAllRequestedWageTypes()
     {
+        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5150m, CycleStart, 100m);
         var r2 = MakeResult(8100m, CycleStart, 200m);
         var r3 = MakeResult(5100m, CycleStart, 300m);
@@ -164,6 +164,7 @@ public class WageTypeCycleCacheTests
     [Fact]
     public void Get_ReturnsOnlyRequestedWageTypes_WhenSubsetRequested()
     {
+        // ReSharper disable once RedundantArgumentDefaultValue
         var r1 = MakeResult(5150m, CycleStart, 100m);
         var r2 = MakeResult(8100m, CycleStart, 200m);
         var cache = BuildCache([5150m, 8100m], [r1, r2]);
