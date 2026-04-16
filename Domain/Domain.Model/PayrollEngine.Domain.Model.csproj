@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Domain.Model</AssemblyName>
@@ -12,8 +12,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Client.Scripting" Version="0.10.0-beta.dev" />
-		<PackageReference Include="PayrollEngine.Core" Version="0.10.0-beta.dev" />
+		<PackageReference Include="PayrollEngine.Client.Scripting" Version="$(PayrollEngineVersion)" />
+		<PackageReference Include="PayrollEngine.Core" Version="$(PayrollEngineVersion)" />
 		<PackageReference Include="SqlKata" Version="4.0.1" />
 	</ItemGroup>
 

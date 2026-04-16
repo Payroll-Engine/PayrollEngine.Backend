@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.Api.Model</AssemblyName>
@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Core" Version="0.10.0-beta.dev" />
+		<PackageReference Include="PayrollEngine.Core" Version="$(PayrollEngineVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>
