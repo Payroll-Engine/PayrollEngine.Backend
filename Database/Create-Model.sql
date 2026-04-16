@@ -10221,6 +10221,8 @@ UPDATE STATISTICS dbo.[EmployeeCaseValue]    WITH FULLSCAN;
 END
 GO
 
+-- #endregion DB_SCRIPTS
+
 -- #region VERSION_SET
 DECLARE @errorID int
 INSERT INTO dbo.[Version] (
