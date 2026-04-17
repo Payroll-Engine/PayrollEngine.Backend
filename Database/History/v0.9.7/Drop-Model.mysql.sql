@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Drop-Model.mysql.sql
 -- Drops all PayrollEngine tables for MySQL 8.0+
--- Schema version: 1.0.0
+-- Schema version: 0.9.6
 -- =============================================================================
 
 USE PayrollEngine;

@@ -7,7 +7,7 @@ It is designed for multi-tenant operation where each tenant represents an indepe
 
 ## Schema Version
 
-Current schema version: **0.9.6**
+Current schema version: **1.0.0**
 
 The schema version is stored in the `Version` table and verified by the Backend on startup.
 
@@ -221,14 +221,14 @@ cd Backend\Database
 # 2. Review Update-Model.sql, check for '-- TODO' comments
 
 # 3. After release: snapshot into History
-mkdir History\v0.9.6
-copy Create-Model.sql  History\v0.9.6\
-copy Update-Model.sql  History\v0.9.6\
-copy Drop-Model.sql    History\v0.9.6\
-copy DbVersion.json    History\v0.9.6\
+mkdir History\v1.0.0
+copy Create-Model.sql  History\v1.0.0\
+copy Update-Model.sql  History\v1.0.0\
+copy Drop-Model.sql    History\v1.0.0\
+copy DbVersion.json    History\v1.0.0\
 
 # 4. Advance DbVersion.json for next cycle
-#    OldVersion = "0.9.6", NewVersion = "0.9.7"
+#    OldVersion = "1.0.0", NewVersion = "1.0.1"
 ```
 
 ---

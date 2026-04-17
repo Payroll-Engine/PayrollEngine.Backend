@@ -87,9 +87,9 @@ $versionRecord = @"
 -- =============================================================================
 
 INSERT INTO ``Version`` (Created, MajorVersion, MinorVersion, SubVersion, Owner, Description)
-VALUES (NOW(6), 0, 9, 6, CURRENT_USER(), 'Payroll Engine: Full setup v0.9.6 (MySQL)');
+VALUES (NOW(6), 1, 0, 0, CURRENT_USER(), 'Payroll Engine: Full setup v1.0.0 (MySQL)');
 
-SELECT 'PayrollEngine MySQL schema v0.9.6 created successfully.' AS Result;
+SELECT 'PayrollEngine MySQL schema v1.0.0 created successfully.' AS Result;
 "@
 
 # --------------------------------------------------------------------------

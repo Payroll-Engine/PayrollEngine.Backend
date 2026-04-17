@@ -46,12 +46,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Persistence",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.Persistence.DbQuery.Tests", "Persistence\Persistence.DbQuery.Tests\PayrollEngine.Persistence.DbQuery.Tests.csproj", "{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbScripts", "DbScripts", "{310A2C3A-18E3-4725-906B-899562617D1F}"
-	ProjectSection(SolutionItems) = preProject
-		DbScripts\CreateObjectsDbScript.sql = DbScripts\CreateObjectsDbScript.sql
-		DbScripts\DropObjectsDbScript.sql = DbScripts\DropObjectsDbScript.sql
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayrollEngine.Persistence.MySql", "Persistence\Persistence.MySql\PayrollEngine.Persistence.MySql.csproj", "{72B46E93-6780-96ED-F1CC-D2DD88785F5A}"
 EndProject
 Global
@@ -132,7 +126,6 @@ Global
 		{696595D8-55C0-48FD-8D22-9A6BADE6ABD2} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
 		{E568C91A-A8D2-4E56-BACA-4D9432000B80} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
 		{3F4E5D6C-7B8A-9C0D-1E2F-3A4B5C6D7E8F} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
-		{310A2C3A-18E3-4725-906B-899562617D1F} = {FB52813B-8A24-40E3-98AA-DC140C590DC3}
 		{72B46E93-6780-96ED-F1CC-D2DD88785F5A} = {EB9B0ECE-BA18-4C36-B6C4-D5126E7D001D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
