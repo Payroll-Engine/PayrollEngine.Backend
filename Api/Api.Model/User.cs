@@ -24,6 +24,11 @@ public class User : ApiObjectBase
     public string Password { get; set; }
 
     /// <summary>
+    /// Indicates whether a password is set for this user
+    /// </summary>
+    public bool PasswordAvailable => !string.IsNullOrWhiteSpace(Password);
+
+    /// <summary>
     /// The first name of the user
     /// </summary>
     [Required]
