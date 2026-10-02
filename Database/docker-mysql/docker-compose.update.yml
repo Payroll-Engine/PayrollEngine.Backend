@@ -7,4 +7,4 @@ services:
       - "${MYSQL_PORT:-3307}:3306"
     volumes: !override
       - pe-mysql-data:/var/lib/mysql
-      - ../History/v1.0.0/Create-Model.mysql.sql:/docker-entrypoint-initdb.d/01-Create-Model.mysql.sql:ro
+      - ../History/v1.1.0/Create-Model.mysql.sql:/docker-entrypoint-initdb.d/01-Create-Model.mysql.sql:ro

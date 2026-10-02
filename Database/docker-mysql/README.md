@@ -18,7 +18,7 @@ On first start (empty volume), the container runs it via the `mysql` client
 | Scenario | Project | Container | Port | Initial schema |
 |---|---|---|---|---|
 | Create | `pe-full` | `pe-mysql` | 3306 | `Create-Model.mysql.sql` (current) |
-| Update | `pe-upd` | `pe-mysql-upd` | 3307 | `History\v1.0.0\Create-Model.mysql.sql` |
+| Update | `pe-upd` | `pe-mysql-upd` | 3307 | `History\v1.1.0\Create-Model.mysql.sql` |
 
 Each project (`-p`) gets its own volume, so both scenarios can run side by side.
 

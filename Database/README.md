@@ -79,10 +79,11 @@ Each release is snapshotted into `History\v<version>\` (immutable).
 The update script of the current version migrates from the previous release only —
 it aborts if the database is not at the expected previous version.
 
-| Folder             | Content                                               |
-|--------------------|-------------------------------------------------------|
-| `History\v1.0.0\`  | SQL Server and MySQL scripts of release 1.0.0         |
-| `History\v0.9.x\`  | Earlier releases                                      |
+| Folder             | Content                                                   |
+|--------------------|-----------------------------------------------------------|
+| `History\v1.1.0\`  | SQL Server, MySQL and PostgreSQL scripts of release 1.1.0 |
+| `History\v1.0.0\`  | SQL Server and MySQL scripts of release 1.0.0             |
+| `History\v0.9.x\`  | Earlier releases                                          |
 
 To migrate across several releases, run the update scripts of each version in order.
 
@@ -469,8 +470,8 @@ With `DbProvider=Postgres`, the Backend enables the Npgsql switch
 The database itself is not created by the script — create it beforehand with the required
 locale (the Docker setup does this via `POSTGRES_DB` and `POSTGRES_INITDB_ARGS`).
 
-PostgreSQL support starts with schema version 1.1.0. An update script and a history snapshot
-will be provided from the next release onwards.
+PostgreSQL support starts with schema version 1.1.0 (snapshot `History\v1.1.0\Create-Model.pg.sql`).
+An update script will be provided from the next release onwards.
 
 ### SQL Source Files
 
