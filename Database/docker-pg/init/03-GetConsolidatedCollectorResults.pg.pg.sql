@@ -41,7 +41,8 @@ RETURNS TABLE(
     "Forecast"                    VARCHAR(128),
     "ParentJobId"                 INT,
     "Tags"                        TEXT,
-    "Attributes"                  TEXT
+    "Attributes"                  TEXT,
+    "PayDate"                     TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$

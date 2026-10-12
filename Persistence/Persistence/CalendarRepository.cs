@@ -24,6 +24,8 @@ public class CalendarRepository() : ChildDomainRepository<Calendar>(Tables.Calen
         parameters.Add(nameof(calendar.PeriodDayCount), calendar.PeriodDayCount, DbType.Int32);
         parameters.Add(nameof(calendar.YearWeekRule), calendar.YearWeekRule, DbType.Int32);
         parameters.Add(nameof(calendar.FirstDayOfWeek), calendar.FirstDayOfWeek, DbType.Int32);
+        parameters.Add(nameof(calendar.PeriodAnchorDate), calendar.PeriodAnchorDate, DbType.DateTime2);
+        parameters.Add(nameof(calendar.PayDateOffset), calendar.PayDateOffset, DbType.Int32);
         parameters.Add(nameof(calendar.WeekMode), calendar.WeekMode, DbType.Int32);
         parameters.Add(nameof(calendar.WorkMonday), calendar.WorkMonday, DbType.Boolean);
         parameters.Add(nameof(calendar.WorkTuesday), calendar.WorkTuesday, DbType.Boolean);

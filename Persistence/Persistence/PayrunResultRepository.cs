@@ -19,6 +19,7 @@ public class PayrunResultRepository() : ChildDomainRepository<PayrunResult>(Tabl
         parameters.Add(nameof(result.PayrunJobId), result.PayrunJobId, DbType.Int32);
         parameters.Add(nameof(result.Forecast), result.Forecast);
         parameters.Add(nameof(result.ParentJobId), result.ParentJobId, DbType.Int32);
+        parameters.Add(nameof(result.PayDate), result.PayDate, DbType.DateTime2);
         parameters.Add(nameof(result.Source), result.Source);
         parameters.Add(nameof(result.Name), result.Name);
         parameters.Add(nameof(result.NameLocalizations), JsonSerializer.SerializeNamedDictionary(result.NameLocalizations));

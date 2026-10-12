@@ -768,7 +768,8 @@ internal sealed class PayrunEmployeeProcessor
 
         // set denormalized context for direct index seeks
         payrollResult.SetDenormalizedContext(Tenant.Id, employee.Id, scope.Division.Id,
-            scope.PayrunJob.Id, scope.PayrunJob.Forecast, scope.PayrunJob.ParentJobId);
+            scope.PayrunJob.Id, scope.PayrunJob.Forecast, scope.PayrunJob.ParentJobId,
+            scope.PayrunJob.PayDate);
 
         return new CalculationResult(payrollResult, retroPayrunJobs, caseValueProvider.RetroCaseValue);
     }

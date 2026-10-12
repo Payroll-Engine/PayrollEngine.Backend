@@ -46,6 +46,11 @@ public class CollectorCustomResult : DomainObjectBase, ITagObject,
     public int? ParentJobId { get; set; }
 
     /// <summary>
+    /// The payrun job pay date (denormalized, immutable)
+    /// </summary>
+    public DateTime PayDate { get; set; }
+
+    /// <summary>
     /// The collector name (immutable)
     /// </summary>
     public string CollectorName { get; set; }

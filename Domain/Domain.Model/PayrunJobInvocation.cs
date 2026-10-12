@@ -89,6 +89,11 @@ public class PayrunJobInvocation : IEquatable<PayrunJobInvocation>
     public DateTime? EvaluationDate { get; set; }
 
     /// <summary>
+    /// The pay date, overrides the calendar pay date of the period (immutable)
+    /// </summary>
+    public DateTime? PayDate { get; set; }
+
+    /// <summary>
     /// The execution reason (immutable)
     /// </summary>
     public string Reason { get; set; }

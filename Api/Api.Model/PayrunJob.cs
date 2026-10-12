@@ -133,6 +133,11 @@ public class PayrunJob : ApiObjectBase
     public DateTime EvaluationDate { get; set; }
 
     /// <summary>
+    /// The pay date: invocation pay date or calendar pay date of the period (immutable)
+    /// </summary>
+    public DateTime PayDate { get; set; }
+
+    /// <summary>
     /// The job release date (immutable)
     /// </summary>
     public DateTime? Released { get; set; }

@@ -20,6 +20,7 @@ public class CollectorCustomResultRepository() : ChildDomainRepository<Collector
         parameters.Add(nameof(result.PayrunJobId), result.PayrunJobId, DbType.Int32);
         parameters.Add(nameof(result.Forecast), result.Forecast);
         parameters.Add(nameof(result.ParentJobId), result.ParentJobId, DbType.Int32);
+        parameters.Add(nameof(result.PayDate), result.PayDate, DbType.DateTime2);
         parameters.Add(nameof(result.CollectorName), result.CollectorName);
         parameters.Add(nameof(result.CollectorNameHash), result.CollectorNameHash, DbType.Int32);
         parameters.Add(nameof(result.CollectorNameLocalizations), JsonSerializer.SerializeNamedDictionary(result.CollectorNameLocalizations));

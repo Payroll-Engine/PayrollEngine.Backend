@@ -14,12 +14,60 @@ namespace PayrollEngine.Api.Controller;
 /// API controller for calendars
 /// </summary>
 public abstract class CalendarController(ITenantService tenantService, ICalendarService calendarService,
+        IDivisionService divisionService, IEmployeeService employeeService, IPayrunJobService payrunJobService,
         IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime)
     : RepositoryChildObjectController<ITenantService, ICalendarService,
     ITenantRepository, ICalendarRepository,
     Tenant, Calendar, ApiObject.Calendar>(tenantService, calendarService, runtime, new CalendarMap())
 {
+    private IDivisionService DivisionService { get; } = divisionService ?? throw new ArgumentNullException(nameof(divisionService));
+    private IEmployeeService EmployeeService { get; } = employeeService ?? throw new ArgumentNullException(nameof(employeeService));
+    private IPayrunJobService PayrunJobService { get; } = payrunJobService ?? throw new ArgumentNullException(nameof(payrunJobService));
     private IPayrollCalculatorProvider PayrollCalculatorProvider { get; } = payrollCalculatorProvider ?? throw new ArgumentNullException(nameof(payrollCalculatorProvider));
+
+    /// <inheritdoc />
+    protected override async Task<ActionResult<ApiObject.Calendar>> UpdateAsync(int tenantId, ApiObject.Calendar calendar)
+    {
+        if (calendar != null && calendar.Id > 0)
+        {
+            // the period anchor date defines the week and bi-week period sequence of existing payrun jobs
+            var existing = await Service.GetAsync(Runtime.DbContext, tenantId, calendar.Id);
+            if (existing != null &&
+                existing.PeriodAnchorDate?.Date != calendar.PeriodAnchorDate?.Date &&
+                await IsCalendarInUseAsync(tenantId, existing.Name))
+            {
+                return BadRequest($"The period anchor date of calendar {existing.Name} cannot be changed, payrun jobs exist for this calendar");
+            }
+        }
+        return await base.UpdateAsync(tenantId, calendar);
+    }
+
+    /// <summary>
+    /// Test for payrun jobs calculated with the calendar: jobs of divisions using the calendar,
+    /// or any job when an employee uses the calendar
+    /// </summary>
+    /// <param name="tenantId">The tenant id</param>
+    /// <param name="calendarName">The calendar name</param>
+    private async Task<bool> IsCalendarInUseAsync(int tenantId, string calendarName)
+    {
+        var tenant = await ParentService.GetAsync(Runtime.DbContext, tenantId);
+        var divisions = await DivisionService.QueryAsync(Runtime.DbContext, tenantId);
+        foreach (var division in divisions)
+        {
+            var divisionCalendar = string.IsNullOrWhiteSpace(division.Calendar) ? tenant?.Calendar : division.Calendar;
+            if (string.Equals(divisionCalendar, calendarName) &&
+                await PayrunJobService.QueryCountAsync(Runtime.DbContext, tenantId,
+                    new() { Filter = $"{nameof(PayrunJob.DivisionId)} eq {division.Id}" }) > 0)
+            {
+                return true;
+            }
+        }
+
+        var employeeCount = await EmployeeService.QueryCountAsync(Runtime.DbContext, tenantId,
+            new() { Filter = $"{nameof(Employee.Calendar)} eq '{calendarName.Replace("'", "''")}'" });
+        return employeeCount > 0 &&
+               await PayrunJobService.QueryCountAsync(Runtime.DbContext, tenantId) > 0;
+    }
 
     /// <summary>
     /// Get tenant calendar period

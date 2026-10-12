@@ -42,6 +42,10 @@ public class PayrollCalculator : IPayrollCalculator
         GetPayrunPeriod(periodMoment, Calendar.PeriodTimeUnit);
 
     /// <inheritdoc />
+    public DateTime GetPayDate(DateTime periodMoment) =>
+        Calendar.GetPayDate(GetPayrunPeriod(periodMoment).End);
+
+    /// <inheritdoc />
     public int GetCalendarDayCount(DatePeriod period)
     {
         var dayCount = 0m;

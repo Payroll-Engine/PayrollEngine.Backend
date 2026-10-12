@@ -101,6 +101,38 @@ internal sealed class PayrunRetroProcessor
     }
 
     /// <summary>
+    /// Gets the pay date of the latest full payrun job of a period.
+    /// Returns <c>null</c> without a full job, the calendar pay date applies.
+    /// </summary>
+    /// <param name="period">The payrun period.</param>
+    /// <param name="forecast">The forecast name; <c>null</c> for legal jobs.</param>
+    /// <returns>The original pay date, or <c>null</c>.</returns>
+    private async Task<DateTime?> GetOriginalPayDateAsync(IPayrollPeriod period, string forecast)
+    {
+        var forecastFilter = string.IsNullOrWhiteSpace(forecast)
+            ? $" and ({nameof(PayrunJob.Forecast)} eq null or {nameof(PayrunJob.Forecast)} eq '')"
+            : $" and {nameof(PayrunJob.Forecast)} eq '{forecast}'";
+        var query = new Query
+        {
+            Filter = $"{nameof(PayrunJob.PayrunId)} eq {Payrun.Id}" +
+                     $" and {nameof(PayrunJob.JobResult)} eq '{Enum.GetName(typeof(PayrunJobResult), PayrunJobResult.Full)}'" +
+                     $" and {nameof(PayrunJob.PeriodStart)} ge '{period.Start:O}'" +
+                     $" and {nameof(PayrunJob.PeriodStart)} le '{period.End:O}'" +
+                     forecastFilter,
+            OrderBy = $"{nameof(PayrunJob.EvaluationDate)} desc, {nameof(PayrunJob.Created)} desc",
+            Top = 1
+        };
+
+        var originalJob = (await Settings.PayrunJobRepository.QueryAsync(Settings.DbContext, Tenant.Id, query))
+            .FirstOrDefault();
+        if (originalJob == null || originalJob.PayDate == DateTime.MinValue)
+        {
+            return null;
+        }
+        return DateTime.SpecifyKind(originalJob.PayDate.Date, DateTimeKind.Utc);
+    }
+
+    /// <summary>
     /// Resolves the effective retro date from case value retro dates and
     /// script-triggered retro jobs, applying <see cref="Payrun.RetroBackCycles"/> restrictions.
     /// Returns <c>null</c> if no retro processing is needed.
@@ -212,6 +244,8 @@ internal sealed class PayrunRetroProcessor
                 // retro payrun job status is complete
                 JobStatus = PayrunJobStatus.Complete,
                 PeriodStart = retroPeriod.Start,
+                // retro period is paid on the pay date of the original job
+                PayDate = await GetOriginalPayDateAsync(retroPeriod, scope.PayrunJob.Forecast),
                 EvaluationDate = scope.EvaluationDate,
                 Reason = scope.PayrunJob.CreatedReason,
                 StoreEmptyResults = scope.StoreEmptyResults,

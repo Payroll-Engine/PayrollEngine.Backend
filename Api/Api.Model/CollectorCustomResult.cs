@@ -31,6 +31,11 @@ public class CollectorCustomResult : ApiObjectBase
     public int DivisionId { get; set; }
 
     /// <summary>
+    /// The payrun job pay date (denormalized, immutable)
+    /// </summary>
+    public DateTime PayDate { get; set; }
+
+    /// <summary>
     /// The collector name (immutable)
     /// </summary>
     [Required]

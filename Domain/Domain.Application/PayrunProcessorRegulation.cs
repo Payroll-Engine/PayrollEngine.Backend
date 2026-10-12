@@ -41,7 +41,7 @@ internal sealed class PayrunProcessorRegulation
             {
                 TenantId = Tenant.Id,
                 PayrollId = Payroll.Id,
-                RegulationDate = payrunJob.PeriodEnd,
+                RegulationDate = payrunJob.RegulationDate,
                 EvaluationDate = payrunJob.EvaluationDate
             },
             clusterSet: clusterSet,
@@ -56,7 +56,7 @@ internal sealed class PayrunProcessorRegulation
             {
                 TenantId = Tenant.Id,
                 PayrollId = Payroll.Id,
-                RegulationDate = payrunJob.PeriodEnd,
+                RegulationDate = payrunJob.RegulationDate,
                 EvaluationDate = payrunJob.EvaluationDate
             },
             clusterSet: clusterSet,
@@ -211,7 +211,7 @@ internal sealed class PayrunProcessorRegulation
                 return new(new(), [], [], true, false);
             }
 
-            // execution abort — guard called AbortExecution()
+            // execution abort â€” guard called AbortExecution()
             if (result != null && result.Item4)
             {
                 return new(null, [], [], false, true);
@@ -537,7 +537,7 @@ internal sealed class PayrunProcessorRegulation
                 {
                     TenantId = Tenant.Id,
                     PayrollId = payroll.Id,
-                    RegulationDate = payrunJob.PeriodEnd,
+                    RegulationDate = payrunJob.RegulationDate,
                     EvaluationDate = payrunJob.EvaluationDate
                 })).ToList();
         }
@@ -554,7 +554,7 @@ internal sealed class PayrunProcessorRegulation
             {
                 TenantId = Tenant.Id,
                 PayrollId = payroll.Id,
-                RegulationDate = payrunJob.PeriodEnd,
+                RegulationDate = payrunJob.RegulationDate,
                 EvaluationDate = payrunJob.EvaluationDate
             },
             clusterSet: clusterSet);

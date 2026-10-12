@@ -99,5 +99,27 @@ public static class CalendarExtensions
         /// <returns>Returns true for valid time units</returns>
         public bool ValidTimeUnits() =>
             calendar.CycleTimeUnit.IsValidTimeUnit(calendar.PeriodTimeUnit);
+
+        /// <summary>Get the pay date of a period: period end date plus the pay date offset</summary>
+        /// <param name="periodEnd">The period end</param>
+        /// <returns>The pay date (UTC date without time)</returns>
+        public DateTime GetPayDate(DateTime periodEnd) =>
+            DateTime.SpecifyKind(periodEnd.Date.AddDays(calendar.PayDateOffset ?? 0), DateTimeKind.Utc);
+
+        /// <summary>Get the start of the anchored period including a moment</summary>
+        /// <param name="moment">The moment within the period</param>
+        /// <param name="periodDays">The period length in days</param>
+        /// <returns>The period start date, null without period anchor date</returns>
+        public DateTime? GetAnchoredPeriodStart(DateTime moment, int periodDays)
+        {
+            if (!calendar.PeriodAnchorDate.HasValue)
+            {
+                return null;
+            }
+            var anchor = calendar.PeriodAnchorDate.Value.Date;
+            var days = (moment.Date - anchor).Days;
+            var periods = (int)Math.Floor((decimal)days / periodDays);
+            return DateTime.SpecifyKind(anchor.AddDays(periods * periodDays), DateTimeKind.Utc);
+        }
     }
 }

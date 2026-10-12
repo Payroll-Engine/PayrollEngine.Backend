@@ -39,6 +39,7 @@ public class PayrunJobRepository(IPayrunJobEmployeeRepository jobEmployeeReposit
         parameters.Add(nameof(payrunJob.PeriodStart), payrunJob.PeriodStart, DbType.DateTime2);
         parameters.Add(nameof(payrunJob.PeriodEnd), payrunJob.PeriodEnd, DbType.DateTime2);
         parameters.Add(nameof(payrunJob.EvaluationDate), payrunJob.EvaluationDate, DbType.DateTime2);
+        parameters.Add(nameof(payrunJob.PayDate), payrunJob.PayDate, DbType.DateTime2);
         parameters.Add(nameof(payrunJob.CreatedReason), payrunJob.CreatedReason);
 
         // base fields

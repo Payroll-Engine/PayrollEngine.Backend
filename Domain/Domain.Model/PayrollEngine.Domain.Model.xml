@@ -150,7 +150,8 @@
         </member>
         <member name="T:PayrollEngine.Domain.Model.BiWeekPayrollPeriod">
             <summary>
-            Payroll week period
+            Payroll bi-week period: continuous 14-day periods from the calendar period anchor date,
+            or week-of-year pairs without anchor date
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.BiWeekPayrollPeriod.Culture">
@@ -241,6 +242,13 @@
         <member name="P:PayrollEngine.Domain.Model.Calendar.FirstDayOfWeek">
             <summary>Override the calendar first day of week</summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.PeriodAnchorDate">
+            <summary>Anchor date of the week and bi-week periods: the periods start on the anchor date
+            and repeat every 7 or 14 days, independent of the year (default: week of year)</summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.PayDateOffset">
+            <summary>Pay date offset in days from the period end date (default: 0)</summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Calendar.WeekMode">
             <summary>
             The week mode (default: week)
@@ -313,6 +321,12 @@
         <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.ValidTimeUnits(PayrollEngine.Domain.Model.Calendar)">
             <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.ValidTimeUnits"/>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetPayDate(PayrollEngine.Domain.Model.Calendar,System.DateTime)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetPayDate(System.DateTime)"/>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.GetAnchoredPeriodStart(PayrollEngine.Domain.Model.Calendar,System.DateTime,System.Int32)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetAnchoredPeriodStart(System.DateTime,System.Int32)"/>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.&lt;M&gt;$9B3729051A80656CC5115E22D5FD72D3">
             <param name="calendar">The payroll calendar</param>
         </member>
@@ -351,6 +365,17 @@
         <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.ValidTimeUnits">
             <summary>Test for valid time units</summary>
             <returns>Returns true for valid time units</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetPayDate(System.DateTime)">
+            <summary>Get the pay date of a period: period end date plus the pay date offset</summary>
+            <param name="periodEnd">The period end</param>
+            <returns>The pay date (UTC date without time)</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.CalendarExtensions.&lt;G&gt;$78538A8AED9195054531A3CEB5B3AFFA.GetAnchoredPeriodStart(System.DateTime,System.Int32)">
+            <summary>Get the start of the anchored period including a moment</summary>
+            <param name="moment">The moment within the period</param>
+            <param name="periodDays">The period length in days</param>
+            <returns>The period start date, null without period anchor date</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.CalendarMonthPayrollPeriod">
             <summary>Payroll calendar month payroll period</summary>
@@ -2833,6 +2858,11 @@
             The parent payrun job id (denormalized, immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorCustomResult.CollectorName">
             <summary>
             The collector name (immutable)
@@ -2945,6 +2975,11 @@
         <member name="P:PayrollEngine.Domain.Model.CollectorResult.ParentJobId">
             <summary>
             The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.CollectorResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.CollectorResult.CollectorId">
@@ -4110,6 +4145,13 @@
             <param name="periodMoment">The moment within the payrun period</param>
             <returns>The payroll period</returns>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetPayDate(System.DateTime)">
+            <summary>
+            Get the calendar pay date of the payrun period including a moment
+            </summary>
+            <param name="periodMoment">The moment within the payrun period</param>
+            <returns>The pay date: period end date plus the calendar pay date offset</returns>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetCalendarDayCount(PayrollEngine.DatePeriod)">
             <summary>
             Count the calendar days from a date period
@@ -5152,6 +5194,9 @@
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayrunPeriod(System.DateTime)">
             <inheritdoc />
         </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayDate(System.DateTime)">
+            <inheritdoc />
+        </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetCalendarDayCount(PayrollEngine.DatePeriod)">
             <inheritdoc />
         </member>
@@ -5620,8 +5665,8 @@
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.IsEmpty(PayrollEngine.Domain.Model.PayrollResultSet)">
             <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.IsEmpty"/>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetDenormalizedContext(PayrollEngine.Domain.Model.PayrollResultSet,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32})">
-            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetDenormalizedContext(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32})"/>
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetDenormalizedContext(PayrollEngine.Domain.Model.PayrollResultSet,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32},System.DateTime)">
+            <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetDenormalizedContext(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32},System.DateTime)"/>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.SetResultDate(PayrollEngine.Domain.Model.PayrollResultSet,System.DateTime)">
             <inheritdoc cref="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetResultDate(System.DateTime)"/>
@@ -5644,12 +5689,12 @@
             Test for empty result set
             </summary>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetDenormalizedContext(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetDenormalizedContext(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Nullable{System.Int32},System.DateTime)">
             <summary>
             Set denormalized context columns on all results.
             These columns are redundant copies from PayrollResult/PayrunJob for direct index seeks.
             Phase 1: TenantId, EmployeeId, DivisionId
-            Phase 2: PayrunJobId, Forecast, ParentJobId
+            Phase 2: PayrunJobId, Forecast, ParentJobId, PayDate
             </summary>
             <param name="tenantId">The tenant id</param>
             <param name="employeeId">The employee id</param>
@@ -5657,6 +5702,7 @@
             <param name="payrunJobId">The payrun job id</param>
             <param name="forecast">The forecast name</param>
             <param name="parentJobId">The parent payrun job id</param>
+            <param name="payDate">The payrun job pay date</param>
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollResultSetExtensions.&lt;G&gt;$4CA8F5EEFD770C8502A711E6A066BE60.SetResultDate(System.DateTime)">
             <summary>
@@ -6098,6 +6144,16 @@
             The evaluation date (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.PayDate">
+            <summary>
+            The pay date: invocation pay date or calendar pay date of the period (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.RegulationDate">
+            <summary>
+            The regulation date: the period end, or the end of the pay date when it differs from the period end date
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.Released">
             <summary>
             The job release date (immutable)
@@ -6241,6 +6297,13 @@
             <param name="payrollId">The payroll id</param>
             <param name="payrollCalculator">The payroll calculator</param>
         </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.GetPayDate(PayrollEngine.Domain.Model.PayrunJobInvocation,PayrollEngine.Domain.Model.IPayrollCalculator)">
+            <summary>
+            Get the job pay date: the invocation pay date, or the calendar pay date of the period
+            </summary>
+            <param name="jobInvocation">The job invocation</param>
+            <param name="payrollCalculator">The payroll calculator</param>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.PayrunJobInvocation">
             <summary>
             A payrun job invocation
@@ -6321,6 +6384,11 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.EvaluationDate">
             <summary>
             The evaluation date (immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.PayDate">
+            <summary>
+            The pay date, overrides the calendar pay date of the period (immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJobInvocation.Reason">
@@ -6482,6 +6550,11 @@
         <member name="P:PayrollEngine.Domain.Model.PayrunResult.ParentJobId">
             <summary>
             The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunResult.Source">
@@ -10100,6 +10173,11 @@
             The parent payrun job id (denormalized, immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeCustomResult.WageTypeNumber">
             <summary>
             The wage type number (immutable)
@@ -10226,6 +10304,11 @@
         <member name="P:PayrollEngine.Domain.Model.WageTypeResult.ParentJobId">
             <summary>
             The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.WageTypeResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.WageTypeResult.WageTypeId">

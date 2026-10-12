@@ -17,8 +17,10 @@ public class CalendarController : Api.Controller.CalendarController
 {
     /// <inheritdoc/>
     public CalendarController(ITenantService tenantService, ICalendarService calendarService,
+        IDivisionService divisionService, IEmployeeService employeeService, IPayrunJobService payrunJobService,
         IPayrollCalculatorProvider payrollCalculatorProvider, IControllerRuntime runtime) :
-        base(tenantService, calendarService, payrollCalculatorProvider, runtime)
+        base(tenantService, calendarService, divisionService, employeeService, payrunJobService,
+            payrollCalculatorProvider, runtime)
     {
     }
 

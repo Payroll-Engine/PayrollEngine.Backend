@@ -142,6 +142,8 @@ CREATE TABLE [dbo].[Calendar] (
   [PeriodDayCount] [decimal](28, 6) NULL,
   [YearWeekRule] [int] NULL,
   [FirstDayOfWeek] [int] NULL,
+  [PeriodAnchorDate] [datetime2](7) NULL,
+  [PayDateOffset] [int] NULL,
   [WeekMode] [int] NOT NULL,
   [WorkMonday] [bit] NULL,
   [WorkTuesday] [bit] NULL,
@@ -580,6 +582,7 @@ CREATE TABLE [dbo].[CollectorCustomResult] (
   [ParentJobId] [int] NULL,
   [Tags] [nvarchar](max) NULL,
   [Attributes] [nvarchar](max) NULL,
+  [PayDate] [datetime2](7) NOT NULL,
   CONSTRAINT [PK_CollectorCustomResult] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (
     PAD_INDEX = OFF,
     STATISTICS_NORECOMPUTE = OFF,
@@ -624,6 +627,7 @@ CREATE TABLE [dbo].[CollectorResult] (
   [ParentJobId] [int] NULL,
   [Tags] [nvarchar](max) NULL,
   [Attributes] [nvarchar](max) NULL,
+  [PayDate] [datetime2](7) NOT NULL,
   CONSTRAINT [PK_CollectorResult] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (
     PAD_INDEX = OFF,
     STATISTICS_NORECOMPUTE = OFF,
@@ -1522,6 +1526,7 @@ CREATE TABLE [dbo].[PayrunJob] (
   [PeriodStart] [datetime2](7) NOT NULL,
   [PeriodEnd] [datetime2](7) NOT NULL,
   [EvaluationDate] [datetime2](7) NOT NULL,
+  [PayDate] [datetime2](7) NOT NULL,
   [Released] [datetime2](7) NULL,
   [Processed] [datetime2](7) NULL,
   [Finished] [datetime2](7) NULL,
@@ -1637,6 +1642,7 @@ CREATE TABLE [dbo].[PayrunResult] (
   [ParentJobId] [int] NULL,
   [Tags] [nvarchar](max) NULL,
   [Attributes] [nvarchar](max) NULL,
+  [PayDate] [datetime2](7) NOT NULL,
   CONSTRAINT [PK_PayrunResult] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (
     PAD_INDEX = OFF,
     STATISTICS_NORECOMPUTE = OFF,
@@ -2255,6 +2261,7 @@ CREATE TABLE [dbo].[WageTypeCustomResult] (
   [ParentJobId] [int] NULL,
   [Tags] [nvarchar](max) NULL,
   [Attributes] [nvarchar](max) NULL,
+  [PayDate] [datetime2](7) NOT NULL,
   CONSTRAINT [PK_WageTypeCustomResult] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (
     PAD_INDEX = OFF,
     STATISTICS_NORECOMPUTE = OFF,
@@ -2297,6 +2304,7 @@ CREATE TABLE [dbo].[WageTypeResult] (
   [ParentJobId] [int] NULL,
   [Tags] [nvarchar](max) NULL,
   [Attributes] [nvarchar](max) NULL,
+  [PayDate] [datetime2](7) NOT NULL,
   CONSTRAINT [PK_WageTypeResult] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (
     PAD_INDEX = OFF,
     STATISTICS_NORECOMPUTE = OFF,
@@ -10237,16 +10245,16 @@ INSERT INTO dbo.[Version] (
     [Description] )
 VALUES (
     1,
-    1,
+    2,
     0,
     CURRENT_USER,
-    'Payroll Engine: Full setup v1.1.0' )
+    'Payroll Engine: Full setup v1.2.0' )
 SET @errorID = @@ERROR
 IF ( @errorID <> 0 ) BEGIN
     PRINT 'Error while updating the Payroll Engine database version.'
 END
 ELSE BEGIN
-    PRINT 'Payroll Engine database version successfully updated to release 1.1.0'
+    PRINT 'Payroll Engine database version successfully updated to release 1.2.0'
 END
 GO
 

@@ -32,6 +32,13 @@ public interface IPayrollCalculator
     IPayrollPeriod GetPayrunPeriod(DateTime periodMoment);
 
     /// <summary>
+    /// Get the calendar pay date of the payrun period including a moment
+    /// </summary>
+    /// <param name="periodMoment">The moment within the payrun period</param>
+    /// <returns>The pay date: period end date plus the calendar pay date offset</returns>
+    DateTime GetPayDate(DateTime periodMoment);
+
+    /// <summary>
     /// Count the calendar days from a date period
     /// </summary>
     /// <param name="period">The date period</param>

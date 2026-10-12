@@ -242,7 +242,7 @@ public class PayrunProcessor : FunctionToolBase
             context: Settings.DbContext,
             tenantId: Tenant.Id,
             payroll: context.Payroll,
-            regulationDate: context.PayrunJob.PeriodEnd,
+            regulationDate: context.PayrunJob.RegulationDate,
             evaluationDate: context.PayrunJob.EvaluationDate);
         if (!string.IsNullOrWhiteSpace(validation))
         {

@@ -263,6 +263,13 @@
         <member name="P:PayrollEngine.Api.Model.Calendar.FirstDayOfWeek">
             <summary>Override the calendar first day of week</summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.PeriodAnchorDate">
+            <summary>Anchor date of the week and bi-week periods: the periods start on the anchor date
+            and repeat every 7 or 14 days, independent of the year (default: week of year)</summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.PayDateOffset">
+            <summary>Pay date offset in days from the period end date (default: 0)</summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Calendar.WeekMode">
             <summary>The week mode (default: week)</summary>
         </member>
@@ -1867,6 +1874,11 @@
             The division id (denormalized, immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.CollectorCustomResult.CollectorName">
             <summary>
             The collector name (immutable)
@@ -1958,6 +1970,11 @@
         <member name="P:PayrollEngine.Api.Model.CollectorResult.ParentJobId">
             <summary>
             The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.CollectorResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.CollectorResult.CollectorId">
@@ -3105,6 +3122,11 @@
             The evaluation date (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJob.PayDate">
+            <summary>
+            The pay date: invocation pay date or calendar pay date of the period (immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJob.Released">
             <summary>
             The job release date (immutable)
@@ -3272,6 +3294,11 @@
             The evaluation date (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.PayDate">
+            <summary>
+            The pay date, overrides the calendar pay date of the period (immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.PayrunJobInvocation.Reason">
             <summary>
             The execution reason (immutable)
@@ -3402,6 +3429,11 @@
         <member name="P:PayrollEngine.Api.Model.PayrunResult.ParentJobId">
             <summary>
             The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.PayrunResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.PayrunResult.Source">
@@ -4500,6 +4532,11 @@
             The division id (denormalized, immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeCustomResult.WageTypeNumber">
             <summary>
             The wage type number (immutable)
@@ -4596,6 +4633,11 @@
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.ParentJobId">
             <summary>
             The parent payrun job id (denormalized, immutable)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.WageTypeResult.PayDate">
+            <summary>
+            The payrun job pay date (denormalized, immutable)
             </summary>
         </member>
         <member name="P:PayrollEngine.Api.Model.WageTypeResult.WageTypeId">

@@ -2,7 +2,7 @@
 -- Create-Model.mysql.sql
 -- Creates the PayrollEngine database for MySQL 8.0+ (8.4 LTS recommended).
 --
--- Schema version: 1.1.0
+-- Schema version: 1.2.0
 --
 -- Includes: CREATE DATABASE, all tables, 37 indexes, 7 functions, 44 stored procedures
 --
@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS Calendar (
     PeriodDayCount      DECIMAL(28,6) NULL,
     YearWeekRule        INT           NULL,
     FirstDayOfWeek      INT           NULL,
+    PeriodAnchorDate    DATETIME(6)   NULL,
+    PayDateOffset       INT           NULL,
     WeekMode            INT           NOT NULL,
     WorkMonday          TINYINT(1)    NULL,
     WorkTuesday         TINYINT(1)    NULL,
@@ -351,6 +353,7 @@ CREATE TABLE IF NOT EXISTS CollectorCustomResult (
     ParentJobId                 INT           NULL,
     Tags                        LONGTEXT      NULL,
     Attributes                  LONGTEXT      NULL,
+    PayDate                     DATETIME(6)   NOT NULL,
     PRIMARY KEY (Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -380,6 +383,7 @@ CREATE TABLE IF NOT EXISTS CollectorResult (
     ParentJobId                 INT           NULL,
     Tags                        LONGTEXT      NULL,
     Attributes                  LONGTEXT      NULL,
+    PayDate                     DATETIME(6)   NOT NULL,
     PRIMARY KEY (Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -875,6 +879,7 @@ CREATE TABLE IF NOT EXISTS PayrunJob (
     PeriodStart             DATETIME(6)  NOT NULL,
     PeriodEnd               DATETIME(6)  NOT NULL,
     EvaluationDate          DATETIME(6)  NOT NULL,
+    PayDate                 DATETIME(6)  NOT NULL,
     Released                DATETIME(6)  NULL,
     Processed               DATETIME(6)  NULL,
     Finished                DATETIME(6)  NULL,
@@ -945,6 +950,7 @@ CREATE TABLE IF NOT EXISTS PayrunResult (
     ParentJobId         INT           NULL,
     Tags                LONGTEXT      NULL,
     Attributes          LONGTEXT      NULL,
+    PayDate             DATETIME(6)   NOT NULL,
     PRIMARY KEY (Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1314,6 +1320,7 @@ CREATE TABLE IF NOT EXISTS WageTypeCustomResult (
     ParentJobId                 INT           NULL,
     Tags                        LONGTEXT      NULL,
     Attributes                  LONGTEXT      NULL,
+    PayDate                     DATETIME(6)   NOT NULL,
     PRIMARY KEY (Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1341,6 +1348,7 @@ CREATE TABLE IF NOT EXISTS WageTypeResult (
     ParentJobId                 INT           NULL,
     Tags                        LONGTEXT      NULL,
     Attributes                  LONGTEXT      NULL,
+    PayDate                     DATETIME(6)   NOT NULL,
     PRIMARY KEY (Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -4972,6 +4980,6 @@ DELIMITER ;
 -- =============================================================================
 
 INSERT INTO `Version` (Created, MajorVersion, MinorVersion, SubVersion, Owner, Description)
-VALUES (NOW(6), 1, 1, 0, CURRENT_USER(), 'Payroll Engine: Full setup v1.1.0 (MySQL)');
+VALUES (NOW(6), 1, 2, 0, CURRENT_USER(), 'Payroll Engine: Full setup v1.2.0 (MySQL)');
 
-SELECT 'PayrollEngine MySQL schema v1.1.0 created successfully.' AS Result;
+SELECT 'PayrollEngine MySQL schema v1.2.0 created successfully.' AS Result;

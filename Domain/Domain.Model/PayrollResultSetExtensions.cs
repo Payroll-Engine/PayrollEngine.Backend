@@ -87,7 +87,7 @@ public static class PayrollResultSetExtensions
         /// Set denormalized context columns on all results.
         /// These columns are redundant copies from PayrollResult/PayrunJob for direct index seeks.
         /// Phase 1: TenantId, EmployeeId, DivisionId
-        /// Phase 2: PayrunJobId, Forecast, ParentJobId
+        /// Phase 2: PayrunJobId, Forecast, ParentJobId, PayDate
         /// </summary>
         /// <param name="tenantId">The tenant id</param>
         /// <param name="employeeId">The employee id</param>
@@ -95,8 +95,9 @@ public static class PayrollResultSetExtensions
         /// <param name="payrunJobId">The payrun job id</param>
         /// <param name="forecast">The forecast name</param>
         /// <param name="parentJobId">The parent payrun job id</param>
+        /// <param name="payDate">The payrun job pay date</param>
         public void SetDenormalizedContext(int tenantId, int employeeId, int divisionId,
-            int payrunJobId, string forecast, int? parentJobId)
+            int payrunJobId, string forecast, int? parentJobId, DateTime payDate)
         {
             if (payrollResultSet == null)
             {
@@ -114,6 +115,7 @@ public static class PayrollResultSetExtensions
                     collectorResult.PayrunJobId = payrunJobId;
                     collectorResult.Forecast = forecast;
                     collectorResult.ParentJobId = parentJobId;
+                    collectorResult.PayDate = payDate;
 
                     // collector custom results
                     if (collectorResult is { } resultSet)
@@ -128,6 +130,7 @@ public static class PayrollResultSetExtensions
                                 customResult.PayrunJobId = payrunJobId;
                                 customResult.Forecast = forecast;
                                 customResult.ParentJobId = parentJobId;
+                                customResult.PayDate = payDate;
                             }
                         }
                     }
@@ -145,6 +148,7 @@ public static class PayrollResultSetExtensions
                     wageTypeResult.PayrunJobId = payrunJobId;
                     wageTypeResult.Forecast = forecast;
                     wageTypeResult.ParentJobId = parentJobId;
+                    wageTypeResult.PayDate = payDate;
 
                     // wage type custom results
                     if (wageTypeResult.CustomResults != null)
@@ -157,6 +161,7 @@ public static class PayrollResultSetExtensions
                             customResult.PayrunJobId = payrunJobId;
                             customResult.Forecast = forecast;
                             customResult.ParentJobId = parentJobId;
+                            customResult.PayDate = payDate;
                         }
                     }
                 }
@@ -173,6 +178,7 @@ public static class PayrollResultSetExtensions
                     payrunResult.PayrunJobId = payrunJobId;
                     payrunResult.Forecast = forecast;
                     payrunResult.ParentJobId = parentJobId;
+                    payrunResult.PayDate = payDate;
                 }
             }
         }

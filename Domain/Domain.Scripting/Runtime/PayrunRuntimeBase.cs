@@ -87,6 +87,9 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             : null;
 
     /// <inheritdoc />
+    public override DateTime PayDate => PayrunJob.PayDate;
+
+    /// <inheritdoc />
     public string Forecast => PayrunJob.Forecast;
 
     /// <inheritdoc />

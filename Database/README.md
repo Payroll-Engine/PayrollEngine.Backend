@@ -13,17 +13,17 @@ The provider is selected with `PayrollServerConfiguration:DbProvider` in the Bac
 |------------|-----------------------|-----------------|--------------------------|--------------------------|
 | SQL Server | `SqlServer` (default) | 2019, Azure SQL | `Create-Model.sql`       | `Update-Model.sql`       |
 | MySQL      | `MySql`               | 8.0 (8.4 LTS)   | `Create-Model.mysql.sql` | `Update-Model.mysql.sql` |
-| PostgreSQL | `Postgres`            | 14              | `Create-Model.pg.sql`    | — (first release 1.1.0)  |
+| PostgreSQL | `Postgres`            | 14              | `Create-Model.pg.sql`    | `Update-Model.pg.sql`    |
 
 ## Schema Version
 
-Current schema version: **1.1.0**
+Current schema version: **1.2.0**
 
 The schema version is stored in the `Version` table. On startup, the Backend verifies:
 
 | Check     | Rule                                                                 |
 |-----------|----------------------------------------------------------------------|
-| Version   | Latest `Version` entry must be **1.0.0 or newer**                    |
+| Version   | Latest `Version` entry must be **1.2.0 or newer**                    |
 | Collation | Database collation must match the provider default (or `DbCollation`) |
 
 | Provider   | Default collation              |
@@ -466,12 +466,17 @@ With `DbProvider=Postgres`, the Backend enables the Npgsql switch
 | File                  | Purpose                                                                  |
 |-----------------------|--------------------------------------------------------------------------|
 | `Create-Model.pg.sql` | Creates all tables, indexes, functions, and stored procedures            |
+| `Update-Model.pg.sql` | Migrates from the previous version (guarded by version check, one transaction) |
 
 The database itself is not created by the script — create it beforehand with the required
 locale (the Docker setup does this via `POSTGRES_DB` and `POSTGRES_INITDB_ARGS`).
 
 PostgreSQL support starts with schema version 1.1.0 (snapshot `History\v1.1.0\Create-Model.pg.sql`).
-An update script will be provided from the next release onwards.
+`Update-Model.pg.sql` migrates from the previous release:
+
+```powershell
+psql -h localhost -U payroll -d PayrollEngine -v ON_ERROR_STOP=1 -f Update-Model.pg.sql
+```
 
 ### SQL Source Files
 
@@ -481,7 +486,10 @@ The authoritative source for functions and stored procedures is in the `Persiste
 - `Persistence.Postgres/StoredProcedures/` — 44 stored procedures (`*.pg.sql`)
 
 There is no rebuild script yet: changes to a source file must also be applied to
-`Create-Model.pg.sql`, and `docker-pg/Prepare-Init.cmd` must be re-run.
+`Create-Model.pg.sql` and `Update-Model.pg.sql`, and `docker-pg/Prepare-Init.cmd` must be re-run.
+
+Result functions return the result table columns positionally (`RETURNS TABLE` with `SELECT r.*`):
+a new result column must be appended as the last table column and to the `RETURNS TABLE` list.
 
 ## Verification
 
@@ -499,7 +507,7 @@ SELECT "MajorVersion", "MinorVersion", "SubVersion"
 FROM "Version" ORDER BY "Id" DESC LIMIT 1;
 ```
 
-Expected: 65 tables, 40 functions and 11 procedures (PostgreSQL routine types), version 1.1.0.
+Expected: 65 tables, 40 functions and 11 procedures (PostgreSQL routine types), version 1.2.0.
 
 ## Docker
 

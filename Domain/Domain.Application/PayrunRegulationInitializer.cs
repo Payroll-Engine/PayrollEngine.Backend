@@ -56,7 +56,7 @@ internal sealed class PayrunRegulationInitializer
         // derived regulations
         context.DerivedRegulations = await processorRepositories.LoadDerivedRegulationsAsync(
             payrollId: context.Payroll.Id,
-            regulationDate: context.PayrunJob.PeriodEnd,
+            regulationDate: context.PayrunJob.RegulationDate,
             evaluationDate: context.EvaluationDate);
 
         // case field provider
@@ -67,7 +67,7 @@ internal sealed class PayrunRegulationInitializer
         }
         context.CaseFieldProvider = new CaseFieldProvider(
             new CaseFieldProxyRepository(Settings.PayrollRepository, Tenant.Id, Payrun.PayrollId,
-                context.PayrunJob.PeriodEnd, context.EvaluationDate, caseFieldClusterSet));
+                context.PayrunJob.RegulationDate, context.EvaluationDate, caseFieldClusterSet));
 
         // case value caches (global, national, company)
         var cacheFactory = new CaseValueCacheFactory(
@@ -96,7 +96,7 @@ internal sealed class PayrunRegulationInitializer
             {
                 TenantId = Tenant.Id,
                 PayrollId = context.Payroll.Id,
-                RegulationDate = context.PayrunJob.PeriodEnd,
+                RegulationDate = context.PayrunJob.RegulationDate,
                 EvaluationDate = context.PayrunJob.EvaluationDate
             },
             regulationRepository: Settings.RegulationRepository,

@@ -127,6 +127,20 @@ public class PayrunJob : DomainObjectBase, INamedObject, IDomainAttributeObject,
     public DateTime EvaluationDate { get; set; }
 
     /// <summary>
+    /// The pay date: invocation pay date or calendar pay date of the period (immutable)
+    /// </summary>
+    public DateTime PayDate { get; set; }
+
+    /// <summary>
+    /// The regulation date: the period end, or the end of the pay date when it differs from the period end date
+    /// </summary>
+    [JsonIgnore]
+    public DateTime RegulationDate =>
+        PayDate == DateTime.MinValue || PayDate.Date == PeriodEnd.Date
+            ? PeriodEnd
+            : DateTime.SpecifyKind(PayDate.Date, DateTimeKind.Utc).LastMomentOfDay();
+
+    /// <summary>
     /// The job release date (immutable)
     /// </summary>
     public DateTime? Released { get; set; }

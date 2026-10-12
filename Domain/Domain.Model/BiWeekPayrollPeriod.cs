@@ -4,7 +4,8 @@ using System.Globalization;
 namespace PayrollEngine.Domain.Model;
 
 /// <summary>
-/// Payroll week period
+/// Payroll bi-week period: continuous 14-day periods from the calendar period anchor date,
+/// or week-of-year pairs without anchor date
 /// </summary>
 public class BiWeekPayrollPeriod : IPayrollPeriod
 {
@@ -46,6 +47,18 @@ public class BiWeekPayrollPeriod : IPayrollPeriod
     {
         Culture = culture ?? throw new ArgumentNullException(nameof(culture));
         Calendar = calendar ?? throw new ArgumentNullException(nameof(calendar));
+
+        // anchored bi week: continuous 14-day periods from the anchor date
+        var anchoredStart = calendar.GetAnchoredPeriodStart(moment, Date.DaysInBiWeek);
+        if (anchoredStart.HasValue)
+        {
+            Period = new(
+                anchoredStart.Value,
+                anchoredStart.Value.AddDays(Date.DaysInBiWeek - 1).LastMomentOfDay());
+            StartWeekOfYear = Calendar.GetWeekOfYear(Culture, Period.Start);
+            EndWeekOfYear = Calendar.GetWeekOfYear(Culture, Period.End);
+            return;
+        }
 
         // bi week first week
         var firstDayOfWeek = calendar.FirstDayOfWeek ?? (DayOfWeek)culture.DateTimeFormat.FirstDayOfWeek;

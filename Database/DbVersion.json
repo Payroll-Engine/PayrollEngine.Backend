@@ -1,6 +1,6 @@
 {
-  "OldVersion":          "1.0.0",
-  "NewVersion":          "1.1.0",
-  "CreateDescription":   "Payroll Engine: Full setup v1.1.0",
-  "UpdateDescription":   "Payroll Engine: Migration v1.0.0 -> v1.1.0"
+  "OldVersion":          "1.1.0",
+  "NewVersion":          "1.2.0",
+  "CreateDescription":   "Payroll Engine: Full setup v1.2.0",
+  "UpdateDescription":   "Payroll Engine: Migration v1.1.0 -> v1.2.0"
 }

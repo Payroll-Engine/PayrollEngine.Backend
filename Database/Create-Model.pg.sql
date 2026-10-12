@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Create-Model.pg.sql
 -- PostgreSQL schema for PayrollEngine 14+ (16 LTS recommended).
--- Schema version: 1.1.0
+-- Schema version: 1.2.0
 -- NOTE: All table names are double-quoted for C# SqlKata compatibility.
 -- =============================================================================
 
@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS "Calendar" (
     "PeriodDayCount" DECIMAL(28,6) NULL,
     "YearWeekRule" INT           NULL,
     "FirstDayOfWeek" INT           NULL,
+    "PeriodAnchorDate" TIMESTAMP(6) NULL,
+    "PayDateOffset" INT NULL,
     "WeekMode" INT           NOT NULL,
     "WorkMonday" BOOLEAN    NULL,
     "WorkTuesday" BOOLEAN    NULL,
@@ -329,6 +331,7 @@ CREATE TABLE IF NOT EXISTS "CollectorCustomResult" (
     "ParentJobId" INT           NULL,
     "Tags" TEXT      NULL,
     "Attributes" TEXT      NULL,
+    "PayDate" TIMESTAMP(6) NOT NULL,
     PRIMARY KEY ("Id")
 );
 
@@ -358,6 +361,7 @@ CREATE TABLE IF NOT EXISTS "CollectorResult" (
     "ParentJobId" INT           NULL,
     "Tags" TEXT      NULL,
     "Attributes" TEXT      NULL,
+    "PayDate" TIMESTAMP(6) NOT NULL,
     PRIMARY KEY ("Id")
 );
 
@@ -853,6 +857,7 @@ CREATE TABLE IF NOT EXISTS "PayrunJob" (
     "PeriodStart" TIMESTAMP(6)  NOT NULL,
     "PeriodEnd" TIMESTAMP(6)  NOT NULL,
     "EvaluationDate" TIMESTAMP(6)  NOT NULL,
+    "PayDate" TIMESTAMP(6) NOT NULL,
     "Released" TIMESTAMP(6)  NULL,
     "Processed" TIMESTAMP(6)  NULL,
     "Finished" TIMESTAMP(6)  NULL,
@@ -923,6 +928,7 @@ CREATE TABLE IF NOT EXISTS "PayrunResult" (
     "ParentJobId" INT           NULL,
     "Tags" TEXT      NULL,
     "Attributes" TEXT      NULL,
+    "PayDate" TIMESTAMP(6) NOT NULL,
     PRIMARY KEY ("Id")
 );
 
@@ -1292,6 +1298,7 @@ CREATE TABLE IF NOT EXISTS "WageTypeCustomResult" (
     "ParentJobId" INT           NULL,
     "Tags" TEXT      NULL,
     "Attributes" TEXT      NULL,
+    "PayDate" TIMESTAMP(6) NOT NULL,
     PRIMARY KEY ("Id")
 );
 
@@ -1319,6 +1326,7 @@ CREATE TABLE IF NOT EXISTS "WageTypeResult" (
     "ParentJobId" INT           NULL,
     "Tags" TEXT      NULL,
     "Attributes" TEXT      NULL,
+    "PayDate" TIMESTAMP(6) NOT NULL,
     PRIMARY KEY ("Id")
 );
 
@@ -2390,7 +2398,8 @@ RETURNS TABLE (
     "Forecast"                    VARCHAR(128),
     "ParentJobId"                 INT,
     "Tags"                        TEXT,
-    "Attributes"                  TEXT
+    "Attributes"                  TEXT,
+    "PayDate"                     TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -2475,7 +2484,8 @@ RETURNS TABLE (
     "Forecast"                    VARCHAR(128),
     "ParentJobId"                 INT,
     "Tags"                        TEXT,
-    "Attributes"                  TEXT
+    "Attributes"                  TEXT,
+    "PayDate"                     TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -2763,7 +2773,8 @@ RETURNS TABLE(
     "Forecast"                    VARCHAR(128),
     "ParentJobId"                 INT,
     "Tags"                        TEXT,
-    "Attributes"                  TEXT
+    "Attributes"                  TEXT,
+    "PayDate"                     TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -2849,7 +2860,8 @@ RETURNS TABLE(
     "Forecast"                    VARCHAR(128),
     "ParentJobId"                 INT,
     "Tags"                        TEXT,
-    "Attributes"                  TEXT
+    "Attributes"                  TEXT,
+    "PayDate"                     TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -2934,7 +2946,8 @@ RETURNS TABLE(
     "Forecast"            VARCHAR(128),
     "ParentJobId"         INT,
     "Tags"                TEXT,
-    "Attributes"          TEXT
+    "Attributes"          TEXT,
+    "PayDate"             TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -3018,7 +3031,8 @@ RETURNS TABLE(
     "Forecast"                    VARCHAR(128),
     "ParentJobId"                 INT,
     "Tags"                        TEXT,
-    "Attributes"                  TEXT
+    "Attributes"                  TEXT,
+    "PayDate"                     TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -3102,7 +3116,8 @@ RETURNS TABLE(
     "Forecast"                    VARCHAR(128),
     "ParentJobId"                 INT,
     "Tags"                        TEXT,
-    "Attributes"                  TEXT
+    "Attributes"                  TEXT,
+    "PayDate"                     TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -4916,7 +4931,8 @@ RETURNS TABLE (
     "Forecast"                   VARCHAR(128),
     "ParentJobId"                INT,
     "Tags"                       TEXT,
-    "Attributes"                 TEXT
+    "Attributes"                 TEXT,
+    "PayDate"                    TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -4999,7 +5015,8 @@ RETURNS TABLE (
     "Forecast"                   VARCHAR(128),
     "ParentJobId"                INT,
     "Tags"                       TEXT,
-    "Attributes"                 TEXT
+    "Attributes"                 TEXT,
+    "PayDate"                    TIMESTAMP(6)
 )
 LANGUAGE plpgsql STABLE
 AS $$
@@ -5092,4 +5109,4 @@ $$;
 -- =============================================================================
 
 INSERT INTO "Version" ("Created", "MajorVersion", "MinorVersion", "SubVersion", "Owner", "Description")
-VALUES (NOW(), 1, 1, 0, CURRENT_USER, 'Payroll Engine: Full setup v1.1.0 (PostgreSQL)');
+VALUES (NOW(), 1, 2, 0, CURRENT_USER, 'Payroll Engine: Full setup v1.2.0 (PostgreSQL)');

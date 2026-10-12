@@ -94,7 +94,7 @@ internal sealed class PayrunEmployeesProcessor
             // Validates the payroll object itself against its division and the current period,
             // e.g. division assignment, period boundaries, and payroll configuration consistency.
             var validation = await processorRepositories.ValidatePayrollAsync(context.Payroll, context.Division,
-                context.PayrunJob.GetEvaluationPeriod(), context.EvaluationDate);
+                context.PayrunJob.GetEvaluationPeriod(), context.PayrunJob.RegulationDate, context.EvaluationDate);
             if (validation != null)
             {
                 return await AbortJobAsync(context.PayrunJob, $"Payroll validation error: {validation}");

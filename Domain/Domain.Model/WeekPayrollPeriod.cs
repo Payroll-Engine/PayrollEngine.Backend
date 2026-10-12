@@ -44,7 +44,8 @@ public class WeekPayrollPeriod : IPayrollPeriod
         Calendar = calendar ?? throw new ArgumentNullException(nameof(calendar));
 
         var firstDayOfWeek = calendar.FirstDayOfWeek ?? (DayOfWeek)culture.DateTimeFormat.FirstDayOfWeek;
-        var startOfWeek = moment.GetPreviousWeekDay(firstDayOfWeek).Date;
+        var startOfWeek = calendar.GetAnchoredPeriodStart(moment, Date.DaysInWeek) ??
+                          moment.GetPreviousWeekDay(firstDayOfWeek).Date;
         Period = new(
             startOfWeek,
             startOfWeek.AddDays(Date.DaysInWeek - 1).LastMomentOfDay());

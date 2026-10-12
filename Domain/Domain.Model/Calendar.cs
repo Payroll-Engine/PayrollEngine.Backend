@@ -46,6 +46,13 @@ public class Calendar : DomainObjectBase, INamedObject, IDomainAttributeObject, 
     /// <summary>Override the calendar first day of week</summary>
     public DayOfWeek? FirstDayOfWeek { get; set; }
 
+    /// <summary>Anchor date of the week and bi-week periods: the periods start on the anchor date
+    /// and repeat every 7 or 14 days, independent of the year (default: week of year)</summary>
+    public DateTime? PeriodAnchorDate { get; set; }
+
+    /// <summary>Pay date offset in days from the period end date (default: 0)</summary>
+    public int? PayDateOffset { get; set; }
+
     /// <summary>
     /// The week mode (default: week)
     /// </summary>

@@ -115,6 +115,14 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
         new(EvaluationPeriod.Start, EvaluationPeriod.End);
 
     /// <inheritdoc />
+    public virtual DateTime PayDate =>
+        GetPayDate(EvaluationPeriod.Start);
+
+    /// <inheritdoc />
+    public DateTime GetPayDate(DateTime periodMoment) =>
+        CaseValueProvider.PayrollCalculator.GetPayDate(periodMoment);
+
+    /// <inheritdoc />
     public virtual Tuple<DateTime, DateTime> GetPeriod(DateTime periodMoment, int offset)
     {
         var currentPeriod = CaseValueProvider.PayrollCalculator.GetPayrunPeriod(periodMoment);

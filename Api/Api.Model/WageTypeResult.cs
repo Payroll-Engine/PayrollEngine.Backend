@@ -46,6 +46,11 @@ public class WageTypeResult : ApiObjectBase
     public int? ParentJobId { get; set; }
 
     /// <summary>
+    /// The payrun job pay date (denormalized, immutable)
+    /// </summary>
+    public DateTime PayDate { get; set; }
+
+    /// <summary>
     /// The wage type id (immutable)
     /// </summary>
     [Required]

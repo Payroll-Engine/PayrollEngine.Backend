@@ -43,7 +43,7 @@
         <member name="T:PayrollEngine.Backend.Controller.CalendarController">
             <inheritdoc/>
         </member>
-        <member name="M:PayrollEngine.Backend.Controller.CalendarController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICalendarService,PayrollEngine.Domain.Model.IPayrollCalculatorProvider,PayrollEngine.Api.Core.IControllerRuntime)">
+        <member name="M:PayrollEngine.Backend.Controller.CalendarController.#ctor(PayrollEngine.Domain.Application.Service.ITenantService,PayrollEngine.Domain.Application.Service.ICalendarService,PayrollEngine.Domain.Application.Service.IDivisionService,PayrollEngine.Domain.Application.Service.IEmployeeService,PayrollEngine.Domain.Application.Service.IPayrunJobService,PayrollEngine.Domain.Model.IPayrollCalculatorProvider,PayrollEngine.Api.Core.IControllerRuntime)">
             <inheritdoc/>
         </member>
         <member name="M:PayrollEngine.Backend.Controller.CalendarController.QueryCalendarsAsync(System.Int32,PayrollEngine.Query)">

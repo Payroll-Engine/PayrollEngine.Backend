@@ -46,7 +46,7 @@ internal sealed class PayrunProcessorRepositories
     }
 
     internal async Task<string> ValidatePayrollAsync(Payroll payroll, Division division,
-        DatePeriod period, DateTime evaluationDate)
+        DatePeriod period, DateTime regulationDate, DateTime evaluationDate)
     {
         // validate regulations
         var regulations = (await Settings.PayrollRepository.GetDerivedRegulationsAsync(Settings.DbContext,
@@ -54,12 +54,12 @@ internal sealed class PayrunProcessorRepositories
             {
                 TenantId = Tenant.Id,
                 PayrollId = payroll.Id,
-                RegulationDate = period.Start,
+                RegulationDate = regulationDate,
                 EvaluationDate = evaluationDate
             })).ToList();
         if (!regulations.Any())
         {
-            return $"Missing regulations for payroll {payroll.Name} (#{payroll.Id}): period={period}, evaluation={evaluationDate}";
+            return $"Missing regulations for payroll {payroll.Name} (#{payroll.Id}): period={period}, regulation={regulationDate}, evaluation={evaluationDate}";
         }
 
         // validate shared regulations

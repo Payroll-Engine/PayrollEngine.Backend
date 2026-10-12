@@ -46,6 +46,11 @@ public class WageTypeCustomResult : DomainObjectBase, ITagObject,
     public int? ParentJobId { get; set; }
 
     /// <summary>
+    /// The payrun job pay date (denormalized, immutable)
+    /// </summary>
+    public DateTime PayDate { get; set; }
+
+    /// <summary>
     /// The wage type number (immutable)
     /// </summary>
     public decimal WageTypeNumber { get; set; }

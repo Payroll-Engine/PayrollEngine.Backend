@@ -59,6 +59,7 @@ public static class PayrunJobFactory
             PeriodStart = evaluationPeriod.Start,
             PeriodEnd = evaluationPeriod.End,
             EvaluationDate = jobInvocation.EvaluationDate.Value,
+            PayDate = GetPayDate(jobInvocation, payrollCalculator),
             CreatedReason = jobInvocation.Reason,
             // runtime
             Employees = [],
@@ -113,9 +114,20 @@ public static class PayrunJobFactory
         payrunJob.PeriodStart = evaluationPeriod.Start;
         payrunJob.PeriodEnd = evaluationPeriod.End;
         payrunJob.EvaluationDate = jobInvocation.EvaluationDate.Value;
+        payrunJob.PayDate = GetPayDate(jobInvocation, payrollCalculator);
 
         // Ensure division and payroll IDs are correct
         payrunJob.DivisionId = divisionId;
         payrunJob.PayrollId = payrollId;
     }
+
+    /// <summary>
+    /// Get the job pay date: the invocation pay date, or the calendar pay date of the period
+    /// </summary>
+    /// <param name="jobInvocation">The job invocation</param>
+    /// <param name="payrollCalculator">The payroll calculator</param>
+    private static DateTime GetPayDate(PayrunJobInvocation jobInvocation, IPayrollCalculator payrollCalculator) =>
+        jobInvocation.PayDate.HasValue
+            ? DateTime.SpecifyKind(jobInvocation.PayDate.Value.Date, DateTimeKind.Utc)
+            : payrollCalculator.GetPayDate(jobInvocation.PeriodStart);
 }
