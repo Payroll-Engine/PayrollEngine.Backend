@@ -49,10 +49,11 @@ DROP PROCEDURE IF EXISTS _PE_VersionCheck;
 -- TABLE CHANGES
 -- =============================================================================
 
--- Calendar: anchored week/bi-week periods and pay date offset
+-- Calendar: anchored week/bi-week periods, pay date offset and cycle assignment
 ALTER TABLE Calendar
     ADD COLUMN PeriodAnchorDate DATETIME(6) NULL AFTER FirstDayOfWeek,
-    ADD COLUMN PayDateOffset    INT         NULL AFTER PeriodAnchorDate;
+    ADD COLUMN PayDateOffset    INT         NULL AFTER PeriodAnchorDate,
+    ADD COLUMN CycleAssignment  INT         NULL AFTER PayDateOffset;
 
 -- PayrunJob: pay date (existing jobs: period end date)
 ALTER TABLE PayrunJob ADD COLUMN PayDate DATETIME(6) NULL AFTER EvaluationDate;

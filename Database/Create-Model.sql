@@ -144,6 +144,7 @@ CREATE TABLE [dbo].[Calendar] (
   [FirstDayOfWeek] [int] NULL,
   [PeriodAnchorDate] [datetime2](7) NULL,
   [PayDateOffset] [int] NULL,
+  [CycleAssignment] [int] NULL,
   [WeekMode] [int] NOT NULL,
   [WorkMonday] [bit] NULL,
   [WorkTuesday] [bit] NULL,

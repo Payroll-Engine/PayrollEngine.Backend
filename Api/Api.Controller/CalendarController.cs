@@ -30,13 +30,21 @@ public abstract class CalendarController(ITenantService tenantService, ICalendar
     {
         if (calendar != null && calendar.Id > 0)
         {
-            // the period anchor date defines the week and bi-week period sequence of existing payrun jobs
+            // the period anchor date defines the week and bi-week period sequence of existing payrun jobs,
+            // the cycle assignment defines the cycle of existing payrun results
             var existing = await Service.GetAsync(Runtime.DbContext, tenantId, calendar.Id);
-            if (existing != null &&
-                existing.PeriodAnchorDate?.Date != calendar.PeriodAnchorDate?.Date &&
-                await IsCalendarInUseAsync(tenantId, existing.Name))
+            if (existing != null)
             {
-                return BadRequest($"The period anchor date of calendar {existing.Name} cannot be changed, payrun jobs exist for this calendar");
+                var anchorChanged = existing.PeriodAnchorDate?.Date != calendar.PeriodAnchorDate?.Date;
+                var assignmentChanged = (existing.CycleAssignment ?? CalendarCycleAssignment.PayDate) !=
+                                        (calendar.CycleAssignment ?? CalendarCycleAssignment.PayDate);
+                if ((anchorChanged || assignmentChanged) &&
+                    await IsCalendarInUseAsync(tenantId, existing.Name))
+                {
+                    return BadRequest(anchorChanged
+                        ? $"The period anchor date of calendar {existing.Name} cannot be changed, payrun jobs exist for this calendar"
+                        : $"The cycle assignment of calendar {existing.Name} cannot be changed, payrun jobs exist for this calendar");
+                }
             }
         }
         return await base.UpdateAsync(tenantId, calendar);

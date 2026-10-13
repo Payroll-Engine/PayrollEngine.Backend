@@ -270,6 +270,9 @@
         <member name="P:PayrollEngine.Api.Model.Calendar.PayDateOffset">
             <summary>Pay date offset in days from the period end date (default: 0)</summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Calendar.CycleAssignment">
+            <summary>Assignment of the period to the cycle and to the regulation date (default: pay date)</summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Calendar.WeekMode">
             <summary>The week mode (default: week)</summary>
         </member>

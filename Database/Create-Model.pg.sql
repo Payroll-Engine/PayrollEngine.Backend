@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS "Calendar" (
     "FirstDayOfWeek" INT           NULL,
     "PeriodAnchorDate" TIMESTAMP(6) NULL,
     "PayDateOffset" INT NULL,
+    "CycleAssignment" INT NULL,
     "WeekMode" INT           NOT NULL,
     "WorkMonday" BOOLEAN    NULL,
     "WorkTuesday" BOOLEAN    NULL,

@@ -34,8 +34,9 @@ public static class PayrunJobFactory
             jobInvocation.PeriodStart = DateTime.SpecifyKind(jobInvocation.PeriodStart, DateTimeKind.Utc);
         }
 
-        var evaluationCycle = payrollCalculator.GetPayrunCycle(jobInvocation.PeriodStart);
         var evaluationPeriod = payrollCalculator.GetPayrunPeriod(jobInvocation.PeriodStart);
+        var payDate = GetPayDate(jobInvocation, payrollCalculator);
+        var evaluationCycle = GetPayrunCycle(evaluationPeriod, payDate, payrollCalculator);
         var payrunJob = new PayrunJob
         {
             // invocation
@@ -59,7 +60,8 @@ public static class PayrunJobFactory
             PeriodStart = evaluationPeriod.Start,
             PeriodEnd = evaluationPeriod.End,
             EvaluationDate = jobInvocation.EvaluationDate.Value,
-            PayDate = GetPayDate(jobInvocation, payrollCalculator),
+            PayDate = payDate,
+            CycleAssignment = payrollCalculator.CycleAssignment,
             CreatedReason = jobInvocation.Reason,
             // runtime
             Employees = [],
@@ -103,8 +105,9 @@ public static class PayrunJobFactory
             jobInvocation.PeriodStart = DateTime.SpecifyKind(jobInvocation.PeriodStart, DateTimeKind.Utc);
         }
 
-        var evaluationCycle = payrollCalculator.GetPayrunCycle(jobInvocation.PeriodStart);
         var evaluationPeriod = payrollCalculator.GetPayrunPeriod(jobInvocation.PeriodStart);
+        var payDate = GetPayDate(jobInvocation, payrollCalculator);
+        var evaluationCycle = GetPayrunCycle(evaluationPeriod, payDate, payrollCalculator);
 
         // Update calculated cycle/period values
         payrunJob.CycleName = evaluationCycle.Name;
@@ -114,7 +117,8 @@ public static class PayrunJobFactory
         payrunJob.PeriodStart = evaluationPeriod.Start;
         payrunJob.PeriodEnd = evaluationPeriod.End;
         payrunJob.EvaluationDate = jobInvocation.EvaluationDate.Value;
-        payrunJob.PayDate = GetPayDate(jobInvocation, payrollCalculator);
+        payrunJob.PayDate = payDate;
+        payrunJob.CycleAssignment = payrollCalculator.CycleAssignment;
 
         // Ensure division and payroll IDs are correct
         payrunJob.DivisionId = divisionId;
@@ -130,4 +134,15 @@ public static class PayrunJobFactory
         jobInvocation.PayDate.HasValue
             ? DateTime.SpecifyKind(jobInvocation.PayDate.Value.Date, DateTimeKind.Utc)
             : payrollCalculator.GetPayDate(jobInvocation.PeriodStart);
+
+    /// <summary>
+    /// Get the cycle of the job: the cycle including the pay date or the period end
+    /// </summary>
+    /// <param name="period">The job period</param>
+    /// <param name="payDate">The job pay date</param>
+    /// <param name="payrollCalculator">The payroll calculator</param>
+    private static IPayrollPeriod GetPayrunCycle(IPayrollPeriod period, DateTime payDate,
+        IPayrollCalculator payrollCalculator) =>
+        payrollCalculator.GetPayrunCycle(
+            payrollCalculator.CycleAssignment == CalendarCycleAssignment.PeriodEnd ? period.End : payDate);
 }

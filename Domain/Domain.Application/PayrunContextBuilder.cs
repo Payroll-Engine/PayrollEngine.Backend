@@ -57,7 +57,6 @@ internal sealed class PayrunContextBuilder
         {
             User = await processorRepositories.LoadUserAsync(userId),
             Payroll = setup.Payroll ?? await processorRepositories.LoadPayrollAsync(payrollId),
-            RetroDate = await RetroProcessor.GetRetroDateAsync(jobInvocation),
             StoreEmptyResults = jobInvocation.StoreEmptyResults
         };
 
@@ -81,6 +80,10 @@ internal sealed class PayrunContextBuilder
             userId: context.User.Id,
             culture: context.PayrollCulture,
             calendarName: context.CalendarName);
+
+        // the invocation period start can be any date within the period
+        var periodStart = context.Calculator.GetPayrunPeriod(jobInvocation.PeriodStart.ToUtc()).Start;
+        context.RetroDate = await RetroProcessor.GetRetroDateAsync(jobInvocation, periodStart);
 
         return context;
     }

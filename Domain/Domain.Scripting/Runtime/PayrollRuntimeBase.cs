@@ -143,6 +143,14 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     #region Cycle
 
     /// <inheritdoc />
+    public virtual DateTime CycleDate =>
+        CaseValueProvider.PayrollCalculator.GetCycleDate(EvaluationPeriod.Start);
+
+    /// <inheritdoc />
+    public virtual DateTime GetCyclePeriodStart(DateTime cycleStart) =>
+        CaseValueProvider.PayrollCalculator.GetCyclePeriodStart(cycleStart);
+
+    /// <inheritdoc />
     public virtual Tuple<DateTime, DateTime> GetCycle(DateTime cycleMoment, int offset)
     {
         var currentCycle = CaseValueProvider.PayrollCalculator.GetPayrunCycle(cycleMoment);

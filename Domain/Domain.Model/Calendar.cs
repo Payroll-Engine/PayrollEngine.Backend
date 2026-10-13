@@ -53,6 +53,9 @@ public class Calendar : DomainObjectBase, INamedObject, IDomainAttributeObject, 
     /// <summary>Pay date offset in days from the period end date (default: 0)</summary>
     public int? PayDateOffset { get; set; }
 
+    /// <summary>Assignment of the period to the cycle and to the regulation date (default: pay date)</summary>
+    public CalendarCycleAssignment? CycleAssignment { get; set; }
+
     /// <summary>
     /// The week mode (default: week)
     /// </summary>

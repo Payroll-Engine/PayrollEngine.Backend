@@ -39,10 +39,11 @@ GO
 -- TABLE CHANGES
 -- =============================================================================
 
--- Calendar: anchored week/bi-week periods and pay date offset
+-- Calendar: anchored week/bi-week periods, pay date offset and cycle assignment
 ALTER TABLE [dbo].[Calendar] ADD
     [PeriodAnchorDate] [datetime2](7) NULL,
-    [PayDateOffset] [int] NULL;
+    [PayDateOffset] [int] NULL,
+    [CycleAssignment] [int] NULL;
 GO
 
 -- PayrunJob: pay date (existing jobs: period end date)

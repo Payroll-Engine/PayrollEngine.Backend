@@ -35,6 +35,9 @@ public class PayrunRuntimeSettings : PayrollRuntimeSettings
     /// <summary>The parent payrun job, usually the payrun retro source payrun job</summary>
     public PayrunExecutionPhase ExecutionPhase { get; init; }
 
+    /// <summary>The assignment of the periods to the cycles (default: calendar pay dates)</summary>
+    public PayrunCyclePeriods CyclePeriods { get; init; }
+
     /// <summary>
     /// Optional pre-loaded cycle cache for this employee.
     /// When non-null, <see cref="PayrunRuntimeBase"/> serves matching

@@ -358,23 +358,12 @@ internal sealed class PayrunEmployeeProcessor
             return;
         }
 
-        // first period of cycle: no prior results exist
-        if (scope.PayrunJob.CycleStart >= scope.PayrunJob.PeriodStart)
-        {
-            scope.WageTypeConsolidatedCycleCache = null;
-            return;
-        }
-
         // enumerate all completed period starts using the same logic as GetConsolidatedPeriodStarts
         // in the runtime — ensures the cache covers exactly the periods the scripts would query
-        var completedPeriodStarts = new List<DateTime>();
-        var period = scope.Calculator.GetPayrunPeriod(scope.PayrunJob.CycleStart);
-        while (period.Start < scope.PayrunJob.PeriodStart)
-        {
-            completedPeriodStarts.Add(period.Start);
-            period = period.GetPayrollPeriod(period.Start, 1);
-        }
+        var completedPeriodStarts = scope.CyclePeriods.GetConsolidatedPeriodStarts(
+            scope.Calculator, scope.PayrunJob.CycleStart, scope.PayrunJob.PeriodStart);
 
+        // first period of cycle: no prior results exist
         if (completedPeriodStarts.Count == 0)
         {
             scope.WageTypeConsolidatedCycleCache = null;
@@ -418,7 +407,8 @@ internal sealed class PayrunEmployeeProcessor
         }
 
         // first period of cycle: no prior results exist
-        if (scope.PayrunJob.CycleStart >= scope.PayrunJob.PeriodStart)
+        var cyclePeriodStart = scope.CyclePeriods.GetFirstPeriodStart(scope.Calculator, scope.PayrunJob.CycleStart);
+        if (cyclePeriodStart >= scope.PayrunJob.PeriodStart)
         {
             scope.WageTypeCycleCache = null;
             return;
@@ -431,7 +421,7 @@ internal sealed class PayrunEmployeeProcessor
             {
                 TenantId = Tenant.Id,
                 EmployeeId = employee.Id,
-                Period = new DatePeriod(scope.PayrunJob.CycleStart, previousPeriodEnd),
+                Period = new DatePeriod(cyclePeriodStart, previousPeriodEnd),
                 WageTypeNumbers = cycleNumbers,
                 JobStatus = PayrunJobStatus.Complete,
                 Forecast = scope.PayrunJob.Forecast,

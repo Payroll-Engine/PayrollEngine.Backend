@@ -53,6 +53,8 @@ public class PayrunProcessor : FunctionToolBase
         internal CaseValueCache CompanyCaseValues { get; init; }
         /// <summary>Preloaded employee case value cache; only valid when exactly one employee is processed.</summary>
         internal CaseValueCache EmployeeCaseValues { get; init; }
+        /// <summary>Shared cycle periods passed in from the parent payrun.</summary>
+        internal PayrunCyclePeriods CyclePeriods { get; init; }
     }
 
     // global
@@ -189,6 +191,7 @@ public class PayrunProcessor : FunctionToolBase
         Log.Trace($"{ModeTag}Phase 2: creating/loading job");
         phaseStopwatch.Restart();
         await ContextBuilder.CreateOrLoadJobAsync(jobInvocation, context, processorRepositories);
+        context.CyclePeriods = setup.CyclePeriods ?? await LoadCyclePeriodsAsync(context, processorRepositories);
         var jobId = context.PayrunJob!.Id;
         Log.Trace($"{ModeTag}Phase 2 completed: job {jobId}, " +
                   $"status {context.PayrunJob.JobStatus}, " +
@@ -276,6 +279,26 @@ public class PayrunProcessor : FunctionToolBase
     #endregion
 
     #region Job
+
+    /// <summary>
+    /// Loads the cycle periods: with pay date assignment, the periods are assigned
+    /// to the cycles by the pay dates of the payrun jobs including the current job
+    /// </summary>
+    private async Task<PayrunCyclePeriods> LoadCyclePeriodsAsync(PayrunContext context,
+        PayrunProcessorRepositories processorRepositories)
+    {
+        if (context.Calculator.CycleAssignment != CalendarCycleAssignment.PayDate)
+        {
+            return new PayrunCyclePeriods();
+        }
+
+        var payDates = await processorRepositories.LoadPeriodPayDatesAsync(Payrun.Id, context.PayrunJob.Forecast);
+        if (context.PayrunJob.PayDate != DateTime.MinValue)
+        {
+            payDates[context.PayrunJob.PeriodStart] = DateTime.SpecifyKind(context.PayrunJob.PayDate.Date, DateTimeKind.Utc);
+        }
+        return new PayrunCyclePeriods(payDates);
+    }
 
     /// <summary>
     /// Sets the job start time, writes the start message, and persists the job

@@ -34,6 +34,10 @@ public class PayrollCalculator : IPayrollCalculator
     public CalendarTimeUnit PeriodTimeUnit => Calendar.PeriodTimeUnit;
 
     /// <inheritdoc />
+    public CalendarCycleAssignment CycleAssignment =>
+        Calendar.CycleAssignment ?? CalendarCycleAssignment.PayDate;
+
+    /// <inheritdoc />
     public IPayrollPeriod GetPayrunCycle(DateTime cycleMoment) =>
         GetPayrunPeriod(cycleMoment, Calendar.CycleTimeUnit);
 
@@ -44,6 +48,25 @@ public class PayrollCalculator : IPayrollCalculator
     /// <inheritdoc />
     public DateTime GetPayDate(DateTime periodMoment) =>
         Calendar.GetPayDate(GetPayrunPeriod(periodMoment).End);
+
+    /// <inheritdoc />
+    public DateTime GetCycleDate(DateTime periodMoment) =>
+        CycleAssignment == CalendarCycleAssignment.PeriodEnd
+            ? GetPayrunPeriod(periodMoment).End
+            : GetPayDate(periodMoment);
+
+    /// <inheritdoc />
+    public DateTime GetCyclePeriodStart(DateTime cycleStart)
+    {
+        if (CycleAssignment == CalendarCycleAssignment.PeriodEnd)
+        {
+            // the period including the cycle start ends within the cycle
+            return GetPayrunPeriod(cycleStart).Start;
+        }
+        // the period including the cycle start less the pay date offset is the first period paid within the cycle
+        var periodMoment = DateTime.SpecifyKind(cycleStart.Date.AddDays(-(Calendar.PayDateOffset ?? 0)), DateTimeKind.Utc);
+        return GetPayrunPeriod(periodMoment).Start;
+    }
 
     /// <inheritdoc />
     public int GetCalendarDayCount(DatePeriod period)

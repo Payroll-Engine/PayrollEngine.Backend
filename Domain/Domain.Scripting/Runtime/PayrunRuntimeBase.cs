@@ -90,6 +90,17 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
     public override DateTime PayDate => PayrunJob.PayDate;
 
     /// <inheritdoc />
+    public override DateTime CycleDate =>
+        PayrunJob.CycleAssignment == CalendarCycleAssignment.PeriodEnd ||
+        PayrunJob.PayDate == DateTime.MinValue
+            ? PayrunJob.PeriodEnd
+            : PayrunJob.PayDate;
+
+    /// <inheritdoc />
+    public override DateTime GetCyclePeriodStart(DateTime cycleStart) =>
+        CyclePeriods.GetFirstPeriodStart(CaseValueProvider.PayrollCalculator, cycleStart);
+
+    /// <inheritdoc />
     public string Forecast => PayrunJob.Forecast;
 
     /// <inheritdoc />
@@ -881,35 +892,13 @@ public abstract class PayrunRuntimeBase : PayrollRuntimeBase, IPayrunRuntime
             }).GetAwaiter().GetResult().ToList();
     }
 
-    /// <summary>Get consolidated period starts from a moment until the current period</summary>
-    /// <param name="periodMoment">Moment within the starting period</param>
-    /// <remarks>keep in sync with client scripting ConsolidatedResultCache</remarks>
-    /// <returns>List of period start dates</returns>
-    private List<DateTime> GetConsolidatedPeriodStarts(DateTime periodMoment)
-    {
-        var periodStarts = new List<DateTime>();
-        var period = CaseValueProvider.PayrollCalculator.GetPayrunPeriod(periodMoment);
-        // iterate from the start period until the job period
-        while (period.Start < PayrunJob.PeriodStart)
-        {
-            periodStarts.Add(period.Start);
-            // next period
-            var next = period.GetPayrollPeriod(period.Start, 1);
-            // defensive guard: if the period did not advance, the calendar implementation
-            // has a bug (e.g. GetPayrollPeriod uses an incorrect step size). Break to
-            // prevent an infinite loop. The affected period type will be reported in logs.
-            if (next.Start <= period.Start)
-            {
-                Log.Warning("GetConsolidatedPeriodStarts: period did not advance " +
-                    $"(Start={period.Start:yyyy-MM-dd}, PeriodMoment={periodMoment:yyyy-MM-dd}, " +
-                    $"JobPeriodStart={PayrunJob.PeriodStart:yyyy-MM-dd}). " +
-                    "Breaking consolidation loop — check IPayrollPeriod.GetPayrollPeriod implementation.");
-                break;
-            }
-            period = next;
-        }
-        return periodStarts;
-    }
+    /// <inheritdoc />
+    public List<DateTime> GetConsolidatedPeriodStarts(DateTime periodMoment) =>
+        CyclePeriods.GetConsolidatedPeriodStarts(CaseValueProvider.PayrollCalculator,
+            periodMoment, PayrunJob.PeriodStart);
+
+    private PayrunCyclePeriods cyclePeriods;
+    private PayrunCyclePeriods CyclePeriods => cyclePeriods ??= Settings.CyclePeriods ?? new PayrunCyclePeriods();
 
     #endregion
 

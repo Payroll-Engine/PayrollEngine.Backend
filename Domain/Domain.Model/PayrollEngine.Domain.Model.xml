@@ -249,6 +249,9 @@
         <member name="P:PayrollEngine.Domain.Model.Calendar.PayDateOffset">
             <summary>Pay date offset in days from the period end date (default: 0)</summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.Calendar.CycleAssignment">
+            <summary>Assignment of the period to the cycle and to the regulation date (default: pay date)</summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.Calendar.WeekMode">
             <summary>
             The week mode (default: week)
@@ -4131,6 +4134,11 @@
             The period time unit
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.IPayrollCalculator.CycleAssignment">
+            <summary>
+            The assignment of the period to the cycle and to the regulation date
+            </summary>
+        </member>
         <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetPayrunCycle(System.DateTime)">
             <summary>
             Get payrun cycle from a specific moment
@@ -4151,6 +4159,20 @@
             </summary>
             <param name="periodMoment">The moment within the payrun period</param>
             <returns>The pay date: period end date plus the calendar pay date offset</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetCycleDate(System.DateTime)">
+            <summary>
+            Get the calendar cycle date of the payrun period including a moment
+            </summary>
+            <param name="periodMoment">The moment within the payrun period</param>
+            <returns>The calendar pay date or the period end, depending on the cycle assignment</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetCyclePeriodStart(System.DateTime)">
+            <summary>
+            Get the start of the first payrun period of a cycle, based on the calendar cycle dates
+            </summary>
+            <param name="cycleStart">The cycle start</param>
+            <returns>The start of the first period assigned to the cycle</returns>
         </member>
         <member name="M:PayrollEngine.Domain.Model.IPayrollCalculator.GetCalendarDayCount(PayrollEngine.DatePeriod)">
             <summary>
@@ -5188,6 +5210,9 @@
         <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.PeriodTimeUnit">
             <inheritdoc />
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.CycleAssignment">
+            <inheritdoc />
+        </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayrunCycle(System.DateTime)">
             <inheritdoc />
         </member>
@@ -5195,6 +5220,12 @@
             <inheritdoc />
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetPayDate(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetCycleDate(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetCyclePeriodStart(System.DateTime)">
             <inheritdoc />
         </member>
         <member name="M:PayrollEngine.Domain.Model.PayrollCalculator.GetCalendarDayCount(PayrollEngine.DatePeriod)">
@@ -6024,6 +6055,51 @@
         <member name="M:PayrollEngine.Domain.Model.Payrun.ToString">
             <inheritdoc/>
         </member>
+        <member name="T:PayrollEngine.Domain.Model.PayrunCyclePeriods">
+            <summary>
+            Assignment of payrun periods to cycles, based on the period cycle date:
+            the period end, or the pay date of the period
+            </summary>
+            <remarks>The pay date of a period is the pay date of the latest full payrun job,
+            or the calendar pay date for periods without payrun job</remarks>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunCyclePeriods.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.DateTime,System.DateTime})">
+            <summary>Constructor</summary>
+            <param name="periodPayDates">The job pay dates by period start</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunCyclePeriods.IsCycleDateAtOrAfter(PayrollEngine.Domain.Model.IPayrollCalculator,PayrollEngine.IPayrollPeriod,System.DateTime)">
+            <summary>
+            Test if the cycle date of a period is at or after a moment
+            </summary>
+            <param name="calculator">The payroll calculator</param>
+            <param name="period">The payrun period</param>
+            <param name="moment">The test moment</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunCyclePeriods.GetPayDate(PayrollEngine.Domain.Model.IPayrollCalculator,PayrollEngine.IPayrollPeriod)">
+            <summary>
+            Get the pay date of a period: the job pay date or the calendar pay date
+            </summary>
+            <param name="calculator">The payroll calculator</param>
+            <param name="period">The payrun period</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunCyclePeriods.GetFirstPeriodStart(PayrollEngine.Domain.Model.IPayrollCalculator,System.DateTime)">
+            <summary>
+            Get the start of the first period with a cycle date at or after a moment
+            </summary>
+            <param name="calculator">The payroll calculator</param>
+            <param name="moment">The moment, typically the cycle start</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunCyclePeriods.GetConsolidatedPeriodStarts(PayrollEngine.Domain.Model.IPayrollCalculator,System.DateTime,System.DateTime)">
+            <summary>
+            Get the consolidated period starts: all periods before the job period
+            with a cycle date at or after a moment, with pay date assignment
+            limited to periods paid until the job pay date
+            </summary>
+            <param name="calculator">The payroll calculator</param>
+            <param name="periodMoment">The moment, typically the cycle start</param>
+            <param name="jobPeriodStart">The job period start</param>
+            <returns>List of period start dates</returns>
+        </member>
         <member name="T:PayrollEngine.Domain.Model.PayrunJob">
             <summary>
             A payrun job
@@ -6149,9 +6225,15 @@
             The pay date: invocation pay date or calendar pay date of the period (immutable)
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrunJob.CycleAssignment">
+            <summary>
+            The calendar cycle assignment, set by the payrun job factory (not persisted)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.RegulationDate">
             <summary>
-            The regulation date: the period end, or the end of the pay date when it differs from the period end date
+            The regulation date: the period end, or with pay date assignment the end of the pay date
+            when it differs from the period end date
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrunJob.Released">
@@ -6302,6 +6384,14 @@
             Get the job pay date: the invocation pay date, or the calendar pay date of the period
             </summary>
             <param name="jobInvocation">The job invocation</param>
+            <param name="payrollCalculator">The payroll calculator</param>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.PayrunJobFactory.GetPayrunCycle(PayrollEngine.IPayrollPeriod,System.DateTime,PayrollEngine.Domain.Model.IPayrollCalculator)">
+            <summary>
+            Get the cycle of the job: the cycle including the pay date or the period end
+            </summary>
+            <param name="period">The job period</param>
+            <param name="payDate">The job pay date</param>
             <param name="payrollCalculator">The payroll calculator</param>
         </member>
         <member name="T:PayrollEngine.Domain.Model.PayrunJobInvocation">

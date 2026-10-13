@@ -135,4 +135,36 @@ internal sealed class PayrunProcessorRepositories
         }
         return payrunJob;
     }
+
+    /// <summary>
+    /// Load the pay dates of the latest full payrun jobs by period start
+    /// </summary>
+    /// <param name="payrunId">The payrun id</param>
+    /// <param name="forecast">The forecast name</param>
+    internal async Task<Dictionary<DateTime, DateTime>> LoadPeriodPayDatesAsync(int payrunId, string forecast)
+    {
+        var forecastFilter = string.IsNullOrWhiteSpace(forecast)
+            ? $" and ({nameof(PayrunJob.Forecast)} eq null or {nameof(PayrunJob.Forecast)} eq '')"
+            : $" and {nameof(PayrunJob.Forecast)} eq '{forecast}'";
+        var query = new Query
+        {
+            Filter = $"{nameof(PayrunJob.PayrunId)} eq {payrunId}" +
+                     $" and {nameof(PayrunJob.JobResult)} eq '{nameof(PayrunJobResult.Full)}'" +
+                     $" and {nameof(PayrunJob.JobStatus)} ne '{nameof(PayrunJobStatus.Abort)}'" +
+                     $" and {nameof(PayrunJob.JobStatus)} ne '{nameof(PayrunJobStatus.Cancel)}'" +
+                     forecastFilter,
+            OrderBy = $"{nameof(PayrunJob.EvaluationDate)}, {nameof(PayrunJob.Created)}"
+        };
+
+        // the latest job of a period wins
+        var payDates = new Dictionary<DateTime, DateTime>();
+        foreach (var payrunJob in await Settings.PayrunJobRepository.QueryAsync(Settings.DbContext, Tenant.Id, query))
+        {
+            if (payrunJob.PayDate != DateTime.MinValue)
+            {
+                payDates[payrunJob.PeriodStart] = DateTime.SpecifyKind(payrunJob.PayDate.Date, DateTimeKind.Utc);
+            }
+        }
+        return payDates;
+    }
 }

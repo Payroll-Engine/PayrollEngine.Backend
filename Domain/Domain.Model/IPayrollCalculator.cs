@@ -18,6 +18,11 @@ public interface IPayrollCalculator
     CalendarTimeUnit PeriodTimeUnit { get; }
 
     /// <summary>
+    /// The assignment of the period to the cycle and to the regulation date
+    /// </summary>
+    CalendarCycleAssignment CycleAssignment { get; }
+
+    /// <summary>
     /// Get payrun cycle from a specific moment
     /// </summary>
     /// <param name="cycleMoment">The moment within the payrun cycle</param>
@@ -37,6 +42,20 @@ public interface IPayrollCalculator
     /// <param name="periodMoment">The moment within the payrun period</param>
     /// <returns>The pay date: period end date plus the calendar pay date offset</returns>
     DateTime GetPayDate(DateTime periodMoment);
+
+    /// <summary>
+    /// Get the calendar cycle date of the payrun period including a moment
+    /// </summary>
+    /// <param name="periodMoment">The moment within the payrun period</param>
+    /// <returns>The calendar pay date or the period end, depending on the cycle assignment</returns>
+    DateTime GetCycleDate(DateTime periodMoment);
+
+    /// <summary>
+    /// Get the start of the first payrun period of a cycle, based on the calendar cycle dates
+    /// </summary>
+    /// <param name="cycleStart">The cycle start</param>
+    /// <returns>The start of the first period assigned to the cycle</returns>
+    DateTime GetCyclePeriodStart(DateTime cycleStart);
 
     /// <summary>
     /// Count the calendar days from a date period

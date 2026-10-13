@@ -31,6 +31,7 @@ internal sealed class PayrunEmployeeScope : IRegulationProvider
     internal DateTime EvaluationDate => SharedContext.EvaluationDate;
     internal DateTime? RetroDate => SharedContext.RetroDate;
     internal DatePeriod EvaluationPeriod => SharedContext.EvaluationPeriod;
+    internal PayrunCyclePeriods CyclePeriods => SharedContext.CyclePeriods;
     internal CaseValueCache GlobalCaseValues => SharedContext.GlobalCaseValues;
     internal CaseValueCache NationalCaseValues => SharedContext.NationalCaseValues;
     internal CaseValueCache CompanyCaseValues => SharedContext.CompanyCaseValues;

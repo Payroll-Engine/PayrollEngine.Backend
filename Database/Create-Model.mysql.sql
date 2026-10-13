@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS Calendar (
     FirstDayOfWeek      INT           NULL,
     PeriodAnchorDate    DATETIME(6)   NULL,
     PayDateOffset       INT           NULL,
+    CycleAssignment     INT           NULL,
     WeekMode            INT           NOT NULL,
     WorkMonday          TINYINT(1)    NULL,
     WorkTuesday         TINYINT(1)    NULL,

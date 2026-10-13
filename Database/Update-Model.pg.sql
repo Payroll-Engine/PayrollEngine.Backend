@@ -37,10 +37,11 @@ $$;
 -- TABLE CHANGES
 -- =============================================================================
 
--- Calendar: anchored week/bi-week periods and pay date offset
+-- Calendar: anchored week/bi-week periods, pay date offset and cycle assignment
 ALTER TABLE "Calendar"
     ADD COLUMN "PeriodAnchorDate" TIMESTAMP(6) NULL,
-    ADD COLUMN "PayDateOffset" INT NULL;
+    ADD COLUMN "PayDateOffset" INT NULL,
+    ADD COLUMN "CycleAssignment" INT NULL;
 
 -- PayrunJob: pay date (existing jobs: period end date)
 ALTER TABLE "PayrunJob" ADD COLUMN "PayDate" TIMESTAMP(6) NULL;

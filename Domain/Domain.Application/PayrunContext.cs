@@ -25,11 +25,12 @@ internal sealed class PayrunContext : IRegulationProvider
     internal List<RetroPayrunJob> RetroPayrunJobs { get; set; }
 
     internal IPayrollCalculator Calculator { get; set; }
+    internal PayrunCyclePeriods CyclePeriods { get; set; }
     internal ICaseFieldProvider CaseFieldProvider { get; set; }
 
     internal DateTime EvaluationDate { get; set; }
 
-    internal DateTime? RetroDate { get; init; }
+    internal DateTime? RetroDate { get; set; }
     internal DatePeriod EvaluationPeriod { get; set; }
 
     internal CaseValueCache GlobalCaseValues { get; set; }

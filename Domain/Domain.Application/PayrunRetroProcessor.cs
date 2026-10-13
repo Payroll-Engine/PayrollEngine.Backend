@@ -51,9 +51,10 @@ internal sealed class PayrunRetroProcessor
     /// recent completed full payrun job for the same payrun and period. Returns <c>null</c>
     /// when retro pay is disabled or no previous job exists.
     /// </summary>
-    /// <param name="jobInvocation">The job invocation containing retro pay mode and period info.</param>
+    /// <param name="jobInvocation">The job invocation containing retro pay mode and forecast.</param>
+    /// <param name="periodStart">The start of the payrun period.</param>
     /// <returns>The retro evaluation date, or <c>null</c> if no retro processing is needed.</returns>
-    internal async Task<DateTime?> GetRetroDateAsync(PayrunJobInvocation jobInvocation)
+    internal async Task<DateTime?> GetRetroDateAsync(PayrunJobInvocation jobInvocation, DateTime periodStart)
     {
         if (jobInvocation.RetroPayMode == RetroPayMode.None)
         {
@@ -73,7 +74,7 @@ internal sealed class PayrunRetroProcessor
         var filter =
             $"{nameof(PayrunJob.PayrunId)} eq {Payrun.Id}" +
             $" and {nameof(PayrunJob.JobResult)} eq '{Enum.GetName(typeof(PayrunJobResult), PayrunJobResult.Full)}'" +
-            $" and {nameof(PayrunJob.PeriodStart)} lt '{jobInvocation.PeriodStart:O}'" +
+            $" and {nameof(PayrunJob.PeriodStart)} lt '{periodStart:O}'" +
             forecastFilter;
 
         // Ask the DB for the single most-recent applicable job — avoids loading all rows
@@ -264,7 +265,8 @@ internal sealed class PayrunRetroProcessor
                 GlobalCaseValues = scope.GlobalCaseValues,
                 NationalCaseValues = scope.NationalCaseValues,
                 CompanyCaseValues = scope.CompanyCaseValues,
-                EmployeeCaseValues = employeeCaseValues
+                EmployeeCaseValues = employeeCaseValues,
+                CyclePeriods = scope.CyclePeriods
             };
 
             // process retro payrun job (one level recursive)

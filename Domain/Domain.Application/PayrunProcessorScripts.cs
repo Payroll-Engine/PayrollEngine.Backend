@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Scripting;
 using PayrollEngine.Domain.Scripting.Controller;
@@ -62,6 +62,7 @@ internal sealed class PayrunProcessorScripts
             Payrun = Payrun,
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
+            CyclePeriods = context.CyclePeriods,
             ExecutionPhase = PayrunExecutionPhase.Setup,
             PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
             RegulationProvider = RegulationProvider,
@@ -115,6 +116,7 @@ internal sealed class PayrunProcessorScripts
             Payrun = Payrun,
             PayrunJob = context.PayrunJob,
             ParentPayrunJob = context.ParentPayrunJob,
+            CyclePeriods = context.CyclePeriods,
             ExecutionPhase = PayrunExecutionPhase.Setup,
             PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
             RegulationProvider = RegulationProvider,
@@ -159,6 +161,7 @@ internal sealed class PayrunProcessorScripts
             Payrun = Payrun,
             PayrunJob = scope.PayrunJob,
             ParentPayrunJob = scope.ParentPayrunJob,
+            CyclePeriods = scope.CyclePeriods,
             ExecutionPhase = scope.ExecutionPhase,
             PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
             RegulationProvider = scope,
@@ -204,6 +207,7 @@ internal sealed class PayrunProcessorScripts
             Payrun = Payrun,
             PayrunJob = scope.PayrunJob,
             ParentPayrunJob = scope.ParentPayrunJob,
+            CyclePeriods = scope.CyclePeriods,
             ExecutionPhase = scope.ExecutionPhase,
             PreviewJob = Settings.Mode == PayrunProcessorMode.Preview,
             RegulationProvider = scope,

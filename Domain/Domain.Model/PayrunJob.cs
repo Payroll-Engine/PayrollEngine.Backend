@@ -132,10 +132,18 @@ public class PayrunJob : DomainObjectBase, INamedObject, IDomainAttributeObject,
     public DateTime PayDate { get; set; }
 
     /// <summary>
-    /// The regulation date: the period end, or the end of the pay date when it differs from the period end date
+    /// The calendar cycle assignment, set by the payrun job factory (not persisted)
+    /// </summary>
+    [JsonIgnore]
+    public CalendarCycleAssignment CycleAssignment { get; set; }
+
+    /// <summary>
+    /// The regulation date: the period end, or with pay date assignment the end of the pay date
+    /// when it differs from the period end date
     /// </summary>
     [JsonIgnore]
     public DateTime RegulationDate =>
+        CycleAssignment == CalendarCycleAssignment.PeriodEnd ||
         PayDate == DateTime.MinValue || PayDate.Date == PeriodEnd.Date
             ? PeriodEnd
             : DateTime.SpecifyKind(PayDate.Date, DateTimeKind.Utc).LastMomentOfDay();
