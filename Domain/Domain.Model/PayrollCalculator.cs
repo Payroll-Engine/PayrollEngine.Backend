@@ -34,6 +34,9 @@ public class PayrollCalculator : IPayrollCalculator
     public CalendarTimeUnit PeriodTimeUnit => Calendar.PeriodTimeUnit;
 
     /// <inheritdoc />
+    public CalendarTimeMap TimeMap => Calendar.TimeMap;
+
+    /// <inheritdoc />
     public CalendarCycleAssignment CycleAssignment =>
         Calendar.CycleAssignment ?? CalendarCycleAssignment.PayDate;
 

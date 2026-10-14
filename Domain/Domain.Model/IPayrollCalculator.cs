@@ -18,6 +18,11 @@ public interface IPayrollCalculator
     CalendarTimeUnit PeriodTimeUnit { get; }
 
     /// <summary>
+    /// The time map of calendar period case values
+    /// </summary>
+    CalendarTimeMap TimeMap { get; }
+
+    /// <summary>
     /// The assignment of the period to the cycle and to the regulation date
     /// </summary>
     CalendarCycleAssignment CycleAssignment { get; }

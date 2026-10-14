@@ -4134,6 +4134,11 @@
             The period time unit
             </summary>
         </member>
+        <member name="P:PayrollEngine.Domain.Model.IPayrollCalculator.TimeMap">
+            <summary>
+            The time map of calendar period case values
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Domain.Model.IPayrollCalculator.CycleAssignment">
             <summary>
             The assignment of the period to the cycle and to the regulation date
@@ -5208,6 +5213,9 @@
             <inheritdoc />
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.PeriodTimeUnit">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.TimeMap">
             <inheritdoc />
         </member>
         <member name="P:PayrollEngine.Domain.Model.PayrollCalculator.CycleAssignment">

@@ -129,6 +129,9 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     public int PeriodTimeUnit => (int)CaseValueProvider.PayrollCalculator.PeriodTimeUnit;
 
     /// <inheritdoc />
+    public int TimeMap => (int)CaseValueProvider.PayrollCalculator.TimeMap;
+
+    /// <inheritdoc />
     public virtual Tuple<DateTime, DateTime> GetPeriod(DateTime periodMoment, int offset)
     {
         var currentPeriod = CaseValueProvider.PayrollCalculator.GetPayrunPeriod(periodMoment);
