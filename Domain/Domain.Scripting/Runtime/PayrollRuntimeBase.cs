@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
@@ -493,6 +493,14 @@ public abstract class PayrollRuntimeBase : RuntimeBase, IPayrollRuntime
     /// <inheritdoc />
     public List<Tuple<string, string, decimal, decimal, decimal?>> GetLookupRanges(string lookupName, decimal? rangeValue = null)
     {
+        if (string.IsNullOrWhiteSpace(lookupName))
+        {
+            throw new ArgumentException(nameof(lookupName));
+        }
+
+        // namespace
+        lookupName = lookupName.EnsureNamespace(Settings.Namespace);
+
         try
         {
             // lookup
