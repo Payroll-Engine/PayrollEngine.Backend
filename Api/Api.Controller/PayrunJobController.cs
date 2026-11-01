@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -451,26 +451,24 @@ public abstract class PayrunJobController(ITenantService tenantService, IPayrunJ
         if (oldJobStatus.IsWebhookProcessChange(jobStatus))
         {
             var json = DefaultJsonSerializer.Serialize(payrunJob);
-            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
+            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId, userId,
                 new()
                 {
                     Action = WebhookAction.PayrunJobProcess,
                     RequestMessage = json
-                },
-                userId: userId);
+                });
         }
 
         // webhook payrun job finished
         if (oldJobStatus.IsWebhookFinishChange(jobStatus))
         {
             var json = DefaultJsonSerializer.Serialize(payrunJob);
-            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
+            await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId, userId,
                 new()
                 {
                     Action = WebhookAction.PayrunJobFinish,
                     RequestMessage = json
-                },
-                userId: userId);
+                });
         }
 
         return Ok();

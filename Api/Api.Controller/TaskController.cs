@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using PayrollEngine.Api.Core;
 using PayrollEngine.Api.Map;
@@ -50,12 +50,12 @@ public abstract class TaskController(ITenantService tenantService, ITaskService 
         // webhook
         var json = DefaultJsonSerializer.Serialize(create.Value);
         await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
+            create.Value.ScheduledUserId,
             new()
             {
                 Action = WebhookAction.TaskChange,
                 RequestMessage = json
-            },
-            userId: create.Value.ScheduledUserId);
+            });
         return create;
     }
 
@@ -87,12 +87,12 @@ public abstract class TaskController(ITenantService tenantService, ITaskService 
         // webhook
         var json = DefaultJsonSerializer.Serialize(update.Value);
         await WebhookDispatcher.SendMessageAsync(Runtime.DbContext, tenantId,
+            update.Value.CompletedUserId ?? update.Value.ScheduledUserId,
             new()
             {
                 Action = WebhookAction.TaskChange,
                 RequestMessage = json
-            },
-            userId: update.Value.CompletedUserId ?? update.Value.ScheduledUserId);
+            });
         return update;
     }
 }

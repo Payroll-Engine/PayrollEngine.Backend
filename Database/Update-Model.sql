@@ -89,6 +89,10 @@ ALTER TABLE [dbo].[CollectorCustomResult] ALTER COLUMN [PayDate] [datetime2](7) 
 ALTER TABLE [dbo].[PayrunResult] ALTER COLUMN [PayDate] [datetime2](7) NOT NULL;
 GO
 
+-- Webhook: signing secret (stored encrypted)
+ALTER TABLE [dbo].[Webhook] ADD [Secret] [nvarchar](1024) NULL;
+GO
+
 -- =============================================================================
 -- INDEX CHANGES
 -- =============================================================================

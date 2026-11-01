@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Model.Repository;
 using PayrollEngine.Persistence.DbSchema;
@@ -21,6 +21,11 @@ public class WebhookRepository() : ChildDomainRepository<Webhook>(Tables.Webhook
         parameters.Add(nameof(webhook.ReceiverAddress), webhook.ReceiverAddress);
         parameters.Add(nameof(webhook.Action), webhook.Action, DbType.Int32);
         parameters.Add(nameof(webhook.Attributes), JsonSerializer.SerializeNamedDictionary(webhook.Attributes));
+        // secret: null keeps the stored value, empty removes it, any other value replaces it
+        if (webhook.Secret != null)
+        {
+            parameters.Add(nameof(webhook.Secret), webhook.Secret.Length == 0 ? null : webhook.Secret);
+        }
         base.GetObjectData(webhook, parameters);
     }
 }

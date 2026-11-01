@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using PayrollEngine.Domain.Model;
 using PayrollEngine.Domain.Scripting;
@@ -66,7 +66,8 @@ internal static class ApiServiceFactory
                 serviceProvider.GetRequiredService<ICalendarRepository>());
 
         private static IWebhookService NewWebhookService(IServiceProvider serviceProvider) =>
-            new WebhookService(serviceProvider.GetRequiredService<IWebhookRepository>());
+            new WebhookService(serviceProvider.GetRequiredService<IWebhookRepository>(),
+                serviceProvider.GetRequiredService<IWebhookSecretProtector>());
 
         private static IWebhookMessageService NewWebhookMessageService(IServiceProvider serviceProvider) =>
             new WebhookMessageService(serviceProvider.GetRequiredService<IWebhookMessageRepository>());
@@ -78,7 +79,8 @@ internal static class ApiServiceFactory
                 serviceProvider.GetRequiredService<IUserRepository>(),
                 serviceProvider.GetRequiredService<IWebhookRepository>(),
                 serviceProvider.GetRequiredService<IWebhookMessageRepository>(),
-                serviceProvider.GetRequiredService<IHttpClientFactory>());
+                serviceProvider.GetRequiredService<IHttpClientFactory>(),
+                serviceProvider.GetRequiredService<IWebhookSecretProtector>());
         }
 
         private static IUserService NewUserService(IServiceProvider serviceProvider) =>

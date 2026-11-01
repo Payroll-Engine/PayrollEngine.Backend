@@ -1341,6 +1341,7 @@ CREATE TABLE IF NOT EXISTS "Webhook" (
     "ReceiverAddress" VARCHAR(128) NOT NULL,
     "Action" INT          NOT NULL,
     "Attributes" TEXT     NULL,
+    "Secret" VARCHAR(1024) NULL,
     PRIMARY KEY ("Id")
 );
 

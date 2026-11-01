@@ -1,4 +1,4 @@
-﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -28,6 +28,19 @@ public class Webhook : ApiObjectBase
     /// </summary>
     [Required]
     public WebhookAction Action { get; set; }
+
+    /// <summary>
+    /// The secret used to sign the webhook messages (write-only, never returned by the API).
+    /// On update: omitted keeps the current secret, an empty value removes it, any other value replaces it.
+    /// </summary>
+    [StringLength(256)]
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string Secret { get; set; }
+
+    /// <summary>
+    /// Indicates whether the webhook messages are signed (a secret is set)
+    /// </summary>
+    public bool Signed { get; set; }
 
     /// <summary>
     /// Custom attributes

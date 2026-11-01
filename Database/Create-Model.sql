@@ -2334,6 +2334,7 @@ CREATE TABLE [dbo].[Webhook] (
   [ReceiverAddress] [nvarchar](128) NOT NULL,
   [Action] [int] NOT NULL,
   [Attributes] [nvarchar](max) NULL,
+  [Secret] [nvarchar](1024) NULL,
   CONSTRAINT [PK_Webhook] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (
     PAD_INDEX = OFF,
     STATISTICS_NORECOMPUTE = OFF,

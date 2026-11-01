@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PayrollEngine.Domain.Application.Service;
@@ -40,13 +40,12 @@ public abstract class CaseChangeService<TRepo, TDomain>(IWebhookDispatchService 
 
         // webhook
         var json = DefaultJsonSerializer.Serialize(change);
-        await WebhookDispatcher.SendMessageAsync(context, tenantId,
+        await WebhookDispatcher.SendMessageAsync(context, tenantId, userId,
             new()
             {
                 Action = WebhookAction.CaseChangeAdded,
                 RequestMessage = json
-            },
-            userId: userId);
+            });
 
         return change;
     }
@@ -62,13 +61,12 @@ public abstract class CaseChangeService<TRepo, TDomain>(IWebhookDispatchService 
             foreach (var change in results)
             {
                 var json = DefaultJsonSerializer.Serialize(change);
-                await WebhookDispatcher.SendMessageAsync(context, tenantId,
+                await WebhookDispatcher.SendMessageAsync(context, tenantId, userId,
                     new()
                     {
                         Action = WebhookAction.CaseChangeAdded,
                         RequestMessage = json
-                    },
-                    userId: userId);
+                    });
             }
         }
 

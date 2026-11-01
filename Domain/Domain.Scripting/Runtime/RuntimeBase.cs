@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -309,15 +309,15 @@ public abstract class RuntimeBase : IRuntime
     public virtual string InvokeWebhook(string requestOperation, string requestMessage = null)
     {
         // invoke case function webhook without tracking
-        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, TenantId,
+        // tenant and user are already loaded: pass the objects to avoid a database reload per invocation
+        var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, Tenant, User,
             new()
             {
                 Action = WebhookAction.CaseFunctionRequest,
                 RequestMessage = requestMessage,
                 RequestOperation = requestOperation,
                 TrackMessage = false
-            },
-            userId: UserId)
+            })
             .ConfigureAwait(false).GetAwaiter().GetResult();
         return result;
     }

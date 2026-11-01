@@ -317,13 +317,12 @@ public class PayrunJobWorkerService : BackgroundService
 
             var json = Serialization.DefaultJsonSerializer.Serialize(payrunJob);
 
-            await webhookDispatcher.SendMessageAsync(dbContext, tenantId,
+            await webhookDispatcher.SendMessageAsync(dbContext, tenantId, userId,
                 new()
                 {
                     Action = action,
                     RequestMessage = json
-                },
-                userId: userId);
+                });
         }
         catch (Exception ex)
         {

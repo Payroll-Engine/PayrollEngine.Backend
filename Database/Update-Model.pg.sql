@@ -74,6 +74,9 @@ ALTER TABLE "CollectorResult" ALTER COLUMN "PayDate" SET NOT NULL;
 ALTER TABLE "CollectorCustomResult" ALTER COLUMN "PayDate" SET NOT NULL;
 ALTER TABLE "PayrunResult" ALTER COLUMN "PayDate" SET NOT NULL;
 
+-- Webhook: signing secret (stored encrypted)
+ALTER TABLE "Webhook" ADD COLUMN "Secret" VARCHAR(1024) NULL;
+
 -- =============================================================================
 -- INDEX CHANGES
 -- =============================================================================

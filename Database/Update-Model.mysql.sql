@@ -86,6 +86,9 @@ ALTER TABLE CollectorResult       MODIFY COLUMN PayDate DATETIME(6) NOT NULL;
 ALTER TABLE CollectorCustomResult MODIFY COLUMN PayDate DATETIME(6) NOT NULL;
 ALTER TABLE PayrunResult          MODIFY COLUMN PayDate DATETIME(6) NOT NULL;
 
+-- Webhook: signing secret (stored encrypted)
+ALTER TABLE Webhook ADD COLUMN Secret VARCHAR(1024) NULL AFTER Attributes;
+
 -- =============================================================================
 -- INDEX CHANGES
 -- =============================================================================

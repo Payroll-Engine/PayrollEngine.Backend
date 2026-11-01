@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRepository userRepository,
         IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository,
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory, IWebhookSecretProtector secretProtector)
     : IWebhookDispatchService
 {
     /// <summary>
@@ -29,6 +30,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
     private IWebhookRepository WebhookRepository { get; } = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
     private IWebhookMessageRepository MessageRepository { get; } = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
     private IHttpClientFactory HttpClientFactory { get; } = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+    private IWebhookSecretProtector SecretProtector { get; } = secretProtector ?? throw new ArgumentNullException(nameof(secretProtector));
 
     /// <inheritdoc />
     public async Task<bool> HasWebhooksAsync(IDbContext context, int tenantId)
@@ -41,24 +43,15 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
     }
 
     /// <inheritdoc />
-    public async Task<string> InvokeAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
+    public async Task<string> InvokeAsync(IDbContext context, Tenant tenant, User user,
+        WebhookDispatchMessage dispatchMessage)
     {
-        // tenant
-        var tenant = await TenantRepository.GetAsync(context, tenantId);
-        if (tenant == null)
-        {
-            throw new PayrollException($"Unknown tenant with id {tenantId}.");
-        }
-
-        // user
-        User user = null;
-        if (userId.HasValue)
-        {
-            user = await UserRepository.GetAsync(context, tenantId, userId.Value);
-        }
+        ArgumentNullException.ThrowIfNull(tenant);
+        ArgumentNullException.ThrowIfNull(user);
+        ArgumentNullException.ThrowIfNull(dispatchMessage);
 
         // single and active webhook matching the action
-        var webhooks = await QueryWebhooks(context, tenantId, dispatchMessage.Action);
+        var webhooks = await QueryWebhooks(context, tenant.Id, dispatchMessage.Action);
         if (webhooks.Count != 1)
         {
             Log.Warning($"missing single web hook for action {dispatchMessage.Action}");
@@ -66,15 +59,21 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         }
 
         var webhook = webhooks.First();
-        return await DispatchWebhook(context, tenant.Identifier, user?.Identifier, webhook, dispatchMessage);
+        // the response is used by the caller: a signed webhook must sign its response
+        return await DispatchWebhook(context, tenant.Identifier, user.Identifier, webhook, dispatchMessage,
+            requireSignedResponse: true);
     }
 
     /// <inheritdoc />
-    public async Task SendMessageAsync(IDbContext context, int tenantId, WebhookDispatchMessage dispatchMessage, int? userId = null)
+    public async Task SendMessageAsync(IDbContext context, int tenantId, int userId, WebhookDispatchMessage dispatchMessage)
     {
         if (tenantId <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(tenantId));
+        }
+        if (userId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(userId));
         }
         if (dispatchMessage == null)
         {
@@ -97,16 +96,16 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         }
 
         // user
-        User user = null;
-        if (userId.HasValue)
+        var user = await UserRepository.GetAsync(context, tenantId, userId);
+        if (user == null)
         {
-            user = await UserRepository.GetAsync(context, tenantId, userId.Value);
+            throw new PayrollException($"Unknown user with id {userId}.");
         }
 
         // send message to any webhook
         foreach (var webhook in webhooks)
         {
-            await DispatchWebhook(context, tenant.Identifier, user?.Identifier, webhook, dispatchMessage);
+            await DispatchWebhook(context, tenant.Identifier, user.Identifier, webhook, dispatchMessage);
         }
     }
 
@@ -114,8 +113,13 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
     /// Dispatch a single webhook: build the runtime message, optionally persist tracking,
     /// POST to the receiver, and record the response.
     /// </summary>
+    /// <remarks>
+    /// Signed webhooks (a secret is set) send the headers <c>X-PE-Timestamp</c> and <c>X-PE-Signature</c>.
+    /// With <paramref name="requireSignedResponse"/> a successful response must carry a valid
+    /// <c>X-PE-Response-Signature</c>, otherwise a <see cref="PayrollException"/> is thrown.
+    /// </remarks>
     private async Task<string> DispatchWebhook(IDbContext context, string tenant, string user,
-        Webhook webhook, WebhookDispatchMessage dispatchMessage)
+        Webhook webhook, WebhookDispatchMessage dispatchMessage, bool requireSignedResponse = false)
     {
         if (dispatchMessage == null)
         {
@@ -146,16 +150,48 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         // post - each call gets a fresh HttpClient from the factory,
         // ensuring proper DNS rotation and connection pooling
         Log.Debug($"Sending web hook {webhook.Name} to {webhook.ReceiverAddress}");
+        var jsonMessage = DefaultJsonSerializer.Serialize(webhookMessage);
+
+        // signature: a missing key must fail loudly and not send an unsigned message
+        string secret = null;
+        string requestSignature = null;
+        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (webhook.Signed)
+        {
+            try
+            {
+                secret = SecretProtector.Unprotect(webhook.Secret);
+            }
+            catch (Exception exception)
+            {
+                throw new PayrollException(
+                    $"The secret of the webhook {webhook.Name} cannot be read: {exception.GetBaseMessage()}", exception);
+            }
+            requestSignature = WebhookSignature.SignRequest(secret, timestamp, jsonMessage);
+        }
+
+        var responseSuccess = false;
+        string responseSignature = null;
         try
         {
             var httpClient = HttpClientFactory.CreateClient(HttpClientName);
-            var jsonMessage = DefaultJsonSerializer.Serialize(webhookMessage);
-            var message = DefaultJsonSerializer.SerializeJson(jsonMessage);
-            var response = await httpClient.PostAsync(webhook.ReceiverAddress, message);
+            using var request = new HttpRequestMessage(HttpMethod.Post, webhook.ReceiverAddress);
+            request.Content = DefaultJsonSerializer.SerializeJson(jsonMessage);
+            if (requestSignature != null)
+            {
+                request.Headers.Add(WebhookSignature.TimestampHeader, timestamp.ToString(CultureInfo.InvariantCulture));
+                request.Headers.Add(WebhookSignature.SignatureHeader, requestSignature);
+            }
+            using var response = await httpClient.SendAsync(request);
             webhookMessage.ResponseStatus = (int)response.StatusCode;
             if (response.IsSuccessStatusCode)
             {
                 webhookMessage.ResponseMessage = await response.Content.ReadAsStringAsync();
+                responseSuccess = true;
+                if (response.Headers.TryGetValues(WebhookSignature.ResponseSignatureHeader, out var values))
+                {
+                    responseSignature = values.FirstOrDefault();
+                }
             }
         }
         catch (Exception exception)
@@ -177,6 +213,18 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         }
 
         Log.Debug($"completed web hook {webhook.Name} with response status {webhookMessage.ResponseStatus}");
+
+        // the response of a signed webhook must be authentic: fail instead of using a forged value
+        if (requireSignedResponse && secret != null && responseSuccess &&
+            !WebhookSignature.VerifyResponse(secret, timestamp, requestSignature,
+                webhookMessage.ResponseMessage, responseSignature))
+        {
+            var message = string.IsNullOrWhiteSpace(responseSignature)
+                ? $"Missing response signature of the webhook {webhook.Name}: header {WebhookSignature.ResponseSignatureHeader} not received (receiver without secret?)"
+                : $"Invalid response signature of the webhook {webhook.Name}: secret mismatch or modified response";
+            Log.Error(message);
+            throw new PayrollException(message);
+        }
 
         return webhookMessage.ResponseMessage;
     }

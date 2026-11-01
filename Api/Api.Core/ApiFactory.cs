@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PayrollEngine.Domain.Application;
@@ -73,6 +74,14 @@ internal static class ApiFactory
         {
             client.Timeout = serverConfiguration.WebhookTimeout;
         });
+
+        // webhook secrets: encrypted at rest with data protection
+        var dataProtection = services.AddDataProtection().SetApplicationName("PayrollEngine");
+        if (!string.IsNullOrWhiteSpace(serverConfiguration.DataProtectionKeyPath))
+        {
+            dataProtection.PersistKeysToFileSystem(new(serverConfiguration.DataProtectionKeyPath));
+        }
+        services.AddSingleton<IWebhookSecretProtector, WebhookSecretProtector>();
 
         // api query service: singleton to reduce assembly reflection on each query
         services.AddSingleton<IQueryService, QueryService>();

@@ -4731,6 +4731,17 @@
             The web hook trigger action
             </summary>
         </member>
+        <member name="P:PayrollEngine.Api.Model.Webhook.Secret">
+            <summary>
+            The secret used to sign the webhook messages (write-only, never returned by the API).
+            On update: omitted keeps the current secret, an empty value removes it, any other value replaces it.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Api.Model.Webhook.Signed">
+            <summary>
+            Indicates whether the webhook messages are signed (a secret is set)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.Api.Model.Webhook.Attributes">
             <summary>
             Custom attributes

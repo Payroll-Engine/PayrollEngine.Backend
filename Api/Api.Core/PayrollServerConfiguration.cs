@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -61,6 +61,14 @@ public class PayrollServerConfiguration
 
     /// <summary>Webhook timeout (default: 1 minutes)</summary>
     public TimeSpan WebhookTimeout { get; set; } = TimeSpan.FromMinutes(1);
+
+    /// <summary>
+    /// Directory of the data protection key ring, used to encrypt the webhook secrets.
+    /// Without a directory the keys are stored in the default location of the host (a container
+    /// without a persistent volume loses the keys and with them the stored secrets).
+    /// Set a persistent directory shared by all backend instances.
+    /// </summary>
+    public string DataProtectionKeyPath { get; set; }
 
     /// <summary>Function log timeout</summary>
     public TimeSpan FunctionLogTimeout { get; set; }

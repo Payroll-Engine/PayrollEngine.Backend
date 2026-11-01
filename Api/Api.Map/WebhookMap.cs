@@ -1,4 +1,4 @@
-﻿using DomainObject = PayrollEngine.Domain.Model;
+using DomainObject = PayrollEngine.Domain.Model;
 using ApiObject = PayrollEngine.Api.Model;
 using Riok.Mapperly.Abstractions;
 
@@ -10,6 +10,8 @@ namespace PayrollEngine.Api.Map;
 [Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName, EnumMappingIgnoreCase = true)]
 public partial class WebhookMap : ApiMapBase<DomainObject.Webhook, ApiObject.Webhook>
 {
+    // the secret is write-only: never exposed by the api
+    [MapperIgnoreTarget(nameof(ApiObject.Webhook.Secret))]
     public override partial ApiObject.Webhook ToApi(DomainObject.Webhook domainObject);
     public override partial DomainObject.Webhook ToDomain(ApiObject.Webhook apiObject);
 }

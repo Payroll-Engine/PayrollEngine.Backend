@@ -4454,24 +4454,41 @@
             <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.InvokeAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage,System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.InvokeAsync(PayrollEngine.Domain.Model.IDbContext,PayrollEngine.Domain.Model.Tenant,PayrollEngine.Domain.Model.User,PayrollEngine.Domain.Model.WebhookDispatchMessage)">
             <summary>
-            Invoke webhook and receive the response object
+            Invoke the webhook synchronously and receive the response object.
+            The caller passes the already loaded tenant and user, so nothing is reloaded per invocation.
             </summary>
             <param name="context">The database context</param>
-            <param name="tenantId">The tenant id</param>
+            <param name="tenant">The tenant</param>
+            <param name="user">The user</param>
             <param name="dispatchMessage">The dispatch message</param>
-            <param name="userId">The user id</param>
             <returns>The webhook response object as JSON</returns>
         </member>
-        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.SendMessageAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage,System.Nullable{System.Int32})">
+        <member name="M:PayrollEngine.Domain.Model.IWebhookDispatchService.SendMessageAsync(PayrollEngine.Domain.Model.IDbContext,System.Int32,System.Int32,PayrollEngine.Domain.Model.WebhookDispatchMessage)">
             <summary>
-            Send message to the webhook
+            Send a notification message to all matching webhooks, without waiting for a result.
+            The tenant and user are loaded by id, once per call.
             </summary>
             <param name="context">The database context</param>
             <param name="tenantId">The tenant id</param>
-            <param name="dispatchMessage">The dispatch message</param>
             <param name="userId">The user id</param>
+            <param name="dispatchMessage">The dispatch message</param>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.IWebhookSecretProtector">
+            <summary>
+            Protects webhook secrets for storage (encryption at rest)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IWebhookSecretProtector.Protect(System.String)">
+            <summary>Protect a plain secret for storage</summary>
+            <param name="secret">The plain secret</param>
+            <returns>The protected secret</returns>
+        </member>
+        <member name="M:PayrollEngine.Domain.Model.IWebhookSecretProtector.Unprotect(System.String)">
+            <summary>Restore the plain secret from a protected secret</summary>
+            <param name="protectedSecret">The protected secret</param>
+            <returns>The plain secret</returns>
         </member>
         <member name="T:PayrollEngine.Domain.Model.Log">
             <summary>
@@ -10551,6 +10568,19 @@
         <member name="P:PayrollEngine.Domain.Model.Webhook.Action">
             <summary>
             The webhook action
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Webhook.Secret">
+            <summary>
+            The signing secret.
+            Write: the plain secret, the application service stores it protected.
+            Read: the protected secret (never the plain text).
+            On update: null keeps the stored secret, an empty value removes it, any other value replaces it.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.Domain.Model.Webhook.Signed">
+            <summary>
+            Indicates whether the webhook messages are signed (a secret is stored)
             </summary>
         </member>
         <member name="P:PayrollEngine.Domain.Model.Webhook.Attributes">

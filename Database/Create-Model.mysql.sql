@@ -1363,6 +1363,7 @@ CREATE TABLE IF NOT EXISTS Webhook (
     ReceiverAddress VARCHAR(128) NOT NULL,
     Action          INT          NOT NULL,
     Attributes      LONGTEXT     NULL,
+    Secret          VARCHAR(1024) NULL,
     PRIMARY KEY (Id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

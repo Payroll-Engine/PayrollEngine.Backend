@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace PayrollEngine.Domain.Model;
@@ -22,6 +22,19 @@ public class Webhook : DomainObjectBase, INamedObject, IDomainAttributeObject, I
     /// The webhook action
     /// </summary>
     public WebhookAction Action { get; set; }
+
+    /// <summary>
+    /// The signing secret.
+    /// Write: the plain secret, the application service stores it protected.
+    /// Read: the protected secret (never the plain text).
+    /// On update: null keeps the stored secret, an empty value removes it, any other value replaces it.
+    /// </summary>
+    public string Secret { get; set; }
+
+    /// <summary>
+    /// Indicates whether the webhook messages are signed (a secret is stored)
+    /// </summary>
+    public bool Signed => !string.IsNullOrEmpty(Secret);
 
     /// <summary>
     /// Custom attributes
