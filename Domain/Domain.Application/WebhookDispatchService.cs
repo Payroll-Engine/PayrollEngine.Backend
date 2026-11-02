@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Domain.Model;
@@ -35,6 +36,11 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
 
     private WebhookTracking Tracking { get; } = tracking;
 
+    // Webhook lookup of the scripting calls per tenant and action. The service is registered per scope:
+    // a payrun job (own scope) loads the webhooks once instead of once per script call, and sees a
+    // consistent snapshot. The task is cached so parallel employees share a single query.
+    private readonly ConcurrentDictionary<(int TenantId, WebhookAction Action), Task<List<Webhook>>> invokeWebhooks = new();
+
     /// <inheritdoc />
     public async Task<bool> HasWebhooksAsync(IDbContext context, int tenantId)
     {
@@ -54,7 +60,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         ArgumentNullException.ThrowIfNull(dispatchMessage);
 
         // single and active webhook matching the action
-        var webhooks = await QueryWebhooks(context, tenant.Id, dispatchMessage.Action);
+        var webhooks = await QueryInvokeWebhooks(context, tenant.Id, dispatchMessage.Action);
         if (webhooks.Count != 1)
         {
             Log.Warning($"missing single web hook for action {dispatchMessage.Action}");
@@ -118,7 +124,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
     /// </summary>
     /// <remarks>
     /// Signed webhooks (a secret is set) send the headers <c>X-PE-Timestamp</c> and <c>X-PE-Signature</c>.
-    /// A function request (<paramref name="functionRequest"/>) uses the response: a connection error throws a
+    /// A function request (<paramref name="functionRequest"/>) uses the response: a connection error or a failed status throws a
     /// <see cref="PayrollException"/> and a successful response of a signed webhook must carry a valid
     /// <c>X-PE-Response-Signature</c>, otherwise a <see cref="PayrollException"/> is thrown.
     /// Notifications ignore connection errors to ensure the execution of the remaining webhooks.
@@ -232,6 +238,14 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
             throw new PayrollException(message);
         }
 
+        // a failed response status must not yield a bogus value either
+        if (functionRequest && !responseSuccess)
+        {
+            var message = $"The webhook {webhook.Name} at {webhook.ReceiverAddress} returned the status {webhookMessage.ResponseStatus}";
+            Log.Error(message);
+            throw new PayrollException(message);
+        }
+
         // the response of a signed webhook must be authentic: fail instead of using a forged value
         if (functionRequest && secret != null && responseSuccess &&
             !WebhookSignature.VerifyResponse(secret, timestamp, requestSignature,
@@ -245,6 +259,22 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         }
 
         return webhookMessage.ResponseMessage;
+    }
+
+    private async Task<List<Webhook>> QueryInvokeWebhooks(IDbContext context, int tenantId, WebhookAction action)
+    {
+        var key = (tenantId, action);
+        var query = invokeWebhooks.GetOrAdd(key, _ => QueryWebhooks(context, tenantId, action));
+        try
+        {
+            return await query;
+        }
+        catch
+        {
+            // do not cache a failed query
+            invokeWebhooks.TryRemove(new KeyValuePair<(int, WebhookAction), Task<List<Webhook>>>(key, query));
+            throw;
+        }
     }
 
     private async Task<List<Webhook>> QueryWebhooks(IDbContext context, int tenantId, WebhookAction action) =>

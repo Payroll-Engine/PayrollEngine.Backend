@@ -105,10 +105,10 @@ public class WebhookDispatchServiceTests
     {
         var fixture = new Fixture();
 
-        var result = await fixture.Service.InvokeAsync(Context, fixture.Tenant, fixture.User,
-            Message(WebhookAction.CaseFunctionRequest, "MinWage"));
+        var exception = await Assert.ThrowsAsync<PayrollException>(() => fixture.Service.InvokeAsync(Context,
+            fixture.Tenant, fixture.User, Message(WebhookAction.CaseFunctionRequest, "MinWage")));
 
-        Assert.Null(result);
+        Assert.Contains("500", exception.Message);
         Assert.Empty(fixture.Http.Requests);
     }
 
@@ -205,9 +205,9 @@ public class WebhookDispatchServiceTests
     }
 
     [Fact]
-    public async Task Invoke_ReceiverReturnsError_ReturnsNull()
+    public async Task Invoke_ReceiverReturnsError_Throws()
     {
-        // the response body is only used for successful responses
+        // a failed status must abort, not yield a bogus value
         var fixture = new Fixture();
         fixture.AddWebhook(WebhookAction.CaseFunctionRequest, AddressA);
         fixture.Http.Respond(AddressA, HttpStatusCode.InternalServerError, "failed");
@@ -230,6 +230,21 @@ public class WebhookDispatchServiceTests
             fixture.Tenant, fixture.User, Message(WebhookAction.CaseFunctionRequest, "MinWage")));
 
         Assert.Contains("connection refused", exception.Message);
+    }
+
+    [Fact]
+    public async Task Invoke_RepeatedCalls_QueryTheWebhooksOnce()
+    {
+        var fixture = new Fixture();
+        fixture.AddWebhook(WebhookAction.CaseFunctionRequest, AddressA);
+
+        for (var i = 0; i < 3; i++)
+        {
+            await fixture.Service.InvokeAsync(Context, fixture.Tenant, fixture.User,
+                Message(WebhookAction.CaseFunctionRequest, "MinWage"));
+        }
+
+        Assert.Equal(1, fixture.Webhooks.QueryCount);
     }
 
     [Fact]
