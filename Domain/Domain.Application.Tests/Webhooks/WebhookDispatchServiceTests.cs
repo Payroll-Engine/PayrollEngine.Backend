@@ -418,7 +418,7 @@ public class WebhookDispatchServiceTests
     [Fact]
     public async Task Send_TrackingNone_DoesNotWriteMessages()
     {
-        var fixture = new Fixture(WebhookTracking.None);
+        var fixture = new Fixture();
         fixture.AddWebhook(WebhookAction.CaseChangeAdded, AddressA);
 
         await fixture.Service.SendMessageAsync(Context, fixture.Tenant.Id, fixture.User.Id,

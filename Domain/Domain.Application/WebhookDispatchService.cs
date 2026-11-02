@@ -247,7 +247,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         }
 
         // the response of a signed webhook must be authentic: fail instead of using a forged value
-        if (functionRequest && secret != null && responseSuccess &&
+        if (functionRequest && secret != null &&
             !WebhookSignature.VerifyResponse(secret, timestamp, requestSignature,
                 webhookMessage.ResponseMessage, responseSignature))
         {
