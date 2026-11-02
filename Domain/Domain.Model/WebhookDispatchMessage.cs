@@ -1,4 +1,4 @@
-﻿// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.Domain.Model;
 
@@ -22,8 +22,4 @@ public class WebhookDispatchMessage
     /// </summary>
     public string RequestOperation { get; set; }
 
-    /// <summary>
-    /// Webhook tracking option
-    /// </summary>
-    public bool TrackMessage { get; set; }
 }

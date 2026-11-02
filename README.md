@@ -225,6 +225,7 @@ The server configuration file `appsettings.json` contains the following settings
 | `DbCommandTimeout`         | Database command timeout                                    | timespan   | 2 minutes      |
 | `DbTransactionTimeout`     | Database transaction timeout                                | timespan   | 10 minutes     |
 | `WebhookTimeout`           | Webhook HTTP request timeout                                | timespan   | 1 minute       |
+| `WebhookTracking`          | Webhook message tracking: `None`, `Notification` (notification webhooks), `All` (plus scripting webhook calls, diagnostics only) | enum | Notification |
 | `DataProtectionKeyPath`    | Persistent key ring directory (encrypts the webhook secrets) | string     | host default   |
 | `FunctionLogTimeout`       | Timeout threshold for logging long function executions <sup>11)</sup> | timespan   | off            |
 

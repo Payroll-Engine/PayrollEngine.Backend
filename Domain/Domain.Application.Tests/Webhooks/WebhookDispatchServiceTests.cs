@@ -31,12 +31,12 @@ public class WebhookDispatchServiceTests
         public FakeSecretProtector Protector { get; } = new();
         public WebhookDispatchService Service { get; }
 
-        public Fixture()
+        public Fixture(WebhookTracking tracking = WebhookTracking.None)
         {
             Tenants.Items.Add(Tenant);
             Users.Items.Add(User);
             HttpFactory = new FakeHttpClientFactory(Http);
-            Service = new WebhookDispatchService(Tenants, Users, Webhooks, Messages, HttpFactory, Protector);
+            Service = new WebhookDispatchService(Tenants, Users, Webhooks, Messages, HttpFactory, Protector, tracking);
         }
 
         public Webhook AddWebhook(WebhookAction action, string address,
@@ -58,13 +58,12 @@ public class WebhookDispatchServiceTests
     }
 
     internal static WebhookDispatchMessage Message(WebhookAction action, string operation = null,
-        string request = null, bool track = false) =>
+        string request = null) =>
         new()
         {
             Action = action,
             RequestOperation = operation,
-            RequestMessage = request,
-            TrackMessage = track
+            RequestMessage = request
         };
 
     // the database context is only passed through to the repositories: the fakes ignore it
@@ -220,18 +219,17 @@ public class WebhookDispatchServiceTests
     }
 
     [Fact]
-    public async Task Invoke_ReceiverNotReachable_DoesNotThrowAndReturnsTheErrorText()
+    public async Task Invoke_ReceiverNotReachable_Throws()
     {
-        // documents the current behavior: a connection error is not thrown, the error text is
-        // returned as the response (the scripting function then fails to parse it as json)
+        // the scripting function uses the response: a connection error must abort, not yield a bogus value
         var fixture = new Fixture();
         fixture.AddWebhook(WebhookAction.CaseFunctionRequest, AddressA);
         fixture.Http.Fail(AddressA);
 
-        var result = await fixture.Service.InvokeAsync(Context, fixture.Tenant, fixture.User,
-            Message(WebhookAction.CaseFunctionRequest, "MinWage"));
+        var exception = await Assert.ThrowsAsync<PayrollException>(() => fixture.Service.InvokeAsync(Context,
+            fixture.Tenant, fixture.User, Message(WebhookAction.CaseFunctionRequest, "MinWage")));
 
-        Assert.Equal("connection refused", result);
+        Assert.Contains("connection refused", exception.Message);
     }
 
     [Fact]
@@ -250,11 +248,12 @@ public class WebhookDispatchServiceTests
     [Fact]
     public async Task Invoke_WithoutTracking_DoesNotWriteMessages()
     {
-        var fixture = new Fixture();
+        // notification tracking does not include the scripting calls
+        var fixture = new Fixture(WebhookTracking.Notification);
         fixture.AddWebhook(WebhookAction.CaseFunctionRequest, AddressA);
 
         await fixture.Service.InvokeAsync(Context, fixture.Tenant, fixture.User,
-            Message(WebhookAction.CaseFunctionRequest, "MinWage", track: false));
+            Message(WebhookAction.CaseFunctionRequest, "MinWage"));
 
         Assert.Empty(fixture.Messages.Created);
         Assert.Empty(fixture.Messages.Updated);
@@ -263,12 +262,12 @@ public class WebhookDispatchServiceTests
     [Fact]
     public async Task Invoke_WithTracking_CreatesAndThenUpdatesTheMessageWithTheResponse()
     {
-        var fixture = new Fixture();
+        var fixture = new Fixture(WebhookTracking.All);
         var webhook = fixture.AddWebhook(WebhookAction.CaseFunctionRequest, AddressA);
         fixture.Http.Respond(AddressA, HttpStatusCode.OK, "2000");
 
         await fixture.Service.InvokeAsync(Context, fixture.Tenant, fixture.User,
-            Message(WebhookAction.CaseFunctionRequest, "MinWage", track: true));
+            Message(WebhookAction.CaseFunctionRequest, "MinWage"));
 
         // created before the call: no response yet
         var created = Assert.Single(fixture.Messages.Created);
@@ -389,16 +388,29 @@ public class WebhookDispatchServiceTests
     [Fact]
     public async Task Send_WithTracking_WritesAMessagePerWebhook()
     {
-        var fixture = new Fixture();
+        var fixture = new Fixture(WebhookTracking.Notification);
         fixture.AddWebhook(WebhookAction.CaseChangeAdded, AddressA);
         fixture.AddWebhook(WebhookAction.CaseChangeAdded, AddressB);
 
         await fixture.Service.SendMessageAsync(Context, fixture.Tenant.Id, fixture.User.Id,
-            Message(WebhookAction.CaseChangeAdded, request: "{}", track: true));
+            Message(WebhookAction.CaseChangeAdded, request: "{}"));
 
         Assert.Equal(2, fixture.Messages.Created.Count);
         Assert.Equal(2, fixture.Messages.Updated.Count);
         Assert.All(fixture.Messages.Updated, x => Assert.Equal(200, x.ResponseStatus));
+    }
+
+    [Fact]
+    public async Task Send_TrackingNone_DoesNotWriteMessages()
+    {
+        var fixture = new Fixture(WebhookTracking.None);
+        fixture.AddWebhook(WebhookAction.CaseChangeAdded, AddressA);
+
+        await fixture.Service.SendMessageAsync(Context, fixture.Tenant.Id, fixture.User.Id,
+            Message(WebhookAction.CaseChangeAdded, request: "{}"));
+
+        Assert.Empty(fixture.Messages.Created);
+        Assert.Empty(fixture.Messages.Updated);
     }
 
     [Fact]

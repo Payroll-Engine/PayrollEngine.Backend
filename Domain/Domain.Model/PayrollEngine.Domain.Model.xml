@@ -10622,11 +10622,6 @@
             The request operation
             </summary>
         </member>
-        <member name="P:PayrollEngine.Domain.Model.WebhookDispatchMessage.TrackMessage">
-            <summary>
-            Webhook tracking option
-            </summary>
-        </member>
         <member name="T:PayrollEngine.Domain.Model.WebhookMessage">
             <summary>
             Webhook message
@@ -10725,6 +10720,21 @@
         </member>
         <member name="M:PayrollEngine.Domain.Model.WebhookRuntimeMessage.ToString">
             <inheritdoc/>
+        </member>
+        <member name="T:PayrollEngine.Domain.Model.WebhookTracking">
+            <summary>
+            Webhook message tracking: which dispatched webhook messages are persisted
+            together with the response of the receiver
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.Domain.Model.WebhookTracking.None">
+            <summary>No tracking</summary>
+        </member>
+        <member name="F:PayrollEngine.Domain.Model.WebhookTracking.Notification">
+            <summary>Track the notification webhooks (case change, payrun job, task)</summary>
+        </member>
+        <member name="F:PayrollEngine.Domain.Model.WebhookTracking.All">
+            <summary>Track the notification webhooks and the scripting webhook calls (one message per call)</summary>
         </member>
         <member name="T:PayrollEngine.Domain.Model.WeekPayrollPeriod">
             <summary>

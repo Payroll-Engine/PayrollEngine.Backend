@@ -308,15 +308,14 @@ public abstract class RuntimeBase : IRuntime
     /// <inheritdoc />
     public virtual string InvokeWebhook(string requestOperation, string requestMessage = null)
     {
-        // invoke case function webhook without tracking
+        // invoke case function webhook (tracking is configured by the server)
         // tenant and user are already loaded: pass the objects to avoid a database reload per invocation
         var result = WebhookDispatchService.InvokeAsync(Settings.DbContext, Tenant, User,
             new()
             {
                 Action = WebhookAction.CaseFunctionRequest,
                 RequestMessage = requestMessage,
-                RequestOperation = requestOperation,
-                TrackMessage = false
+                RequestOperation = requestOperation
             })
             .ConfigureAwait(false).GetAwaiter().GetResult();
         return result;

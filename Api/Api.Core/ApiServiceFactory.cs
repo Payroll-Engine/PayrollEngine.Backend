@@ -80,7 +80,8 @@ internal static class ApiServiceFactory
                 serviceProvider.GetRequiredService<IWebhookRepository>(),
                 serviceProvider.GetRequiredService<IWebhookMessageRepository>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                serviceProvider.GetRequiredService<IWebhookSecretProtector>());
+                serviceProvider.GetRequiredService<IWebhookSecretProtector>(),
+                serviceProvider.GetRequiredService<IOptions<PayrollServerConfiguration>>().Value.WebhookTracking);
         }
 
         private static IUserService NewUserService(IServiceProvider serviceProvider) =>

@@ -17,7 +17,8 @@ namespace PayrollEngine.Domain.Application;
 /// </summary>
 public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRepository userRepository,
         IWebhookRepository webhookRepository, IWebhookMessageRepository messageRepository,
-        IHttpClientFactory httpClientFactory, IWebhookSecretProtector secretProtector)
+        IHttpClientFactory httpClientFactory, IWebhookSecretProtector secretProtector,
+        WebhookTracking tracking = WebhookTracking.Notification)
     : IWebhookDispatchService
 {
     /// <summary>
@@ -31,6 +32,8 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
     private IWebhookMessageRepository MessageRepository { get; } = messageRepository ?? throw new ArgumentNullException(nameof(messageRepository));
     private IHttpClientFactory HttpClientFactory { get; } = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
     private IWebhookSecretProtector SecretProtector { get; } = secretProtector ?? throw new ArgumentNullException(nameof(secretProtector));
+
+    private WebhookTracking Tracking { get; } = tracking;
 
     /// <inheritdoc />
     public async Task<bool> HasWebhooksAsync(IDbContext context, int tenantId)
@@ -61,7 +64,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         var webhook = webhooks.First();
         // the response is used by the caller: a signed webhook must sign its response
         return await DispatchWebhook(context, tenant.Identifier, user.Identifier, webhook, dispatchMessage,
-            requireSignedResponse: true);
+            functionRequest: true);
     }
 
     /// <inheritdoc />
@@ -115,11 +118,13 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
     /// </summary>
     /// <remarks>
     /// Signed webhooks (a secret is set) send the headers <c>X-PE-Timestamp</c> and <c>X-PE-Signature</c>.
-    /// With <paramref name="requireSignedResponse"/> a successful response must carry a valid
+    /// A function request (<paramref name="functionRequest"/>) uses the response: a connection error throws a
+    /// <see cref="PayrollException"/> and a successful response of a signed webhook must carry a valid
     /// <c>X-PE-Response-Signature</c>, otherwise a <see cref="PayrollException"/> is thrown.
+    /// Notifications ignore connection errors to ensure the execution of the remaining webhooks.
     /// </remarks>
     private async Task<string> DispatchWebhook(IDbContext context, string tenant, string user,
-        Webhook webhook, WebhookDispatchMessage dispatchMessage, bool requireSignedResponse = false)
+        Webhook webhook, WebhookDispatchMessage dispatchMessage, bool functionRequest = false)
     {
         if (dispatchMessage == null)
         {
@@ -140,8 +145,11 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
             ActionName = Enum.GetName(typeof(WebhookAction), dispatchMessage.Action)
         };
 
+        // tracking by server configuration: notifications and optionally function requests
+        var track = functionRequest ? Tracking == WebhookTracking.All : Tracking != WebhookTracking.None;
+
         // track message start
-        if (dispatchMessage.TrackMessage)
+        if (track)
         {
             // create webhook message
             await MessageRepository.CreateAsync(context, webhook.Id, webhookMessage);
@@ -171,6 +179,7 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
         }
 
         var responseSuccess = false;
+        string connectionError = null;
         string responseSignature = null;
         try
         {
@@ -199,14 +208,15 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
             var errorMessage = exception.GetBaseMessage();
             Log.Error(exception, errorMessage);
             webhookMessage.ResponseMessage = errorMessage;
+            connectionError = errorMessage;
         }
 
         // webhook response
         // ignore failed status to ensure execution of remaining webhooks
         webhookMessage.ResponseDate = Date.Now;
 
-        // track message start
-        if (dispatchMessage.TrackMessage)
+        // track message end
+        if (track)
         {
             // update webhook message
             await MessageRepository.UpdateAsync(context, webhook.Id, webhookMessage);
@@ -214,8 +224,16 @@ public class WebhookDispatchService(ITenantRepository tenantRepository, IUserRep
 
         Log.Debug($"completed web hook {webhook.Name} with response status {webhookMessage.ResponseStatus}");
 
+        // the caller uses the response: an unreachable receiver must not yield a bogus value
+        if (functionRequest && connectionError != null)
+        {
+            var message = $"The webhook {webhook.Name} cannot be reached at {webhook.ReceiverAddress}: {connectionError}";
+            Log.Error(message);
+            throw new PayrollException(message);
+        }
+
         // the response of a signed webhook must be authentic: fail instead of using a forged value
-        if (requireSignedResponse && secret != null && responseSuccess &&
+        if (functionRequest && secret != null && responseSuccess &&
             !WebhookSignature.VerifyResponse(secret, timestamp, requestSignature,
                 webhookMessage.ResponseMessage, responseSignature))
         {

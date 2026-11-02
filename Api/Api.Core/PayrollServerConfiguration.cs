@@ -1,4 +1,5 @@
 using System;
+using PayrollEngine.Domain.Model;
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -27,9 +28,6 @@ public class PayrollServerConfiguration
 
     /// <summary>Audit trail configuration</summary>
     public AuditTrailConfiguration AuditTrail { get; set; } = new();
-
-    /// <summary>https redirection (default: false)</summary>
-    public bool HttpsRedirection { get; set; }
 
     /// <summary>Log http request (default: false)</summary>
     public bool LogHttpRequests { get; set; }
@@ -61,6 +59,12 @@ public class PayrollServerConfiguration
 
     /// <summary>Webhook timeout (default: 1 minutes)</summary>
     public TimeSpan WebhookTimeout { get; set; } = TimeSpan.FromMinutes(1);
+
+    /// <summary>
+    /// Webhook message tracking: <c>None</c>, <c>Notification</c> (default) or <c>All</c>.
+    /// <c>All</c> includes the scripting webhook calls: two database writes per call, use for diagnostics only.
+    /// </summary>
+    public WebhookTracking WebhookTracking { get; set; } = WebhookTracking.Notification;
 
     /// <summary>
     /// Directory of the data protection key ring, used to encrypt the webhook secrets.
