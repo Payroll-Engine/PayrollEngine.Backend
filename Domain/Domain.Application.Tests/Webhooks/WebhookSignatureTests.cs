@@ -210,17 +210,18 @@ public class WebhookSignatureTests
     }
 
     [Fact]
-    public async Task Invoke_ReceiverError_ReturnsNullWithoutSignatureCheck()
+    public async Task Invoke_ReceiverError_ThrowsWithoutSignatureCheck()
     {
-        // an error response carries no value: nothing to verify, nothing used
+        // an error response carries no value: it fails as an error status, not as a signature problem
         var fixture = new Fixture();
         fixture.AddWebhook(WebhookAction.CaseFunctionRequest, Address, secret: Secret);
         fixture.Http.Respond(Address, HttpStatusCode.InternalServerError, "failed");
 
-        var result = await fixture.Service.InvokeAsync(WebhookDispatchServiceTests.Context, fixture.Tenant,
-            fixture.User, WebhookDispatchServiceTests.Message(WebhookAction.CaseFunctionRequest, "MinWage"));
+        var exception = await Assert.ThrowsAsync<PayrollException>(() => fixture.Service.InvokeAsync(
+            WebhookDispatchServiceTests.Context, fixture.Tenant, fixture.User,
+            WebhookDispatchServiceTests.Message(WebhookAction.CaseFunctionRequest, "MinWage")));
 
-        Assert.Null(result);
+        Assert.Contains("500", exception.Message);
     }
 
     // -------------------------------------------------------------------------

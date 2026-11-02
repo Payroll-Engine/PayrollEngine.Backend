@@ -105,10 +105,10 @@ public class WebhookDispatchServiceTests
     {
         var fixture = new Fixture();
 
-        var exception = await Assert.ThrowsAsync<PayrollException>(() => fixture.Service.InvokeAsync(Context,
-            fixture.Tenant, fixture.User, Message(WebhookAction.CaseFunctionRequest, "MinWage")));
+        var result = await fixture.Service.InvokeAsync(Context, fixture.Tenant, fixture.User,
+            Message(WebhookAction.CaseFunctionRequest, "MinWage"));
 
-        Assert.Contains("500", exception.Message);
+        Assert.Null(result);
         Assert.Empty(fixture.Http.Requests);
     }
 
@@ -212,10 +212,10 @@ public class WebhookDispatchServiceTests
         fixture.AddWebhook(WebhookAction.CaseFunctionRequest, AddressA);
         fixture.Http.Respond(AddressA, HttpStatusCode.InternalServerError, "failed");
 
-        var result = await fixture.Service.InvokeAsync(Context, fixture.Tenant, fixture.User,
-            Message(WebhookAction.CaseFunctionRequest, "MinWage"));
+        var exception = await Assert.ThrowsAsync<PayrollException>(() => fixture.Service.InvokeAsync(Context,
+            fixture.Tenant, fixture.User, Message(WebhookAction.CaseFunctionRequest, "MinWage")));
 
-        Assert.Null(result);
+        Assert.Contains("500", exception.Message);
     }
 
     [Fact]
