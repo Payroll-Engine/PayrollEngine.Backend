@@ -480,5 +480,9 @@ Payrun jobs are now processed asynchronously by default via a background queue:
 - OpenAPI with [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/) — license `MIT`
 - Database query builder with [SqlKata](https://github.com/sqlkata/querybuilder/) — license `MIT`
 - Database object mapping with [Dapper](https://github.com/DapperLib/Dapper/) — license `Apache 2.0`
+- Database drivers [MySqlConnector](https://github.com/mysql-net/MySqlConnector/) — license `MIT` and [Npgsql](https://github.com/npgsql/npgsql/) — license `PostgreSQL`
+- API versioning with [ASP.NET API Versioning](https://github.com/dotnet/aspnet-api-versioning/) — license `MIT`
 - Logging with [Serilog](https://github.com/serilog/serilog/) — license `Apache 2.0`
 - Tests with [xunit](https://github.com/xunit) — license `Apache 2.0`
+
+All distributed components, their licenses and notices are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md); the file is part of every build output.
