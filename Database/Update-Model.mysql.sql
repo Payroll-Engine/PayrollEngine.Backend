@@ -89,6 +89,12 @@ ALTER TABLE PayrunResult          MODIFY COLUMN PayDate DATETIME(6) NOT NULL;
 -- Webhook: signing secret (stored encrypted)
 ALTER TABLE Webhook ADD COLUMN Secret VARCHAR(1024) NULL AFTER Attributes;
 
+-- Webhook: remove the never-triggered actions PayrunFunctionRequest (20) and ReportFunctionRequest (30)
+DELETE m FROM WebhookMessage m
+INNER JOIN Webhook w ON w.Id = m.WebhookId
+WHERE w.Action IN (20, 30);
+DELETE FROM Webhook WHERE Action IN (20, 30);
+
 -- =============================================================================
 -- INDEX CHANGES
 -- =============================================================================

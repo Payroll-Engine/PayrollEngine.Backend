@@ -93,6 +93,14 @@ GO
 ALTER TABLE [dbo].[Webhook] ADD [Secret] [nvarchar](1024) NULL;
 GO
 
+-- Webhook: remove the never-triggered actions PayrunFunctionRequest (20) and ReportFunctionRequest (30)
+DELETE m
+FROM [dbo].[WebhookMessage] m
+INNER JOIN [dbo].[Webhook] w ON w.[Id] = m.[WebhookId]
+WHERE w.[Action] IN (20, 30);
+DELETE FROM [dbo].[Webhook] WHERE [Action] IN (20, 30);
+GO
+
 -- =============================================================================
 -- INDEX CHANGES
 -- =============================================================================
